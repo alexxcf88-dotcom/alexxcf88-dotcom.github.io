@@ -1040,7 +1040,7 @@ h3 {
   background:
     radial-gradient(circle at var(--mx, 48%) var(--my, 42%), rgba(90,240,216,0.22), transparent 24%),
     linear-gradient(145deg, rgba(255,255,255,0.08), rgba(255,255,255,0.025));
-  box-shadow: 0 42px 110px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 42px 110px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .discovery-board::before {
   content: "";
@@ -1178,7 +1178,7 @@ h3 {
   background:
     radial-gradient(circle at var(--mx, 64%) var(--my, 32%), rgba(90,240,216,0.2), transparent 28%),
     linear-gradient(145deg, rgba(255,255,255,0.095), rgba(255,255,255,0.025));
-  box-shadow: 0 42px 130px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 42px 130px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .system-redesign .discovery-board::before,
 .system-redesign .discovery-board::after {
@@ -1428,7 +1428,7 @@ h3 {
   background:
     radial-gradient(circle at var(--mx, 78%) var(--my, 8%), rgba(90,240,216,0.16), transparent 36%),
     linear-gradient(165deg, rgba(255,255,255,0.075), rgba(255,255,255,0.02));
-  box-shadow: 0 46px 130px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 46px 130px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .os-window::before {
   content: "";
@@ -2025,7 +2025,7 @@ h3 {
   backdrop-filter: blur(24px) saturate(150%);
   -webkit-backdrop-filter: blur(24px) saturate(150%);
   opacity: 0.5;
-  box-shadow: 0 28px 70px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 28px 70px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
   transition: opacity 0.5s var(--ease), transform 0.5s var(--ease), border-color 0.5s var(--ease), box-shadow 0.5s var(--ease);
 }
 .note-a { left: clamp(0px, 2vw, 46px);  top: 15%; }
@@ -2084,7 +2084,7 @@ h3 {
 .story-note.active {
   opacity: 1;
   border-color: rgba(90,240,216,0.4);
-  box-shadow: 0 34px 80px rgba(0,0,0,0.46), 0 0 44px rgba(90,240,216,0.16), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 34px 80px rgba(0,0,0,0.46), 0 0 44px rgba(90,240,216,0.16), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .story-note.active .note-ic {
   background: linear-gradient(140deg, var(--aqua), var(--blue));
@@ -2390,7 +2390,7 @@ h3 {
   border-radius: 30px;
   overflow: hidden;
   background: rgba(255,255,255,0.05);
-  box-shadow: 0 42px 110px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 42px 110px rgba(0,0,0,0.44), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .mail-titlebar {
   position: relative;
@@ -2867,7 +2867,7 @@ h3 {
     radial-gradient(circle at 78% 8%, rgba(90,240,216,0.16), transparent 38%),
     linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.028)),
     rgba(5,9,8,0.76);
-  box-shadow: 0 34px 90px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 34px 90px rgba(0,0,0,0.48), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .voice-skill-board {
   position: relative;
@@ -2883,7 +2883,7 @@ h3 {
     radial-gradient(circle at 16% 100%, rgba(57,120,255,0.14), transparent 42%),
     linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.026)),
     rgba(4,8,7,0.78);
-  box-shadow: 0 44px 120px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 44px 120px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
   overflow: hidden;
 }
 .voice-skill-board::before {
@@ -3148,7 +3148,7 @@ h3 {
   background:
     linear-gradient(180deg, rgba(255,255,255,0.07), rgba(255,255,255,0.024)),
     rgba(7,11,10,0.72);
-  box-shadow: 0 34px 90px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 34px 90px rgba(0,0,0,0.42), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .ops-panel { padding: clamp(1.25rem, 3vw, 2rem); }
 .ops-panel h2 { margin-bottom: 0.9rem; }
@@ -3294,7 +3294,7 @@ h3 {
     radial-gradient(circle at 94% 18%, rgba(241,182,75,0.12), transparent 34%),
     linear-gradient(180deg, rgba(255,255,255,0.08), rgba(255,255,255,0.026)),
     rgba(6,10,9,0.76);
-  box-shadow: 0 42px 120px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 42px 120px rgba(0,0,0,0.52), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
   overflow: hidden;
 }
 .pricing-shell .price-panel,
@@ -3568,7 +3568,7 @@ h3 {
     radial-gradient(circle at 82% -8%, rgba(90,240,216,0.14), transparent 42%),
     linear-gradient(180deg, rgba(255,255,255,0.075), rgba(255,255,255,0.03)),
     rgba(8,12,11,0.66);
-  box-shadow: 0 40px 110px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 40px 110px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .lead-form-head {
   display: flex;
@@ -4064,7 +4064,7 @@ h3 {
     radial-gradient(circle at 50% 28%, rgba(90,240,216,0.13), transparent 60%),
     linear-gradient(180deg, rgba(255,255,255,0.05), rgba(255,255,255,0.015)),
     rgba(4,8,7,0.72);
-  box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 30px 80px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
 }
 .voice-3d spline-viewer {
   display: block;
@@ -4203,7 +4203,7 @@ body.demo-open { overflow: hidden; }
     radial-gradient(circle at 14% 0%, rgba(90,240,216,0.16), transparent 44%),
     radial-gradient(circle at 100% 100%, rgba(57,120,255,0.12), transparent 46%),
     linear-gradient(180deg, rgba(13,19,18,0.97), rgba(6,10,9,0.97));
-  box-shadow: 0 50px 140px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05);
+  box-shadow: 0 50px 140px rgba(0,0,0,0.6), inset 0 1px 0 rgba(255,255,255,0.05), inset 0 0 34px 2px rgba(6,9,8,0.5);
   transform: translateY(18px) scale(0.96);
   opacity: 0;
   transition: transform 0.42s var(--ease), opacity 0.42s var(--ease);

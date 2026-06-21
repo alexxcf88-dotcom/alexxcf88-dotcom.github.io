@@ -1066,6 +1066,15 @@ function renderPhone(chatEl, statusEl, scenario) {
   } else {
     load();
   }
+
+  // Precarga proactiva: en cuanto el navegador esté ocioso (o poco después de
+  // cargar la página), descarga runtime + escena en segundo plano para que el
+  // robot ya esté listo al llegar a la sección, en vez de cargar tarde.
+  if ('requestIdleCallback' in window) {
+    requestIdleCallback(() => load(), { timeout: 3500 });
+  } else {
+    window.addEventListener('load', () => window.setTimeout(load, 2500));
+  }
 })();
 
 (function initLampEdges() {
