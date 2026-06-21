@@ -17,14 +17,15 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260620p">
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260622-glowedge">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
-    <video class="ambient-video" id="bg-video" autoplay loop muted playsinline preload="auto"
+    <video class="ambient-video" id="bg-video" autoplay loop muted playsinline preload="metadata"
       src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4"></video>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
@@ -33,7 +34,7 @@
   </div>
 
   <nav class="site-nav" aria-label="Principal">
-    <a class="brand" href="#inicio" aria-label="AItomat, inicio"><span class="b-ai">AI</span>tomat</a>
+    <a class="brand" href="#inicio" aria-label="AItomat, inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
     <div class="nav-links">
       <a href="#proceso">Sistema</a>
       <a href="#voz">Voz</a>
@@ -52,8 +53,7 @@
       <div class="hero-copy">
         <p class="eyebrow"><span></span> Automatizaci&oacute;n real para cl&iacute;nicas dentales</p>
         <div class="hero-title-wrap">
-          <canvas class="hero-title-fx" id="hero-title-fx" aria-hidden="true"></canvas>
-          <h1>Tu cl&iacute;nica, <span class="shiny">automatizada.</span></h1>
+          <h1>Tu cl&iacute;nica <span class="shiny">automatizada.</span></h1>
         </div>
         <div class="hero-rotator" aria-label="AItomat automatiza los principales canales de la cl&iacute;nica">
           <span class="hero-rotator-label">Atiende</span>
@@ -73,6 +73,10 @@
           <a class="primary-btn" href="#contacto" data-demo-open>Automatizar mi cl&iacute;nica</a>
           <a class="secondary-btn" href="#flujo">Ver c&oacute;mo funciona</a>
         </div>
+        <div class="hero-fast-path" aria-label="Atajos principales">
+          <a href="#precio">Ver precio desde 149&nbsp;&euro;/mes</a>
+          <a href="#faq">Resolver dudas de RGPD y fallos</a>
+        </div>
         <a class="hero-cue" href="#proceso">desliza para descubrir el proceso</a>
       </div>
     </section>
@@ -91,30 +95,30 @@
           <em class="os-live"><i></i> en vivo</em>
         </div>
         <div class="os-tabs" id="system-cases" role="tablist" aria-label="Casos que resuelve AItomat">
-          <button class="os-tab active" type="button" role="tab" aria-selected="true" data-case="whatsapp">WhatsApp</button>
-          <button class="os-tab" type="button" role="tab" aria-selected="false" data-case="llamadas">Llamadas</button>
-          <button class="os-tab" type="button" role="tab" aria-selected="false" data-case="agenda">Agenda</button>
-          <button class="os-tab" type="button" role="tab" aria-selected="false" data-case="noshows">No-shows</button>
-          <button class="os-tab" type="button" role="tab" aria-selected="false" data-case="reactivacion">Reactivar</button>
+          <button class="os-tab active" id="tab-whatsapp" type="button" role="tab" aria-selected="true" aria-controls="os-body" data-case="whatsapp">WhatsApp</button>
+          <button class="os-tab" id="tab-llamadas" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="llamadas">Llamadas</button>
+          <button class="os-tab" id="tab-agenda" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="agenda">Agenda</button>
+          <button class="os-tab" id="tab-noshows" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="noshows">No-shows</button>
+          <button class="os-tab" id="tab-reactivacion" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="reactivacion">Reactivar</button>
         </div>
         <p class="os-caption" id="os-caption">Pregunta, cualifica y prepara los WhatsApp que nadie contesta.</p>
-        <div class="os-body" id="os-body">
+        <div class="os-body" id="os-body" role="tabpanel" aria-live="polite" aria-labelledby="tab-whatsapp">
           <div class="os-pipeline">
             <article class="os-step" data-step="0">
-              <span class="os-step-label"><i>01</i> Llega el mensaje</span>
+              <span class="os-step-label"><i>Entrada</i> Llega el mensaje</span>
               <p id="case-message">Hola, &iquest;ten&eacute;is hueco para una limpieza? Mejor por la tarde.</p>
             </article>
             <article class="os-step" data-step="1">
-              <span class="os-step-label"><i>02</i> <span><span class="b-ai">AI</span>tomat lo entiende</span></span>
+              <span class="os-step-label"><i>Criterio</i> <span><span class="b-ai">AI</span>tomat lo entiende</span></span>
               <p id="case-decision">Detecta intenci&oacute;n de cita y preferencia horaria. Cruza con la agenda y localiza un hueco real.</p>
             </article>
             <article class="os-step" data-step="2">
-              <span class="os-step-label"><i>03</i> Pregunta y prepara</span>
+              <span class="os-step-label"><i>Salida</i> Pregunta y prepara</span>
               <p id="case-action">Ofrece dos huecos reales y deja la cita preparada cuando el paciente elige.</p>
             </article>
           </div>
           <aside class="os-panel">
-            <span class="os-panel-label">Lo que <span class="b-ai">AI</span>tomat hizo hoy</span>
+            <span class="os-panel-label">Ejemplo de un d&iacute;a en demo</span>
             <div class="os-kpis">
               <div class="os-kpi"><strong class="os-num" id="case-done" data-target="14">14</strong><small>preparados antes de recepci&oacute;n</small></div>
               <div class="os-kpi"><strong class="os-num" id="case-human" data-target="3">3</strong><small>pasados a una persona</small></div>
@@ -124,6 +128,7 @@
               <i><span id="case-meter" style="--w:92%"></span></i>
             </div>
             <p class="os-note" id="case-note">Sin esperar a que recepci&oacute;n abra.</p>
+            <p class="os-disclaimer">Cifras ilustrativas para explicar el flujo. La demo real se calcula con vuestros canales y agenda.</p>
           </aside>
         </div>
       </div>
@@ -132,8 +137,8 @@
     <section id="voz" class="voice-section voice-redesign">
       <div class="voice-head">
         <p class="eyebrow"><span></span> Agente de voz</p>
-        <h2>Recepci&oacute;n telef&oacute;nica con IA.</h2>
-        <p class="voice-sub">Contesta las llamadas que hoy se pierden y deja el caso listo para recepci&oacute;n &mdash; siempre present&aacute;ndose como asistente de la cl&iacute;nica.</p>
+        <h2>Llamadas en vivo, sin perder el hilo.</h2>
+        <p class="voice-sub">El asistente atiende, pregunta lo justo y deja cada llamada lista para que recepci&oacute;n decida el siguiente paso.</p>
       </div>
       <div class="voice-stage">
         <div class="voice-robot" id="voice-3d" data-spline data-scene="https://prod.spline.design/kZDDjO5HuC9GJUM2/scene.splinecode" aria-hidden="true">
@@ -142,15 +147,11 @@
           </span>
         </div>
         <div class="voice-transcript" aria-label="Transcripci&oacute;n en vivo de una llamada atendida por el agente de voz">
-          <div class="call-header">
-            <span class="call-avatar" aria-hidden="true"><span class="b-ai">AI</span></span>
-            <div class="call-meta">
-              <strong>Asistente de la cl&iacute;nica</strong>
-              <small id="voice-status">en llamada</small>
-            </div>
-            <span class="call-live"><i></i> en vivo</span>
+          <div class="voice-live-strip">
+            <span><i></i> Llamadas en vivo</span>
+            <small id="voice-status">entrando llamada...</small>
           </div>
-          <div class="call-topic"><span>Motivo</span><b id="voice-topic">&nbsp;</b></div>
+          <div class="voice-topic-pill"><span>Motivo</span><b id="voice-topic">&nbsp;</b></div>
           <div class="wa-chat call-chat" id="voice-chat" aria-live="polite"></div>
         </div>
       </div>
@@ -371,17 +372,17 @@
       <div class="trust-stack">
         <div class="audit-grid" aria-label="Preguntas para calcular oportunidades perdidas">
           <article class="audit-question">
-            <span>01</span>
+            <span>Llamadas</span>
             <strong>&iquest;Cu&aacute;ntas llamadas no cog&eacute;is cada semana?</strong>
             <p>Fuera de horario, a la hora de comer o mientras recepci&oacute;n atiende a un paciente.</p>
           </article>
           <article class="audit-question">
-            <span>02</span>
+            <span>WhatsApp</span>
             <strong>&iquest;Cu&aacute;ntos WhatsApps quedan para responder luego?</strong>
             <p>Una duda sencilla puede enfriarse si la respuesta llega horas despu&eacute;s.</p>
           </article>
           <article class="audit-question">
-            <span>03</span>
+            <span>Revisiones</span>
             <strong>&iquest;Cu&aacute;ntos pacientes llevan m&aacute;s de 6 meses sin volver?</strong>
             <p>Revisiones, limpiezas y tratamientos pendientes que ya est&aacute;n en vuestra base.</p>
           </article>
@@ -464,7 +465,7 @@
   </main>
 
   <footer class="site-footer">
-    <a class="brand" href="#inicio"><span class="b-ai">AI</span>tomat</a>
+    <a class="brand" href="#inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
     <div>
       <a href="legal/privacidad.html">Privacidad</a>
       <a href="legal/terminos.html">T&eacute;rminos</a>
