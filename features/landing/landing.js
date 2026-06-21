@@ -781,6 +781,12 @@ function renderPhone(chatEl, statusEl, scenario) {
 (function initLeadForms() {
   const forms = Array.from(document.querySelectorAll('form[data-lead-form]'));
   if (!forms.length) return;
+
+  // En producción la web es estática (GitHub Pages), no hay backend: los leads
+  // se envían a Formspree. TODO: sustituir XXXXXXXX por el ID real del form
+  // (formspree.io → New form → copia la URL https://formspree.io/f/XXXXXXXX).
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/XXXXXXXX';
+
   forms.forEach((form) => wireLeadForm(form));
 
   function wireLeadForm(form) {
@@ -796,10 +802,14 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   function leadEndpoint() {
     const host = window.location.hostname;
-    const isLocalStatic = (host === 'localhost' || host === '127.0.0.1') && window.location.port === '8000';
+    const isLocalhost = host === 'localhost' || host === '127.0.0.1';
+    const isLocalStatic = isLocalhost && window.location.port === '8000';
+    // Pruebas locales: igual que antes, contra el FastAPI local.
     if (isLocalStatic) return 'http://127.0.0.1:8001/api/lead';
     if (window.location.protocol === 'file:') return 'http://127.0.0.1:8001/api/lead';
-    return '/api/lead';
+    if (isLocalhost) return '/api/lead';
+    // Producción (dominio / GitHub Pages): sin backend → Formspree.
+    return FORMSPREE_ENDPOINT;
   }
 
   form.addEventListener('submit', async (event) => {
@@ -823,7 +833,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       setStatus('Enviando solicitud...', '');
       const response = await fetch(leadEndpoint(), {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
         body: JSON.stringify(payload),
       });
       if (!response.ok) {
