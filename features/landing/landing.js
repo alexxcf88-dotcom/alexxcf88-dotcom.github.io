@@ -1,6 +1,11 @@
 'use strict';
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+const touchDevice = window.matchMedia('(hover: none)').matches;
+const mobileViewport = window.matchMedia('(max-width: 760px)').matches;
+const lowEndDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 4)
+  || (navigator.deviceMemory && navigator.deviceMemory <= 2);
+const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEndDevice;
 
 (function initHeroEnhancements() {
   const hero = document.querySelector('[data-spotlight]');
@@ -38,12 +43,12 @@ const phoneScenarios = [
     action: 'Consulta cualificada',
     time: 'Limpieza · datos confirmados',
     bubbles: [
-      ['patient', 'Hola, ¿tenéis hueco para una limpieza? Mejor por la tarde.', '9:40'],
-      ['ai', 'Hola, soy el asistente de la clínica. Para mirarlo bien: ¿sería limpieza normal o vienes por alguna molestia?', '9:40'],
-      ['patient', 'Limpieza normal, sin dolor.', '9:41'],
-      ['ai', 'Perfecto. ¿Has venido antes a la clínica o sería primera visita?', '9:41'],
-      ['patient', 'Ya he ido, soy Laura Pérez.', '9:42'],
-      ['ai', 'Gracias, Laura. Te paso dos opciones de tarde para que elijas: hoy 18:30 o mañana 17:10. ¿Cuál prefieres?', '9:42'],
+      ['patient', 'Hola, quería pedir cita para una limpieza. Mejor por la tarde.', '9:40'],
+      ['ai', 'Hola, le atiende el asistente de la clínica. ¿Es una limpieza rutinaria o tiene alguna molestia?', '9:40'],
+      ['patient', 'Rutinaria, sin dolor. Ya he ido otras veces.', '9:41'],
+      ['ai', 'Perfecto. ¿Me indica su nombre para localizar la ficha?', '9:41'],
+      ['patient', 'Laura Pérez.', '9:42'],
+      ['ai', 'Gracias, Laura. Dejo anotada limpieza rutinaria y preferencia de tarde. Recepción le confirma el hueco disponible.', '9:42'],
     ],
   },
   {
@@ -51,12 +56,12 @@ const phoneScenarios = [
     action: 'Cita preconfirmada',
     time: 'Pendiente de confirmación final',
     bubbles: [
-      ['patient', 'Hoy a las 18:30 me viene bien.', '9:43'],
-      ['ai', 'Genial. Antes de dejarlo preconfirmado: ¿mantienes el teléfono terminado en 214?', '9:43'],
-      ['patient', 'Sí, ese es.', '9:44'],
-      ['ai', 'Perfecto. Dejo la cita preparada para hoy a las 18:30. Recepción te la confirma si hubiese algún cambio.', '9:44'],
+      ['patient', 'Si tienen algo esta semana a última hora, me vendría bien.', '9:43'],
+      ['ai', 'Lo anoto. Antes de pasarlo a recepción: ¿sigue usando el teléfono terminado en 214?', '9:43'],
+      ['patient', 'Sí, correcto.', '9:44'],
+      ['ai', 'Perfecto. Recepción revisa agenda y le confirma la opción de última hora que encaje mejor.', '9:44'],
       ['patient', 'Gracias.', '9:45'],
-      ['ai', 'A ti. Te enviaremos recordatorio y, si no puedes venir, puedes responder a este chat para moverla.', '9:45'],
+      ['ai', 'Gracias a usted. Si necesita cambiarla después, puede responder a este mismo chat.', '9:45'],
     ],
   },
   {
@@ -64,13 +69,11 @@ const phoneScenarios = [
     action: 'Cambio preparado',
     time: 'Recepción avisada',
     bubbles: [
-      ['ai', 'Hola, Ana. Te recordamos tu cita de mañana a las 10:15. ¿Puedes confirmarnos si vienes?', '8:02'],
+      ['ai', 'Hola, Ana. Le recordamos su cita de mañana a las 10:15. ¿Puede confirmarnos si acudirá?', '8:02'],
       ['patient', 'Uy, creo que no voy a poder.', '8:03'],
-      ['ai', 'No pasa nada. ¿Prefieres que busquemos otro hueco esta semana o lo dejamos para la próxima?', '8:03'],
+      ['ai', 'De acuerdo. ¿Quiere que intentemos moverla esta semana o prefiere dejarla para más adelante?', '8:03'],
       ['patient', 'Esta semana, si puede ser por la tarde.', '8:04'],
-      ['ai', 'Te puedo proponer jueves 16:20 o viernes 18:00. ¿Cuál te encaja mejor?', '8:04'],
-      ['patient', 'Jueves 16:20.', '8:05'],
-      ['ai', 'Lo dejo preparado y aviso a recepción para liberar el hueco de mañana. Te confirmamos el cambio por aquí.', '8:05'],
+      ['ai', 'Anoto preferencia de tarde y aviso para liberar el hueco de mañana. Recepción le confirma la nueva cita.', '8:04'],
     ],
   },
   {
@@ -78,13 +81,11 @@ const phoneScenarios = [
     action: 'Interés recuperado',
     time: 'Revisión solicitada',
     bubbles: [
-      ['ai', 'Hola, Javier. Soy el asistente de la clínica. Hace tiempo que no vemos tu revisión anual. ¿Quieres que te pasemos opciones?', 'Lun'],
-      ['patient', 'Sí, se me pasó. ¿Tenéis algo esta semana?', 'Lun'],
-      ['ai', 'Claro. ¿Te va mejor mañana o tarde? ¿Sigues disponible en este WhatsApp?', 'Lun'],
-      ['patient', 'Tardes, y sí, este número está bien.', 'Lun'],
-      ['ai', 'Perfecto. Veo jueves 18:10 o viernes 13:00. ¿Cuál prefieres que dejemos preparado?', 'Lun'],
-      ['patient', 'Viernes 13:00.', 'Lun'],
-      ['ai', 'Lo dejo preparado para que recepción lo confirme. Si necesitas cambiarlo, responde a este chat.', 'Lun'],
+      ['ai', 'Hola, Javier. Le escribimos de la clínica porque tiene pendiente la revisión anual. ¿Quiere que le pasemos opciones?', 'Lun'],
+      ['patient', 'Sí, se me pasó. ¿Hay algo esta semana?', 'Lun'],
+      ['ai', 'Lo revisa recepción. Para orientar la búsqueda: ¿le viene mejor mañana o tarde?', 'Lun'],
+      ['patient', 'Tardes, por favor.', 'Lun'],
+      ['ai', 'Anotado. Recepción le confirmará un hueco de tarde si hay disponibilidad esta semana.', 'Lun'],
     ],
   },
 ];
@@ -127,7 +128,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     return;
   }
 
-  let elapsed = 140;
+  let elapsed = 70;
   let typingBubble = null;
 
   function clearTyping() {
@@ -149,17 +150,17 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   scenario.bubbles.forEach(([kind, text, time], index) => {
     if (statusEl && kind === 'ai') {
-      chatEl._bubbleTimers.push(setTimeout(() => { statusEl.textContent = 'escribiendo...'; }, elapsed - 120));
+      chatEl._bubbleTimers.push(setTimeout(() => { statusEl.textContent = 'escribiendo...'; }, Math.max(0, elapsed - 70)));
     }
     if (index > 0) {
       chatEl._bubbleTimers.push(setTimeout(() => showTyping(kind), elapsed));
-      elapsed += 420;
+      elapsed += 170;
     }
     chatEl._bubbleTimers.push(setTimeout(() => {
       appendBubble(kind, text, time);
       if (statusEl) statusEl.textContent = 'en l\u00ednea';
     }, elapsed));
-    elapsed += kind === 'patient' ? 640 : 820;
+    elapsed += kind === 'patient' ? 360 : 460;
   });
   chatEl._bubbleTimers.push(setTimeout(appendOutcome, elapsed));
 }
@@ -199,9 +200,12 @@ function renderPhone(chatEl, statusEl, scenario) {
 })();
 
 (function initParticles() {
-  if (reduceMotion) return;
   const canvas = document.getElementById('particles-canvas');
   if (!canvas) return;
+  if (lightweightMotion) {
+    canvas.hidden = true;
+    return;
+  }
   const ctx = canvas.getContext('2d');
   let dots = [];
 
@@ -242,10 +246,18 @@ function renderPhone(chatEl, statusEl, scenario) {
 })();
 
 (function initBackgroundParallax() {
-  if (reduceMotion) return;
   const video = document.getElementById('bg-video');
   const tint = document.getElementById('bg-tint');
   if (!video && !tint) return;
+  if (lightweightMotion) {
+    if (video) {
+      video.pause();
+      video.removeAttribute('src');
+      video.load();
+      video.hidden = true;
+    }
+    return;
+  }
 
   let ticking = false;
   function update() {
@@ -476,23 +488,23 @@ function renderPhone(chatEl, statusEl, scenario) {
   const cases = {
     whatsapp: {
       caption: 'Pregunta, cualifica y prepara los WhatsApp que nadie contesta.',
-      message: 'Hola, ?ten?is hueco para una limpieza? Mejor por la tarde.',
-      decision: 'Detecta intenci?n de cita y pregunta si es primera visita, motivo y preferencia horaria.',
+      message: 'Hola, \u00bften\u00e9is hueco para una limpieza? Mejor por la tarde.',
+      decision: 'Detecta intenci\u00f3n de cita y pregunta si es primera visita, motivo y preferencia horaria.',
       action: 'Ofrece dos huecos reales y deja la cita preparada cuando el paciente elige.',
       done: 14, human: 3, metric: 'Confianza de la respuesta', value: 92,
-      note: 'Sin esperar a que recepci?n abra.',
+      note: 'Sin esperar a que recepci\u00f3n abra.',
     },
     llamadas: {
       caption: 'Recupera llamadas perdidas sin fingir que no es IA.',
       message: 'Llamada perdida de +34 6XX XXX 210 a las 14:10. Sin mensaje.',
-      decision: 'Identifica n?mero recurrente y pregunta el motivo antes de proponer el siguiente paso.',
-      action: 'Env?a WhatsApp de recuperaci?n y deriva a recepci?n si el caso necesita una persona.',
+      decision: 'Identifica n\u00famero recurrente y pregunta el motivo antes de proponer el siguiente paso.',
+      action: 'Env\u00eda WhatsApp de recuperaci\u00f3n y deriva a recepci\u00f3n si el caso necesita una persona.',
       done: 9, human: 2, metric: 'Llamadas recuperadas', value: 71,
       note: 'Ninguna oportunidad se queda en el aire.',
     },
     agenda: {
       caption: 'Reorganiza la agenda y rescata huecos a punto de perderse.',
-      message: 'Hueco de las 18:30 a punto de quedar vac?o para ma?ana.',
+      message: 'Hueco de las 18:30 a punto de quedar vac\u00edo para ma\u00f1ana.',
       decision: 'Busca pacientes en lista de espera y cruza preferencias con disponibilidad.',
       action: 'Ofrece el hueco a dos candidatos y lo deja preparado cuando uno confirma.',
       done: 21, human: 1, metric: 'Agenda ocupada', value: 88,
@@ -500,17 +512,17 @@ function renderPhone(chatEl, statusEl, scenario) {
     },
     noshows: {
       caption: 'Confirma citas y previene las ausencias antes de que pasen.',
-      message: 'Cita de ma?ana 10:15 sin confirmar. Paciente con una ausencia previa.',
-      decision: 'Calcula riesgo alto y pregunta si confirma, cambia o necesita hablar con recepci?n.',
-      action: 'Manda recordatorio, pide confirmaci?n y prepara liberar el hueco si no responde.',
+      message: 'Cita de ma\u00f1ana 10:15 sin confirmar. Paciente con una ausencia previa.',
+      decision: 'Calcula riesgo alto y pregunta si confirma, cambia o necesita hablar con recepci\u00f3n.',
+      action: 'Manda recordatorio, pide confirmaci\u00f3n y prepara liberar el hueco si no responde.',
       done: 17, human: 4, metric: 'Riesgo de ausencia', value: 64,
-      note: 'Act?a antes de perder el hueco.',
+      note: 'Act\u00faa antes de perder el hueco.',
     },
     reactivacion: {
       caption: 'Trae de vuelta a los pacientes que llevan meses sin venir.',
-      message: 'Paciente sin venir desde hace 8 meses. Revisi?n pendiente.',
+      message: 'Paciente sin venir desde hace 8 meses. Revisi\u00f3n pendiente.',
       decision: 'Segmenta por probabilidad de retorno y prepara un motivo personalizado.',
-      action: 'Env?a seguimiento contextual y pregunta si quiere ver huecos de revisi?n esta semana.',
+      action: 'Env\u00eda seguimiento contextual y pregunta si quiere ver huecos de revisi\u00f3n esta semana.',
       done: 32, human: 5, metric: 'Vuelven a la consulta', value: 58,
       note: 'Vuelve a llenar agenda sin perseguir a mano.',
     },
@@ -554,12 +566,14 @@ function renderPhone(chatEl, statusEl, scenario) {
     if (els.metricVal) els.metricVal.textContent = `${data.value}%`;
     if (els.meter) els.meter.style.setProperty('--w', `${data.value}%`);
     win.style.setProperty('--os-scan', `${8 + data.value * 0.82}%`);
+    win.setAttribute('aria-labelledby', `tab-${key}`);
     countUp(els.done, data.done);
     countUp(els.human, data.human);
     tabs.forEach((tab) => {
       const on = tab.dataset.case === key;
       tab.classList.toggle('active', on);
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
+      tab.tabIndex = on ? 0 : -1;
     });
     if (!reduceMotion) {
       win.classList.remove('swap');
@@ -579,6 +593,19 @@ function renderPhone(chatEl, statusEl, scenario) {
     tab.addEventListener('click', () => { stopAuto(); select(tab.dataset.case); });
     tab.addEventListener('mouseenter', () => { stopAuto(); select(tab.dataset.case); });
     tab.addEventListener('focus', () => { stopAuto(); select(tab.dataset.case); });
+    tab.addEventListener('keydown', (event) => {
+      const current = tabs.indexOf(tab);
+      let next = current;
+      if (event.key === 'ArrowRight' || event.key === 'ArrowDown') next = (current + 1) % tabs.length;
+      else if (event.key === 'ArrowLeft' || event.key === 'ArrowUp') next = (current - 1 + tabs.length) % tabs.length;
+      else if (event.key === 'Home') next = 0;
+      else if (event.key === 'End') next = tabs.length - 1;
+      else return;
+      event.preventDefault();
+      stopAuto();
+      select(tabs[next].dataset.case);
+      tabs[next].focus();
+    });
   });
 
   if (!reduceMotion) {
@@ -1034,7 +1061,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       entries.forEach((e) => {
         if (e.isIntersecting) { load(); io.disconnect(); }
       });
-    }, { rootMargin: '200px' });
+    }, { rootMargin: '1200px' });
     io.observe(fig);
   } else {
     load();
@@ -1116,21 +1143,21 @@ function renderPhone(chatEl, statusEl, scenario) {
       outcome: { action: 'Derivado a recepción', time: 'urgencia priorizada' },
       bubbles: [
         ['ai', 'Clínica dental, le atiende el asistente virtual. ¿En qué puedo ayudarle?'],
-        ['patient', 'Se me ha hinchado la encía y me duele bastante.'],
-        ['ai', 'Lamento oírlo. ¿El dolor es constante o solo al masticar? ¿Tiene algo de fiebre?'],
-        ['patient', 'Constante, y noto la cara un poco hinchada.'],
-        ['ai', 'Entendido. Lo marco como posible urgencia y aviso a recepción para que le llamen y le den hueco hoy mismo.'],
+        ['patient', 'Me duele una muela desde anoche y se me ha hinchado un poco la cara.'],
+        ['ai', 'Lo siento. Para avisar bien a recepción: ¿el dolor es constante? ¿Tiene fiebre o dificultad para abrir la boca?'],
+        ['patient', 'Constante sí. Fiebre no, pero al morder me duele bastante.'],
+        ['ai', 'Gracias. Lo marco como posible urgencia. Recepción le llamará cuanto antes para darle el primer hueco disponible hoy.'],
       ],
     },
     {
       topic: 'Primera visita',
       outcome: { action: 'Primera cita preparada', time: 'datos recogidos' },
       bubbles: [
-        ['ai', 'Le atiende el asistente virtual de la clínica. ¿En qué puedo ayudarle?'],
-        ['patient', 'Hola, nunca he ido a esta clínica. Quería una revisión.'],
-        ['ai', 'Perfecto, le doy de alta como primera visita. ¿Me dice su nombre y un teléfono de contacto?'],
-        ['patient', 'Marta Ruiz, 600 12 34 56.'],
-        ['ai', 'Gracias, Marta. Dejo preparada una revisión inicial y recepción se la confirma con el horario que mejor le venga.'],
+        ['ai', 'Le atiende el asistente virtual de la clínica. ¿Es para una cita o tiene alguna molestia?'],
+        ['patient', 'Sería primera visita. Quiero una revisión y limpieza si se puede.'],
+        ['ai', 'Perfecto. ¿Me indica su nombre y si prefiere mañana o tarde? Así recepción le confirma un hueco concreto.'],
+        ['patient', 'Marta Ruiz. Mejor por la tarde, a partir de las seis.'],
+        ['ai', 'Anotado, Marta. Dejo registrada primera visita con preferencia de tarde y recepción le confirma la opción disponible.'],
       ],
     },
     {
@@ -1138,10 +1165,10 @@ function renderPhone(chatEl, statusEl, scenario) {
       outcome: { action: 'Cita reprogramada', time: 'hueco anterior liberado' },
       bubbles: [
         ['ai', 'Soy el asistente virtual de la clínica. ¿En qué le ayudo?'],
-        ['patient', 'Tengo cita mañana a las 10 pero no voy a poder ir.'],
-        ['ai', 'No se preocupe. ¿Prefiere otro día esta misma semana o la que viene?'],
-        ['patient', 'Esta semana mejor, por la tarde.'],
-        ['ai', 'Le propongo el jueves a las 17:30. Lo dejo anotado y libero el hueco de mañana; recepción se lo confirma.'],
+        ['patient', 'Tengo cita mañana a las 10:00 y no voy a poder ir.'],
+        ['ai', 'De acuerdo. ¿Quiere cambiarla o prefiere que la cancelemos?'],
+        ['patient', 'Cambiarla. Si puede ser esta semana por la tarde.'],
+        ['ai', 'Perfecto. Aviso para liberar el hueco de mañana y dejo su preferencia de tarde. Recepción le confirma el nuevo horario.'],
       ],
     },
     {
@@ -1149,21 +1176,21 @@ function renderPhone(chatEl, statusEl, scenario) {
       outcome: { action: 'Valoración agendada', time: 'sin compromiso' },
       bubbles: [
         ['ai', 'Le atiende el asistente virtual de la clínica. ¿En qué puedo ayudarle?'],
-        ['patient', '¿Cuánto cuesta la ortodoncia invisible?'],
-        ['ai', 'Le doy un rango orientativo, pero el precio exacto depende del caso. ¿Le agendo una valoración gratuita para verlo bien?'],
-        ['patient', 'Vale, sí.'],
-        ['ai', 'Hecho. Dejo preparada una valoración de ortodoncia sin compromiso y recepción le confirma la hora.'],
+        ['patient', 'Quería saber el precio de la ortodoncia invisible.'],
+        ['ai', 'Depende del caso y de la duración del tratamiento. Lo habitual es verlo en una valoración inicial. ¿Quiere que le busquen cita?'],
+        ['patient', 'Sí, pero antes me gustaría saber si se puede financiar.'],
+        ['ai', 'Sí, lo anoto para que le expliquen opciones de financiación. Recepción le llama y le propone horario para la valoración.'],
       ],
     },
     {
       topic: 'Paciente dormido',
       outcome: { action: 'Paciente reactivado', time: 'revisión solicitada' },
       bubbles: [
-        ['ai', 'Hola, soy el asistente virtual de la clínica. Hace más de un año de su última revisión. ¿Quiere que le busque hueco?'],
-        ['patient', 'Pues sí, se me había pasado por completo.'],
-        ['ai', '¿Le viene mejor por la mañana o por la tarde? Sigue siendo válido este teléfono, ¿verdad?'],
-        ['patient', 'Por la mañana, y sí, este número está bien.'],
-        ['ai', 'Genial. Dejo preparada una revisión de mañana para que recepción se la confirme.'],
+        ['ai', 'Hola, le escribimos de la clínica. Tiene pendiente la revisión anual. ¿Quiere que le pasemos opciones?'],
+        ['patient', 'Sí, la verdad es que se me pasó.'],
+        ['ai', 'No hay problema. ¿Le viene mejor por la mañana o por la tarde?'],
+        ['patient', 'Por la mañana, pero que no sea lunes.'],
+        ['ai', 'Anotado: mañana, evitando lunes. Recepción le confirmará el hueco que mejor encaje.'],
       ],
     },
   ];
@@ -1205,10 +1232,6 @@ function renderPhone(chatEl, statusEl, scenario) {
       body.textContent = text;
       chat.appendChild(b);
     });
-    const chip = document.createElement('div');
-    chip.className = 'wa-system';
-    chip.innerHTML = `<b>${sc.outcome.action}</b><span>${sc.outcome.time}</span>`;
-    chat.appendChild(chip);
     if (statusEl) statusEl.textContent = 'derivación preparada';
   }
 
@@ -1217,7 +1240,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       if (my !== token) return;
       node.textContent = text.slice(0, i + 1);
       scrollDown();
-      await wait(text[i] === ' ' ? 12 : 20);
+      await wait(text[i] === ' ' ? 6 : 10);
     }
   }
   async function playScenario(sc, my) {
@@ -1230,23 +1253,19 @@ function renderPhone(chatEl, statusEl, scenario) {
       const typing = typingEl(kind);
       chat.appendChild(typing);
       scrollDown();
-      await wait(kind === 'patient' ? 520 : 700);
+      await wait(kind === 'patient' ? 240 : 320);
       if (my !== token) { typing.remove(); return; }
       typing.remove();
       const { b, body } = makeBubble(kind);
       chat.appendChild(b);
       scrollDown();
       await streamText(body, text, my);
-      await wait(380);
+      await wait(160);
     }
     if (my !== token) return;
     if (statusEl) statusEl.textContent = 'derivación preparada';
-    const chip = document.createElement('div');
-    chip.className = 'wa-system';
-    chip.innerHTML = `<b>${sc.outcome.action}</b><span>${sc.outcome.time}</span>`;
-    chat.appendChild(chip);
     scrollDown();
-    await wait(2600);
+    await wait(1600);
   }
   async function runLoop() {
     const my = token;
