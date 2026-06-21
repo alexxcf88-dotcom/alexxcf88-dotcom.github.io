@@ -783,9 +783,8 @@ function renderPhone(chatEl, statusEl, scenario) {
   if (!forms.length) return;
 
   // En producción la web es estática (GitHub Pages), no hay backend: los leads
-  // se envían a Formspree. TODO: sustituir XXXXXXXX por el ID real del form
-  // (formspree.io → New form → copia la URL https://formspree.io/f/XXXXXXXX).
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/XXXXXXXX';
+  // se envían a Formspree (form real configurado en la cuenta del proyecto).
+  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeebjdkq';
 
   forms.forEach((form) => wireLeadForm(form));
 
@@ -817,11 +816,14 @@ function renderPhone(chatEl, statusEl, scenario) {
     if (!form.reportValidity()) return;
 
     const data = new FormData(form);
+    const honeypot = String(data.get('web') || '');
     const payload = {
       nombre: String(data.get('nombre') || '').trim(),
       clinica: String(data.get('clinica') || '').trim(),
       whatsapp: String(data.get('whatsapp') || '').trim(),
-      web: String(data.get('web') || ''),
+      web: honeypot,                 // honeypot para el backend local (FastAPI)
+      _gotcha: honeypot,             // honeypot que Formspree reconoce (descarta bots)
+      _subject: 'Nuevo lead AItomat',// asunto del email que envía Formspree
       consent: data.get('consent') === 'on',
     };
 
