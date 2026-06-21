@@ -74,6 +74,11 @@ button { color: inherit; }
     radial-gradient(900px 520px at 68% -12%, rgba(57, 120, 255, 0.2), transparent 62%),
     radial-gradient(680px 520px at 18% 12%, rgba(90, 240, 216, 0.13), transparent 64%),
     linear-gradient(180deg, #07100e 0%, #050706 58%, #020303 100%);
+  /* Difumina TODO el perímetro a transparente: ninguna capa de fondo (video,
+     grid, tint, beam) deja un canto recto que el glow pueda revelar. Al ser
+     fija, cubre todas las secciones a la vez. */
+  -webkit-mask-image: radial-gradient(145% 135% at 50% 26%, #000 60%, transparent 100%);
+          mask-image: radial-gradient(145% 135% at 50% 26%, #000 60%, transparent 100%);
 }
 .ambient-video {
   position: absolute;
@@ -869,19 +874,19 @@ h3 {
   border-bottom-left-radius: 6px;
   box-shadow: inset 0 1px 0 rgba(255,255,255,0.05), 0 8px 18px rgba(0,0,0,0.18);
 }
-.bubble.patient::after,
-.bubble.ai::after {
+.phone-chat .bubble.patient::after,
+.phone-chat .bubble.ai::after {
   content: "";
   position: absolute;
   bottom: 0;
   width: 10px;
   height: 12px;
 }
-.bubble.patient::after {
+.phone-chat .bubble.patient::after {
   right: -5px;
   background: linear-gradient(135deg, #075e4f 0 50%, transparent 51%);
 }
-.bubble.ai::after {
+.phone-chat .bubble.ai::after {
   left: -5px;
   background: linear-gradient(225deg, #1d211f 0 50%, transparent 51%);
 }
