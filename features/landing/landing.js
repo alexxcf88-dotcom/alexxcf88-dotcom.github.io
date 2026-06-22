@@ -1023,71 +1023,56 @@ function renderPhone(chatEl, statusEl, scenario) {
       viewer.setAttribute('loading-anim-type', 'none');
       fig.classList.add('is-spline-mounted');
 
-      // Borra el "Built with Spline". Selector amplio (id, clase, href o texto)
-      // porque la versión del viewer puede variar el nodo.
-      function stripWatermark() {
+      // Oculta la marca de agua "Built with Spline" SIN borrar nodos. CLAVE:
+      // el runtime guarda this._logo y justo antes de disparar 'load-complete'
+      // ejecuta this._logo.style.display="flex". Si borramos ese nodo del shadow
+      // DOM, esa línea revienta ("reading 'style' of null"), NUNCA dispara
+      // 'load-complete' y el canvas se queda visibility:hidden -> el robot no
+      // aparece. Por eso lo tapamos con una hoja de estilos !important inyectada
+      // en el shadow root (el nodo sigue ahí, el runtime no peta).
+      let wmStyled = false;
+      function hideWatermark() {
+        const root = viewer.shadowRoot;
+        if (!root || wmStyled) return;
         try {
-          const root = viewer.shadowRoot;
-          if (!root) return false;
-          let removed = false;
-          root.querySelectorAll('a, [id*="logo" i], [class*="logo" i]').forEach((el) => {
-            const href = (el.getAttribute && el.getAttribute('href')) || '';
-            const txt = (el.textContent || '').toLowerCase();
-            if (el.id === 'logo' || /spline/i.test(href) || txt.includes('spline') || txt.includes('built with')) {
-              el.remove();
-              removed = true;
-            }
-          });
-          return removed;
-        } catch (e) { /* shadow DOM no accesible: se ignora */ }
-        return false;
+          const st = document.createElement('style');
+          st.textContent = '#logo,a[href*="spline" i],[class*="logo" i]{display:none!important;opacity:0!important;pointer-events:none!important}';
+          root.appendChild(st);
+          wmStyled = true;
+        } catch (e) { /* shadow DOM no accesible */ }
       }
 
-      // Revelar el 3D = desvanecer el robot local (clase is-live). El evento
-      // 'load' del visor es POCO FIABLE (muchas veces no dispara), así que el
-      // disparador principal es detectar su <canvas>: en cuanto aparece, damos
-      // un margen para que pinte el primer fotograma y revelamos. Con la escena
-      // autoalojada el canvas surge rápido también en la 1ª visita. Si WebGL
-      // nunca arranca (sin canvas), no revelamos y se queda el robot local.
+      // Revelar = hacer visible el canvas del visor y fundir el robot local
+      // (is-live). El spline-viewer NO emite 'load'; emite 'load-complete'
+      // (escena cargada) y 'rendered' (1er frame). Escuchamos esos, y además
+      // forzamos nosotros la visibilidad del canvas por si el flujo fallara.
       let revealed = false;
       const reveal = () => {
         if (revealed) return;
         revealed = true;
+        try {
+          const c = viewer.shadowRoot && viewer.shadowRoot.querySelector('canvas');
+          if (c) c.style.visibility = 'visible';
+        } catch (e) { /* ignore */ }
         fig.classList.add('is-live');
       };
-      // El spline-viewer NO emite 'load'. Los eventos reales son 'load-complete'
-      // (escena cargada y canvas hecho visible) y 'rendered' (primer frame
-      // pintado). Cualquiera es señal fiable de que el 3D ya está pintado: ahí
-      // fundimos el robot local, ni antes (hueco) ni dependiendo de un timer.
       viewer.addEventListener('load-complete', reveal);
       viewer.addEventListener('rendered', reveal);
       fig.appendChild(viewer);
 
-      // Polling: quita la marca de agua, monta el observer y, sobre todo,
-      // detecta el <canvas> para revelar el 3D y fundir el robot local.
+      // Polling: oculta la marca de agua y, como red de seguridad si los eventos
+      // no llegaran, revela cuando el canvas lleva ~5s presente (ya ha pintado;
+      // en 1ª visita la escena tarda ~4-5s). El robot local cubre la espera.
       let ticks = 0;
-      let observer = null;
       let canvasSeenAt = 0;
       const iv = window.setInterval(() => {
-        stripWatermark();
-        if (!observer && viewer.shadowRoot) {
-          try {
-            observer = new MutationObserver(stripWatermark);
-            observer.observe(viewer.shadowRoot, { childList: true, subtree: true });
-          } catch (e) { /* sin shadow root accesible */ }
-        }
+        hideWatermark();
         if (!revealed && viewer.shadowRoot && viewer.shadowRoot.querySelector('canvas')) {
-          // Red de seguridad por si 'load-complete'/'rendered' no llegaran:
-          // margen amplio (la escena tarda ~4-5s en pintar en 1ª visita) para
-          // no fundir la maqueta antes de tiempo y dejar hueco.
           if (!canvasSeenAt) canvasSeenAt = Date.now();
-          else if (Date.now() - canvasSeenAt > 6000) reveal();
+          else if (Date.now() - canvasSeenAt > 5000) reveal();
         }
         ticks += 1;
-        if (ticks > 120) {
-          window.clearInterval(iv);
-          if (observer) window.setTimeout(() => observer.disconnect(), 5000);
-        }
+        if ((revealed && wmStyled) || ticks > 140) window.clearInterval(iv);
       }, 150);
     }).catch(() => { loaded = false; });
   }
