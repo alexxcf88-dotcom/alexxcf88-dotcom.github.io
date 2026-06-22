@@ -1043,23 +1043,27 @@ function renderPhone(chatEl, statusEl, scenario) {
         return false;
       }
 
-      // El robot local de respaldo se mantiene visible hasta que el 3D está
-      // realmente renderizado: así nunca hay hueco vacío aunque la escena tarde
-      // o falle. Solo se revela con el evento 'load' (escena pintada), + un
-      // pequeño margen para el primer fotograma; nunca por la mera existencia
-      // del <canvas>, que aparece antes de dibujar el modelo.
-      // Solo revelamos el 3D con su evento 'load' real (escena pintada). Con la
-      // escena y el runtime autoalojados, ese 'load' dispara rápido incluso en
-      // la 1ª visita (antes tardaba por la descarga remota). Si nunca dispara,
-      // se mantiene el robot local: nunca queda hueco vacío.
-      const reveal = () => fig.classList.add('is-live');
-      viewer.addEventListener('load', () => window.setTimeout(reveal, 400));
+      // Revelar el 3D = desvanecer el robot local (clase is-live). El evento
+      // 'load' del visor es POCO FIABLE (muchas veces no dispara), así que el
+      // disparador principal es detectar su <canvas>: en cuanto aparece, damos
+      // un margen para que pinte el primer fotograma y revelamos. Con la escena
+      // autoalojada el canvas surge rápido también en la 1ª visita. Si WebGL
+      // nunca arranca (sin canvas), no revelamos y se queda el robot local.
+      let revealed = false;
+      const reveal = () => {
+        if (revealed) return;
+        revealed = true;
+        fig.classList.add('is-live');
+      };
+      // Vía rápida si el evento sí llega a dispararse.
+      viewer.addEventListener('load', () => window.setTimeout(reveal, 250));
       fig.appendChild(viewer);
 
-      // Polling INDEPENDIENTE del evento load (a veces no dispara), + observer
-      // para volver a quitarla si la reinyecta tras renderizar.
+      // Polling: quita la marca de agua, monta el observer y, sobre todo,
+      // detecta el <canvas> para revelar el 3D y fundir el robot local.
       let ticks = 0;
       let observer = null;
+      let canvasSeenAt = 0;
       const iv = window.setInterval(() => {
         stripWatermark();
         if (!observer && viewer.shadowRoot) {
@@ -1068,12 +1072,17 @@ function renderPhone(chatEl, statusEl, scenario) {
             observer.observe(viewer.shadowRoot, { childList: true, subtree: true });
           } catch (e) { /* sin shadow root accesible */ }
         }
+        if (!revealed && viewer.shadowRoot && viewer.shadowRoot.querySelector('canvas')) {
+          // Margen tras ver el canvas para que la escena pinte el primer frame.
+          if (!canvasSeenAt) canvasSeenAt = Date.now();
+          else if (Date.now() - canvasSeenAt > 700) reveal();
+        }
         ticks += 1;
-        if (ticks > 75) {
+        if (ticks > 90) {
           window.clearInterval(iv);
           if (observer) window.setTimeout(() => observer.disconnect(), 5000);
         }
-      }, 200);
+      }, 150);
     }).catch(() => { loaded = false; });
   }
   if ('IntersectionObserver' in window) {
@@ -1087,14 +1096,11 @@ function renderPhone(chatEl, statusEl, scenario) {
     load();
   }
 
-  // Precarga proactiva: en cuanto el navegador esté ocioso (o poco después de
-  // cargar la página), descarga runtime + escena en segundo plano para que el
-  // robot ya esté listo al llegar a la sección, en vez de cargar tarde.
-  if ('requestIdleCallback' in window) {
-    requestIdleCallback(() => load(), { timeout: 3500 });
-  } else {
-    window.addEventListener('load', () => window.setTimeout(load, 2500));
-  }
+  // Arranque inmediato: el runtime y la escena ya van precargados en el <head>,
+  // así que montamos el visor cuanto antes para que el 3D esté listo al llegar
+  // a la sección (clave en la 1ª visita). El IntersectionObserver de arriba es
+  // solo un respaldo; load() está protegido contra dobles llamadas.
+  load();
 })();
 
 (function initLampEdges() {
