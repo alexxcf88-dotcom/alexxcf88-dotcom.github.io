@@ -114,8 +114,14 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   function appendOutcome() {
     const chip = document.createElement('div');
+    const label = document.createElement('b');
+    const detail = document.createElement('span');
+
     chip.className = 'wa-system';
-    chip.innerHTML = `<b>${scenario.action}</b><span>${scenario.time}</span>`;
+    label.textContent = scenario.action;
+    detail.textContent = scenario.time;
+    chip.appendChild(label);
+    chip.appendChild(detail);
     chatEl.appendChild(chip);
     chatEl.scrollTop = chatEl.scrollHeight;
   }
@@ -162,7 +168,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     }, elapsed));
     elapsed += kind === 'patient' ? 360 : 460;
   });
-  chatEl._bubbleTimers.push(setTimeout(appendOutcome, elapsed));
+  chatEl._bubbleTimers.push(setTimeout(appendOutcome, elapsed + 320));
 }
 
 (function initScrollProgress() {
@@ -316,20 +322,20 @@ function renderPhone(chatEl, statusEl, scenario) {
     noshows: {
       kicker: 'No-shows',
       title: 'Actúa antes de que el hueco se pierda.',
-      copy: 'Detecta citas sin confirmar, manda recordatorios y escala los casos que necesitan una persona.',
+      copy: 'Detecta citas sin confirmar, prepara recordatorios por plantilla y escala los casos que necesitan una persona.',
       lines: ['62%', '80%', '42%'],
       detected: 'Cita sin confirmar',
       decision: 'Medir riesgo y activar recordatorio',
-      next: 'Confirmar o preparar cambio',
+      next: 'Recordar con plantilla aprobada',
     },
     reactivacion: {
       kicker: 'Pacientes dormidos',
       title: 'Vuelve a llenar agenda sin perseguir a mano.',
-      copy: 'Segmenta revisiones pendientes, tratamientos a medias y pacientes con probabilidad de volver.',
+      copy: 'Segmenta revisiones pendientes y prepara reactivacion con plantilla aprobada por Meta.',
       lines: ['86%', '54%', '66%'],
       detected: 'Paciente 8 meses sin volver',
       decision: 'Preparar motivo y oferta de revisi\u00f3n',
-      next: 'Enviar seguimiento contextual',
+      next: 'Preparar plantilla de reactivacion',
     },
   };
 
@@ -1012,6 +1018,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       const viewer = document.createElement('spline-viewer');
       viewer.setAttribute('url', scene);
       viewer.setAttribute('loading-anim-type', 'none');
+      fig.classList.add('is-spline-mounted');
 
       // Borra el "Built with Spline". Selector amplio (id, clase, href o texto)
       // porque la versión del viewer puede variar el nodo.
@@ -1033,7 +1040,13 @@ function renderPhone(chatEl, statusEl, scenario) {
         return false;
       }
 
-      viewer.addEventListener('load', () => fig.classList.add('is-live'));
+      // El robot local de respaldo se mantiene visible hasta que el 3D está
+      // realmente renderizado: así nunca hay hueco vacío aunque la escena tarde
+      // o falle. Solo se revela con el evento 'load' (escena pintada), + un
+      // pequeño margen para el primer fotograma; nunca por la mera existencia
+      // del <canvas>, que aparece antes de dibujar el modelo.
+      const reveal = () => fig.classList.add('is-live');
+      viewer.addEventListener('load', () => window.setTimeout(reveal, 600));
       fig.appendChild(viewer);
 
       // Polling INDEPENDIENTE del evento load (a veces no dispara), + observer
