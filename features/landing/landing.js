@@ -1055,8 +1055,12 @@ function renderPhone(chatEl, statusEl, scenario) {
         revealed = true;
         fig.classList.add('is-live');
       };
-      // Vía rápida si el evento sí llega a dispararse.
-      viewer.addEventListener('load', () => window.setTimeout(reveal, 250));
+      // El spline-viewer NO emite 'load'. Los eventos reales son 'load-complete'
+      // (escena cargada y canvas hecho visible) y 'rendered' (primer frame
+      // pintado). Cualquiera es señal fiable de que el 3D ya está pintado: ahí
+      // fundimos el robot local, ni antes (hueco) ni dependiendo de un timer.
+      viewer.addEventListener('load-complete', reveal);
+      viewer.addEventListener('rendered', reveal);
       fig.appendChild(viewer);
 
       // Polling: quita la marca de agua, monta el observer y, sobre todo,
@@ -1073,12 +1077,14 @@ function renderPhone(chatEl, statusEl, scenario) {
           } catch (e) { /* sin shadow root accesible */ }
         }
         if (!revealed && viewer.shadowRoot && viewer.shadowRoot.querySelector('canvas')) {
-          // Margen tras ver el canvas para que la escena pinte el primer frame.
+          // Red de seguridad por si 'load-complete'/'rendered' no llegaran:
+          // margen amplio (la escena tarda ~4-5s en pintar en 1ª visita) para
+          // no fundir la maqueta antes de tiempo y dejar hueco.
           if (!canvasSeenAt) canvasSeenAt = Date.now();
-          else if (Date.now() - canvasSeenAt > 700) reveal();
+          else if (Date.now() - canvasSeenAt > 6000) reveal();
         }
         ticks += 1;
-        if (ticks > 90) {
+        if (ticks > 120) {
           window.clearInterval(iv);
           if (observer) window.setTimeout(() => observer.disconnect(), 5000);
         }
