@@ -1,6 +1,6 @@
 :root {
   --bg: #050706;
-  --glow: 0.3;            /* intensidad del glow del fondo: 1 = original · 0.3 = mínimo */
+  --glow: 0.15;           /* intensidad del glow del fondo: 1 = original · 0.15 = muy bajo */
   --panel: rgba(255, 255, 255, 0.042);
   --panel-strong: rgba(255, 255, 255, 0.06);
   --ink: #f7fbf8;
@@ -365,6 +365,7 @@ h3 {
   background:
     radial-gradient(circle at var(--spotlight-x) var(--spotlight-y), rgba(247,251,248,0.18), transparent 11rem),
     radial-gradient(circle at calc(var(--spotlight-x) + 8%) calc(var(--spotlight-y) + 12%), rgba(90,240,216,0.14), transparent 16rem);
+  display: none; /* brillo que seguía al ratón en el hero: retirado a petición */
   opacity: calc(0.72 * var(--glow));
   mix-blend-mode: screen;
   pointer-events: none;
@@ -4466,18 +4467,21 @@ body.demo-open { overflow: hidden; }
   background: transparent;
   background-image: none;
 }
+/* Burbujas alineadas al sistema de la web: vidrio oscuro (asistente) y teal de
+   marca (paciente), en vez del verde/blanco de WhatsApp. */
 .call-chat .bubble.ai {
-  background: rgba(222,226,226,0.9);
-  color: #101816;
-  box-shadow: 0 16px 42px rgba(0,0,0,0.22);
+  background: #131e1c;
+  color: #cfdcd7;
+  border: 1px solid rgba(255,255,255,0.06);
+  box-shadow: 0 16px 42px rgba(0,0,0,0.3);
 }
-.call-chat .bubble.ai::after { border-color: transparent rgba(222,226,226,0.9) transparent transparent; }
+.call-chat .bubble.ai::after { border-color: transparent #131e1c transparent transparent; }
 .call-chat .bubble.patient {
-  background: linear-gradient(135deg, #16b70b, #20d116);
-  color: #f8fff6;
-  box-shadow: 0 10px 24px rgba(17,185,16,0.09);
+  background: linear-gradient(135deg, #0f6256, #0b483f);
+  color: #eafff9;
+  box-shadow: 0 12px 30px rgba(0,0,0,0.28);
 }
-.call-chat .bubble.patient::after { border-color: transparent transparent transparent #20d116; }
+.call-chat .bubble.patient::after { border-color: transparent transparent transparent #0b483f; }
 .call-chat .bubble {
   max-width: min(82%, 560px);
   padding: clamp(0.8rem, 1.35vw, 1.05rem) clamp(1rem, 1.8vw, 1.3rem);
