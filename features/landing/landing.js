@@ -1004,7 +1004,10 @@ function renderPhone(chatEl, statusEl, scenario) {
     window.__splineLoading = new Promise((resolve, reject) => {
       const s = document.createElement('script');
       s.type = 'module';
-      s.src = 'https://unpkg.com/@splinetool/viewer@1/build/spline-viewer.js';
+      // Runtime autoalojado: en la primera visita carga desde nuestro propio
+      // dominio (rápido y fiable), no desde unpkg. Los sub-módulos perezosos
+      // (navmesh/physics/...) viven en la misma carpeta y resuelven solos.
+      s.src = '/features/landing/spline/spline-viewer.js';
       s.onload = resolve;
       s.onerror = reject;
       document.head.appendChild(s);
@@ -1045,8 +1048,12 @@ function renderPhone(chatEl, statusEl, scenario) {
       // o falle. Solo se revela con el evento 'load' (escena pintada), + un
       // pequeño margen para el primer fotograma; nunca por la mera existencia
       // del <canvas>, que aparece antes de dibujar el modelo.
+      // Solo revelamos el 3D con su evento 'load' real (escena pintada). Con la
+      // escena y el runtime autoalojados, ese 'load' dispara rápido incluso en
+      // la 1ª visita (antes tardaba por la descarga remota). Si nunca dispara,
+      // se mantiene el robot local: nunca queda hueco vacío.
       const reveal = () => fig.classList.add('is-live');
-      viewer.addEventListener('load', () => window.setTimeout(reveal, 600));
+      viewer.addEventListener('load', () => window.setTimeout(reveal, 400));
       fig.appendChild(viewer);
 
       // Polling INDEPENDIENTE del evento load (a veces no dispara), + observer
