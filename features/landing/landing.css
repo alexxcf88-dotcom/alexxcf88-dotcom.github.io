@@ -2068,8 +2068,6 @@ h3 {
 .note-d { right: clamp(0px, 2.5vw, 56px); bottom: 11%; }
 .note-a {
   top: 22%;
-  width: clamp(290px, 25vw, 380px);
-  padding: 1.35rem 1.45rem;
 }
 .note-ic {
   flex: 0 0 auto;
@@ -2097,8 +2095,6 @@ h3 {
   font-size: 0.9rem;
   line-height: 1.45;
 }
-.note-a h3 { font-size: clamp(1.32rem, 1.8vw, 1.58rem); }
-.note-a p { font-size: 1rem; }
 /* Punto conector hacia el movil (lado interior de cada card) */
 .story-note::after {
   content: "";
