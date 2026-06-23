@@ -270,6 +270,32 @@ main,
   font-size: 0.78rem;
   font-weight: 900;
 }
+/* Botón hamburguesa: solo en móvil (se activa en la media query). */
+.nav-toggle {
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 42px;
+  height: 42px;
+  flex: 0 0 auto;
+  border-radius: 999px;
+  border: 1px solid rgba(255,255,255,0.09);
+  background: rgba(255,255,255,0.06);
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+.nav-toggle-bar {
+  width: 18px;
+  height: 2px;
+  border-radius: 2px;
+  background: #eef4fb;
+  transition: transform 0.28s var(--ease), opacity 0.2s var(--ease);
+}
+.site-nav.menu-open .nav-toggle-bar:nth-child(1) { transform: translateY(6px) rotate(45deg); }
+.site-nav.menu-open .nav-toggle-bar:nth-child(2) { opacity: 0; }
+.site-nav.menu-open .nav-toggle-bar:nth-child(3) { transform: translateY(-6px) rotate(-45deg); }
 
 .hero,
 .audit-section,
@@ -3857,8 +3883,34 @@ h3 {
 }
 
 @media (max-width: 980px) {
-  .site-nav { grid-template-columns: 1fr auto; }
-  .nav-links { display: none; }
+  .nav-toggle { display: inline-flex; }
+  .nav-cta { margin-left: auto; }
+  .nav-links {
+    display: none;
+    position: absolute;
+    top: calc(100% + 0.55rem);
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.5rem;
+    border-radius: 22px;
+    border: 1px solid rgba(255,255,255,0.07);
+    background: rgba(6, 9, 8, 0.97);
+    backdrop-filter: blur(26px) saturate(175%);
+    -webkit-backdrop-filter: blur(26px) saturate(175%);
+    box-shadow: 0 24px 60px rgba(0,0,0,0.62);
+    text-transform: none;
+    letter-spacing: 0;
+    font-size: 0.98rem;
+  }
+  .site-nav.menu-open .nav-links { display: flex; }
+  .nav-links a {
+    width: 100%;
+    min-height: 48px;
+    padding: 0 1rem;
+    border-radius: 14px;
+  }
   .hero,
   .audit-section,
   .discovery-section,
@@ -4777,4 +4829,50 @@ body.demo-open { overflow: hidden; }
   .voice-head { margin-inline: auto; text-align: center; }
   .voice-head .eyebrow { justify-content: center; }
   .voice-sub { margin-inline: auto; }
+}
+
+/* ── MÓVIL: escala tipográfica de titulares consistente ───────────────────────
+   Los hero/títulos de sección eran demasiado grandes y apretados en el teléfono.
+   Aquí se bajan TODOS a la misma escala y se les da más interlineado y aire.
+   Va al final a propósito (gana por orden de fuente a las media queries previas).
+   Solo afecta a <=620px; escritorio intacto. */
+@media (max-width: 620px) {
+  /* Hero principal */
+  h1 {
+    font-size: clamp(2.25rem, 9vw, 2.9rem);
+    line-height: 1.04;
+    letter-spacing: -0.04em;
+  }
+  .hero h1 { line-height: 1.06; }
+  .hero h1 span { line-height: 1.0; }
+
+  /* Todos los títulos de sección (Sistema, Voz, Inbox, Precio, FAQ, Demo) a una
+     misma escala, con interlineado más holgado. */
+  h2,
+  .system-minimal .system-copy h2,
+  .story-intro h2,
+  .trust-section .audit-copy h2,
+  .price-panel h2,
+  .pricing-shell .price-panel h2,
+  .cta-copy h2,
+  .voice-head h2 {
+    font-size: clamp(1.75rem, 6.2vw, 2.2rem);
+    line-height: 1.14;
+    letter-spacing: -0.03em;
+  }
+
+  /* 149€: titular numérico, reducido en proporción */
+  .price-amount strong {
+    font-size: clamp(2.6rem, 10vw, 3.4rem);
+    line-height: 1.02;
+  }
+  .system-live-card h3 { font-size: clamp(1.6rem, 7vw, 2.1rem); line-height: 1.1; }
+
+  /* Un poco más de aire entre el título y el texto que lo sigue. */
+  .section-copy h2,
+  .voice-head h2,
+  .story-intro h2,
+  .cta-copy h2,
+  .trust-section .audit-copy h2,
+  .price-panel h2 { margin-bottom: 1.05rem; }
 }

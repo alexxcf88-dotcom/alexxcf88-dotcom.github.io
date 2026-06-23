@@ -23,7 +23,7 @@
   <link rel="preload" as="fetch" href="/features/landing/voice.splinecode" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260622-final-density">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260623-global-look">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
@@ -39,15 +39,20 @@
 
   <nav class="site-nav" aria-label="Principal">
     <a class="brand" href="#inicio" aria-label="AItomat, inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
-    <div class="nav-links">
+    <div class="nav-links" id="primary-menu">
       <a href="#proceso">Sistema</a>
-      <a href="#voz">Voz</a>
       <a href="#inbox">Inbox</a>
+      <a href="#voz">Voz</a>
       <a href="#precio">Precio</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Demo</a>
     </div>
     <a class="nav-cta" href="#contacto" data-demo-open>Solicitar demo</a>
+    <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="primary-menu">
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+      <span class="nav-toggle-bar"></span>
+    </button>
   </nav>
   <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
@@ -138,33 +143,72 @@
       </div>
     </section>
 
-    <section id="voz" class="voice-section voice-redesign">
-      <div class="voice-head">
-        <p class="eyebrow"><span></span> M&oacute;dulo de voz</p>
-        <h2>Llamadas en vivo, sin perder el hilo.</h2>
-        <p class="voice-sub">Como m&oacute;dulo adicional, el asistente atiende, pregunta lo justo y deja cada llamada lista para que recepci&oacute;n decida el siguiente paso.</p>
+    <section id="inbox" class="inbox-section">
+      <div class="section-copy center">
+        <p class="eyebrow"><span></span> Inbox inteligente</p>
+        <h2>Una sola bandeja para toda la cl&iacute;nica.</h2>
+        <p>Mensajes a la izquierda, resumen inteligente a la derecha y la acci&oacute;n ya preparada.</p>
       </div>
-      <div class="voice-stage">
-        <div class="voice-robot" id="voice-3d" data-spline data-scene="/features/landing/voice.splinecode" aria-hidden="true">
-          <span class="voice-3d-fallback" aria-hidden="true">
-            <i class="v3d-ring"></i><i class="v3d-ring v3d-ring-2"></i><i class="v3d-core"></i>
-            <span class="robot-local">
-              <span class="robot-head"><span></span></span>
-              <span class="robot-neck"></span>
-              <span class="robot-torso"></span>
-              <span class="robot-arm robot-arm-left"></span>
-              <span class="robot-arm robot-arm-right"></span>
-            </span>
-          </span>
+
+      <div class="mail-app liquid-glass" aria-label="Bandeja inteligente de AItomat">
+        <div class="mail-titlebar">
+          <span class="traffic red"></span><span class="traffic yellow"></span><span class="traffic green"></span>
+          <strong><span class="brand-ai">AI</span><span class="brand-tomat">tomat</span> - Bandeja de la cl&iacute;nica</strong>
         </div>
-        <div class="voice-transcript" aria-label="Transcripci&oacute;n en vivo de una llamada atendida por el agente de voz">
-          <div class="voice-live-strip">
-            <span><i></i> Llamadas en vivo</span>
-            <small id="voice-status">entrando llamada...</small>
+        <div class="mail-body">
+          <aside class="mail-sidebar">
+            <button class="compose-btn" type="button"><span>Redactar con <span class="b-ai">AI</span>tomat</span></button>
+            <nav class="mail-nav-list">
+              <button class="mail-nav active" type="button"><span>Entrada</span><em>7</em></button>
+              <button class="mail-nav" type="button"><span>Urgencias</span><em>1</em></button>
+              <button class="mail-nav" type="button"><span>Citas</span><em>3</em></button>
+              <button class="mail-nav" type="button"><span>Cambios</span><em>2</em></button>
+              <button class="mail-nav" type="button"><span>Reactivar</span><em>12</em></button>
+              <button class="mail-nav" type="button"><span>Enviados</span></button>
+            </nav>
+            <div class="mail-labels">
+              <p class="labels-title">Etiquetas</p>
+              <span class="label-dot"><i style="background:#ff8066"></i> Urgencia</span>
+              <span class="label-dot"><i style="background:#5af0d8"></i> Cita</span>
+              <span class="label-dot"><i style="background:#f1b64b"></i> Cambio</span>
+              <span class="label-dot"><i style="background:#a4f4fd"></i> Info</span>
+              <span class="label-dot"><i style="background:#3978ff"></i> Reactivaci&oacute;n</span>
+            </div>
+          </aside>
+          <div class="message-list" id="message-list"></div>
+          <article class="reader" id="message-reader">
+            <div class="reader-toolbar">
+              <button type="button" title="Responder" aria-label="Responder"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a5 5 0 0 1 5 5v1"/></svg></button>
+              <button type="button" title="Agendar" aria-label="Agendar"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
+              <button type="button" title="Archivar" aria-label="Archivar"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/></svg></button>
+              <button class="toolbar-more" type="button" title="M&aacute;s" aria-label="M&aacute;s"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
+            </div>
+            <div class="reader-head">
+              <span class="avatar" id="reader-avatar">L</span>
+              <div>
+                <strong id="reader-from">Laura P&eacute;rez</strong>
+                <small id="reader-meta">WhatsApp &middot; 9:41</small>
+              </div>
+              <span class="reader-pill" id="reader-pill">Cita</span>
+            </div>
+            <div class="reader-content">
+              <p class="reader-subject" id="reader-subject">Limpieza esta semana</p>
+              <div class="reader-body" id="reader-body"></div>
+              <div class="summary-card">
+                <span class="summary-label"><span><span class="b-ai">AI</span>tomat lo resume</span></span>
+                <p id="reader-summary">Paciente lista para reservar. Prefiere por la tarde y hay hueco real a las 18:30.</p>
+              </div>
+              <div class="draft-card">
+                <span class="draft-label"><i></i> Respuesta lista para enviar</span>
+                <p id="reader-draft">Hola Laura, tenemos hueco para tu limpieza hoy a las 18:30 o ma&ntilde;ana a las 10:00. &iquest;Cu&aacute;l te viene mejor?</p>
+              </div>
+              <div class="reader-actions">
+                <button class="apple-btn" type="button" id="reader-action">Preguntar y preparar cita</button>
+                <button class="ghost-btn" type="button">Pasar a una persona</button>
+              </div>
+            </div>
+          </article>
           </div>
-          <div class="voice-topic-pill"><span>Motivo</span><b id="voice-topic">&nbsp;</b></div>
-          <div class="wa-chat call-chat" id="voice-chat" aria-live="polite"></div>
-        </div>
       </div>
     </section>
 
@@ -256,72 +300,33 @@
       </div>
     </section>
 
-    <section id="inbox" class="inbox-section">
-      <div class="section-copy center">
-        <p class="eyebrow"><span></span> Inbox inteligente</p>
-        <h2>Una sola bandeja para toda la cl&iacute;nica.</h2>
-        <p>Mensajes a la izquierda, resumen inteligente a la derecha y la acci&oacute;n ya preparada.</p>
+    <section id="voz" class="voice-section voice-redesign">
+      <div class="voice-head">
+        <p class="eyebrow"><span></span> M&oacute;dulo de voz &middot; se activa en el alta</p>
+        <h2>Llamadas en vivo, sin perder el hilo.</h2>
+        <p class="voice-sub">M&oacute;dulo adicional que se configura durante la implantaci&oacute;n: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Comparte agenda y criterios con el de WhatsApp.</p>
       </div>
-
-      <div class="mail-app liquid-glass" aria-label="Bandeja inteligente de AItomat">
-        <div class="mail-titlebar">
-          <span class="traffic red"></span><span class="traffic yellow"></span><span class="traffic green"></span>
-          <strong><span class="brand-ai">AI</span><span class="brand-tomat">tomat</span> - Bandeja de la cl&iacute;nica</strong>
+      <div class="voice-stage">
+        <div class="voice-robot" id="voice-3d" data-spline data-scene="/features/landing/voice.splinecode" aria-hidden="true">
+          <span class="voice-3d-fallback" aria-hidden="true">
+            <i class="v3d-ring"></i><i class="v3d-ring v3d-ring-2"></i><i class="v3d-core"></i>
+            <span class="robot-local">
+              <span class="robot-head"><span></span></span>
+              <span class="robot-neck"></span>
+              <span class="robot-torso"></span>
+              <span class="robot-arm robot-arm-left"></span>
+              <span class="robot-arm robot-arm-right"></span>
+            </span>
+          </span>
         </div>
-        <div class="mail-body">
-          <aside class="mail-sidebar">
-            <button class="compose-btn" type="button"><span>Redactar con <span class="b-ai">AI</span>tomat</span></button>
-            <nav class="mail-nav-list">
-              <button class="mail-nav active" type="button"><span>Entrada</span><em>7</em></button>
-              <button class="mail-nav" type="button"><span>Urgencias</span><em>1</em></button>
-              <button class="mail-nav" type="button"><span>Citas</span><em>3</em></button>
-              <button class="mail-nav" type="button"><span>Cambios</span><em>2</em></button>
-              <button class="mail-nav" type="button"><span>Reactivar</span><em>12</em></button>
-              <button class="mail-nav" type="button"><span>Enviados</span></button>
-            </nav>
-            <div class="mail-labels">
-              <p class="labels-title">Etiquetas</p>
-              <span class="label-dot"><i style="background:#ff8066"></i> Urgencia</span>
-              <span class="label-dot"><i style="background:#5af0d8"></i> Cita</span>
-              <span class="label-dot"><i style="background:#f1b64b"></i> Cambio</span>
-              <span class="label-dot"><i style="background:#a4f4fd"></i> Info</span>
-              <span class="label-dot"><i style="background:#3978ff"></i> Reactivaci&oacute;n</span>
-            </div>
-          </aside>
-          <div class="message-list" id="message-list"></div>
-          <article class="reader" id="message-reader">
-            <div class="reader-toolbar">
-              <button type="button" title="Responder" aria-label="Responder"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 17l-5-5 5-5"/><path d="M4 12h11a5 5 0 0 1 5 5v1"/></svg></button>
-              <button type="button" title="Agendar" aria-label="Agendar"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="17" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg></button>
-              <button type="button" title="Archivar" aria-label="Archivar"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="5" rx="1"/><path d="M5 9v9a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V9M10 13h4"/></svg></button>
-              <button class="toolbar-more" type="button" title="M&aacute;s" aria-label="M&aacute;s"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="5" cy="12" r="1"/><circle cx="12" cy="12" r="1"/><circle cx="19" cy="12" r="1"/></svg></button>
-            </div>
-            <div class="reader-head">
-              <span class="avatar" id="reader-avatar">L</span>
-              <div>
-                <strong id="reader-from">Laura P&eacute;rez</strong>
-                <small id="reader-meta">WhatsApp &middot; 9:41</small>
-              </div>
-              <span class="reader-pill" id="reader-pill">Cita</span>
-            </div>
-            <div class="reader-content">
-              <p class="reader-subject" id="reader-subject">Limpieza esta semana</p>
-              <div class="reader-body" id="reader-body"></div>
-              <div class="summary-card">
-                <span class="summary-label"><span><span class="b-ai">AI</span>tomat lo resume</span></span>
-                <p id="reader-summary">Paciente lista para reservar. Prefiere por la tarde y hay hueco real a las 18:30.</p>
-              </div>
-              <div class="draft-card">
-                <span class="draft-label"><i></i> Respuesta lista para enviar</span>
-                <p id="reader-draft">Hola Laura, tenemos hueco para tu limpieza hoy a las 18:30 o ma&ntilde;ana a las 10:00. &iquest;Cu&aacute;l te viene mejor?</p>
-              </div>
-              <div class="reader-actions">
-                <button class="apple-btn" type="button" id="reader-action">Preguntar y preparar cita</button>
-                <button class="ghost-btn" type="button">Pasar a una persona</button>
-              </div>
-            </div>
-          </article>
+        <div class="voice-transcript" aria-label="Transcripci&oacute;n en vivo de una llamada atendida por el agente de voz">
+          <div class="voice-live-strip">
+            <span><i></i> Llamadas en vivo</span>
+            <small id="voice-status">entrando llamada...</small>
           </div>
+          <div class="voice-topic-pill"><span>Motivo</span><b id="voice-topic">&nbsp;</b></div>
+          <div class="wa-chat call-chat" id="voice-chat" aria-live="polite"></div>
+        </div>
       </div>
     </section>
 
@@ -539,6 +544,6 @@
     </div>
   </div>
 
-  <script src="features/landing/landing.js?v=20260622-final-density"></script>
+  <script src="features/landing/landing.js?v=20260623-global-look"></script>
 </body>
 </html>

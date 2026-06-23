@@ -385,6 +385,10 @@ function renderPhone(chatEl, statusEl, scenario) {
   const notes = document.querySelector('.story-notes');
   const steps = Array.from(document.querySelectorAll('[data-story-step]'));
   let active = -1;
+  // El chat NO se pinta al cargar la web: se difiere hasta que el telefono entra
+  // en pantalla, para que la 1a conversacion se empiece a escribir al llegar a la
+  // seccion (antes setStep(0) lo renderizaba en el init y ya llegabas con todo escrito).
+  let entered = false;
 
   function setStep(index) {
     if (index === active) return;
@@ -393,7 +397,12 @@ function renderPhone(chatEl, statusEl, scenario) {
       step.classList.toggle('active', i === index);
       step.classList.toggle('revealed', i <= index);
     });
-    renderPhone(chat, status, phoneScenarios[index]);
+    if (entered) renderPhone(chat, status, phoneScenarios[index]);
+  }
+  function startChat() {
+    if (entered) return;
+    entered = true;
+    renderPhone(chat, status, phoneScenarios[Math.max(0, active)]);
   }
 
   const n = phoneScenarios.length;
@@ -447,6 +456,7 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   if (reduceMotion) {
     steps.forEach((step) => step.classList.add('revealed'));
+    startChat();  // sin animacion: muestra la conversacion directamente
   } else {
     if (notes) notes.classList.add('story-reveal');
     // Solo animamos cuando la seccion esta a la vista.
@@ -455,8 +465,17 @@ function renderPhone(chatEl, statusEl, scenario) {
         entries.forEach((e) => (e.isIntersecting ? start() : stop()));
       }, { threshold: 0 });
       io.observe(section);
+      // Arranca la 1a conversacion (efecto de tecleo) cuando el telefono entra
+      // en pantalla; se desconecta tras la primera vez.
+      const chatIO = new IntersectionObserver((entries) => {
+        entries.forEach((e) => {
+          if (e.isIntersecting) { startChat(); chatIO.disconnect(); }
+        });
+      }, { threshold: 0.3 });
+      chatIO.observe(phone);
     } else {
       start();
+      startChat();
     }
     if (!matchMedia('(hover: none)').matches) {
       window.addEventListener('mousemove', (e) => {
@@ -1020,6 +1039,18 @@ function renderPhone(chatEl, statusEl, scenario) {
     ensureRuntime().then(() => {
       const viewer = document.createElement('spline-viewer');
       viewer.setAttribute('url', scene);
+      // CLAVE: loading="eager". Sin esto el visor usa loading="auto" y su load()
+      // se niega a cargar la escena mientras el elemento esta fuera del viewport
+      // (guarda interna: !inViewport && loading!=="eager" -> no carga). Resultado:
+      // la escena solo cargaba al hacer scroll a la seccion y la intro (cara ->
+      // camara alejandose al cuerpo) se reproducia ahi. Con "eager" la escena
+      // carga al entrar en la web; la intro corre arriba mientras el robot esta
+      // oculto y al llegar a la seccion ya esta en su pose final, sin transicion.
+      viewer.setAttribute('loading', 'eager');
+      // events-target="global": el runtime escucha el raton a nivel de VENTANA
+      // (updateUseWindowEvents) en vez de solo sobre su canvas, asi la cabeza
+      // del robot sigue al raton por toda la pagina, no solo al pasar por encima.
+      viewer.setAttribute('events-target', 'global');
       viewer.setAttribute('loading-anim-type', 'none');
       fig.classList.add('is-spline-mounted');
 
@@ -1325,4 +1356,39 @@ function renderPhone(chatEl, statusEl, scenario) {
   } else {
     start();
   }
+})();
+
+(function initMobileNav() {
+  const nav = document.querySelector('.site-nav');
+  const toggle = nav ? nav.querySelector('.nav-toggle') : null;
+  if (!nav || !toggle) return;
+  const menu = nav.querySelector('.nav-links');
+  const cta = nav.querySelector('.nav-cta');
+
+  const setOpen = (open) => {
+    nav.classList.toggle('menu-open', open);
+    toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
+    toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
+  };
+
+  toggle.addEventListener('click', (event) => {
+    event.stopPropagation();
+    setOpen(!nav.classList.contains('menu-open'));
+  });
+
+  // Cerrar el menú al navegar a una sección o al abrir la demo desde el CTA.
+  if (menu) {
+    menu.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', () => setOpen(false));
+    });
+  }
+  if (cta) cta.addEventListener('click', () => setOpen(false));
+
+  // Cerrar con Escape o al tocar fuera del nav.
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') setOpen(false);
+  });
+  document.addEventListener('click', (event) => {
+    if (nav.classList.contains('menu-open') && !nav.contains(event.target)) setOpen(false);
+  });
 })();
