@@ -4872,3 +4872,27 @@ body.demo-open { overflow: hidden; }
   .trust-section .audit-copy h2,
   .price-panel h2 { margin-bottom: 1.05rem; }
 }
+
+/* ===================================================================
+   P3 · Apagado de animaciones DECORATIVAS en móvil (perf/batería)
+   -------------------------------------------------------------------
+   Solo glows/anillos/pulsos puramente estéticos: detenerlos no cambia
+   el significado. Breakpoint 760px = mismo umbral que el gating de JS
+   (landing.js `mobileViewport`), para que CSS y JS coincidan.
+   NO se tocan las funcionales (typingDot, voiceTypeDot, osBlink,
+   voicePulse), ni shinyText (clip-text: se quedaría oscuro), ni
+   .robot-local (visual principal del móvil). Reversible: borrar este
+   bloque. Solo overrides animation:none, sin tocar reglas existentes.
+   =================================================================== */
+@media (max-width: 760px) {
+  .spline-ring,            /* splineDrift  · anillo de luz a la deriva */
+  .spline-core,            /* splineFloat  · orbe brillante flotante   */
+  .v3d-core,               /* splineFloat  · núcleo del fallback voz   */
+  .v3d-ring,               /* v3dSpin      · anillo girando            */
+  .story-radar span,       /* radarPulse   · anillos de radar          */
+  .wa-ping,                /* waPulse      · onda de "ping"            */
+  .story-scrollcue::after  /* cueBob       · rebote de la flecha cue   */
+  {
+    animation: none;
+  }
+}
