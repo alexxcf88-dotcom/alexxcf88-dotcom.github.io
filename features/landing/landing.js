@@ -1718,24 +1718,45 @@ function renderPhone(chatEl, statusEl, scenario) {
         console.log('[voz] demo de voz no disponible (sin claves en el backend)');
         return;
       }
-      console.log('[voz] config recibida: assistant', (cfg.assistantId || '').slice(0, 8) + '…, key', (cfg.publicKey || '').slice(0, 6) + '…');
+      console.log('[voz] demo de voz disponible; las claves se piden por llamada');
       // V2: el guion sigue corriendo de fondo; solo aparece el CTA flotante.
       // con-cta reserva hueco abajo para que el botón no tape la última burbuja.
       cta.hidden = false;
       chatEl.classList.add('con-cta');
 
       let vapi = null;
+      let publicKeyActual = null; // la key llega por-llamada desde /demo/voz-start
       let enLlamada = false;
       let ocupado = false;
       let reservaVoz = false; // se reservó una cita en esta llamada (señal de fin)
 
-      // Badge aqua de éxito en el transcript de voz (hermano del chip del móvil).
+      // Badge aqua de éxito en el transcript de voz (hermano del chip del móvil),
+      // con enlace «Empezar de nuevo» para lanzar otra llamada desde cero.
       function badgeReservada() {
         const el = document.createElement('div');
         el.className = 'call-done';
         el.innerHTML = '<b>Cita reservada ✓</b><span>Conversación finalizada.</span>';
+        const a = document.createElement('a');
+        a.href = '#';
+        a.className = 'voice-restart';
+        a.textContent = 'Empezar de nuevo ↺';
+        a.addEventListener('click', (e) => { e.preventDefault(); reiniciarVoz(); });
+        el.appendChild(a);
         chatEl.appendChild(el);
         chatEl.scrollTop = chatEl.scrollHeight;
+      }
+
+      // Deja la sección lista para una llamada nueva sin recargar (hermano de
+      // reiniciarDemo del chat móvil): limpia el transcript, botón en estado
+      // inicial y reanuda el guion de ambiente (estado idle de la sección).
+      function reiniciarVoz() {
+        chatEl.innerHTML = '';
+        burbujaAbierta = null;
+        reservaVoz = false;
+        if (topicEl) topicEl.textContent = 'Llamadas en vivo';
+        setBoton('Hablar con el asistente', 'llamada real · máx. 2 min 15 s', false);
+        setStatus('demo real · pulsa para hablar');
+        if (vozArrancarGuion) vozArrancarGuion();
       }
 
       // Título/subtítulo del botón flotante (Hablar ↔ Colgar).
@@ -1938,10 +1959,10 @@ function renderPhone(chatEl, statusEl, scenario) {
         throw ultimoError || new Error('SDK de Vapi no disponible');
       }
 
-      async function conectar() {
+      async function conectar(publicKey) {
         if (vapi) return vapi;
         const Vapi = await cargarSDK();
-        vapi = new Vapi(cfg.publicKey);
+        vapi = new Vapi(publicKey);
 
         vapi.on('call-start', () => {
           console.log('[voz] call-start: llamada conectada');
@@ -2020,16 +2041,51 @@ function renderPhone(chatEl, statusEl, scenario) {
         return vapi;
       }
 
+      // Aviso amable cuando se agotan las llamadas por IP (con enlace al form).
+      function avisoLimite(texto) {
+        const el = document.createElement('div');
+        el.className = 'call-note';
+        const s = document.createElement('span');
+        s.textContent = texto || 'Has alcanzado el límite de pruebas de voz del demo.';
+        const a = document.createElement('a');
+        a.href = '#contacto';
+        a.textContent = 'Solicita una demo completa →';
+        el.appendChild(s);
+        el.appendChild(a);
+        chatEl.appendChild(el);
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+
       async function empezarLlamada() {
         if (ocupado || enLlamada) return;
         ocupado = true;
         btn.disabled = true;
         setBoton('Conectando…', 'un momento', false);
         setStatus('conectando…');
+        // Gate por IP EN EL BACKEND: la key/assistant solo llegan si autoriza.
+        let auth;
         try {
-          const v = await conectar();
-          console.log('[voz] start llamado, assistant:', cfg.assistantId.slice(0, 8) + '…');
-          await v.start(cfg.assistantId);
+          auth = await fetch(`${DEMO_API_BASE}/demo/voz-start`, { method: 'POST' }).then((r) => r.json());
+        } catch (err) {
+          auth = null;
+        }
+        if (!auth || !auth.ok) {
+          ocupado = false;
+          btn.disabled = false;
+          setBoton('Hablar con el asistente', 'llamada real · máx. 2 min 15 s', false);
+          if (auth && auth.motivo === 'limite') {
+            avisoLimite(auth.mensaje);
+            setStatus('límite de pruebas alcanzado');
+          } else {
+            setStatus('la voz no está disponible ahora mismo');
+          }
+          return;
+        }
+        publicKeyActual = auth.publicKey;
+        try {
+          const v = await conectar(publicKeyActual);
+          console.log('[voz] start llamado, assistant:', (auth.assistantId || '').slice(0, 8) + '…');
+          await v.start(auth.assistantId);
           // el estado real lo fija el evento call-start
         } catch (err) {
           console.error('[voz] error real al iniciar:', err);
@@ -2073,10 +2129,11 @@ function renderPhone(chatEl, statusEl, scenario) {
         empezarLlamada();
       });
 
-      // Precarga INMEDIATA del SDK (~1 MB): al elegir «llamada real» solo
-      // queda pedir micro y conectar, no descargar código.
-      conectar()
-        .then(() => console.log('[voz] SDK precargado y listo'))
+      // Precarga INMEDIATA del módulo del SDK (~1 MB): al pulsar solo queda
+      // autorizar (voz-start), construir Vapi con la key y conectar. No se
+      // construye Vapi aquí porque la key llega por-llamada tras el gate.
+      cargarSDK()
+        .then(() => console.log('[voz] módulo del SDK precargado y listo'))
         .catch((err) => console.error('[voz] precarga del SDK falló (se reintentará al pulsar):', err));
     })
     .catch(() => {});

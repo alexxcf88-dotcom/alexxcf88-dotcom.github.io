@@ -2443,6 +2443,33 @@ h3 {
 }
 .call-done b { color: var(--aqua); font-size: 0.95rem; font-weight: 800; }
 .call-done span { color: rgba(216, 239, 233, 0.82); font-size: 0.8rem; }
+/* Enlace «Empezar de nuevo», hermano de .wa-system.done .demo-restart. */
+.call-done .voice-restart {
+  margin-top: 0.35rem;
+  color: var(--aqua);
+  font-weight: 800;
+  text-decoration: none;
+}
+.call-done .voice-restart:hover { text-decoration: underline; }
+
+/* Aviso de límite de pruebas alcanzado (voz), con enlace al formulario. */
+.call-note {
+  align-self: center;
+  margin: 0.6rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 340px;
+  padding: 0.7rem 1.1rem;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.04);
+  box-shadow: inset 0 0 0 1px var(--line);
+  text-align: center;
+}
+.call-note span { color: var(--soft); font-size: 0.82rem; line-height: 1.4; }
+.call-note a { color: var(--aqua); font-weight: 800; text-decoration: none; }
+.call-note a:hover { text-decoration: underline; }
 .wa-inputbar {
   position: relative;
   z-index: 3;
