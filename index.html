@@ -31,7 +31,17 @@
   <link rel="preload" as="fetch" href="/features/landing/voice.splinecode" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260623-notes-uniform">
+  <!-- Safari/WebKit (todos los navegadores de iOS y Safari de Mac): el degradado
+       animado con background-clip:text del titular se pinta a veces SIN recortar
+       (carrera con la carga de fuentes) y cubre el hero con un bloque blanco.
+       La clase webkit-safe activa en el CSS un titular en aqua sólido. Va inline
+       en el head para existir ANTES del primer pintado. -->
+  <script>
+    if (/AppleWebKit/i.test(navigator.userAgent) && !/Chrom(e|ium)|Edg|OPR/i.test(navigator.userAgent)) {
+      document.documentElement.classList.add('webkit-safe');
+    }
+  </script>
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260703-movil-compacto2">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -355,17 +365,32 @@
               <span class="wa-back" aria-hidden="true"></span>
               <span class="wa-avatar" aria-hidden="true"><span class="b-ai">AI</span></span>
               <div class="wa-contact">
-                <strong><span class="b-ai">AI</span>tomat</strong>
+                <strong class="wa-brand"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></strong>
                 <small id="story-status">en l&iacute;nea</small>
               </div>
               <span class="wa-ic wa-video" aria-hidden="true"></span>
               <span class="wa-ic wa-call" aria-hidden="true"></span>
             </div>
             <div class="wa-chat" id="story-phone-chat"></div>
-            <div class="wa-inputbar" aria-hidden="true">
+            <button type="button" class="voice-talk-btn wa-live-pill" id="demo-probar" hidden>
+              <span class="vt-ic" aria-hidden="true">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.6-.8L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5Z"/></svg>
+              </span>
+              <span class="vt-copy">
+                <strong>Escribir al asistente</strong>
+                <small>chat real &middot; responde la IA</small>
+              </span>
+            </button>
+            <div class="wa-inputbar" id="demo-chat-inputbar-fake" aria-hidden="true">
               <span class="wa-field">Escribe un mensaje</span>
               <span class="wa-send"></span>
             </div>
+            <form class="wa-inputbar wa-inputbar-live" id="demo-chat-form" hidden autocomplete="off">
+              <input id="demo-chat-input" class="wa-field wa-field-live" type="text" maxlength="300"
+                     placeholder="Escribe como paciente&hellip;" autocomplete="off"
+                     aria-label="Escribe como paciente al asistente de la demo">
+              <button class="wa-send wa-send-live" id="demo-chat-send" type="submit" aria-label="Enviar mensaje"></button>
+            </form>
           </div>
           <span class="phone-home" aria-hidden="true"></span>
         </article>
@@ -428,7 +453,23 @@
             <small id="voice-status">entrando llamada...</small>
           </div>
           <div class="voice-topic-pill"><span>Motivo</span><b id="voice-topic">&nbsp;</b></div>
-          <div class="wa-chat call-chat" id="voice-chat" aria-live="polite"></div>
+          <div class="voice-chat-wrap">
+            <div class="wa-chat call-chat" id="voice-chat" aria-live="polite"></div>
+            <div class="voice-live-cta" id="voice-cta" hidden>
+              <button type="button" class="voice-talk-btn" id="voice-call-btn">
+                <span class="vt-ic" aria-hidden="true">
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5M8.5 21.5h7"/></svg>
+                </span>
+                <span class="vt-copy">
+                  <strong id="voice-btn-title">Hablar con el asistente</strong>
+                  <small id="voice-btn-sub">llamada real &middot; m&aacute;x. 2 min 15 s</small>
+                </span>
+              </button>
+              <label class="voice-mic-label" id="voice-mic-label" hidden>Micro:
+                <select id="voice-mic" aria-label="Micr&oacute;fono a usar en la llamada"></select>
+              </label>
+            </div>
+          </div>
         </div>
       </div>
     </section>
@@ -647,6 +688,6 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260623-notes-uniform"></script>
+  <script defer src="features/landing/landing.js?v=20260703-movil-compacto2"></script>
 </body>
 </html>

@@ -524,7 +524,9 @@ h3 {
   color: transparent;
   -webkit-text-fill-color: transparent;
   animation: shinyText 5.8s linear infinite;
-  text-shadow: 0 0 34px rgba(90,240,216,0.18);
+  /* OJO: nada de text-shadow aquí. En Safari/WebKit (todos los iPhone),
+     text-shadow + background-clip:text pinta el degradado SIN recortar y
+     cubre el hero con un bloque blanco gigante. */
 }
 @keyframes shinyText {
   from { background-position: -180% center; }
@@ -2399,6 +2401,48 @@ h3 {
 }
 .wa-system b { color: #fff; font-weight: 800; }
 .wa-system span { color: rgba(216,239,233,0.72); }
+
+/* ── Cierre con éxito: cita reservada (móvil) ────────────────────────────────
+   Chip aqua que marca el fin de la conversación + enlace para empezar de nuevo.
+   El check ya lo pone .wa-system::before; aquí el tinte aqua y el layout. */
+.wa-system.done {
+  flex-direction: column;
+  align-items: center;
+  gap: 0.24rem;
+  width: calc(100% - 0.9rem);
+  max-width: 300px;
+  padding: 0.6rem 0.7rem;
+  background: rgba(90, 240, 216, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(90, 240, 216, 0.28);
+}
+.wa-system.done::before { width: 16px; height: 16px; }
+.wa-system.done b { color: var(--aqua); font-size: 0.86rem; }
+.wa-system.done span { color: rgba(216, 239, 233, 0.82); }
+.wa-system.done .demo-restart {
+  margin-top: 0.2rem;
+  color: var(--aqua);
+  font-weight: 800;
+  text-decoration: none;
+}
+.wa-system.done .demo-restart:hover { text-decoration: underline; }
+
+/* ── Cierre con éxito en voz (badge en el transcript) ─────────────────────── */
+.call-done {
+  align-self: center;
+  margin: 0.6rem auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 0.6rem 1.1rem;
+  border-radius: 12px;
+  background: rgba(90, 240, 216, 0.1);
+  box-shadow: inset 0 0 0 1px rgba(90, 240, 216, 0.28);
+  text-align: center;
+  animation: bubbleIn 0.42s var(--ease) both;
+}
+.call-done b { color: var(--aqua); font-size: 0.95rem; font-weight: 800; }
+.call-done span { color: rgba(216, 239, 233, 0.82); font-size: 0.8rem; }
 .wa-inputbar {
   position: relative;
   z-index: 3;
@@ -4761,13 +4805,20 @@ body.demo-open { overflow: hidden; }
   box-shadow: 0 12px 30px rgba(0,0,0,0.28);
 }
 .call-chat .bubble.patient::after { border-color: transparent transparent transparent #0b483f; }
+/* Mismo estilo para guion y llamada real; solo cambia el tamaño: el guion
+   (automático) un punto más discreto y la llamada real (.live) protagonista. */
 .call-chat .bubble {
   max-width: min(82%, 560px);
-  padding: clamp(0.8rem, 1.35vw, 1.05rem) clamp(1rem, 1.8vw, 1.3rem);
-  border-radius: 22px;
-  font-size: clamp(0.98rem, 1.35vw, 1.12rem);
+  padding: clamp(0.62rem, 1.05vw, 0.82rem) clamp(0.85rem, 1.45vw, 1.1rem);
+  border-radius: 18px;
+  font-size: clamp(0.86rem, 1.1vw, 0.98rem);
   font-weight: 750;
   line-height: 1.34;
+}
+.call-chat .bubble.live {
+  padding: clamp(0.85rem, 1.4vw, 1.1rem) clamp(1.05rem, 1.85vw, 1.35rem);
+  border-radius: 22px;
+  font-size: clamp(1rem, 1.4vw, 1.16rem);
 }
 .call-chat .bubble.ai { border-top-left-radius: 8px; }
 .call-chat .bubble.patient { border-top-right-radius: 8px; }
@@ -4896,3 +4947,421 @@ body.demo-open { overflow: hidden; }
     animation: none;
   }
 }
+
+/* ===================================================================
+   Fix Safari/WebKit — bloque blanco del hero.
+   En WebKit, el degradado animado con background-clip:text del titular
+   se pinta a veces SIN recortar (carrera con la carga de fuentes) y
+   cubre el hero con un bloque blanco gigante. Con html.webkit-safe
+   (la pone un script inline en el head) el titular pasa a aqua sólido:
+   mismo color que el resto de acentos, cero riesgo. El resto de
+   navegadores conserva el degradado animado.
+   =================================================================== */
+.webkit-safe .hero h1 .shiny {
+  background-image: none;
+  background-clip: border-box;
+  -webkit-background-clip: border-box;
+  color: var(--aqua);
+  -webkit-text-fill-color: var(--aqua);
+  animation: none;
+}
+
+/* ===================================================================
+   Móvil compacto y horizontal (≤760px). Objetivo: menos "torre"
+   vertical — botones y tarjetas en fila (carruseles con snap donde no
+   caben), cabeceras de sección diferenciadas (eyebrow como chip y
+   títulos contenidos) y menos aire entre secciones. NO toca escritorio.
+   =================================================================== */
+@media (max-width: 760px) {
+  /* — Cabeceras: cada sección se distingue de la anterior — */
+  .eyebrow {
+    padding: 0.38rem 0.8rem 0.38rem 0.62rem;
+    border: 1px solid rgba(90,240,216,0.26);
+    border-radius: 999px;
+    background: rgba(90,240,216,0.07);
+    margin-bottom: 0.9rem;
+    font-size: 0.68rem;
+  }
+  .section-copy h2,
+  .story-intro h2,
+  .voice-head h2,
+  .cta-copy h2,
+  .audit-copy h2 {
+    font-size: clamp(1.8rem, 7.4vw, 2.35rem);
+    line-height: 1.04;
+    text-wrap: balance;
+  }
+  .pricing-shell .price-panel h2 { font-size: clamp(1.7rem, 7.4vw, 2.3rem); }
+  .voice-head h2 { max-width: none; }
+  .section-copy p,
+  .cta-copy p,
+  .voice-sub { font-size: 0.95rem; line-height: 1.5; }
+
+  /* — Menos aire vertical entre secciones — */
+  .discovery-section,
+  .inbox-section,
+  .audit-section,
+  .cta-section { padding-block: 3.2rem; }
+  .voice-section.voice-redesign { padding: 3rem 0 2.2rem; }
+  .pricing-section { padding-top: 2.4rem; padding-bottom: 2.6rem; }
+  .story-intro { padding-top: 2.6rem; }
+  .voice-head { margin-bottom: 1.2rem; }
+
+  /* — Hero: CTAs y atajos en fila, titular contenido — */
+  .hero h1 { font-size: clamp(2.4rem, 10.6vw, 3rem); }
+  .hero-lead { margin-bottom: 1.3rem; font-size: 0.95rem; }
+  .hero-rotator { margin: 0.7rem auto 1rem; }
+  .hero-actions { flex-wrap: nowrap; gap: 0.55rem; }
+  .hero-actions .primary-btn,
+  .hero-actions .secondary-btn {
+    width: auto;
+    flex: 1 1 0;
+    min-width: 0;
+    justify-content: center;
+    padding-inline: 0.5rem;
+    font-size: 0.82rem;
+    white-space: nowrap;
+  }
+  .hero-fast-path { gap: 0.5rem; }
+  .hero-fast-path a {
+    flex: 1 1 calc(50% - 0.25rem);
+    min-width: 0;
+    justify-content: center;
+    padding-inline: 0.45rem;
+    font-size: 0.66rem;
+    text-align: center;
+  }
+
+  /* El eyebrow del hero es largo: como chip ocupa dos líneas y estorba.
+     Se queda plano solo ahí; el resto de secciones conservan el chip. */
+  .hero .eyebrow {
+    padding: 0;
+    border: 0;
+    background: none;
+  }
+
+  /* — Tarjetas "dudas" (Llamadas/WhatsApp/Revisiones): carrusel — */
+  .audit-grid {
+    display: grid;
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 74%;
+    gap: 0.7rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 0.2rem;
+    padding-bottom: 0.45rem;
+    scrollbar-width: none;
+  }
+  .audit-grid::-webkit-scrollbar { display: none; }
+  .audit-question { scroll-snap-align: start; min-height: 0; }
+
+  /* — Detalle de precio (Base/Aparte/Antes): carrusel — */
+  .price-detail {
+    grid-template-columns: none;
+    grid-auto-flow: column;
+    grid-auto-columns: 64%;
+    gap: 0.6rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    padding-bottom: 0.35rem;
+    scrollbar-width: none;
+  }
+  .price-detail::-webkit-scrollbar { display: none; }
+  .price-row { scroll-snap-align: start; }
+
+  /* — Robot de voz: presencia sin comerse una pantalla entera — */
+  .voice-robot { height: 280px; transform: none; }
+  .robot-local { width: 175px; height: 275px; }
+  .voice-stage { gap: 1.4rem; }
+}
+
+/* ===================================================================
+   Móvil compacto v2 (≤760px): widgets más pequeños y encajados.
+   Nada debe ocupar una pantalla entera. Solo móvil; escritorio intacto.
+   =================================================================== */
+@media (max-width: 760px) {
+  /* El hero se ajusta a su contenido en vez de forzar pantalla completa */
+  .hero { min-height: auto; padding: 6.2rem 0 2.8rem; }
+
+  /* — AItomat OS (núcleo de decisión) — */
+  .os-window { border-radius: 18px; }
+  .os-bar { padding: 0.55rem 0.75rem; }
+  .os-bar strong { font-size: 0.68rem; }
+  .os-tab {
+    min-height: 34px;
+    padding: 0.3rem 0.7rem;
+    font-size: 0.68rem;
+  }
+  .os-caption { font-size: 0.78rem; }
+  .os-step { padding: 0.75rem 0.85rem; }
+  .os-step p { font-size: 0.8rem; line-height: 1.42; }
+  .os-kpi .os-num { font-size: 1.7rem; }
+  .os-kpi small { font-size: 0.62rem; }
+  .os-note { font-size: 0.72rem; }
+  .os-disclaimer { font-size: 0.62rem; }
+
+  /* — Bandeja (inbox) — */
+  .mail-app { border-radius: 18px; }
+  .mail-titlebar { padding: 0.55rem 0.75rem; }
+  .mail-titlebar strong { font-size: 0.7rem; }
+  .message-item { padding: 0.62rem 0.72rem; }
+  .message-item .mi-from { font-size: 0.82rem; }
+  .message-item .mi-sub { font-size: 0.76rem; }
+  .message-item .mi-prev { font-size: 0.7rem; }
+  .reader-content { font-size: 0.85rem; }
+
+  /* — Móvil del flujo: más pequeño y proporcionado — */
+  .story-phone {
+    width: min(70vw, 248px);
+    min-height: 440px;
+    border-radius: 46px;
+  }
+  .story-phone .phone-screen { border-radius: 38px; }
+  .wa-chat .bubble { font-size: 0.8rem; }
+
+  /* — Transcripción de voz acotada — */
+  .call-chat { max-height: 300px; }
+
+  /* — Precio y piloto — */
+  .price-amount strong { font-size: clamp(2.9rem, 16vw, 3.8rem); }
+  .pilot-panel { padding: 1rem; }
+  .pilot-panel h3 { font-size: 1.15rem; }
+
+  /* — FAQ y formulario — */
+  .trust-faq.faq-list summary { padding: 0.8rem 0.9rem; font-size: 0.86rem; }
+  .trust-faq.faq-list details p { font-size: 0.84rem; }
+  .lead-form { padding: 1.1rem; }
+}
+
+/* ── Chat de demo REAL en el móvil ─────────────────────────────────────────────
+   La barra real (form) sustituye a la decorativa cuando el backend responde.
+   Misma anatomía .wa-inputbar/.wa-field/.wa-send; aquí solo lo que cambia por
+   ser elementos interactivos de verdad. */
+.wa-inputbar[hidden] { display: none; }         /* [hidden] debe ganar al display:flex */
+
+.wa-field-live {
+  min-width: 0;                                  /* que el input pueda encoger en el móvil */
+  border: 0;
+  outline: none;
+  font: inherit;
+  font-size: 0.9rem;
+  color: #e9edef;
+  caret-color: var(--aqua);
+}
+.wa-field-live::placeholder { color: #8696a0; }
+.wa-field-live:focus-visible { box-shadow: 0 0 0 1px rgba(90, 240, 216, 0.45); }
+.wa-field-live:disabled { color: #8696a0; background: #16222a; }
+
+.wa-send-live {
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  transition: transform 180ms var(--ease), background 180ms var(--ease);
+}
+.wa-send-live::before {
+  /* flecha de enviar (la barra decorativa lleva micrófono) */
+  -webkit-mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3.4 20.4 20.85 12 3.4 3.6v6.53L15.05 12 3.4 13.87z'/%3E%3C/svg%3E") center/19px no-repeat;
+          mask: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Cpath fill='%23000' d='M3.4 20.4 20.85 12 3.4 3.6v6.53L15.05 12 3.4 13.87z'/%3E%3C/svg%3E") center/19px no-repeat;
+}
+.wa-send-live:hover { transform: scale(1.06); }
+.wa-send-live:focus-visible { box-shadow: var(--focus-ring); outline: none; }
+.wa-send-live:disabled { background: #202c33; cursor: default; transform: none; }
+
+.wa-system a {
+  color: var(--aqua);
+  font-weight: 700;
+  text-decoration: none;
+}
+.wa-system a:hover { text-decoration: underline; }
+
+/* En táctil, 16px evita el zoom automático de iOS al enfocar el input. */
+@media (hover: none) {
+  .wa-field-live { font-size: 16px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-send-live { transition: none; }
+  .wa-send-live:hover { transform: none; }
+}
+
+/* ── Pill "Escribir al asistente" del móvil (V2) ──────────────────────────────
+   Hermano del botón de voz (.voice-talk-btn): mismo aqua, icono en círculo y
+   dos líneas. Aquí solo el posicionamiento (flota sobre la parte baja del chat,
+   sobre la barra de entrada) y la reducción de escala para el móvil. */
+/* Doble clase (.voice-talk-btn.wa-live-pill): sube la especificidad para ganar
+   SIEMPRE a las reglas base .voice-talk-btn, que van después en el archivo. Sin
+   esto el pill se pintaba a tamaño completo y se salía de la pantalla estrecha
+   del móvil (la recorta .phone-screen overflow:hidden). */
+.voice-talk-btn.wa-live-pill {
+  position: absolute;
+  left: 50%;
+  bottom: 78px;
+  transform: translateX(-50%);
+  z-index: 6;
+  max-width: calc(100% - 1rem);   /* nunca más ancho que la pantalla del mockup */
+  box-sizing: border-box;
+  padding: 0.5rem 1rem 0.5rem 0.55rem;
+  white-space: nowrap;
+}
+.voice-talk-btn.wa-live-pill:hover { transform: translateX(-50%) translateY(-2px); }
+.wa-live-pill[hidden] { display: none; }
+.voice-talk-btn.wa-live-pill .vt-ic { width: 30px; height: 30px; }
+.voice-talk-btn.wa-live-pill .vt-ic svg { width: 16px; height: 16px; }
+.voice-talk-btn.wa-live-pill .vt-copy { min-width: 0; }
+.voice-talk-btn.wa-live-pill .vt-copy strong,
+.voice-talk-btn.wa-live-pill .vt-copy small {
+  overflow: hidden;
+  text-overflow: ellipsis;   /* último recurso: recorta con … antes que salirse */
+}
+.voice-talk-btn.wa-live-pill .vt-copy strong { font-size: 0.82rem; }
+.voice-talk-btn.wa-live-pill .vt-copy small { font-size: 0.64rem; }
+/* Hueco al fondo del scroll mientras flota un CTA: el chat auto-baja, así que
+   con este padding la última burbuja queda SIEMPRE por encima del botón. */
+#story-phone-chat.con-cta { padding-bottom: 76px; }
+
+/* ── Modo foco: chateando de verdad, fuera las tarjetas del guion ───────────── */
+#flujo.demo-live .story-notes,
+#flujo.demo-live .story-scrollcue {
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 480ms var(--ease), visibility 0s 500ms;
+}
+/* El movil gana presencia por ANCHO real (re-layout nitido), nunca por scale:
+   escalar la capa 3D rasterizada emborrona texto y bordes. */
+#flujo.demo-live .story-phone {
+  width: clamp(316px, 30vw, 402px);
+  /* Alto FIJO: sin el, el movil solo tiene min-height y la conversacion larga
+     lo estira en vez de hacer scroll dentro del chat (.wa-chat ya es overflow-y). */
+  height: min(75svh, 750px);
+  transition: transform 700ms var(--ease), width 700ms var(--ease);
+}
+@media (max-width: 980px) {
+  /* en móvil las notas ocupan flujo: fuera del layout directamente */
+  #flujo.demo-live .story-notes { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .wa-live-pill, .voice-talk-btn { transition: none; }
+  .voice-talk-btn:hover { transform: none; }
+  .voice-talk-btn.wa-live-pill:hover { transform: translateX(-50%); }
+  #flujo.demo-live .story-notes,
+  #flujo.demo-live .story-scrollcue { transition: none; }
+  #flujo.demo-live .story-phone { transition: none; }
+}
+
+/* Wordmark correcto en la cabecera del móvil: "AI" aqua + separador + "tomat"
+   blanco (patrón del nav). En texto plano la I de Archivo se lee como l. */
+.wa-contact .wa-brand {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.12em;
+}
+.wa-contact .brand-rest { color: #e9edef; }
+
+/* ── Chip con CTA (p. ej. «Fin de la demo»): el enlace vive DENTRO del
+   recuadro, en su propia línea, alineado con el título (tras el check).
+   Anula el empuje a la derecha pensado para los chips cortos del guion. ── */
+/* Los chips nunca se encogen: en columna flex con scroll, flex-shrink:1 +
+   min-height:2rem dejaban aplastar el chip y el CTA se salia del recuadro. */
+.story-phone .wa-system { flex-shrink: 0; }
+
+.story-phone .wa-system-cta span {
+  margin-left: 0;
+  flex-basis: 100%;
+  padding-left: calc(13px + 0.45rem); /* ancho del check + gap: alinea con el título */
+  text-align: left;
+}
+.wa-system-cta a {
+  display: inline-block;
+  padding: 2px 0;
+}
+
+/* ── CTA flotante de la llamada real (sección voz, V2) ────────────────────────
+   El guion corre de fondo como ambiente; encima, UN solo botón protagonista.
+   Único elemento realzado del bloque (jerarquía por excepción). */
+.voice-chat-wrap { position: relative; }
+.voice-live-cta {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 6;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 3rem 1rem 1.1rem;
+  /* Velo inferior: legibilidad del CTA sobre las burbujas del guion. */
+  background: linear-gradient(to top, rgba(3, 9, 8, 0.92) 30%, rgba(3, 9, 8, 0.55) 65%, transparent);
+  pointer-events: none;
+}
+.voice-live-cta[hidden] { display: none; }
+.voice-live-cta > * { pointer-events: auto; }
+.voice-talk-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.7rem 1.5rem 0.7rem 0.95rem;
+  border: none;
+  border-radius: 999px;
+  background: var(--aqua);
+  color: #04100f;
+  cursor: pointer;
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), 0 0 28px rgba(90, 240, 216, 0.28);
+  transition: transform 180ms var(--ease), box-shadow 180ms var(--ease), background 180ms var(--ease);
+}
+.voice-talk-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, 0.5), 0 0 36px rgba(90, 240, 216, 0.4);
+}
+.voice-talk-btn:disabled { opacity: 0.72; cursor: default; transform: none; }
+.voice-talk-btn .vt-ic {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  background: rgba(4, 16, 15, 0.14);
+}
+.voice-talk-btn .vt-ic svg { width: 20px; height: 20px; }
+.voice-talk-btn .vt-copy {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 1px;
+  text-align: left;
+}
+.voice-talk-btn .vt-copy strong { font-size: 0.95rem; font-weight: 800; letter-spacing: -0.01em; }
+.voice-talk-btn .vt-copy small { font-size: 0.7rem; font-weight: 650; opacity: 0.72; }
+/* En llamada: el mismo botón pasa a «Colgar» en vidrio oscuro con borde aqua. */
+.voice-talk-btn.colgando {
+  background: rgba(10, 20, 18, 0.9);
+  color: var(--soft);
+  box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), inset 0 0 0 1px rgba(90, 240, 216, 0.4);
+}
+.voice-talk-btn.colgando .vt-ic { background: rgba(90, 240, 216, 0.12); color: var(--aqua); }
+/* Hueco al fondo para que el CTA flotante no tape la última línea del transcript. */
+.voice-transcript .call-chat.con-cta { padding-bottom: 104px; }
+
+/* Selector de micrófono de la llamada real */
+.voice-mic-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  color: var(--muted);
+  font-size: 0.74rem;
+}
+.voice-mic-label[hidden] { display: none; }
+#voice-mic {
+  max-width: 210px;
+  padding: 4px 8px;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  background: var(--panel);
+  color: var(--soft);
+  font: inherit;
+  font-size: 0.74rem;
+}
+#voice-mic option { background: #0b1110; }

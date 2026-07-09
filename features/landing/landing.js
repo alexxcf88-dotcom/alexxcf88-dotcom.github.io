@@ -90,27 +90,48 @@ const phoneScenarios = [
   },
 ];
 
+// true cuando el visitante ha activado el chat de demo REAL: la animacion
+// guionizada deja de repintar el movil (los pasos del scroll ya no mandan).
+let demoLive = false;
+// Ping a /demo/estado (lo crea initDemoChat). Resuelve a true si hay backend:
+// entonces el movil ofrece elegir entre ver la animacion o escribir de verdad.
+let demoEstadoPromise = null;
+// La define initDemoChat: enseña el pill "Escribir yo" sobre el movil (V2:
+// el guion corre de fondo y el CTA flota encima).
+let demoMostrarCTA = null;
+// true cuando hay una llamada de voz REAL en curso: el guion de #voice-chat para.
+let vozLive = false;
+// La define el guion de voz: detiene su bucle (la usa la llamada real).
+let vozPararGuion = null;
+// La define el guion de voz: arranca el bucle (se retoma al colgar).
+let vozArrancarGuion = null;
+
+// Base de la API del backend: mismo origen en local, api.aitomat.es en produccion.
+const DEMO_API_BASE = window.AITOMAT_API
+  || (['localhost', '127.0.0.1'].includes(location.hostname) ? '' : 'https://api.aitomat.es');
+
+// Burbuja de chat compartida entre la animacion guionizada y la demo real.
+function makeWaBubble(kind, text, time) {
+  const bubble = document.createElement('div');
+  bubble.className = `bubble ${kind}`;
+  const body = document.createElement('span');
+  body.className = 'b-text';
+  body.textContent = text;
+  const meta = document.createElement('span');
+  meta.className = 'b-meta';
+  meta.textContent = time || '';
+  bubble.appendChild(body);
+  bubble.appendChild(meta);
+  return bubble;
+}
+
 function renderPhone(chatEl, statusEl, scenario) {
-  if (!chatEl || !scenario) return;
+  if (!chatEl || !scenario || demoLive) return;
   if (chatEl._bubbleTimers) {
     chatEl._bubbleTimers.forEach((timer) => clearTimeout(timer));
   }
   chatEl._bubbleTimers = [];
   chatEl.innerHTML = '';
-
-  function makeBubble(kind, text, time) {
-    const bubble = document.createElement('div');
-    bubble.className = `bubble ${kind}`;
-    const body = document.createElement('span');
-    body.className = 'b-text';
-    body.textContent = text;
-    const meta = document.createElement('span');
-    meta.className = 'b-meta';
-    meta.textContent = time || '';
-    bubble.appendChild(body);
-    bubble.appendChild(meta);
-    return bubble;
-  }
 
   function appendOutcome() {
     const chip = document.createElement('div');
@@ -129,7 +150,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   // Sin animacion: pinta todo de golpe.
   if (reduceMotion) {
     if (statusEl) statusEl.textContent = 'en l\u00ednea';
-    scenario.bubbles.forEach(([kind, text, time]) => chatEl.appendChild(makeBubble(kind, text, time)));
+    scenario.bubbles.forEach(([kind, text, time]) => chatEl.appendChild(makeWaBubble(kind, text, time)));
     appendOutcome();
     return;
   }
@@ -142,7 +163,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   }
   function appendBubble(kind, text, time) {
     clearTyping();
-    chatEl.appendChild(makeBubble(kind, text, time));
+    chatEl.appendChild(makeWaBubble(kind, text, time));
     chatEl.scrollTop = chatEl.scrollHeight;
   }
   function showTyping(kind) {
@@ -256,7 +277,10 @@ function renderPhone(chatEl, statusEl, scenario) {
   const tint = document.getElementById('bg-tint');
   if (!video && !tint) return;
   if (lightweightMotion) {
-    if (video) {
+    // El vídeo ambiental SÍ se queda en móvil/táctil (sin él la página
+    // "pierde el fondo"): sigue en bucle con autoplay, solo se salta el
+    // parallax. Únicamente se retira con reduced-motion o equipo flojo.
+    if (video && (reduceMotion || lowEndDevice)) {
       video.pause();
       video.removeAttribute('src');
       video.load();
@@ -400,9 +424,14 @@ function renderPhone(chatEl, statusEl, scenario) {
     if (entered) renderPhone(chat, status, phoneScenarios[index]);
   }
   function startChat() {
-    if (entered) return;
+    if (entered || demoLive) { entered = true; return; }
     entered = true;
+    // V2: el guion arranca SIEMPRE de fondo; si el backend está vivo, el pill
+    // "Escribir yo" flota encima para pasar a la demo real.
     renderPhone(chat, status, phoneScenarios[Math.max(0, active)]);
+    if (demoEstadoPromise && demoMostrarCTA) {
+      demoEstadoPromise.then((disponible) => { if (disponible) demoMostrarCTA(); }).catch(() => {});
+    }
   }
 
   const n = phoneScenarios.length;
@@ -422,6 +451,18 @@ function renderPhone(chatEl, statusEl, scenario) {
   }
 
   function applyMotion() {
+    // Modo foco (chat real): movil frontal y quieto; el loop para.
+    // OJO: escala SIEMPRE 1 — scale() sobre la capa 3D rasterizada emborrona
+    // el movil; el tamano extra lo da el ancho real en CSS (.demo-live).
+    if (demoLive) {
+      phone.style.setProperty('--story-ry', '0deg');
+      phone.style.setProperty('--story-rx', '0deg');
+      phone.style.setProperty('--story-x', '0px');
+      phone.style.setProperty('--story-y', '0px');
+      phone.style.setProperty('--story-scale', '1');
+      stop();
+      return;
+    }
     // Giro tipo plataforma: barrido suave de un lado a otro a lo largo del scroll.
     const ry = (0.5 - curP) * 26 + curMX * 5;        // +13deg -> -13deg
     const rx = 4 - curMY * 4 - Math.sin(curP * Math.PI) * 2;
@@ -446,7 +487,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     requestAnimationFrame(loop);
   }
   function start() {
-    if (running) return;
+    if (running || demoLive) return;
     running = true;
     requestAnimationFrame(loop);
   }
@@ -1333,7 +1374,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     }
   }
   function start() {
-    if (running) return;
+    if (running || vozLive) return;
     running = true;
     token += 1;
     runLoop();
@@ -1343,6 +1384,8 @@ function renderPhone(chatEl, statusEl, scenario) {
     token += 1;
     clearTimers();
   }
+  vozPararGuion = stop;     // la llamada real corta el guion desde initVoiceCall
+  vozArrancarGuion = start; // y lo retoma al colgar
 
   if (reduceMotion) {
     fillStatic(scenarios[0]);
@@ -1391,4 +1434,650 @@ function renderPhone(chatEl, statusEl, scenario) {
   document.addEventListener('click', (event) => {
     if (nav.classList.contains('menu-open') && !nav.contains(event.target)) setOpen(false);
   });
+})();
+
+// ── Chat de demo REAL en el móvil (progressive enhancement) ──────────────────
+// Si el backend responde en /demo/estado, la barra de escritura del móvil se
+// vuelve real: el visitante habla con el MISMO bot que atiende WhatsApp
+// (agenda local de verdad; el asistente nunca dice un nombre de clínica).
+// Si no hay backend (landing estática sin API), no aparece nada y la
+// animación guionizada queda exactamente como siempre.
+(function initDemoChat() {
+  const form = document.getElementById('demo-chat-form');
+  const input = document.getElementById('demo-chat-input');
+  const boton = document.getElementById('demo-chat-send');
+  const fakeBar = document.getElementById('demo-chat-inputbar-fake');
+  const chat = document.getElementById('story-phone-chat');
+  const status = document.getElementById('story-status');
+  const pill = document.getElementById('demo-probar');
+  if (!form || !input || !boton || !chat) return;
+
+  const API_BASE = DEMO_API_BASE;
+
+  // Identificador de sesión (el backend limita mensajes por sesión).
+  let sessionId = '';
+  try {
+    sessionId = sessionStorage.getItem('aitomat-demo-session') || '';
+    if (!sessionId) {
+      sessionId = crypto.randomUUID
+        ? crypto.randomUUID()
+        : `s-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+      sessionStorage.setItem('aitomat-demo-session', sessionId);
+    }
+  } catch (err) {
+    sessionId = `s-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+  }
+
+  function hora() {
+    return new Date().toLocaleTimeString('es-ES', { hour: '2-digit', minute: '2-digit' });
+  }
+  function burbuja(kind, texto) {
+    chat.appendChild(makeWaBubble(kind, texto, hora()));
+    chat.scrollTop = chat.scrollHeight;
+  }
+  function chip(titulo, detalle, enlace) {
+    const el = document.createElement('div');
+    // Con enlace (CTA), el modificador pone el link en su propia linea DENTRO
+    // del recuadro; los chips del guion (sin enlace) no cambian.
+    el.className = enlace ? 'wa-system wa-system-cta' : 'wa-system';
+    const b = document.createElement('b');
+    b.textContent = titulo;
+    el.appendChild(b);
+    const s = document.createElement('span');
+    if (enlace) {
+      const a = document.createElement('a');
+      a.href = enlace.href;
+      a.textContent = enlace.texto;
+      s.appendChild(a);
+    } else {
+      s.textContent = detalle;
+    }
+    el.appendChild(s);
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  let typingEl = null;
+  function mostrarTyping() {
+    quitarTyping();
+    typingEl = document.createElement('div');
+    typingEl.className = 'bubble ai typing';
+    typingEl.innerHTML = '<span></span><span></span><span></span>';
+    chat.appendChild(typingEl);
+    chat.scrollTop = chat.scrollHeight;
+  }
+  function quitarTyping() {
+    if (typingEl) { typingEl.remove(); typingEl = null; }
+  }
+
+  // Primer foco o envío: se corta la animación guionizada, desaparecen las
+  // tarjetas de alrededor (modo foco) y empieza la conversación real.
+  function activarDemo() {
+    if (demoLive) return;
+    demoLive = true;
+    if (pill) pill.hidden = true;
+    chat.classList.remove('con-cta'); // el chat real usa todo el alto
+    const seccion = document.getElementById('flujo');
+    if (seccion) seccion.classList.add('demo-live');
+    if (chat._bubbleTimers) {
+      chat._bubbleTimers.forEach((t) => clearTimeout(t));
+      chat._bubbleTimers = [];
+    }
+    chat.innerHTML = '';
+    chat.setAttribute('aria-live', 'polite');
+    if (status) status.textContent = 'en línea · demo real';
+    chip('Demo real', 'Te responde la IA de la recepción. Escribe como paciente.');
+    burbuja('ai', 'Hola, le atiende el asistente de la clínica. ¿En qué puedo ayudarle?');
+  }
+  input.addEventListener('focus', activarDemo);
+
+  // Pill "Escribir yo al asistente": lo enseña startChat cuando el móvil entra
+  // en pantalla y el backend está disponible; el guion sigue de fondo.
+  if (pill) {
+    demoMostrarCTA = function () {
+      if (demoLive) return;
+      pill.hidden = false;
+      chat.classList.add('con-cta'); // hueco para que el pill no tape la burbuja
+    };
+    pill.addEventListener('click', () => {
+      activarDemo();
+      input.focus();
+    });
+  }
+
+  function nuevaSesionId() {
+    const id = crypto.randomUUID
+      ? crypto.randomUUID()
+      : `s-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
+    try { sessionStorage.setItem('aitomat-demo-session', id); } catch (err) { /* privado */ }
+    return id;
+  }
+
+  // Reinicia la demo con una sesión nueva (tras cerrar por cita reservada o al
+  // agotar la 1.ª: nueva sesión, chat limpio, entrada reactivada).
+  function reiniciarDemo() {
+    sessionId = nuevaSesionId();
+    esperando = false;
+    chat.innerHTML = '';
+    input.disabled = false;
+    boton.disabled = false;
+    input.placeholder = 'Escribe como paciente…';
+    chip('Demo real', 'Empieza de nuevo: escribe como paciente.');
+    burbuja('ai', 'Hola, le atiende el asistente de la clínica. ¿En qué puedo ayudarle?');
+    if (status) status.textContent = 'en línea · demo real';
+    if (!matchMedia('(hover: none)').matches) input.focus();
+  }
+
+  function terminarDemo(reinicio) {
+    input.disabled = true;
+    boton.disabled = true;
+    input.placeholder = 'Demo completada';
+    chip('Fin de la demo', '', { href: '#contacto', texto: 'Pide una demo completa para tu clínica →' });
+    if (!reinicio) return;
+    // Le queda un intento a esta IP: enlace de reinicio en el mismo chip
+    // (hereda el estilo .wa-system-cta span: su propia línea, alineado).
+    const chipEl = chat.lastElementChild;
+    const s = document.createElement('span');
+    const a = document.createElement('a');
+    a.href = '#';
+    a.id = 'demo-reiniciar';
+    a.textContent = 'Probar la demo otra vez ↺';
+    a.addEventListener('click', (e) => { e.preventDefault(); reiniciarDemo(); });
+    s.appendChild(a);
+    chipEl.appendChild(s);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  // Cierre con éxito: la cita quedó reservada y el asistente se despidió.
+  // Bloquea la entrada (no más «asdad») y muestra el chip aqua de éxito con la
+  // opción de empezar de nuevo sin recargar.
+  function cerrarConExito() {
+    esperando = true;
+    input.disabled = true;
+    boton.disabled = true;
+    input.placeholder = 'Conversación finalizada';
+    if (status) status.textContent = 'cita reservada · finalizada';
+    const el = document.createElement('div');
+    el.className = 'wa-system done';
+    const b = document.createElement('b');
+    b.textContent = 'Cita reservada'; // el check lo dibuja .wa-system::before
+    const s = document.createElement('span');
+    s.textContent = 'Conversación finalizada.';
+    const a = document.createElement('a');
+    a.href = '#';
+    a.className = 'demo-restart';
+    a.textContent = 'Empezar de nuevo ↺';
+    a.addEventListener('click', (e) => { e.preventDefault(); reiniciarDemo(); });
+    el.appendChild(b);
+    el.appendChild(s);
+    el.appendChild(a);
+    chat.appendChild(el);
+    chat.scrollTop = chat.scrollHeight;
+  }
+
+  let esperando = false;
+
+  function finalizarEnvio() {
+    esperando = false;
+    if (!input.disabled) {
+      boton.disabled = false;
+      if (!matchMedia('(hover: none)').matches) input.focus();
+    }
+    if (status && !input.disabled) status.textContent = 'en línea · demo real';
+  }
+
+  // Envía un turno al backend. En 429 NUNCA se descarta el mensaje del
+  // usuario: primer 429 -> reintento silencioso a los 4 s (el typing sigue);
+  // segundo 429 -> se devuelve el texto al input para reenviar con un clic.
+  function mandar(texto, intento) {
+    fetch(`${API_BASE}/demo/chat`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ session_id: sessionId, mensaje: texto }),
+    })
+      .then((res) => {
+        if (res.status === 429) {
+          if (intento === 0) {
+            setTimeout(() => mandar(texto, 1), 4000);
+            return null;
+          }
+          quitarTyping();
+          input.value = texto;
+          burbuja('ai', 'Un segundo, que estoy atendiendo a varias personas. Vuelva a enviarlo, por favor.');
+          finalizarEnvio();
+          return null;
+        }
+        if (!res.ok) throw new Error(String(res.status));
+        return res.json();
+      })
+      .then((data) => {
+        if (!data) return; // 429 ya gestionado
+        quitarTyping();
+        burbuja('ai', data.respuesta || 'Disculpe, ¿puede repetírmelo?');
+        if (data.ok === false && data.motivo === 'limite') terminarDemo(data.reinicio !== false);
+        else if (data.fin) { cerrarConExito(); return; } // cita reservada: cerrar
+        finalizarEnvio();
+      })
+      .catch(() => {
+        quitarTyping();
+        burbuja('ai', 'Ahora mismo no puedo responder. Pruebe de nuevo en un momento.');
+        finalizarEnvio();
+      });
+  }
+
+  form.addEventListener('submit', (event) => {
+    event.preventDefault();
+    const texto = input.value.trim();
+    if (!texto || esperando || input.disabled) return;
+    activarDemo();
+    input.value = '';
+    burbuja('patient', texto);
+    esperando = true;
+    boton.disabled = true;
+    mostrarTyping();
+    if (status) status.textContent = 'escribiendo...';
+    mandar(texto, 0);
+  });
+
+  // Ping al backend: solo si contesta que está disponible se enseña la barra.
+  // La promesa se comparte con startChat (selector ver/probar del móvil).
+  const ctrl = new AbortController();
+  const timeout = setTimeout(() => ctrl.abort(), 2500);
+  demoEstadoPromise = fetch(`${API_BASE}/demo/estado`, { signal: ctrl.signal })
+    .then((res) => (res.ok ? res.json() : null))
+    .then((data) => {
+      clearTimeout(timeout);
+      if (!data || !data.disponible) return false;
+      form.hidden = false;
+      if (fakeBar) fakeBar.hidden = true;
+      return true;
+    })
+    .catch(() => { clearTimeout(timeout); return false; });
+})();
+
+// ── Llamada de voz REAL desde la web (Vapi) ───────────────────────────────────
+// Mismo patrón que el chat: si el backend devuelve config (/demo/voz-config,
+// solo cuando VAPI_PUBLIC_KEY y VAPI_WEB_ASSISTANT_ID existen), aparece el
+// botón "Probar una llamada". El SDK de Vapi se carga bajo demanda al pulsar
+// (import dinámico desde CDN: cero peso si nadie llama). La transcripción real
+// sustituye al guion, que queda parado (vozLive).
+(function initVoiceCall() {
+  const cta = document.getElementById('voice-cta');
+  const btn = document.getElementById('voice-call-btn');
+  const chatEl = document.getElementById('voice-chat');
+  const statusEl = document.getElementById('voice-status');
+  const topicEl = document.getElementById('voice-topic');
+  if (!cta || !btn || !chatEl) return;
+
+  const setStatus = (t) => { if (statusEl) statusEl.textContent = t; };
+
+  fetch(`${DEMO_API_BASE}/demo/voz-config`)
+    .then((res) => (res.ok ? res.json() : null))
+    .then((cfg) => {
+      if (!cfg || !cfg.disponible) {
+        console.log('[voz] demo de voz no disponible (sin claves en el backend)');
+        return;
+      }
+      console.log('[voz] config recibida: assistant', (cfg.assistantId || '').slice(0, 8) + '…, key', (cfg.publicKey || '').slice(0, 6) + '…');
+      // V2: el guion sigue corriendo de fondo; solo aparece el CTA flotante.
+      // con-cta reserva hueco abajo para que el botón no tape la última burbuja.
+      cta.hidden = false;
+      chatEl.classList.add('con-cta');
+
+      let vapi = null;
+      let enLlamada = false;
+      let ocupado = false;
+      let reservaVoz = false; // se reservó una cita en esta llamada (señal de fin)
+
+      // Badge aqua de éxito en el transcript de voz (hermano del chip del móvil).
+      function badgeReservada() {
+        const el = document.createElement('div');
+        el.className = 'call-done';
+        el.innerHTML = '<b>Cita reservada ✓</b><span>Conversación finalizada.</span>';
+        chatEl.appendChild(el);
+        chatEl.scrollTop = chatEl.scrollHeight;
+      }
+
+      // Título/subtítulo del botón flotante (Hablar ↔ Colgar).
+      const btnTitle = document.getElementById('voice-btn-title');
+      const btnSub = document.getElementById('voice-btn-sub');
+      function setBoton(titulo, sub, colgando) {
+        if (btnTitle) btnTitle.textContent = titulo;
+        if (btnSub) btnSub.textContent = sub;
+        btn.classList.toggle('colgando', !!colgando);
+      }
+
+      // Transcript de la llamada REAL: mismas burbujas que el guion (variante
+      // .live). Los transcripts finales llegan TROCEADOS por el transcriptor
+      // («…en que puede» / «ayudarle?»): se fusionan en la burbuja abierta y
+      // solo se abre burbuja nueva al cambiar de rol.
+      let burbujaAbierta = null; // {rol, body}
+      function lineaLlamada(rol, texto) {
+        if (burbujaAbierta && burbujaAbierta.rol === rol) {
+          burbujaAbierta.body.textContent += ' ' + texto;
+          chatEl.scrollTop = chatEl.scrollHeight;
+          return;
+        }
+        const b = document.createElement('div');
+        b.className = `bubble ${rol === 'paciente' ? 'patient' : 'ai'} live`;
+        const body = document.createElement('span');
+        body.className = 'b-text';
+        body.textContent = texto;
+        b.appendChild(body);
+        chatEl.appendChild(b);
+        chatEl.scrollTop = chatEl.scrollHeight;
+        burbujaAbierta = { rol, body };
+      }
+
+      // Diagnóstico de audio al conectar: fuerza la reproducción de los
+      // <audio> del SDK si el navegador los dejó en pausa, y loguea el estado
+      // y el micrófono por defecto. Todo con prefijo [voz][audio].
+      function diagnosticarAudio() {
+        setTimeout(() => {
+          const audios = Array.from(document.querySelectorAll('audio'));
+          console.log('[voz][audio] elementos <audio> del SDK:', audios.length);
+          audios.forEach((el, i) => {
+            console.log(`[voz][audio] #${i} paused=${el.paused} readyState=${el.readyState} srcObject=${!!el.srcObject} muted=${el.muted} volume=${el.volume} sinkId='${el.sinkId || ''}'`);
+            // Salida FORZADA: desmutear, volumen al máximo y salida por
+            // defecto del sistema. Era el eslabón sin loguear ni asegurar.
+            el.muted = false;
+            el.volume = 1;
+            if (typeof el.setSinkId === 'function') {
+              el.setSinkId('').then(
+                () => console.log(`[voz][audio] #${i} setSinkId('') OK (salida por defecto)`),
+                (err) => console.error(`[voz][audio] #${i} setSinkId falló:`, err && err.name),
+              );
+            }
+            if (el.paused) {
+              el.play().then(
+                () => console.log(`[voz][audio] #${i} play() OK (estaba pausado)`),
+                (err) => console.error(`[voz][audio] #${i} play() rechazado:`, err && err.name),
+              );
+            }
+          });
+        }, 800);
+        // Segundo cinturón vía Daily: salida al dispositivo por defecto.
+        esperarDaily().then((daily) => {
+          if (!daily || typeof daily.setOutputDeviceAsync !== 'function') return;
+          daily.setOutputDeviceAsync({ outputDeviceId: 'default' }).then(
+            () => console.log('[voz][audio] Daily setOutputDeviceAsync(default) OK'),
+            (err) => console.error('[voz][audio] Daily setOutputDeviceAsync falló:', err),
+          );
+        });
+        navigator.mediaDevices.enumerateDevices().then((devs) => {
+          const mics = devs.filter((d) => d.kind === 'audioinput');
+          console.log('[voz][audio] micrófonos detectados:', mics.length);
+          mics.slice(0, 3).forEach((m) => console.log(
+            '[voz][audio] mic:', m.label || '(sin label)', (m.deviceId || '').slice(0, 8) + '…'));
+        }).catch((e) => console.error('[voz][audio] enumerateDevices falló:', e));
+      }
+
+        // El objeto Daily interno tarda ~100-300 ms en existir tras start().
+      function esperarDaily(intentos = 10) {
+        return new Promise((resolver) => {
+          const tick = (n) => {
+            const daily = vapi && typeof vapi.getDailyCallObject === 'function'
+              ? vapi.getDailyCallObject() : null;
+            if (daily || n <= 0) return resolver(daily);
+            setTimeout(() => tick(n - 1), 250);
+          };
+          tick(intentos);
+        });
+      }
+
+      // ── Selector de micrófono (persistido en localStorage) ────────────────
+      const micSelect = document.getElementById('voice-mic');
+      const micLabel = document.getElementById('voice-mic-label');
+      const MIC_KEY = 'aitomat-voz-mic';
+
+      function aplicarMicro(deviceId, etiqueta) {
+        esperarDaily().then((daily) => {
+          if (!daily || typeof daily.setInputDevicesAsync !== 'function') {
+            console.log('[voz][audio] Daily no disponible: micro no forzado (se usa el default)');
+            return;
+          }
+          daily.setInputDevicesAsync({ audioDeviceId: deviceId }).then(
+            () => {
+              console.log('[voz][audio] micro aplicado:', etiqueta || deviceId);
+              logMicroReal(daily);
+            },
+            (err) => console.error('[voz][audio] no se pudo aplicar el micro:', err),
+          );
+        });
+      }
+
+      // Micro REALMENTE en uso según Daily (para cazar «captura la webcam»).
+      function logMicroReal(daily) {
+        if (!daily || typeof daily.getInputDevices !== 'function') return;
+        daily.getInputDevices().then((d) => {
+          const mic = d && d.mic;
+          console.log('[voz][audio] micro EN USO:', (mic && mic.label) || '(desconocido)');
+        }).catch(() => {});
+      }
+
+      function preferenciaGuardada(mics) {
+        // Guardada como {id, label}: el id puede rotar (Chrome los regenera
+        // al limpiar datos), la etiqueta es estable -> fallback por label.
+        let guardado = null;
+        try { guardado = JSON.parse(localStorage.getItem(MIC_KEY) || 'null'); } catch (e) { /* nada */ }
+        if (!guardado) return null;
+        if (!mics) return guardado.id ? { deviceId: guardado.id, label: guardado.label } : null;
+        return mics.find((m) => m.deviceId === guardado.id)
+          || mics.find((m) => m.label === guardado.label) || null;
+      }
+
+      // Al conectar: el micro preferido se fuerza YA (sin esperar a enumerar
+      // dispositivos) — antes se aplicaba ~1 s tarde y el primer turno del
+      // paciente entraba por el micro por defecto.
+      function aplicarPreferenciaYa() {
+        const pref = preferenciaGuardada(null);
+        if (pref) aplicarMicro(pref.deviceId, pref.label);
+        else esperarDaily().then((daily) => logMicroReal(daily));
+      }
+
+      function poblarMicros() {
+        if (!micSelect) return;
+        navigator.mediaDevices.enumerateDevices().then((devs) => {
+          const mics = devs.filter((d) => d.kind === 'audioinput' && d.deviceId);
+          if (!mics.length) return;
+          const preferido = preferenciaGuardada(mics);
+          micSelect.innerHTML = '';
+          mics.forEach((m) => {
+            const opt = document.createElement('option');
+            opt.value = m.deviceId;
+            opt.textContent = m.label || `Micrófono ${micSelect.length + 1}`;
+            if (preferido && m.deviceId === preferido.deviceId) opt.selected = true;
+            micSelect.appendChild(opt);
+          });
+          if (micLabel) micLabel.hidden = false;
+        }).catch((e) => console.error('[voz][audio] enumerateDevices (select):', e));
+      }
+
+      if (micSelect) {
+        micSelect.addEventListener('change', () => {
+          const opcion = micSelect.options[micSelect.selectedIndex];
+          try {
+            localStorage.setItem(MIC_KEY, JSON.stringify({
+              id: micSelect.value,
+              label: opcion ? opcion.textContent : '',
+            }));
+          } catch (e) { /* privado */ }
+          if (enLlamada) aplicarMicro(micSelect.value, opcion && opcion.textContent);
+          else console.log('[voz][audio] micro preferido guardado:', opcion && opcion.textContent);
+        });
+      }
+
+      // El build +esm de jsdelivr entrega la clase ANIDADA (interop CJS rota:
+      // mod.default es un objeto). Probamos esm.sh primero y resolvemos el
+      // constructor por la cadena de posibles ubicaciones.
+      async function cargarSDK() {
+        // Versión FIJADA (2.5.2). Nota: el warning "daily-js 0.85.0 nearing
+        // end of support" viene de la dependencia que fija el propio Vapi
+        // (^0.85.0 incluso en su última versión); es inofensivo y desaparecerá
+        // cuando Vapi actualice su SDK.
+        const fuentes = [
+          'https://esm.sh/@vapi-ai/web@2.5.2',
+          'https://cdn.jsdelivr.net/npm/@vapi-ai/web@2.5.2/+esm',
+        ];
+        let ultimoError = null;
+        for (const url of fuentes) {
+          try {
+            console.log('[voz] cargando SDK desde', url);
+            const mod = await import(url);
+            const Vapi = (mod.default && mod.default.default) || mod.default || mod.Vapi || mod;
+            if (typeof Vapi !== 'function') {
+              throw new Error('SDK sin constructor (default=' + typeof mod.default + ')');
+            }
+            console.log('[voz] SDK cargado, constructor:', Vapi.name || '(anonimo)');
+            return Vapi;
+          } catch (err) {
+            console.error('[voz] fallo cargando SDK de', url, err);
+            ultimoError = err;
+          }
+        }
+        throw ultimoError || new Error('SDK de Vapi no disponible');
+      }
+
+      async function conectar() {
+        if (vapi) return vapi;
+        const Vapi = await cargarSDK();
+        vapi = new Vapi(cfg.publicKey);
+
+        vapi.on('call-start', () => {
+          console.log('[voz] call-start: llamada conectada');
+          aplicarPreferenciaYa(); // el micro bueno ANTES del primer turno
+          diagnosticarAudio();
+          poblarMicros();
+          enLlamada = true;
+          ocupado = false;
+          btn.disabled = false;
+          setBoton('Colgar', 'en llamada · pulsa para terminar', true);
+          vozLive = true;
+          reservaVoz = false; // nueva llamada: empieza sin reserva
+          if (vozPararGuion) vozPararGuion();
+          chatEl.innerHTML = '';
+          burbujaAbierta = null;
+          if (topicEl) topicEl.textContent = 'Llamada real';
+          setStatus('en llamada — hable con el asistente');
+        });
+        // reanudarGuion=false: se deja el estado fijo (p. ej. cita reservada) en
+        // lugar de volver al guion de ambiente.
+        function reposo(mensaje, reanudarGuion = true) {
+          enLlamada = false;
+          ocupado = false;
+          btn.disabled = false;
+          burbujaAbierta = null;
+          setBoton('Hablar con el asistente', 'llamada real · máx. 2 min 15 s', false);
+          setStatus(mensaje);
+          vozLive = false;
+          if (reanudarGuion) {
+            setTimeout(() => { if (!enLlamada && vozArrancarGuion) vozArrancarGuion(); }, 2600);
+          }
+        }
+        vapi.on('call-end', () => {
+          console.log('[voz] call-end');
+          if (reservaVoz) {
+            // Cerró con cita: badge de éxito y el estado se queda fijo (no vuelve
+            // el guion). Una nueva llamada limpia el transcript = «empezar de nuevo».
+            badgeReservada();
+            reposo('cita reservada · conversación finalizada', false);
+          } else {
+            reposo('llamada finalizada — puede volver a llamar');
+          }
+        });
+        vapi.on('error', (err) => {
+          console.error('[voz] error real del SDK:', err);
+          reposo('no se pudo conectar la llamada');
+        });
+        vapi.on('message', (m) => {
+          if (!m) return;
+          if (m.type === 'transcript' && m.transcriptType === 'final' && m.transcript) {
+            lineaLlamada(m.role === 'user' ? 'paciente' : 'asistente', m.transcript);
+            return;
+          }
+          // Señal de fin: se llamó a reservar_cita durante la llamada. El default
+          // clientMessages de Vapi ya incluye tool-calls; miramos varios formatos.
+          const calls = m.toolCalls || m.toolCallList
+            || (m.functionCall ? [m.functionCall] : null);
+          if (calls && calls.some((c) => ((c.function && c.function.name) || c.name) === 'reservar_cita')) {
+            reservaVoz = true;
+            console.log('[voz] reservar_cita detectada -> fin de conversación al colgar');
+          }
+        });
+        // Nivel de audio del asistente, 1 log/seg: >0 = el audio remoto llega
+        // y se decodifica (si aun así no suena, es el altavoz del sistema);
+        // siempre 0 = la media WebRTC no llega (red/antivirus).
+        let ultimoNivelLog = 0;
+        vapi.on('volume-level', (nivel) => {
+          const ahora = Date.now();
+          if (ahora - ultimoNivelLog > 1000) {
+            ultimoNivelLog = ahora;
+            console.log('[voz][audio] nivel asistente:', Number(nivel || 0).toFixed(3));
+          }
+        });
+        vapi.on('speech-start', () => console.log('[voz][audio] speech-start (asistente hablando)'));
+        vapi.on('speech-end', () => console.log('[voz][audio] speech-end'));
+        return vapi;
+      }
+
+      async function empezarLlamada() {
+        if (ocupado || enLlamada) return;
+        ocupado = true;
+        btn.disabled = true;
+        setBoton('Conectando…', 'un momento', false);
+        setStatus('conectando…');
+        try {
+          const v = await conectar();
+          console.log('[voz] start llamado, assistant:', cfg.assistantId.slice(0, 8) + '…');
+          await v.start(cfg.assistantId);
+          // el estado real lo fija el evento call-start
+        } catch (err) {
+          console.error('[voz] error real al iniciar:', err);
+          ocupado = false;
+          btn.disabled = false;
+          setBoton('Hablar con el asistente', 'llamada real · máx. 2 min 15 s', false);
+          // Solo culpar al micrófono si de verdad es getUserMedia; si no, el
+          // mensaje genérico con la pista de mirar la consola.
+          const esMicro = err && (err.name === 'NotAllowedError' || err.name === 'NotFoundError');
+          setStatus(esMicro ? 'micrófono bloqueado: permita el acceso y reintente'
+                            : 'no se pudo conectar la llamada (detalle en consola)');
+        }
+      }
+
+      // Cebar el micro ANTES de conectar: en el pointerdown (se dispara antes
+      // del click) pedimos el micro para que el permiso y el arranque del
+      // dispositivo salgan de la ruta crítica de v.start(). Así conecta antes y
+      // el micro ya está caliente cuando llega la primera frase del paciente.
+      let micCebado = false;
+      function cebarMicro() {
+        if (micCebado || !navigator.mediaDevices) return;
+        micCebado = true;
+        const pref = preferenciaGuardada(null);
+        const constraints = pref && pref.deviceId
+          ? { audio: { deviceId: { ideal: pref.deviceId } } }
+          : { audio: true };
+        navigator.mediaDevices.getUserMedia(constraints).then(
+          (stream) => {
+            console.log('[voz][audio] micro cebado (permiso y arranque listos)');
+            // Se suelta enseguida; Daily abrirá el suyo, pero el dispositivo ya
+            // quedó inicializado y el permiso concedido (sin diálogo en el clic).
+            setTimeout(() => stream.getTracks().forEach((t) => t.stop()), 250);
+          },
+          (err) => { micCebado = false; console.log('[voz][audio] cebado de micro pospuesto:', err && err.name); },
+        );
+      }
+      btn.addEventListener('pointerdown', cebarMicro);
+
+      btn.addEventListener('click', () => {
+        if (enLlamada) { if (vapi) vapi.stop(); return; }
+        empezarLlamada();
+      });
+
+      // Precarga INMEDIATA del SDK (~1 MB): al elegir «llamada real» solo
+      // queda pedir micro y conectar, no descargar código.
+      conectar()
+        .then(() => console.log('[voz] SDK precargado y listo'))
+        .catch((err) => console.error('[voz] precarga del SDK falló (se reintentará al pulsar):', err));
+    })
+    .catch(() => {});
 })();
