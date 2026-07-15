@@ -110,6 +110,33 @@ let vozArrancarGuion = null;
 const DEMO_API_BASE = window.AITOMAT_API
   || (['localhost', '127.0.0.1'].includes(location.hostname) ? '' : 'https://api.aitomat.es');
 
+// Modo presentacion (solo Alex): si la URL trae ?demo_key=XXXX, se guarda y se
+// borra de la barra al instante; a partir de ahi se adjunta a las llamadas de la
+// API para saltar el limite por IP (backend: DEMO_BYPASS_KEY). El JUEGO publico
+// no lleva clave, asi que sigue con su limite. La clave NO se hardcodea aqui:
+// solo se reenvia la que el propio Alex mete en la URL, asi el repo publico no
+// filtra ningun secreto. Va como query param (no cabecera) para no disparar el
+// preflight CORS (allow_headers solo permite content-type).
+const DEMO_KEY_STORE = 'aitomat-demo-key';
+(function capturarDemoKey() {
+  try {
+    const p = new URLSearchParams(location.search);
+    const k = p.get('demo_key');
+    if (!k) return;
+    localStorage.setItem(DEMO_KEY_STORE, k); // persiste (chat + voz, aguanta reload)
+    p.delete('demo_key');
+    const q = p.toString();
+    history.replaceState(null, '', location.pathname + (q ? '?' + q : '') + location.hash);
+    console.log('[demo] modo presentacion activo (clave guardada, URL limpiada)');
+  } catch (e) { /* nada */ }
+})();
+function conClave(url) {
+  let k = null;
+  try { k = localStorage.getItem(DEMO_KEY_STORE); } catch (e) { /* nada */ }
+  if (!k) return url;
+  return url + (url.includes('?') ? '&' : '?') + 'demo_key=' + encodeURIComponent(k);
+}
+
 // Burbuja de chat compartida entre la animacion guionizada y la demo real.
 function makeWaBubble(kind, text, time) {
   const bubble = document.createElement('div');
@@ -1630,7 +1657,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   // usuario: primer 429 -> reintento silencioso a los 4 s (el typing sigue);
   // segundo 429 -> se devuelve el texto al input para reenviar con un clic.
   function mandar(texto, intento) {
-    fetch(`${API_BASE}/demo/chat`, {
+    fetch(conClave(`${API_BASE}/demo/chat`), {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ session_id: sessionId, mensaje: texto }),
@@ -1711,7 +1738,7 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   const setStatus = (t) => { if (statusEl) statusEl.textContent = t; };
 
-  fetch(`${DEMO_API_BASE}/demo/voz-config`)
+  fetch(conClave(`${DEMO_API_BASE}/demo/voz-config`))
     .then((res) => (res.ok ? res.json() : null))
     .then((cfg) => {
       if (!cfg || !cfg.disponible) {
@@ -2065,7 +2092,7 @@ function renderPhone(chatEl, statusEl, scenario) {
         // Gate por IP EN EL BACKEND: la key/assistant solo llegan si autoriza.
         let auth;
         try {
-          auth = await fetch(`${DEMO_API_BASE}/demo/voz-start`, { method: 'POST' }).then((r) => r.json());
+          auth = await fetch(conClave(`${DEMO_API_BASE}/demo/voz-start`), { method: 'POST' }).then((r) => r.json());
         } catch (err) {
           auth = null;
         }
