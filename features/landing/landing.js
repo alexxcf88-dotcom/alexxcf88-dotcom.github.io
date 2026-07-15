@@ -2112,7 +2112,12 @@ function renderPhone(chatEl, statusEl, scenario) {
         try {
           const v = await conectar(publicKeyActual);
           console.log('[voz] start llamado, assistant:', (auth.assistantId || '').slice(0, 8) + '…');
-          await v.start(auth.assistantId);
+          // Override POR-LLAMADA (no toca el asistente desplegado en Vapi): quitamos
+          // el ambiente de oficina porque, al sumarse con el primer golpe de voz a
+          // nivel pleno, saturaba (nivel 1.000) y se oía como un trabón al arrancar
+          // el saludo de Cristina. Probar en local antes de desplegar.
+          const overrides = { backgroundSound: 'off' };
+          await v.start(auth.assistantId, overrides);
           // el estado real lo fija el evento call-start
         } catch (err) {
           console.error('[voz] error real al iniciar:', err);
