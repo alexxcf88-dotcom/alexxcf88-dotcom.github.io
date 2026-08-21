@@ -3,13 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>AItomat — Asistente de IA para clínicas dentales</title>
-  <meta name="description" content="AItomat es el asistente de IA para clínicas dentales: atiende WhatsApp, gestiona la agenda, envía recordatorios y reactiva pacientes.">
+  <title>AItomat — Recepción automatizada para clínicas dentales</title>
+  <meta name="description" content="AItomat es recepción automatizada para clínicas dentales: atiende el teléfono, agenda sobre tu agenda real, envía recordatorios y recupera pacientes dormidos. Habla con el asistente desde la web.">
   <meta name="theme-color" content="#050706">
   <link rel="canonical" href="https://aitomat.es/">
   <meta name="robots" content="index, follow">
-  <meta property="og:title" content="AItomat — Asistente de IA para clínicas dentales">
-  <meta property="og:description" content="La capa de automatizaci&oacute;n para cl&iacute;nicas dentales: WhatsApp, agenda, recordatorios, reactivaci&oacute;n e inbox inteligente.">
+  <meta property="og:title" content="AItomat — Recepción automatizada para clínicas dentales">
+  <meta property="og:description" content="Atiende el tel&eacute;fono, agenda sobre tu agenda real y recupera pacientes dormidos. Puedes hablar con el asistente desde la propia web.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aitomat.es/">
   <meta property="og:site_name" content="AItomat">
@@ -17,10 +17,10 @@
   <meta property="og:image" content="https://aitomat.es/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
-  <meta property="og:image:alt" content="AItomat — Asistente de IA para clínicas dentales">
+  <meta property="og:image:alt" content="AItomat — Recepción automatizada para clínicas dentales">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="AItomat — Asistente de IA para clínicas dentales">
-  <meta name="twitter:description" content="Atiende WhatsApp, gestiona la agenda y reactiva pacientes para tu clínica dental.">
+  <meta name="twitter:title" content="AItomat — Recepción automatizada para clínicas dentales">
+  <meta name="twitter:description" content="Atiende el teléfono, gestiona la agenda y recupera pacientes dormidos para tu clínica dental.">
   <meta name="twitter:image" content="https://aitomat.es/og-image.png">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -41,7 +41,7 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260703-movil-compacto2">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260821-planes">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -56,7 +56,7 @@
         "url": "https://aitomat.es/",
         "logo": "https://aitomat.es/og-image.png",
         "image": "https://aitomat.es/og-image.png",
-        "description": "Asistente de IA para clínicas dentales: atiende WhatsApp y llamadas, gestiona la agenda, envía recordatorios y reactiva pacientes dormidos, con salida a recepción cuando hace falta.",
+        "description": "Recepción automatizada para clínicas dentales: atiende llamadas, gestiona la agenda, envía recordatorios y recupera pacientes dormidos, con salida a recepción cuando hace falta.",
         "areaServed": {
           "@type": "Country",
           "name": "España"
@@ -73,11 +73,11 @@
       },
       {
         "@type": "Service",
-        "name": "Asistente de IA para clínicas dentales",
+        "name": "Recepción automatizada para clínicas dentales",
         "serviceType": "Automatización de recepción para clínicas dentales",
         "provider": { "@id": "https://aitomat.es/#organization" },
         "areaServed": { "@type": "Country", "name": "España" },
-        "description": "Recepción con IA que atiende WhatsApp y llamadas perdidas, reserva en la agenda real, envía recordatorios y recupera pacientes inactivos, derivando a recepción los casos que lo requieren."
+        "description": "Recepción automatizada que atiende llamadas, reserva en la agenda real, envía recordatorios y recupera pacientes inactivos, derivando a recepción los casos que lo requieren."
       },
       {
         "@type": "FAQPage",
@@ -125,6 +125,14 @@
           },
           {
             "@type": "Question",
+            "name": "¿Qué pasa si me paso de los minutos incluidos?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El servicio no se corta nunca. Al llegar al 80 % del plan avisamos, y si un mes se pasa se sigue atendiendo con normalidad: se ajusta hablando, sin facturar nada por sorpresa. Los minutos consumidos y los restantes se ven en el panel."
+            }
+          },
+          {
+            "@type": "Question",
             "name": "¿Hay permanencia?",
             "acceptedAnswer": {
               "@type": "Answer",
@@ -141,8 +149,11 @@
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
+    <!-- Autoalojado: antes colgaba de un CloudFront ajeno (16,1 MB). Si el v&iacute;deo no
+         llega a cargar, el p&oacute;ster deja el mismo primer fotograma de fondo. -->
     <video class="ambient-video" id="bg-video" autoplay loop muted playsinline preload="metadata"
-      src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4"></video>
+      poster="features/landing/media/hero-poster.jpg"
+      src="features/landing/media/hero.mp4"></video>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
     <div class="ambient-tint" id="bg-tint"></div>
@@ -156,6 +167,7 @@
       <a href="#inbox">Inbox</a>
       <a href="#voz">Voz</a>
       <a href="#precio">Precio</a>
+      <a href="integraciones.html">Integraciones</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Demo</a>
     </div>
@@ -174,28 +186,29 @@
       <div class="hero-copy">
         <p class="eyebrow"><span></span> Automatizaci&oacute;n real para cl&iacute;nicas dentales</p>
         <div class="hero-title-wrap">
-          <h1>Tu cl&iacute;nica dental <span class="shiny">automatizada.</span></h1>
+          <h1>La recepci&oacute;n de tu cl&iacute;nica, <span class="shiny">automatizada.</span></h1>
         </div>
-        <div class="hero-rotator" aria-label="AItomat automatiza los principales canales de la cl&iacute;nica">
+        <div class="hero-rotator" aria-label="Lo que atiende AItomat en la recepci&oacute;n de la cl&iacute;nica">
           <span class="hero-rotator-label">Atiende</span>
           <span class="hero-rotator-window" id="hero-rotator" aria-live="polite">
-            <span class="hero-rotator-word is-active">WhatsApps</span>
-            <span class="hero-rotator-word">llamadas</span>
-            <span class="hero-rotator-word">agenda</span>
+            <span class="hero-rotator-word is-active">llamadas</span>
+            <span class="hero-rotator-word">la agenda</span>
+            <span class="hero-rotator-word">recordatorios</span>
             <span class="hero-rotator-word">no-shows</span>
             <span class="hero-rotator-word">pacientes dormidos</span>
           </span>
         </div>
         <p class="hero-lead">
-          <span class="b-ai">AI</span>tomat responde WhatsApps, prepara llamadas perdidas, mueve citas y activa recordatorios
-          o reactivaci&oacute;n cuando las plantillas de WhatsApp est&aacute;n listas.
+          <span class="b-ai">AI</span>tomat descuelga el tel&eacute;fono, entiende qu&eacute; necesita el paciente y deja la cita
+          puesta en la agenda real o el caso listo para recepci&oacute;n. Puedes hablar con &eacute;l ahora mismo,
+          aqu&iacute; abajo, sin registrarte.
         </p>
         <div class="hero-actions">
-          <a class="primary-btn" href="#contacto" data-demo-open>Automatizar mi cl&iacute;nica</a>
-          <a class="secondary-btn" href="#flujo">Ver c&oacute;mo funciona</a>
+          <a class="primary-btn" href="#voz">Hablar con el asistente</a>
+          <a class="secondary-btn" href="#contacto" data-demo-open>Pedir una demo</a>
         </div>
         <div class="hero-fast-path" aria-label="Atajos principales">
-          <a href="#precio">Ver precio desde 149&nbsp;&euro;/mes</a>
+          <a href="#precio">Ver precio desde 99&nbsp;&euro;/mes</a>
           <a href="#faq">Resolver dudas de RGPD y fallos</a>
         </div>
         <a class="hero-cue" href="#proceso">desliza para descubrir el proceso</a>
@@ -216,13 +229,13 @@
           <em class="os-live"><i></i> en vivo</em>
         </div>
         <div class="os-tabs" id="system-cases" role="tablist" aria-label="Casos que resuelve AItomat">
-          <button class="os-tab active" id="tab-whatsapp" type="button" role="tab" aria-selected="true" aria-controls="os-body" data-case="whatsapp">WhatsApp</button>
-          <button class="os-tab" id="tab-llamadas" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="llamadas">Llamadas</button>
-          <button class="os-tab" id="tab-agenda" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="agenda">Agenda</button>
-          <button class="os-tab" id="tab-noshows" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="noshows">No-shows</button>
-          <button class="os-tab" id="tab-reactivacion" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="reactivacion">Reactivar</button>
-        </div>
-        <p class="os-caption" id="os-caption">Pregunta, cualifica y prepara los WhatsApp que nadie contesta.</p>
+          <button class="os-tab active" id="tab-llamadas" type="button" role="tab" aria-selected="true" aria-controls="os-body" data-case="llamadas">Llamadas</button>
+            <button class="os-tab" id="tab-agenda" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="agenda">Agenda</button>
+            <button class="os-tab" id="tab-noshows" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="noshows">No-shows</button>
+            <button class="os-tab" id="tab-reactivacion" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="reactivacion">Reactivaci&oacute;n</button>
+            <button class="os-tab" id="tab-whatsapp" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="whatsapp">WhatsApp &middot; pronto</button>
+          </div>
+        <p class="os-caption" id="os-caption">Recupera llamadas perdidas sin fingir que no es IA.</p>
         <div class="os-body" id="os-body" role="tabpanel" aria-live="polite" aria-labelledby="tab-whatsapp">
           <div class="os-pipeline">
             <article class="os-step" data-step="0">
@@ -273,7 +286,7 @@
             <button class="compose-btn" type="button"><span>Redactar con <span class="b-ai">AI</span>tomat</span></button>
             <nav class="mail-nav-list">
               <button class="mail-nav active" type="button"><span>Entrada</span><em>7</em></button>
-              <button class="mail-nav" type="button"><span>Urgencias</span><em>1</em></button>
+              <button class="mail-nav" type="button"><span>Prioritarios</span><em>1</em></button>
               <button class="mail-nav" type="button"><span>Citas</span><em>3</em></button>
               <button class="mail-nav" type="button"><span>Cambios</span><em>2</em></button>
               <button class="mail-nav" type="button"><span>Reactivar</span><em>12</em></button>
@@ -281,7 +294,7 @@
             </nav>
             <div class="mail-labels">
               <p class="labels-title">Etiquetas</p>
-              <span class="label-dot"><i style="background:#ff8066"></i> Urgencia</span>
+              <span class="label-dot"><i style="background:#ff8066"></i> Prioritario</span>
               <span class="label-dot"><i style="background:#5af0d8"></i> Cita</span>
               <span class="label-dot"><i style="background:#f1b64b"></i> Cambio</span>
               <span class="label-dot"><i style="background:#a4f4fd"></i> Info</span>
@@ -300,7 +313,7 @@
               <span class="avatar" id="reader-avatar">L</span>
               <div>
                 <strong id="reader-from">Laura P&eacute;rez</strong>
-                <small id="reader-meta">WhatsApp &middot; 9:41</small>
+                <small id="reader-meta">Mensaje &middot; 9:41</small>
               </div>
               <span class="reader-pill" id="reader-pill">Cita</span>
             </div>
@@ -329,7 +342,7 @@
       <div class="story-intro">
         <p class="eyebrow"><span></span> En acci&oacute;n</p>
         <h2>Mira c&oacute;mo atiende a un paciente, paso a paso.</h2>
-        <p>Un WhatsApp entra y <span class="b-ai">AI</span>tomat pregunta, confirma datos y deja el caso preparado para recepci&oacute;n.</p>
+        <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
         <span class="story-scrollcue" aria-hidden="true">Desliza para ver el flujo</span>
       </div>
       <div class="story-phone-pin">
@@ -343,7 +356,7 @@
         <div class="story-radar" aria-hidden="true">
           <span></span><span></span><span></span>
         </div>
-        <article class="phone story-phone iphone" id="story-phone" aria-label="Conversaci&oacute;n de WhatsApp con AItomat">
+        <article class="phone story-phone iphone" id="story-phone" aria-label="Conversaci&oacute;n con el asistente de AItomat">
           <span class="phone-backplate" aria-hidden="true">
             <span class="cam-plateau">
               <i class="cam-lens"></i><i class="cam-lens"></i><i class="cam-lens"></i>
@@ -399,8 +412,8 @@
           <article class="story-note note-a active" data-story-step="0">
             <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.9 7.6L3 21l1.9-6.1A8.4 8.4 0 1 1 21 11.5Z"/></svg></span>
             <div>
-              <h3>Capta la consulta</h3>
-              <p>El paciente escribe por WhatsApp y <span class="b-ai">AI</span>tomat entiende el motivo al instante.</p>
+              <h3>Atiende la llamada</h3>
+              <p>Descuelga cuando recepci&oacute;n no puede y entiende el motivo al instante.</p>
             </div>
           </article>
           <article class="story-note note-b" data-story-step="1">
@@ -430,9 +443,9 @@
 
     <section id="voz" class="voice-section voice-redesign">
       <div class="voice-head">
-        <p class="eyebrow"><span></span> M&oacute;dulo de voz &middot; se activa en el alta</p>
+        <p class="eyebrow"><span></span> Recepci&oacute;n por voz &middot; incluida en el plan base</p>
         <h2>Llamadas en vivo, sin perder el hilo.</h2>
-        <p class="voice-sub">M&oacute;dulo adicional que se configura durante la implantaci&oacute;n: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Comparte agenda y criterios con el de WhatsApp.</p>
+        <p class="voice-sub">Incluida en el plan base, con 300 minutos al mes: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Usa la misma agenda y los mismos criterios que el resto del sistema.</p>
       </div>
       <div class="voice-stage">
         <div class="voice-robot" id="voice-3d" data-spline data-scene="/features/landing/voice.splinecode" aria-hidden="true">
@@ -468,6 +481,7 @@
               <label class="voice-mic-label" id="voice-mic-label" hidden>Micro:
                 <select id="voice-mic" aria-label="Micr&oacute;fono a usar en la llamada"></select>
               </label>
+              <small class="voice-note">Entorno de pruebas &middot; no facilites datos personales reales.</small>
             </div>
           </div>
         </div>
@@ -477,37 +491,52 @@
     <section id="precio" class="commercial-section pricing-section" data-lamp>
       <span class="lamp-edge lamp-edge-l" aria-hidden="true"></span>
       <span class="lamp-edge lamp-edge-r" aria-hidden="true"></span>
-      <div class="pricing-shell">
-        <div class="price-panel">
+      <div class="pricing-shell planes-shell">
+        <div class="pricing-head">
           <p class="eyebrow"><span></span> Precio</p>
-          <div class="price-amount">
-            <span>Desde</span>
-            <strong>149&nbsp;&euro;</strong>
-            <em>/mes</em>
-          </div>
-          <h2>Precio base claro. Sin permanencia.</h2>
-          <p>Empieza con WhatsApp, agenda y recordatorios. Voz, volumen alto e integraciones se presupuestan aparte, antes de activar nada.</p>
-          <div class="price-switch" aria-label="Condiciones principales">
-            <span class="active">Mensual</span>
-            <span>Sin permanencia</span>
-            <span>Piloto</span>
-          </div>
-          <a class="primary-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
+          <h2>Tres planes. Sin permanencia.</h2>
+          <p class="pricing-lead">
+            Si un mes te pasas de los minutos incluidos, <strong>el servicio no se corta nunca</strong>:
+            te avisamos al llegar al 80&nbsp;% y lo ajustamos hablando, sin facturarte por sorpresa.
+          </p>
         </div>
 
-        <div class="price-detail">
-          <div class="price-row">
-            <strong>Base</strong>
-            <span>WhatsApp + agenda + recordatorios.</span>
-          </div>
-          <div class="price-row">
-            <strong>Aparte</strong>
-            <span>Agente de voz e integraciones complejas.</span>
-          </div>
-          <div class="price-row">
-            <strong>Antes</strong>
-            <span>Revisi&oacute;n de canales, agenda y RGPD.</span>
-          </div>
+        <div class="planes">
+          <article class="plan">
+            <p class="plan-nombre">Esencial</p>
+            <p class="plan-precio"><strong>99&nbsp;&euro;</strong><em>/mes</em></p>
+            <ul class="plan-lista">
+              <li><strong>150 minutos</strong> de voz al mes</li>
+              <li>Panel de recepci&oacute;n</li>
+              <li>Agenda propia de <span class="b-ai">AI</span>tomat o Google Calendar</li>
+            </ul>
+            <a class="secondary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
+          </article>
+
+          <article class="plan plan--destacado">
+            <p class="plan-nombre">Cl&iacute;nica <span class="plan-sello">Recomendado</span></p>
+            <p class="plan-precio"><strong>179&nbsp;&euro;</strong><em>/mes</em></p>
+            <ul class="plan-lista">
+              <li><strong>300 minutos</strong> de voz al mes</li>
+              <li>Panel completo</li>
+              <li>Reactivaci&oacute;n de pacientes dormidos</li>
+              <li>Lista de espera</li>
+              <li>Recordatorios</li>
+              <li>Multi-sede</li>
+            </ul>
+            <a class="primary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
+          </article>
+
+          <article class="plan">
+            <p class="plan-nombre">Integrado</p>
+            <p class="plan-precio plan-precio--texto">Precio seg&uacute;n tu sistema &mdash; lo evaluamos contigo</p>
+            <ul class="plan-lista">
+              <li>Todo lo del plan Cl&iacute;nica</li>
+              <li>Conexi&oacute;n con tu software de gesti&oacute;n</li>
+              <li>Sin fechas ni promesas: primero vemos tu sistema</li>
+            </ul>
+            <a class="secondary-btn plan-btn" href="integraciones.html">Ver integraciones</a>
+          </article>
         </div>
 
         <aside class="pilot-panel">
@@ -537,8 +566,8 @@
             <p>Fuera de horario o cuando recepci&oacute;n est&aacute; ocupada.</p>
           </article>
           <article class="audit-question">
-            <span>WhatsApp</span>
-            <strong>WhatsApps que esperan.</strong>
+            <span>Bandeja</span>
+            <strong>Mensajes que esperan.</strong>
             <p>Preguntas sencillas que se enfr&iacute;an si tardan horas.</p>
           </article>
           <article class="audit-question">
@@ -563,11 +592,17 @@
           </details>
           <details>
             <summary>&iquest;Tengo que cambiar mi software de agenda?</summary>
-            <p>No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar est&aacute; contemplado; otras agendas se valoran caso a caso.</p>
+            <p>No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar est&aacute; contemplado; otras agendas se valoran caso a caso. El estado de cada sistema est&aacute; en <a href="integraciones.html">integraciones</a>.</p>
           </details>
           <details>
             <summary>&iquest;Y si falla o no entiende al paciente?</summary>
             <p>El flujo debe tener salida humana. Si hay duda, urgencia, datos contradictorios o petici&oacute;n sensible, el caso se marca para recepci&oacute;n en lugar de improvisar.</p>
+          </details>
+          <details>
+            <summary>&iquest;Qu&eacute; pasa si me paso de los minutos incluidos?</summary>
+            <p>El servicio <strong>no se corta nunca</strong>. Al llegar al 80&nbsp;% del plan te avisamos,
+               y si un mes te pasas seguimos atendiendo con normalidad: lo ajustamos hablando, sin
+               facturarte nada por sorpresa. Los minutos consumidos y los que quedan se ven en el panel.</p>
           </details>
           <details>
             <summary>&iquest;Hay permanencia?</summary>
@@ -582,7 +617,7 @@
       <div class="cta-copy">
         <p class="eyebrow"><span></span> Demo</p>
         <h2>Vemos si encaja en tu cl&iacute;nica.</h2>
-        <p>Te respondemos con una propuesta clara para WhatsApp, agenda y pacientes dormidos.</p>
+        <p>Te respondemos con una propuesta clara para llamadas, agenda y pacientes dormidos.</p>
         <ul class="cta-points">
           <li>Qu&eacute; se puede automatizar</li>
           <li>Qu&eacute; debe pasar a recepci&oacute;n</li>
@@ -627,6 +662,8 @@
   <footer class="site-footer">
     <a class="brand" href="#inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
     <div>
+      <a href="integraciones.html">Integraciones</a>
+      <a href="como-funciona.html">C&oacute;mo funciona</a>
       <a href="legal/privacidad.html">Privacidad</a>
       <a href="legal/terminos.html">T&eacute;rminos</a>
       <a href="legal/cookies.html">Cookies</a>
@@ -634,12 +671,6 @@
     </div>
   </footer>
 
-  <a class="whatsapp-float" id="whatsapp-float" href="#contacto" data-phone="" data-message="Hola, quiero una demo de AItomat para mi cl&iacute;nica dental." aria-label="Contactar por WhatsApp">
-    <span class="wa-ping" aria-hidden="true"></span>
-    <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
-      <path d="M16.04 4.2c-6.39 0-11.58 5.05-11.58 11.27 0 2.14.62 4.22 1.78 6.02L4 28l6.75-2.11a11.9 11.9 0 0 0 5.29 1.24c6.38 0 11.57-5.05 11.57-11.26S22.42 4.2 16.04 4.2Zm0 20.99c-1.7 0-3.35-.43-4.81-1.24l-.35-.2-4 1.25 1.29-3.78-.23-.37a9.62 9.62 0 0 1-1.54-5.18c0-5.14 4.32-9.31 9.64-9.31s9.63 4.17 9.63 9.31-4.32 9.52-9.63 9.52Zm5.31-6.95c-.29-.14-1.72-.83-1.99-.92-.27-.1-.46-.14-.66.14-.19.28-.76.92-.93 1.1-.17.19-.34.21-.63.07-.29-.14-1.22-.44-2.32-1.4-.86-.74-1.44-1.66-1.61-1.94-.17-.28-.02-.43.13-.57.13-.13.29-.34.44-.5.15-.17.19-.28.29-.47.1-.19.05-.35-.02-.5-.07-.14-.66-1.54-.9-2.11-.24-.55-.48-.48-.66-.49h-.56c-.19 0-.51.07-.78.35-.27.28-1.02.97-1.02 2.37 0 1.4 1.05 2.75 1.2 2.94.15.19 2.06 3.06 5 4.29.7.29 1.25.47 1.68.6.71.22 1.35.19 1.86.12.57-.08 1.72-.68 1.96-1.34.24-.66.24-1.23.17-1.34-.07-.12-.27-.19-.56-.33Z"/>
-    </svg>
-  </a>
 
   <div class="demo-modal" id="demo-modal" aria-hidden="true">
     <div class="demo-modal-backdrop" data-demo-close></div>

@@ -1,0 +1,177 @@
+/*
+  Componentes de las páginas de contenido (integraciones, cómo funciona).
+
+  Se carga DESPUÉS de legal/legal.css y reutiliza sus tokens (--aqua, --soft,
+  --line, --panel, --radius…). Aquí solo vive lo que la plantilla legal no
+  tenía: el grupo de integración, la ficha de cada sistema y el distintivo de
+  estado. Nada de tokens nuevos.
+*/
+
+/* ── Marca dentro de texto corrido ─────────────────────────────────────────
+   "AItomat" en texto plano se lee "Altomat": en Inter la I mayúscula es un palo
+   idéntico a la ele (web/CLAUDE.md §2). Se compone con el mismo .b-ai que usan
+   la cabecera y la landing (brandify, landing.js); aquí solo hace falta evitar
+   que el nombre se parta al final de una línea.
+   El aqua no se confunde con un enlace porque en esta plantilla los enlaces van
+   siempre subrayados. */
+.marca { white-space: nowrap; }
+
+/* ── Distintivo de estado ──────────────────────────────────────────────────── */
+.estado {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.45rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.estado::before {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: currentColor;
+  content: "";
+}
+
+.estado--listo {
+  border-color: rgba(90, 240, 216, 0.3);
+  background: rgba(90, 240, 216, 0.09);
+  color: var(--aqua);
+}
+
+.estado--desarrollo {
+  border-color: rgba(57, 120, 255, 0.36);
+  background: rgba(57, 120, 255, 0.12);
+  color: #9dbcff;
+}
+
+.estado--estudio {
+  background: var(--panel);
+  color: rgba(247, 251, 248, 0.66);
+}
+
+/* ── Grupo de integraciones ────────────────────────────────────────────────── */
+.grupo { margin: 2.6rem 0 0; }
+.grupo:first-of-type { margin-top: 0; }
+
+.grupo-cab {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.8rem;
+  margin: 0 0 0.5rem;
+}
+
+.grupo-cab h2 { margin: 0; }
+
+.grupo-lead {
+  max-width: 68ch;
+  margin: 0 0 1.4rem;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.7;
+}
+
+/* ── Ficha de un sistema ───────────────────────────────────────────────────── */
+.int {
+  margin: 0 0 1rem;
+  padding: clamp(1.1rem, 3vw, 1.5rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+}
+
+.int:last-child { margin-bottom: 0; }
+
+.int > h3 {
+  margin: 0 0 0.6rem;
+  color: #fff;
+  font-size: 1.12rem;
+  letter-spacing: -0.02em;
+}
+
+.int p { margin: 0 0 0.9rem; }
+.int p:last-child { margin-bottom: 0; }
+
+.int .legal-table-wrap { margin-bottom: 0.9rem; }
+.int table { min-width: 520px; }
+.int th { width: 50%; }
+
+/* Lo que falta para que esto funcione de verdad. Va en toda ficha que no esté
+   lista: es la parte honesta y no debe poder pasarse por alto. */
+.int-falta {
+  margin: 0.9rem 0 0;
+  padding: 0.85rem 1rem;
+  border-left: 2px solid rgba(57, 120, 255, 0.5);
+  border-radius: 0 12px 12px 0;
+  background: rgba(57, 120, 255, 0.07);
+  color: rgba(247, 251, 248, 0.78);
+  font-size: 0.9rem;
+  line-height: 1.65;
+}
+
+.int-falta strong { color: #cfdcff; }
+
+/* ── Tablas apiladas en movil ────────────────────────────────────────────────
+   A 390 px una tabla de dos columnas obliga a scroll horizontal dentro de su
+   contenedor, y lo que se sale no se ve si no lo buscas. En movil cada fila
+   pasa a bloque: la cabecera de la columna va encima de su valor (viene en
+   data-label) y la tabla deja de scrollar. */
+@media (max-width: 620px) {
+  .legal-table-wrap {
+    overflow-x: visible;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .legal-table-wrap table,
+  .int table {
+    min-width: 0;
+    width: 100%;
+  }
+
+  /* La cabecera desaparece: su texto lo repite cada celda con data-label. */
+  .legal-table-wrap thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip-path: inset(50%);
+    white-space: nowrap;
+  }
+
+  .legal-table-wrap tr {
+    display: block;
+    margin-bottom: 0.7rem;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 16px;
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  .legal-table-wrap tr:last-child { margin-bottom: 0; }
+
+  .legal-table-wrap td {
+    display: block;
+    padding: 0.85rem 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.07);
+  }
+
+  .legal-table-wrap tr td:last-child { border-bottom: 0; }
+
+  .legal-table-wrap td::before {
+    display: block;
+    margin-bottom: 0.3rem;
+    color: #fff;
+    content: attr(data-label);
+    font-size: 0.7rem;
+    font-weight: 900;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+  }
+}

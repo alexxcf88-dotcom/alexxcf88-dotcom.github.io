@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Integraciones - AItomat</title>
+  <meta name="description" content="Con qué sistemas se conecta AItomat, qué lee y qué escribe en cada uno, y en qué punto está cada integración. Sin promesas: el estado real.">
+  <meta name="theme-color" content="#050706">
+  <link rel="canonical" href="https://aitomat.es/integraciones.html">
+  <meta property="og:title" content="Integraciones - AItomat">
+  <meta property="og:description" content="Qué lee y qué escribe AItomat en cada sistema de agenda, y en qué punto está cada integración.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aitomat.es/integraciones.html">
+  <meta property="og:site_name" content="AItomat">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:image" content="https://aitomat.es/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="legal/legal.css">
+  <link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+  <main class="legal-shell">
+    <nav class="legal-nav" aria-label="Navegación">
+      <a class="brand" href="index.html" aria-label="AItomat, inicio"><span class="b-ai">AI</span>tomat</a>
+      <div class="legal-links">
+        <a href="como-funciona.html">Cómo funciona</a>
+        <a href="index.html#precio">Precio</a>
+        <a href="mailto:hola@aitomat.es">hola@aitomat.es</a>
+      </div>
+    </nav>
+
+    <a class="back-link" href="index.html">Volver a la web</a>
+
+    <article class="legal-doc">
+      <header class="legal-head">
+        <p class="legal-kicker">Integraciones</p>
+        <h1>Con qué se conecta</h1>
+        <p class="legal-lead"><span class="marca"><span class="b-ai">AI</span>tomat</span> necesita leer y escribir en una agenda. Esta página dice, sistema por sistema, qué lee, qué escribe y en qué punto está de verdad. Si algo no se ha probado contra una instalación real, aquí lo pone.</p>
+        <p class="legal-updated">Última actualización: 21 de agosto de 2026</p>
+      </header>
+
+      <div class="legal-body">
+        <p class="notice">
+          <span class="marca"><span class="b-ai">AI</span>tomat</span> está en <strong>fase piloto</strong>. Hoy no hay ninguna clínica con su sistema conectado en producción. Lo que sigue describe el estado del software, no clientes en marcha.
+        </p>
+
+        <!-- ── Grupo 1 ─────────────────────────────────────────────────────── -->
+        <section class="grupo">
+          <div class="grupo-cab">
+            <h2>Listo para conectar</h2>
+            <span class="estado estado--listo">Listo</span>
+          </div>
+          <p class="grupo-lead">Está construido y probado de punta a punta, y no depende de nada que haya que validar antes en la clínica. Es por donde se empieza.</p>
+
+          <div class="int">
+            <h3>Agenda propia de <span class="marca"><span class="b-ai">AI</span>tomat</span></h3>
+            <p>La agenda vive en <span class="marca"><span class="b-ai">AI</span>tomat</span>. La clínica no toca su programa actual: si prefiere que nada escriba en su sistema, esta es la opción.</p>
+            <div class="legal-table-wrap">
+              <table>
+                <thead><tr><th>Qué lee</th><th>Qué escribe</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Qué lee">Horario de la clínica y huecos libres, citas de un día concreto, y pacientes sin visita desde hace X meses.</td>
+                    <td data-label="Qué escribe">Cita nueva, cancelación y cambio de hora.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="int">
+            <h3>Google Calendar</h3>
+            <p>La agenda es un calendario de Google que la clínica comparte con <span class="marca"><span class="b-ai">AI</span>tomat</span>. Las citas aparecen donde el equipo ya mira.</p>
+            <div class="legal-table-wrap">
+              <table>
+                <thead><tr><th>Qué lee</th><th>Qué escribe</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Qué lee">Eventos del calendario indicado, para calcular qué huecos quedan libres y qué hay cada día.</td>
+                    <td data-label="Qué escribe">Crea el evento de la cita con el paciente y su teléfono, y lo cancela si el paciente anula.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p>Hace falta compartir un calendario con la cuenta de servicio de <span class="marca"><span class="b-ai">AI</span>tomat</span>. No se accede a ningún otro calendario de la cuenta.</p>
+          </div>
+
+          <div class="int">
+            <h3>Importación por CSV</h3>
+            <p>Prácticamente todos los programas dentales exportan el listado de citas a Excel o CSV. <span class="marca"><span class="b-ai">AI</span>tomat</span> lo importa a su agenda. Es el camino disponible para cualquier sistema que no tenga integración propia todavía.</p>
+            <div class="legal-table-wrap">
+              <table>
+                <thead><tr><th>Qué lee</th><th>Qué escribe</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Qué lee">Del fichero: paciente, teléfono, fecha y hora, motivo y duración. Los nombres de columna son flexibles (<code>paciente</code> o <code>nombre</code>, <code>móvil</code> o <code>teléfono</code>, <code>tratamiento</code> o <code>motivo</code>…).</td>
+                    <td data-label="Qué escribe"><strong>Nada en el programa de la clínica.</strong> La importación va en un solo sentido.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- ── Grupo 2 ─────────────────────────────────────────────────────── -->
+        <section class="grupo">
+          <div class="grupo-cab">
+            <h2>En desarrollo</h2>
+            <span class="estado estado--desarrollo">En desarrollo</span>
+          </div>
+          <p class="grupo-lead">El código está escrito y el camino es claro, pero falta probarlo contra una instalación real. No se ofrece como disponible ni se pone fecha.</p>
+
+          <div class="int">
+            <h3>Gesden</h3>
+            <p>Gesden guarda los datos en una base de datos en el propio ordenador de recepción. Por eso la integración es un agente pequeño instalado en ese ordenador, que hace <strong>solo conexiones salientes</strong> por HTTPS: no hay que abrir puertos ni tocar el router de la clínica.</p>
+            <div class="legal-table-wrap">
+              <table>
+                <thead><tr><th>Qué leería</th><th>Qué escribiría</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Qué leería">Citas de un rango de fechas (fecha, hora, duración, tratamiento) y la ficha del paciente: nombre, teléfono y móvil.</td>
+                    <td data-label="Qué escribiría">Cita nueva, y cambio de estado a anulada cuando el paciente cancela. Crea la ficha del paciente si aún no existe.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="int-falta"><strong>Qué falta:</strong> las tablas y columnas de Gesden cambian entre versiones, así que el esquema hay que confirmarlo contra la instalación concreta de la clínica. Hasta entonces, una clínica con Gesden puede empezar hoy exportando sus citas a CSV.</p>
+          </div>
+
+          <div class="int">
+            <h3>Dentalink</h3>
+            <p>Dentalink (Healthatom) está en la nube y tiene API documentada, así que no hace falta instalar nada en la clínica: <span class="marca"><span class="b-ai">AI</span>tomat</span> habla con ella directamente por HTTPS.</p>
+            <div class="legal-table-wrap">
+              <table>
+                <thead><tr><th>Qué leería</th><th>Qué escribiría</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Qué leería">Citas de la sucursal en un rango de fechas, para saber qué huecos quedan y qué hay cada día.</td>
+                    <td data-label="Qué escribiría">Cita nueva en la agenda del dentista indicado, ficha de paciente si no existe, y anulación cambiando el estado de la cita.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="int-falta"><strong>Qué falta:</strong> probarlo contra una cuenta real. Para activarlo hacen falta el token de API de la clínica y tres datos de su configuración: sucursal, dentista por defecto y cuál es su estado «anulado».</p>
+          </div>
+        </section>
+
+        <!-- ── Grupo 3 ─────────────────────────────────────────────────────── -->
+        <section class="grupo">
+          <div class="grupo-cab">
+            <h2>A estudiar según la clínica</h2>
+            <span class="estado estado--estudio">Sin empezar</span>
+          </div>
+          <p class="grupo-lead">Aquí no hay trabajo hecho. Si tu clínica usa uno de estos, lo estudiamos antes de prometer nada.</p>
+
+          <div class="int">
+            <h3>Clinic Cloud, Klinikare, Doctoralia y otros</h3>
+            <p>Lo que decide si una integración es viable son dos preguntas: si el sistema ofrece una API documentada, o si su base de datos es accesible desde el ordenador de la clínica. Con una de las dos, el camino es el mismo que el de Dentalink o el de Gesden.</p>
+            <p>Mientras tanto, cualquiera de estos programas se puede usar hoy con <span class="marca"><span class="b-ai">AI</span>tomat</span> exportando las citas a CSV, o dejando la agenda en <span class="marca"><span class="b-ai">AI</span>tomat</span> o en Google Calendar.</p>
+          </div>
+        </section>
+
+        <h2>Qué hace falta para conectar una clínica</h2>
+        <ul>
+          <li><strong>Saber qué programa usa</strong> y en qué versión, si es Gesden o similar instalado en la clínica.</li>
+          <li><strong>Un contacto técnico</strong>, aunque sea el informático que les monta los equipos, para confirmar accesos.</li>
+          <li><strong>Un acuerdo de encargado de tratamiento firmado</strong> antes de conectar datos reales de pacientes. Está explicado en la <a href="legal/privacidad.html">política de privacidad</a> y en <a href="como-funciona.html">cómo funciona por dentro</a>.</li>
+        </ul>
+
+        <p>Si quieres saber si tu sistema encaja, escribe a <a href="mailto:hola@aitomat.es">hola@aitomat.es</a> diciendo qué programa usáis.</p>
+
+        <footer class="legal-footer">
+          <span>© 2026 <span class="marca"><span class="b-ai">AI</span>tomat</span></span>
+          <div class="legal-links">
+            <a href="como-funciona.html">Cómo funciona</a>
+            <a href="legal/privacidad.html">Privacidad</a>
+            <a href="legal/terminos.html">Términos</a>
+          </div>
+        </footer>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

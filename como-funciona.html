@@ -1,0 +1,126 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Cómo funciona por dentro - AItomat</title>
+  <meta name="description" content="Dónde se alojan los datos, cifrado, responsable y encargado del tratamiento, subencargados, retención y qué NO hace el sistema. La versión técnica, para quien tiene que firmar.">
+  <meta name="theme-color" content="#050706">
+  <link rel="canonical" href="https://aitomat.es/como-funciona.html">
+  <meta property="og:title" content="Cómo funciona por dentro - AItomat">
+  <meta property="og:description" content="Dónde viven los datos, quién es responsable y quién encargado, qué proveedores intervienen y qué no hace el sistema.">
+  <meta property="og:type" content="website">
+  <meta property="og:url" content="https://aitomat.es/como-funciona.html">
+  <meta property="og:site_name" content="AItomat">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:image" content="https://aitomat.es/og-image.png">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="legal/legal.css">
+  <link rel="stylesheet" href="css/paginas.css">
+</head>
+<body>
+  <main class="legal-shell">
+    <nav class="legal-nav" aria-label="Navegación">
+      <a class="brand" href="index.html" aria-label="AItomat, inicio"><span class="b-ai">AI</span>tomat</a>
+      <div class="legal-links">
+        <a href="integraciones.html">Integraciones</a>
+        <a href="index.html#precio">Precio</a>
+        <a href="mailto:hola@aitomat.es">hola@aitomat.es</a>
+      </div>
+    </nav>
+
+    <a class="back-link" href="index.html">Volver a la web</a>
+
+    <article class="legal-doc">
+      <header class="legal-head">
+        <p class="legal-kicker">Cómo funciona por dentro</p>
+        <h1>La versión técnica</h1>
+        <p class="legal-lead">Dónde viven los datos, quién responde de qué, qué proveedores intervienen y qué no hace el sistema. Escrito para quien tiene que firmar, no para quien tiene que emocionarse.</p>
+        <p class="legal-updated">Última actualización: 21 de agosto de 2026</p>
+      </header>
+
+      <div class="legal-body">
+        <p class="notice">
+          <span class="marca"><span class="b-ai">AI</span>tomat</span> está en <strong>fase piloto</strong> y hoy no hay ninguna clínica conectada, así que no se están tratando datos de pacientes. Esta página incluye a propósito lo que <strong>falta por resolver</strong> antes de conectar la primera. Si algo está sin confirmar, lo dice.
+        </p>
+
+        <h2>1. Qué es y qué no es</h2>
+        <p><span class="marca"><span class="b-ai">AI</span>tomat</span> es <strong>recepción automatizada para clínicas dentales</strong>: atiende, responde, agenda sobre una agenda real y avisa. Eso es todo lo que es.</p>
+        <p>No es un programa de gestión de clínica, ni un CRM, ni una historia clínica. No sustituye al software que ya usáis: se apoya en él o convive con él.</p>
+
+        <h2>2. Qué NO hace el sistema</h2>
+        <p>Esto no es una lista de descargo legal, es el límite de diseño:</p>
+        <ul>
+          <li><strong>No diagnostica.</strong> No valora síntomas ni sugiere tratamientos.</li>
+          <li><strong>No hace triaje médico.</strong> No decide la gravedad de un caso ni su prioridad clínica.</li>
+          <li><strong>No interpreta radiografías ni imágenes.</strong> No las procesa siquiera.</li>
+          <li><strong>No es historia clínica</strong> ni pretende sustituirla.</li>
+          <li><strong>No se hace pasar por una persona.</strong> Se identifica como asistente de la clínica.</li>
+          <li><strong>No decide solo cuando hay duda.</strong> Ante una petición sensible, información contradictoria o algo que se sale del guion, marca el caso para que lo vea alguien de recepción.</li>
+        </ul>
+
+        <h2>3. Dónde viven los datos</h2>
+        <p>El servicio es una aplicación en Python (FastAPI) alojada en <strong>Railway</strong>, en la región <strong>US West (Estados Unidos)</strong>, con volumen persistente. Los datos operativos —conversaciones, citas, recordatorios— se guardan en ese volumen.</p>
+        <p class="int-falta"><strong>Eso está fuera de la Unión Europea</strong>, y conviene decirlo antes de que lo pregunte nadie: hoy la infraestructura no está en suelo europeo. Mientras solo hay datos de demo inventados, no tiene consecuencias. Para datos de pacientes reales, sí.</p>
+        <p><strong>Por eso migrar el alojamiento a una región de la UE es requisito previo a tratar datos de pacientes reales</strong>, no una opción a valorar según la clínica. Es un cambio de configuración del proveedor, no de producto, y se hace antes de conectar la primera clínica. Hasta entonces, aquí no entran datos reales.</p>
+
+        <h2>4. Copias de seguridad</h2>
+        <p class="int-falta"><strong>Hoy no hay copias de seguridad configuradas.</strong> Para una demo con datos inventados da igual; para una clínica con su agenda dentro, no. Es uno de los puntos que hay que dejar resueltos antes de conectar la primera clínica, y por eso aparece aquí y no escondido.</p>
+
+        <h2>5. Cifrado</h2>
+        <ul>
+          <li><strong>En tránsito:</strong> todo va por HTTPS/TLS. La web, el panel, las llamadas a los proveedores y el agente local que se instala en la clínica, que además solo hace conexiones salientes.</li>
+          <li><strong>En reposo:</strong> depende del cifrado de disco de Railway. <strong>Está sin confirmar por escrito</strong>, así que no lo afirmo como garantía contractual hasta tener la documentación del proveedor.</li>
+        </ul>
+
+        <h2>6. Quién responde de qué</h2>
+        <p>La <strong>clínica es responsable del tratamiento</strong> de los datos de sus pacientes. <span class="marca"><span class="b-ai">AI</span>tomat</span> actúa como <strong>encargado del tratamiento</strong>, tratando esos datos solo siguiendo las instrucciones de la clínica y para prestar el servicio.</p>
+        <p>Antes de conectar cualquier canal con datos reales hace falta un <strong>contrato de encargado de tratamiento firmado</strong>. La clínica sigue siendo quien informa a sus pacientes y quien determina la base jurídica de su tratamiento. Está desarrollado en la <a href="legal/privacidad.html">política de privacidad</a>.</p>
+
+        <h2>7. Subencargados</h2>
+        <p>Los terceros que intervienen en el servicio. La lista es corta a propósito, y aquí solo están los que se usan de verdad:</p>
+        <div class="legal-table-wrap">
+          <table>
+            <thead><tr><th>Proveedor</th><th>Para qué</th></tr></thead>
+            <tbody>
+              <tr><td data-label="Proveedor"><strong>Railway</strong></td><td data-label="Para qué">Alojamiento de la aplicación y de la base de datos (US West).</td></tr>
+              <tr><td data-label="Proveedor"><strong>Anthropic</strong></td><td data-label="Para qué">El modelo de lenguaje que redacta las respuestas.</td></tr>
+              <tr><td data-label="Proveedor"><strong>Vapi</strong> y <strong>ElevenLabs</strong></td><td data-label="Para qué">Agente de voz: telefonía y voz sintética.</td></tr>
+              <tr><td data-label="Proveedor"><strong>Google</strong></td><td data-label="Para qué">Google Calendar, solo si la clínica elige esa opción de agenda.</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <p>Cualquier alta o baja en esta lista se comunica a las clínicas con servicio activo. Si en el futuro se añade un canal de WhatsApp, su proveedor entrará también aquí.</p>
+
+        <h2>8. Retención y borrado</h2>
+        <p>Los datos tratados por cuenta de una clínica se conservan según lo pactado en el contrato de encargado y las instrucciones de la clínica. Al terminar el servicio se devuelven, eliminan o bloquean conforme a lo acordado y a las obligaciones legales aplicables.</p>
+        <p>Los datos de una solicitud de demo en esta web se conservan lo necesario para atenderla y hacer un seguimiento comercial razonable. Puedes pedir su supresión escribiendo a <a href="mailto:hola@aitomat.es">hola@aitomat.es</a>.</p>
+        <p class="int-falta"><strong>Pendiente:</strong> fijar plazos concretos de retención en días, en vez de remitir al contrato. Se cerrará junto con el contrato de encargado de la primera clínica.</p>
+
+        <h2>9. Qué hace falta antes de conectar una clínica</h2>
+        <p>Resumido, lo que queda por cerrar y que aparece arriba repartido:</p>
+        <ul>
+          <li><strong>Migrar el alojamiento a una región de la UE.</strong> Requisito, no opción.</li>
+          <li>Copias de seguridad configuradas y probadas.</li>
+          <li>Confirmación por escrito del cifrado en reposo del proveedor.</li>
+          <li>Plazos de retención concretos y contrato de encargado de tratamiento firmado.</li>
+        </ul>
+        <p>Si estás valorando <span class="marca"><span class="b-ai">AI</span>tomat</span> para tu clínica y quieres el detalle de alguno de estos puntos, escribe a <a href="mailto:hola@aitomat.es">hola@aitomat.es</a>. Para ver con qué sistemas se conecta, está la página de <a href="integraciones.html">integraciones</a>.</p>
+
+        <footer class="legal-footer">
+          <span>© 2026 <span class="marca"><span class="b-ai">AI</span>tomat</span></span>
+          <div class="legal-links">
+            <a href="integraciones.html">Integraciones</a>
+            <a href="legal/privacidad.html">Privacidad</a>
+            <a href="legal/terminos.html">Términos</a>
+          </div>
+        </footer>
+      </div>
+    </article>
+  </main>
+</body>
+</html>

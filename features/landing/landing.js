@@ -343,15 +343,6 @@ function renderPhone(chatEl, statusEl, scenario) {
   if (!board) return;
 
   const data = {
-    whatsapp: {
-      kicker: 'WhatsApp sin responder',
-      title: 'Convierte mensajes en citas reales.',
-      copy: 'Detecta motivo, urgencia y disponibilidad, y pregunta lo necesario antes de proponer el siguiente hueco.',
-      lines: ['82%', '58%', '70%'],
-      detected: 'Paciente pide limpieza fuera de horario',
-      decision: 'Confirmar datos y buscar hueco real',
-      next: 'Responder + preparar cita',
-    },
     llamadas: {
       kicker: 'Llamadas perdidas',
       title: 'Recupera oportunidades aunque nadie coja el tel\u00e9fono.',
@@ -359,7 +350,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       lines: ['68%', '76%', '48%'],
       detected: 'Llamada perdida sin seguimiento',
       decision: 'Priorizar por horario y motivo probable',
-      next: 'Enviar WhatsApp de recuperaci\u00f3n',
+      next: 'Enviar mensaje de recuperaci\u00f3n',
     },
     agenda: {
       kicker: 'Agenda viva',
@@ -387,6 +378,15 @@ function renderPhone(chatEl, statusEl, scenario) {
       detected: 'Paciente 8 meses sin volver',
       decision: 'Preparar motivo y oferta de revisi\u00f3n',
       next: 'Preparar plantilla de reactivacion',
+    },
+    whatsapp: {
+      kicker: 'Mensaje sin responder',
+      title: 'Convierte mensajes en citas reales.',
+      copy: 'Detecta motivo, urgencia y disponibilidad, y pregunta lo necesario antes de proponer el siguiente hueco.',
+      lines: ['82%', '58%', '70%'],
+      detected: 'Paciente pide limpieza fuera de horario',
+      decision: 'Confirmar datos y buscar hueco real',
+      next: 'Responder + preparar cita',
     },
   };
 
@@ -579,19 +579,11 @@ function renderPhone(chatEl, statusEl, scenario) {
   };
 
   const cases = {
-    whatsapp: {
-      caption: 'Pregunta, cualifica y prepara los WhatsApp que nadie contesta.',
-      message: 'Hola, \u00bften\u00e9is hueco para una limpieza? Mejor por la tarde.',
-      decision: 'Detecta intenci\u00f3n de cita y pregunta si es primera visita, motivo y preferencia horaria.',
-      action: 'Ofrece dos huecos reales y deja la cita preparada cuando el paciente elige.',
-      done: 14, human: 3, metric: 'Confianza de la respuesta', value: 92,
-      note: 'Sin esperar a que recepci\u00f3n abra.',
-    },
     llamadas: {
       caption: 'Recupera llamadas perdidas sin fingir que no es IA.',
       message: 'Llamada perdida de +34 6XX XXX 210 a las 14:10. Sin mensaje.',
       decision: 'Identifica n\u00famero recurrente y pregunta el motivo antes de proponer el siguiente paso.',
-      action: 'Env\u00eda WhatsApp de recuperaci\u00f3n y deriva a recepci\u00f3n si el caso necesita una persona.',
+      action: 'Env\u00eda un mensaje de recuperaci\u00f3n y deriva a recepci\u00f3n si el caso necesita una persona.',
       done: 9, human: 2, metric: 'Llamadas recuperadas', value: 71,
       note: 'Ninguna oportunidad se queda en el aire.',
     },
@@ -618,6 +610,14 @@ function renderPhone(chatEl, statusEl, scenario) {
       action: 'Env\u00eda seguimiento contextual y pregunta si quiere ver huecos de revisi\u00f3n esta semana.',
       done: 32, human: 5, metric: 'Vuelven a la consulta', value: 58,
       note: 'Vuelve a llenar agenda sin perseguir a mano.',
+    },
+    whatsapp: {
+      caption: 'Pregunta, cualifica y prepara los mensajes que nadie contesta. Canal de WhatsApp en preparaci\u00f3n.',
+      message: 'Hola, \u00bften\u00e9is hueco para una limpieza? Mejor por la tarde.',
+      decision: 'Detecta intenci\u00f3n de cita y pregunta si es primera visita, motivo y preferencia horaria.',
+      action: 'Ofrece dos huecos reales y deja la cita preparada cuando el paciente elige.',
+      done: 14, human: 3, metric: 'Confianza de la respuesta', value: 92,
+      note: 'Sin esperar a que recepci\u00f3n abra.',
     },
   };
 
@@ -650,7 +650,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   }
 
   function select(key) {
-    const data = cases[key] || cases.whatsapp;
+    const data = cases[key] || cases.llamadas;
     if (els.caption) els.caption.textContent = data.caption;
     if (els.message) els.message.textContent = data.message;
     if (els.decision) els.decision.textContent = data.decision;
@@ -711,32 +711,6 @@ function renderPhone(chatEl, statusEl, scenario) {
   select(keys[0]);
 })();
 
-(function initWhatsAppFloat() {
-  const link = document.getElementById('whatsapp-float');
-  if (!link) return;
-
-  link.addEventListener('click', (event) => {
-    const rawPhone = String(link.dataset.phone || '').replace(/[^\d]/g, '');
-    const message = link.dataset.message || 'Hola, quiero una demo de AItomat para mi clínica dental.';
-    if (rawPhone.length >= 8) {
-      event.preventDefault();
-      window.open(`https://wa.me/${rawPhone}?text=${encodeURIComponent(message)}`, '_blank', 'noopener,noreferrer');
-      return;
-    }
-
-    const form = document.getElementById('lead-form');
-    const field = document.getElementById('lead-whatsapp');
-    const status = form ? form.querySelector('.lead-status') : null;
-    if (status) {
-      status.textContent = 'Deja tu WhatsApp y te escribimos para activar la demo.';
-      status.className = 'lead-status ok';
-    }
-    window.setTimeout(() => {
-      if (field) field.focus({ preventScroll: true });
-    }, 620);
-  });
-})();
-
 (function initInbox() {
   const list = document.getElementById('message-list');
   const els = {
@@ -754,7 +728,7 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   // Colores por etiqueta (coinciden con la leyenda del sidebar)
   const labelColor = {
-    Urgencia: '#ff8066',
+    Prioritario: '#ff8066',
     Cita: '#5af0d8',
     Cambio: '#f1b64b',
     Reactivar: '#3978ff',
@@ -763,10 +737,10 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   const messages = [
     {
-      from: 'Carlos Martín', avatar: 'C', time: '8:12', label: 'Urgencia', unread: true,
+      from: 'Carlos Martín', avatar: 'C', time: '8:12', label: 'Prioritario', unread: true,
       subject: 'Dolor de muela desde anoche',
       preview: 'Dolor fuerte, pide cita para hoy.',
-      meta: 'WhatsApp \u00b7 8:12 \u00b7 prioridad alta',
+      meta: 'Mensaje \u00b7 8:12 \u00b7 prioridad alta',
       summary: 'Dolor agudo. AItomat pregunta por síntomas, marca prioridad alta y prepara el caso para recepción.',
       body: ['Llevo desde anoche con un dolor de muela fuerte, casi no he dormido.', '\u00bfTen\u00e9is alg\u00fan hueco para hoy? Es bastante urgente.'],
       draft: 'Lo siento, Carlos. Para ayudarte bien: \u00bfhay inflamaci\u00f3n, fiebre o dolor al morder? Aviso a recepci\u00f3n para que te llamen cuanto antes.',
@@ -776,7 +750,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       from: 'Laura Pérez', avatar: 'L', time: '9:41', label: 'Cita', unread: true,
       subject: 'Limpieza esta semana',
       preview: 'Prefiere por la tarde, tel\u00e9fono confirmado.',
-      meta: 'WhatsApp \u00b7 9:41',
+      meta: 'Mensaje \u00b7 9:41',
       summary: 'Paciente interesada en limpieza. AItomat confirma motivo, datos y preferencia antes de proponer huecos.',
       body: ['Hola, necesito una limpieza esta semana.', 'Si puede ser por la tarde, mejor. Gracias.'],
       draft: 'Hola Laura, perfecto. \u00bfSer\u00eda una limpieza normal y sigues usando este tel\u00e9fono? Si es as\u00ed, te paso dos huecos de tarde.',
@@ -786,7 +760,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       from: 'Familia Soler', avatar: 'S', time: '9:08', label: 'Cita', unread: true,
       subject: 'Primera visita para mi hijo',
       preview: 'Ni\u00f1o de 7 a\u00f1os, revisi\u00f3n general.',
-      meta: 'WhatsApp \u00b7 9:08',
+      meta: 'Mensaje \u00b7 9:08',
       summary: 'Primera visita infantil. AItomat pide datos b\u00e1sicos y ofrece pasar el caso a odontopediatr\u00eda.',
       body: ['Buenos d\u00edas, quer\u00eda pedir cita para mi hijo de 7 a\u00f1os.', 'Es la primera vez que viene a la cl\u00ednica.'],
       draft: 'Encantados de recibirle. Para orientarle bien: \u00bfla visita es revisi\u00f3n general o hay alguna molestia? Despu\u00e9s le paso opciones con odontopediatr\u00eda.',
@@ -796,7 +770,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       from: 'Marta Ruiz', avatar: 'M', time: 'Ayer', label: 'Cambio', unread: false,
       subject: 'Mover la cita del jueves',
       preview: 'No puede asistir, pide el viernes.',
-      meta: 'WhatsApp \u00b7 ayer 19:02',
+      meta: 'Mensaje \u00b7 ayer 19:02',
       summary: 'La paciente pide cambio. AItomat pregunta disponibilidad y deja el nuevo hueco preparado para confirmar.',
       body: ['No voy a poder ir el jueves al final.', '\u00bfMe lo pod\u00e9is cambiar al viernes?'],
       draft: 'Sin problema, Marta. El viernes veo disponibilidad a las 12:00. \u00bfTe encaja ese horario para dejar el cambio preparado?',
@@ -806,7 +780,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       from: 'Javier Gómez', avatar: 'J', time: 'Ayer', label: 'Info', unread: false,
       subject: 'Dudas con el presupuesto de ortodoncia',
       preview: 'Pregunta por financiaci\u00f3n y plazos.',
-      meta: 'WhatsApp \u00b7 ayer 17:40',
+      meta: 'Mensaje \u00b7 ayer 17:40',
       summary: 'Consulta sobre el presupuesto de ortodoncia. AItomat responde dudas frecuentes y ofrece llamada con coordinadora.',
       body: ['Me pasasteis el presupuesto de ortodoncia la semana pasada.', '\u00bfHay opci\u00f3n de pagarlo a plazos?'],
       draft: 'Hola Javier, s\u00ed: financiamos la ortodoncia hasta en 12 meses sin intereses. \u00bfTe llamo ma\u00f1ana para verlo contigo?',
@@ -902,10 +876,8 @@ function renderPhone(chatEl, statusEl, scenario) {
   const forms = Array.from(document.querySelectorAll('form[data-lead-form]'));
   if (!forms.length) return;
 
-  // En producción la web es estática (GitHub Pages), no hay backend: los leads
-  // se envían a Formspree (form real configurado en la cuenta del proyecto).
-  const FORMSPREE_ENDPOINT = 'https://formspree.io/f/xeebjdkq';
-
+  // En producción la web está en GitHub Pages, pero los leads entran por el
+  // backend propio para quedar guardados en la BD y visibles en el panel.
   forms.forEach((form) => wireLeadForm(form));
 
   function wireLeadForm(form) {
@@ -927,8 +899,8 @@ function renderPhone(chatEl, statusEl, scenario) {
     if (isLocalStatic) return 'http://127.0.0.1:8001/api/lead';
     if (window.location.protocol === 'file:') return 'http://127.0.0.1:8001/api/lead';
     if (isLocalhost) return '/api/lead';
-    // Producción (dominio / GitHub Pages): sin backend → Formspree.
-    return FORMSPREE_ENDPOINT;
+    // Producción (dominio / GitHub Pages): backend propio.
+    return 'https://api.aitomat.es/api/lead';
   }
 
   form.addEventListener('submit', async (event) => {
@@ -941,9 +913,9 @@ function renderPhone(chatEl, statusEl, scenario) {
       nombre: String(data.get('nombre') || '').trim(),
       clinica: String(data.get('clinica') || '').trim(),
       whatsapp: String(data.get('whatsapp') || '').trim(),
-      web: honeypot,                 // honeypot para el backend local (FastAPI)
-      _gotcha: honeypot,             // honeypot que Formspree reconoce (descarta bots)
-      _subject: 'Nuevo lead AItomat',// asunto del email que envía Formspree
+      web: honeypot,                 // honeypot para el backend
+      _gotcha: honeypot,             // alias de honeypot por compatibilidad
+      _subject: 'Nuevo lead AItomat',
       consent: data.get('consent') === 'on',
     };
 
@@ -1264,14 +1236,14 @@ function renderPhone(chatEl, statusEl, scenario) {
   // ser humano. Cada escenario rota con un motivo distinto.
   const scenarios = [
     {
-      topic: 'Urgencia',
-      outcome: { action: 'Derivado a recepción', time: 'urgencia priorizada' },
+      topic: 'Prioritario',
+      outcome: { action: 'Derivado a recepción', time: 'marcado como prioritario' },
       bubbles: [
         ['ai', 'Clínica dental, le atiende el asistente virtual. ¿En qué puedo ayudarle?'],
         ['patient', 'Me duele una muela desde anoche y se me ha hinchado un poco la cara.'],
         ['ai', 'Lo siento. Para avisar bien a recepción: ¿el dolor es constante? ¿Tiene fiebre o dificultad para abrir la boca?'],
         ['patient', 'Constante sí. Fiebre no, pero al morder me duele bastante.'],
-        ['ai', 'Gracias. Lo marco como posible urgencia. Recepción le llamará cuanto antes para darle el primer hueco disponible hoy.'],
+        ['ai', 'Gracias. Lo marco como prioritario. Recepción le llamará cuanto antes para darle el primer hueco disponible hoy.'],
       ],
     },
     {
@@ -1465,7 +1437,7 @@ function renderPhone(chatEl, statusEl, scenario) {
 
 // ── Chat de demo REAL en el móvil (progressive enhancement) ──────────────────
 // Si el backend responde en /demo/estado, la barra de escritura del móvil se
-// vuelve real: el visitante habla con el MISMO bot que atiende WhatsApp
+// vuelve real: el visitante habla con el MISMO bot que atiende las llamadas
 // (agenda local de verdad; el asistente nunca dice un nombre de clínica).
 // Si no hay backend (landing estática sin API), no aparece nada y la
 // animación guionizada queda exactamente como siempre.
@@ -1554,6 +1526,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     chat.setAttribute('aria-live', 'polite');
     if (status) status.textContent = 'en línea · demo real';
     chip('Demo real', 'Te responde la IA de la recepción. Escribe como paciente.');
+    chip('Entorno de pruebas', 'No escriba datos personales reales.');
     burbuja('ai', 'Hola, le atiende el asistente de la clínica. ¿En qué puedo ayudarle?');
   }
   input.addEventListener('focus', activarDemo);
@@ -1590,6 +1563,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     boton.disabled = false;
     input.placeholder = 'Escribe como paciente…';
     chip('Demo real', 'Empieza de nuevo: escribe como paciente.');
+    chip('Entorno de pruebas', 'No escriba datos personales reales.');
     burbuja('ai', 'Hola, le atiende el asistente de la clínica. ¿En qué puedo ayudarle?');
     if (status) status.textContent = 'en línea · demo real';
     if (!matchMedia('(hover: none)').matches) input.focus();
@@ -1750,6 +1724,9 @@ function renderPhone(chatEl, statusEl, scenario) {
       // con-cta reserva hueco abajo para que el botón no tape la última burbuja.
       cta.hidden = false;
       chatEl.classList.add('con-cta');
+      // El aviso de entorno de pruebas de la voz es la nota persistente bajo el
+      // CTA (.voice-note en el HTML): no se pinta en el transcript porque el
+      // guion lo borraría al repintar.
 
       let vapi = null;
       let publicKeyActual = null; // la key llega por-llamada desde /demo/voz-start

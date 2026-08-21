@@ -241,3 +241,6 @@ th {
   .legal-links { justify-content: flex-start; }
   h1 { font-size: clamp(2.6rem, 16vw, 4.2rem); }
 }
+
+/* El nombre no se parte al final de una linea. El 'AI' lo pinta .b-ai. */
+.marca { white-space: nowrap; }
