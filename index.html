@@ -41,7 +41,7 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260822-cabe">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260822-compromiso2">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -129,6 +129,14 @@
             "acceptedAnswer": {
               "@type": "Answer",
               "text": "El servicio no se corta nunca. Al llegar al 80 % del plan avisamos, y si un mes se pasa se sigue atendiendo con normalidad: se ajusta hablando, sin facturar nada por sorpresa. Los minutos consumidos y los restantes se ven en el panel."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "¿Qué pasa si cancelo el plan anual antes de tiempo?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "El plan anual tiene descuento por comprometerse doce meses. Si se cancela antes, se ajusta a precio mensual la diferencia de los meses ya disfrutados. No hay penalización extra ni hay que pagar los meses restantes."
             }
           },
           {
@@ -536,7 +544,7 @@
       <div class="pricing-shell planes-shell">
         <div class="pricing-head">
           <p class="eyebrow"><span></span> Precio</p>
-          <h2>Tres planes. Sin permanencia.</h2>
+          <h2>Tres planes. Mensual sin permanencia, anual con descuento.</h2>
           <p class="pricing-lead">
             Cada plan se lee entero: lo que ves es todo lo que incluye, sin
             &laquo;lo anterior m&aacute;s&raquo;.
@@ -549,16 +557,16 @@
             <button type="button" class="ciclo-btn active" data-ciclo="mensual"
                     aria-pressed="true">Mensual</button>
             <button type="button" class="ciclo-btn" data-ciclo="anual"
-                    aria-pressed="false">Anual &middot; 2 meses gratis</button>
+                    aria-pressed="false">Anual &middot; 2 meses gratis &middot; 12 meses</button>
           </div>
         </div>
 
         <div class="planes">
           <article class="plan">
             <p class="plan-nombre">B&aacute;sico</p>
-            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>99&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>82,50&nbsp;&euro;</strong><em>/mes</em></span></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>99&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>80&nbsp;&euro;</strong><em>/mes</em></span></p>
             <p class="plan-regalo">Primer mes gratis</p>
-            <p class="plan-facturacion">Facturado anualmente <span class="precio-total">&middot; 990&nbsp;&euro;/a&ntilde;o</span></p>
+            <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
             <p class="plan-para">Que no se pierda ninguna llamada</p>
             <ul class="plan-lista">
               <li>Voz 24/7 &middot; <strong>200 minutos</strong> al mes (unas 100 llamadas)</li>
@@ -573,9 +581,9 @@
 
           <article class="plan plan--destacado">
             <p class="plan-nombre">Medio <span class="plan-sello">Recomendado</span></p>
-            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>179&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>149,17&nbsp;&euro;</strong><em>/mes</em></span></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>179&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>145&nbsp;&euro;</strong><em>/mes</em></span></p>
             <p class="plan-regalo">Primer mes gratis</p>
-            <p class="plan-facturacion">Facturado anualmente <span class="precio-total">&middot; 1.790&nbsp;&euro;/a&ntilde;o</span></p>
+            <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
             <p class="plan-para">Que entre m&aacute;s dinero</p>
             <ul class="plan-lista">
               <li>Voz 24/7 &middot; <strong>600 minutos</strong> al mes (unas 300 llamadas)</li>
@@ -593,8 +601,8 @@
 
           <article class="plan">
             <p class="plan-nombre">Premium</p>
-            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>349&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>290,83&nbsp;&euro;</strong><em>/mes</em></span></p>
-            <p class="plan-facturacion">Facturado anualmente <span class="precio-total">&middot; 3.490&nbsp;&euro;/a&ntilde;o</span></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>349&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>290&nbsp;&euro;</strong><em>/mes</em></span></p>
+            <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
             <p class="plan-extra">+ 399&nbsp;&euro; de instalaci&oacute;n, pago &uacute;nico</p>
             <p class="plan-para">Metido en vuestro programa</p>
             <ul class="plan-lista">
@@ -615,7 +623,7 @@
         </div>
 
         <ul class="planes-pie">
-          <li>Sin permanencia.</li>
+          <li><strong>Mensual:</strong> sin permanencia, cancelas cuando quieras.</li>
           <li>Si te pasas de minutos <strong>el servicio no se corta nunca</strong>: avisamos antes y lo ajustamos hablando.</li>
         </ul>
         <p class="planes-nota">
@@ -689,6 +697,12 @@
             <p>El servicio <strong>no se corta nunca</strong>. Al llegar al 80&nbsp;% del plan te avisamos,
                y si un mes te pasas seguimos atendiendo con normalidad: lo ajustamos hablando, sin
                facturarte nada por sorpresa. Los minutos consumidos y los que quedan se ven en el panel.</p>
+          </details>
+          <details>
+            <summary>&iquest;Qu&eacute; pasa si cancelo el plan anual antes de tiempo?</summary>
+            <p>El plan anual tiene descuento por comprometerse doce meses. Si cancelas antes,
+               se ajusta a precio mensual la diferencia de los meses que ya has disfrutado.
+               <strong>No hay penalizaci&oacute;n extra ni pagas los meses que quedaban.</strong></p>
           </details>
           <details>
             <summary>&iquest;Hay permanencia?</summary>

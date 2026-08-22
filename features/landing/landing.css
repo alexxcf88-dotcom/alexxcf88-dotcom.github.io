@@ -5911,3 +5911,17 @@ body.demo-open { overflow: hidden; }
 @media (max-width: 620px) {
   .plan-precio strong { font-size: clamp(2.3rem, 11vw, 2.9rem); }
 }
+
+/* La negrita de las caracteristicas apenas se distinguia: el cuerpo va con
+   alpha 0.68 y el bold heredaba un peso flojo. Peso 700 y blanco pleno. */
+.plan-lista strong {
+  color: #fff;
+  font-weight: 700;
+}
+
+/* "12 meses de compromiso - se cobra mes a mes": la segunda mitad, mas tenue. */
+.plan-facturacion .precio-total { color: var(--muted); }
+
+/* "- se cobra mes a mes" puede partir de linea: a 1440 solo sobran 13 px y no
+   quiero que dependa de como cargue la fuente. */
+.plan-facturacion .precio-total { white-space: normal; }
