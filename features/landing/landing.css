@@ -5698,3 +5698,23 @@ body.demo-open { overflow: hidden; }
 @media (max-width: 620px) {
   .marquesina img { max-height: 24px; }
 }
+
+/* Marca sin logo usable: el nombre escrito como en su web, al mismo peso
+   optico y con el mismo tono que los logos, para que la fila no cojee. */
+.marquesina-nombre {
+  display: block;
+  color: rgba(247, 251, 248, 0.55);
+  font-family: Archivo, system-ui, sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  line-height: 26px;
+  white-space: nowrap;
+  transition: color 0.3s var(--ease);
+}
+
+.marquesina:hover .marquesina-nombre { color: rgba(247, 251, 248, 0.78); }
+
+@media (max-width: 620px) {
+  .marquesina-nombre { font-size: 19px; line-height: 24px; }
+}
