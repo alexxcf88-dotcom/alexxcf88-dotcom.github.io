@@ -504,7 +504,11 @@ h3 {
 .hero h1 {
   max-width: 11.4ch;
   margin-inline: auto;
-  line-height: 0.88;
+  /* 0.88 apretaba tanto que las tildes de "clinica" tocaban la linea de
+     arriba. Se suelta el interlineado y se baja el cuerpo: el bloque no crece,
+     pero respira. */
+  font-size: clamp(3.6rem, 9.6vw, 7.6rem);
+  line-height: 0.96;
   text-wrap: balance;
 }
 .hero h1 span {
@@ -512,7 +516,7 @@ h3 {
   font-family: Bitter, Georgia, serif;
   font-style: italic;
   font-weight: 400;
-  line-height: 0.82;
+  line-height: 0.92;
   letter-spacing: -0.045em;
   color: var(--aqua);
 }
