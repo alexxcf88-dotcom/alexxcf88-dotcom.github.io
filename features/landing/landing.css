@@ -5807,3 +5807,20 @@ body.demo-open { overflow: hidden; }
 }
 
 .plan-lista li.plan-clave strong { color: var(--aqua); }
+
+/* En anual, la cifra grande es el equivalente mensual: el total del ano va
+   pequeno al lado y debajo se dice que se factura de una vez. */
+.precio-total {
+  color: var(--muted);
+  font-size: 0.8rem;
+  white-space: nowrap;
+}
+
+.plan-facturacion {
+  display: none;
+  margin: -0.55rem 0 0.85rem;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.pricing-shell.anual .plan-facturacion { display: block; }
