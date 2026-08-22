@@ -5886,3 +5886,28 @@ body.demo-open { overflow: hidden; }
   .ciclo-btn { min-height: 42px; padding: 0 1rem; font-size: 0.84rem; }
   .plan-precio strong { font-size: clamp(2.6rem, 13vw, 3.4rem); }
 }
+
+/* ── El precio anual tiene que caber ─────────────────────────────────────────
+   La tarjeta deja 293 px utiles y "290,83 € /mes" con la cifra a 4,1rem pedia
+   mas. Se baja el tamano y el total del ano se lleva a la linea de facturacion,
+   que es donde se entiende mejor. */
+.plan-precio strong {
+  font-size: clamp(2.4rem, 4.2vw, 3.1rem);
+}
+
+.plan-facturacion .precio-total {
+  color: var(--muted);
+  font-size: inherit;
+  white-space: nowrap;
+}
+
+/* El aqua significa una sola cosa por bloque: en las tarjetas, la linea que
+   diferencia al Premium. Los lemas pasan a gris claro. */
+.plan-para,
+.plan--destacado .plan-para {
+  color: var(--soft);
+}
+
+@media (max-width: 620px) {
+  .plan-precio strong { font-size: clamp(2.3rem, 11vw, 2.9rem); }
+}
