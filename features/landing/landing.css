@@ -5533,3 +5533,168 @@ body.demo-open { overflow: hidden; }
     grid-template-columns: 1fr;
   }
 }
+
+/* ── Tres planes: lema, precio de instalacion y pie de condiciones ─────────── */
+.plan-para {
+  margin: -0.5rem 0 0.9rem;
+  color: var(--aqua);
+  font-size: 0.92rem;
+  line-height: 1.4;
+}
+
+.plan-extra {
+  margin: -0.7rem 0 0.9rem;
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+.plan--destacado .plan-para { color: var(--aqua); }
+
+.planes-pie {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.4rem;
+  margin: 0 0 0.7rem;
+  padding: 0;
+  list-style: none;
+}
+
+.planes-pie li {
+  position: relative;
+  padding-left: 1.1rem;
+  color: var(--soft);
+  font-size: 0.92rem;
+  line-height: 1.5;
+}
+
+.planes-pie li::before {
+  position: absolute;
+  top: 0.55em;
+  left: 0;
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: var(--aqua);
+  content: "";
+}
+
+.planes-nota {
+  max-width: 88ch;
+  margin: 0 0 clamp(0.85rem, 2.4vw, 1.35rem);
+  color: var(--muted);
+  font-size: 0.85rem;
+  line-height: 1.6;
+}
+
+.planes-nota a { color: var(--aqua); }
+
+@media (max-width: 620px) {
+  .planes-pie { gap: 0.45rem; flex-direction: column; }
+}
+
+/* ── Banner de sistemas: marquesina de logos ─────────────────────────────────
+   Dos pistas identicas en fila: cuando la primera termina de salir, la segunda
+   ya esta en su sitio, asi que el bucle no tiene costura. El contenedor recorta,
+   de modo que en movil no aparece barra de scroll.
+   Los logos van atenuados y en gris para que no compitan con el aqua de la
+   marca: se toca color y opacidad, nunca la forma. */
+.sistemas {
+  padding: clamp(2.6rem, 6vw, 4.2rem) 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+  background: rgba(255, 255, 255, 0.015);
+}
+
+.sistemas-copy {
+  width: min(calc(100% - 2.5rem), var(--maxw, 1200px));
+  margin: 0 auto clamp(1.6rem, 4vw, 2.4rem);
+}
+
+.sistemas-copy h2 {
+  margin: 0.4rem 0 0.6rem;
+  font-size: clamp(1.7rem, 3.2vw, 2.6rem);
+  line-height: 1.05;
+}
+
+.sistemas-lead {
+  max-width: 62ch;
+  margin: 0;
+  color: var(--soft);
+  line-height: 1.65;
+}
+
+.sistemas-lead a { color: var(--aqua); }
+
+.marquesina {
+  display: flex;
+  gap: clamp(2rem, 5vw, 4rem);
+  overflow: hidden;
+  width: 100%;
+  /* Entran y salen difuminados por los lados. */
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+
+.marquesina-pista {
+  display: flex;
+  flex: 0 0 auto;
+  align-items: center;
+  gap: clamp(2rem, 5vw, 4rem);
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  animation: marquesina-desliza 26s linear infinite;
+}
+
+.marquesina:hover .marquesina-pista,
+.marquesina:focus-within .marquesina-pista {
+  animation-play-state: paused;
+}
+
+.marquesina img {
+  display: block;
+  width: auto;
+  /* brightness(0) aplasta cualquier logo a negro e invert(1) lo sube a blanco
+     plano: todos acaban con el mismo tono partan del color que partan, que es
+     lo unico que iguala el peso visual. La forma no se toca. */
+  filter: brightness(0) invert(1) opacity(0.55);
+  transition: filter 0.3s var(--ease);
+}
+
+.marquesina:hover img { filter: brightness(0) invert(1) opacity(0.78); }
+
+@keyframes marquesina-desliza {
+  from { transform: translateX(0); }
+  /* El gap del contenedor mueve la segunda pista: hay que compensarlo. */
+  to   { transform: translateX(calc(-100% - clamp(2rem, 5vw, 4rem))); }
+}
+
+.sistemas-nota {
+  width: min(calc(100% - 2.5rem), var(--maxw, 1200px));
+  margin: clamp(1.4rem, 3vw, 2rem) auto 0;
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.5;
+}
+
+/* Sin movimiento: los logos se quedan quietos y en rejilla, sin recorte. */
+@media (prefers-reduced-motion: reduce) {
+  .marquesina {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 1.6rem 2.4rem;
+    mask-image: none;
+    -webkit-mask-image: none;
+  }
+  .marquesina-pista {
+    flex-wrap: wrap;
+    justify-content: center;
+    animation: none;
+  }
+  .marquesina-pista[aria-hidden="true"] { display: none; }
+}
+
+@media (max-width: 620px) {
+  .marquesina img { max-height: 24px; }
+}
