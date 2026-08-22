@@ -5718,3 +5718,92 @@ body.demo-open { overflow: hidden; }
 @media (max-width: 620px) {
   .marquesina-nombre { font-size: 19px; line-height: 24px; }
 }
+
+/* ── Conmutador mensual / anual ──────────────────────────────────────────────
+   Reutiliza la pildora .price-switch que ya existia. Los dos precios viven en
+   el HTML y solo se alterna cual se ve: si el JS falla queda el mensual, que es
+   el precio de referencia, y nadie ve un hueco. */
+.ciclo-wrap {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.7rem 1rem;
+  margin: 0 0 clamp(1rem, 2.6vw, 1.5rem);
+  text-align: center;
+}
+
+.price-switch.ciclo { grid-template-columns: repeat(2, minmax(0, auto)); }
+
+.ciclo-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 32px;
+  padding: 0 0.9rem;
+  border: 0;
+  border-radius: 999px;
+  background: none;
+  color: rgba(247, 251, 248, 0.68);
+  font: inherit;
+  font-size: 0.74rem;
+  font-weight: 900;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.25s var(--ease), color 0.25s var(--ease);
+}
+
+.ciclo-btn.active {
+  background: #f5f2e7;
+  color: #050706;
+}
+
+.ciclo-ahorro {
+  padding: 0.1rem 0.4rem;
+  border-radius: 999px;
+  background: rgba(90, 240, 216, 0.16);
+  color: var(--aqua);
+  font-size: 0.66rem;
+}
+
+.ciclo-btn.active .ciclo-ahorro {
+  background: rgba(5, 7, 6, 0.1);
+  color: #0b6b5c;
+}
+
+.ciclo-nota {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+}
+
+.precio-ciclo {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 0.25rem;
+}
+
+/* Por defecto se ve el mensual. Estas reglas van DESPUES de .precio-ciclo a
+   proposito: misma especificidad, asi que manda la ultima. Al reves se veian
+   los dos precios a la vez. */
+.precio-anual { display: none; }
+.pricing-shell.anual .precio-mensual { display: none; }
+.pricing-shell.anual .precio-anual { display: inline-flex; }
+
+/* La linea que justifica el plan Premium: primera y con el acento de la marca,
+   para que se vea antes que la voz y los mensajes, que estan en los tres. */
+.plan-lista li.plan-clave {
+  margin-bottom: 0.15rem;
+  color: var(--ink);
+}
+
+.plan-lista li.plan-clave::before {
+  top: 0.5em;
+  width: 7px;
+  height: 7px;
+  border-radius: 999px;
+  opacity: 1;
+}
+
+.plan-lista li.plan-clave strong { color: var(--aqua); }

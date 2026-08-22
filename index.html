@@ -41,7 +41,7 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260822-banner4">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260822-premium2">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -543,10 +543,21 @@
           </p>
         </div>
 
+
+        <div class="ciclo-wrap">
+          <div class="price-switch ciclo" role="group" aria-label="Ciclo de pago">
+            <button type="button" class="ciclo-btn active" data-ciclo="mensual"
+                    aria-pressed="true">Mensual</button>
+            <button type="button" class="ciclo-btn" data-ciclo="anual"
+                    aria-pressed="false">Anual <span class="ciclo-ahorro">&minus;17&nbsp;%</span></button>
+          </div>
+          <p class="ciclo-nota">En anual pagas <strong>10 meses</strong> en vez de 12.</p>
+        </div>
+
         <div class="planes">
           <article class="plan">
             <p class="plan-nombre">B&aacute;sico</p>
-            <p class="plan-precio"><strong>99&nbsp;&euro;</strong><em>/mes</em></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>99&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>990&nbsp;&euro;</strong><em>/a&ntilde;o</em></span></p>
             <p class="plan-para">Que no se pierda ninguna llamada</p>
             <ul class="plan-lista">
               <li>Voz 24/7 &middot; <strong>200 minutos</strong> al mes (unas 100 llamadas)</li>
@@ -561,7 +572,7 @@
 
           <article class="plan plan--destacado">
             <p class="plan-nombre">Medio <span class="plan-sello">Recomendado</span></p>
-            <p class="plan-precio"><strong>179&nbsp;&euro;</strong><em>/mes</em></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>179&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>1.790&nbsp;&euro;</strong><em>/a&ntilde;o</em></span></p>
             <p class="plan-para">Que entre m&aacute;s dinero</p>
             <ul class="plan-lista">
               <li>Voz 24/7 &middot; <strong>600 minutos</strong> al mes (unas 300 llamadas)</li>
@@ -579,14 +590,14 @@
 
           <article class="plan">
             <p class="plan-nombre">Premium</p>
-            <p class="plan-precio"><strong>349&nbsp;&euro;</strong><em>/mes</em></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>349&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>3.490&nbsp;&euro;</strong><em>/a&ntilde;o</em></span></p>
             <p class="plan-extra">+ 399&nbsp;&euro; de instalaci&oacute;n, pago &uacute;nico</p>
             <p class="plan-para">Metido en vuestro programa</p>
             <ul class="plan-lista">
+              <li class="plan-clave"><strong>Las citas se escriben solas en vuestro programa de gesti&oacute;n</strong></li>
+              <li>Agenda propia de <span class="b-ai">AI</span>tomat o Google Calendar</li>
               <li>Voz 24/7 &middot; <strong>llamadas ilimitadas</strong></li>
               <li>Mensajes: WhatsApp &middot; Instagram &middot; Facebook &middot; Email &middot; SMS &mdash; ilimitados</li>
-              <li>Las citas se escriben solas en vuestro programa de gesti&oacute;n</li>
-              <li>Agenda propia de <span class="b-ai">AI</span>tomat o Google Calendar</li>
               <li>Panel de recepci&oacute;n</li>
               <li>Panel del responsable con m&eacute;tricas</li>
               <li>Recordatorios de cita</li>

@@ -2147,3 +2147,27 @@ function renderPhone(chatEl, statusEl, scenario) {
     })
     .catch(() => {});
 })();
+
+/* Conmutador mensual / anual del bloque de precios. Sin dependencias: alterna
+   una clase en el contenedor y el CSS decide que precio se ve. */
+(function initCicloPrecio() {
+  const grupo = document.querySelector('.ciclo');
+  const shell = document.querySelector('.pricing-shell');
+  if (!grupo || !shell) return;
+
+  const botones = Array.from(grupo.querySelectorAll('[data-ciclo]'));
+
+  function elegir(btn) {
+    shell.classList.toggle('anual', btn.dataset.ciclo === 'anual');
+    botones.forEach((b) => {
+      const activo = b === btn;
+      b.classList.toggle('active', activo);
+      b.setAttribute('aria-pressed', activo ? 'true' : 'false');
+    });
+  }
+
+  grupo.addEventListener('click', (event) => {
+    const btn = event.target.closest('[data-ciclo]');
+    if (btn) elegir(btn);
+  });
+})();
