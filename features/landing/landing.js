@@ -1152,17 +1152,17 @@ function renderPhone(chatEl, statusEl, scenario) {
       entries.forEach((e) => {
         if (e.isIntersecting) { load(); io.disconnect(); }
       });
-    }, { rootMargin: '1200px' });
+    }, { rootMargin: '4000px' });
     io.observe(fig);
   } else {
     load();
   }
 
-  // Arranque inmediato: el runtime y la escena ya van precargados en el <head>,
-  // así que montamos el visor cuanto antes para que el 3D esté listo al llegar
-  // a la sección (clave en la 1ª visita). El IntersectionObserver de arriba es
-  // solo un respaldo; load() está protegido contra dobles llamadas.
-  load();
+  // NO se llama a load() aquí. El arranque inmediato costaba ~22 s de bloqueo
+  // del hilo principal en la carga: descargaba, parseaba e instanciaba WebGL
+  // para un robot que está varias pantallas por debajo del hero. El
+  // IntersectionObserver de arriba manda, con 4000px de margen para que la
+  // escena llegue montada a la sección.
 })();
 
 (function initLampEdges() {
