@@ -255,6 +255,10 @@ main,
 .site-footer a { transition: color 0.2s var(--ease); }
 .nav-links a:hover,
 .site-footer a:hover { color: #fff; }
+/* El pie repite la accion principal de la barra. Se marca con el aqua de marca
+   para que se lea como accion y no como una pagina mas de la lista. */
+.site-footer a.footer-demo { color: var(--aqua); }
+.site-footer a.footer-demo:hover { color: var(--cyan); }
 .nav-links a:hover {
   background: rgba(255,255,255,0.08);
 }
@@ -4463,6 +4467,82 @@ body.demo-open { overflow: hidden; }
     radial-gradient(circle at 82% -8%, rgba(90,240,216,0.12), transparent 42%),
     rgba(255,255,255,0.03);
 }
+
+/* ---- Paso 2 del modal: calendario de Cal.com ----------------------
+   Solo se ve cuando el lead ya esta guardado en la BD. Ocupa la misma
+   celda del grid que el formulario, porque son excluyentes. */
+.lead-form[hidden],
+.lead-cal[hidden] { display: none; }   /* [hidden] debe ganar al display:grid */
+
+.lead-cal {
+  display: grid;
+  gap: 0.72rem;
+  padding: 1.15rem;
+  border: 1px solid var(--line);
+  border-radius: 28px;
+  background:
+    radial-gradient(circle at 82% -8%, rgba(90,240,216,0.12), transparent 42%),
+    rgba(255,255,255,0.03);
+}
+.lead-cal-head strong {
+  display: block;
+  color: var(--aqua);
+  font-size: 0.98rem;
+}
+.lead-cal-head p {
+  margin: 0.3rem 0 0;
+  color: var(--soft);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+/* Altura minima: sin ella el iframe de Cal nace a 0 y la tarjeta pega un
+   salto cuando termina de medirse. Movil primero: ahi Cal pinta la lista de
+   huecos (useSlotsViewOnSmallScreen) y necesita mucho menos alto que la
+   rejilla de mes de escritorio. */
+.lead-cal-embed {
+  min-height: 380px;
+  border-radius: 18px;
+  overflow: hidden;
+}
+.lead-cal-embed iframe { border: 0; width: 100%; }
+.lead-cal-fallback {
+  margin: 0;
+  padding: 1.2rem 0;
+  color: var(--muted);
+  font-size: 0.84rem;
+  line-height: 1.5;
+}
+.lead-cal-skip {
+  justify-self: start;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.8rem;
+  cursor: pointer;
+  transition: color 0.2s var(--ease), border-color 0.2s var(--ease);
+}
+.lead-cal-skip:hover { color: var(--ink); border-color: rgba(90,240,216,0.4); }
+
+/* En el paso 2 la rejilla pasa a UNA columna y se retira la columna de copy.
+   Con las 2 columnas el calendario se quedaba en ~420px y Cal apilaba el mes
+   en vertical; a ancho completo del modal (~890px) entra la vista de mes. */
+.demo-modal-card.is-step2,
+.cta-section.is-step2 {
+  grid-template-columns: minmax(0, 1fr);
+}
+.demo-modal-card.is-step2 .demo-modal-aside,
+.cta-section.is-step2 .cta-copy {
+  display: none;
+}
+.lead-cal { grid-column: 1 / -1; }
+
+@media (min-width: 760px) {
+  .lead-cal-embed { min-height: 620px; }
+}
+
 .demo-modal-aside { align-self: center; }
 .demo-modal-aside h2 {
   margin: 0.6rem 0 0;

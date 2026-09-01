@@ -872,6 +872,135 @@ function renderPhone(chatEl, statusEl, scenario) {
   els.forEach((el) => observer.observe(el));
 })();
 
+/* -------------------------------------------------------------------
+   Cal.com — carga perezosa.
+
+   El snippet oficial se autoinyecta al evaluarse: llama a Cal("init") y eso
+   mete embed.js en el <head> durante la carga de la pagina. Aqui NO. En movil
+   el LCP lo gobierna el ancho de banda (2.758 KiB a ~200 KiB/s), asi que un
+   origen de terceros mas en el arranque lo empeora — el mismo error que ya
+   costo 22 s de TBT con Spline.
+
+   Se arranca al ABRIR el modal: eso es intencion del usuario, ocurre siempre
+   despues del LCP, y le da al visitante los segundos que tarda en rellenar el
+   formulario para que embed.js llegue. Lighthouse no abre modales: coste 0.
+   ------------------------------------------------------------------- */
+const CAL_LINK = 'aitomat/demo';
+const CAL_NS = 'demo';
+
+function ensureCal() {
+  if (window.__calLoading) return window.__calLoading;
+  window.__calLoading = new Promise((resolve, reject) => {
+    // El preconnect va aqui, no en el <head>: en la carga costaria un
+    // handshake para algo que el 99% de las visitas no usa.
+    const pre = document.createElement('link');
+    pre.rel = 'preconnect';
+    pre.href = 'https://app.cal.com';
+    pre.crossOrigin = 'anonymous';
+    document.head.appendChild(pre);
+
+    // Cargador oficial de Cal, tal cual, pero disparado por nosotros.
+    (function (C, A, L) {
+      let p = function (a, ar) { a.q.push(ar); };
+      let d = C.document;
+      C.Cal = C.Cal || function () {
+        let cal = C.Cal; let ar = arguments;
+        if (!cal.loaded) {
+          cal.ns = {}; cal.q = cal.q || [];
+          const sc = d.createElement('script');
+          sc.src = A;
+          sc.onload = resolve;
+          sc.onerror = reject;
+          d.head.appendChild(sc);
+          cal.loaded = true;
+        }
+        if (ar[0] === L) {
+          const api = function () { p(api, arguments); };
+          const namespace = ar[1];
+          api.q = api.q || [];
+          if (typeof namespace === 'string') {
+            cal.ns[namespace] = cal.ns[namespace] || api;
+            p(cal.ns[namespace], ar);
+            p(cal, ['initNamespace', namespace]);
+          } else p(cal, ar);
+          return;
+        }
+        p(cal, ar);
+      };
+    })(window, 'https://app.cal.com/embed/embed.js', 'init');
+
+    window.Cal('init', CAL_NS, { origin: 'https://app.cal.com' });
+    window.Cal.config = window.Cal.config || {};
+    // FALSE a proposito: con true, Cal reenvia los query params de nuestra URL
+    // a app.cal.com. La landing usa ?demo_key= como bypass de la demo y ese
+    // valor acabaria en un tercero.
+    window.Cal.config.forwardQueryParams = false;
+
+  // Tokens reales de la landing, no el tema "dark" de serie, que deja un
+  // recuadro gris dentro de una marca aqua.
+  //
+  // EN LOS DOS TEMAS a proposito: quien decide si el Booker se pinta claro u
+  // oscuro es la configuracion del tipo de evento en el panel de Cal, no este
+  // `theme`. Definiendo solo `dark`, si Cal resuelve claro no se aplica nada y
+  // sale el gris de serie. La landing es oscura siempre, asi que los mismos
+  // valores valen para ambos.
+  //
+  // Todo en hex: la documentacion de Cal solo usa hex y los valores con alfa
+  // pueden no parsear. Los equivalentes solidos salen del design system.
+  //
+  // OJO, bug conocido de Cal (calcom/cal.com#16732): `--cal-brand-color` se
+  // escribe inline y la hoja del embed no le gana por especificidad, asi que
+  // el spinner de carga puede seguir saliendo oscuro. No tiene arreglo desde
+  // aqui; se cambia en Ajustes > Apariencia del panel de Cal.
+  const CAL_VARS = {
+    'cal-brand': '#5af0d8',
+    'cal-brand-emphasis': '#7be7ff',
+    'cal-brand-text': '#050706',
+    'cal-text': '#f7fbf8',
+    'cal-text-emphasis': '#f7fbf8',
+    'cal-text-subtle': '#c6cdcb',
+    // NO tocar esto para cambiar los dias no disponibles del Booker: se probo
+    // subirlo a #919592 y no cambio nada. Medido sobre la captura, esos numeros
+    // se pintan a #edf2ef (15,0:1) frente a #f7fbf8 (16,2:1) de los
+    // disponibles, o sea practicamente el mismo color. Lo que los separa es que
+    // los disponibles llevan pastilla de fondo (`cal-bg-emphasis`) y tipografia
+    // mas gruesa. Si algun dia hay que marcarlos mas, el token es ese, no este.
+    'cal-text-muted': '#78807e',
+    'cal-bg': '#050706',
+    // Fondo de la PASTILLA de los dias disponibles. Es lo que de verdad separa
+    // disponible de no disponible en el Booker (medido: los numeros de ambos
+    // salen casi al mismo color, ver la nota de cal-text-muted). Estaba en
+    // #12201d, que sobre #050706 daba 1,19:1 y casi no se veia.
+    'cal-bg-emphasis': '#2d5f53',
+    'cal-bg-subtle': '#0b1110',
+    'cal-bg-muted': '#02211e',
+    'cal-border': '#252a27',
+    'cal-border-emphasis': '#5af0d8',
+    'cal-border-subtle': '#252a27',
+    'cal-text-error': '#ff8066',
+  };
+
+  window.Cal.ns[CAL_NS]('ui', {
+      theme: 'dark',
+      hideEventTypeDetails: false,
+      layout: 'month_view',
+      cssVarsPerTheme: { light: CAL_VARS, dark: CAL_VARS },
+    });
+  }).catch((e) => { window.__calLoading = null; throw e; });
+  return window.__calLoading;
+}
+
+function mountCal(destino) {
+  return ensureCal().then(() => {
+    window.Cal.ns[CAL_NS]('inline', {
+      elementOrSelector: destino,
+      calLink: CAL_LINK,
+      layout: 'month_view',
+      config: { layout: 'month_view', useSlotsViewOnSmallScreen: 'true', theme: 'dark' },
+    });
+  });
+}
+
 (function initLeadForms() {
   const forms = Array.from(document.querySelectorAll('form[data-lead-form]'));
   if (!forms.length) return;
@@ -884,6 +1013,34 @@ function renderPhone(chatEl, statusEl, scenario) {
   const status = form.querySelector('.lead-status');
   const button = form.querySelector('button[type="submit"]');
   const inModal = form.closest('.demo-modal');
+  // La rejilla de 2 columnas es el padre en ambos casos: .demo-modal-card y
+  // .cta-section. El panel del paso 2 es hermano del formulario.
+  const rejilla = form.parentElement;
+  const panel = rejilla ? rejilla.querySelector('.lead-cal') : null;
+  const hueco = panel ? panel.querySelector('.lead-cal-embed') : null;
+
+  // Arranque perezoso para el formulario de #contacto, que no tiene modal que
+  // abrir: al primer foco ya hay intencion suficiente. Sigue siendo despues
+  // del LCP, asi que no entra en la medicion.
+  form.addEventListener('focusin', function warm() {
+    form.removeEventListener('focusin', warm);
+    ensureCal().catch(() => {});
+  });
+
+  // Salir del paso 2 sin calendario.
+  const skip = panel ? panel.querySelector('[data-cal-skip]') : null;
+  if (skip) {
+    skip.addEventListener('click', () => {
+      if (inModal) {
+        const closer = inModal.querySelector('[data-demo-close]');
+        if (closer) { closer.click(); return; }
+      }
+      panel.hidden = true;
+      form.hidden = false;
+      if (rejilla) rejilla.classList.remove('is-step2');
+      setStatus('Perfecto. Te escribimos en 24 h.', 'ok');
+    });
+  }
 
   function setStatus(message, type) {
     if (!status) return;
@@ -940,7 +1097,25 @@ function renderPhone(chatEl, statusEl, scenario) {
       }
       form.reset();
       setStatus('Solicitud enviada. Te escribimos pronto.', 'ok');
-      if (inModal) {
+      // Paso 2: el lead YA esta guardado en la BD. El calendario es un extra,
+      // no un requisito: si abandonan aqui, el contacto no se pierde. Vale
+      // igual para el modal y para el formulario de #contacto: el panel es
+      // hermano del <form> y la rejilla es el padre en los dos casos.
+      if (panel && hueco) {
+        form.hidden = true;
+        panel.hidden = false;
+        if (rejilla) rejilla.classList.add('is-step2');
+        if (!panel.dataset.montado) {
+          panel.dataset.montado = '1';
+          mountCal(hueco).catch(() => {
+            // Si Cal no carga, no dejamos al usuario mirando un hueco vacio:
+            // el lead esta guardado y basta con decirlo.
+            panel.dataset.montado = '';
+            hueco.innerHTML = '<p class="lead-cal-fallback">No hemos podido abrir el calendario. '
+              + 'No pasa nada: tus datos ya han llegado y te escribimos en 24 h.</p>';
+          });
+        }
+      } else if (inModal) {
         window.setTimeout(() => {
           const closer = inModal.querySelector('[data-demo-close]');
           if (closer) closer.click();
@@ -1055,6 +1230,23 @@ function renderPhone(chatEl, statusEl, scenario) {
     || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4);
   const coarse = window.matchMedia('(pointer: coarse)').matches;
   if (reduceMotion || coarse || lowEnd) return;
+
+  // Calentar la caché SOLO en los equipos que van a montar la escena. Antes
+  // eran dos <link rel="prefetch"> en el <head>, que se descargaban en todos
+  // los dispositivos: en táctil son 1,85 MB muertos, porque la función ya ha
+  // salido arriba por `coarse`. Al ir aquí, el check decide una sola vez y no
+  // se pueden desincronizar el HTML y el JS.
+  [['/features/landing/spline/spline-viewer.js', 'script'],
+   ['/features/landing/voice.splinecode', 'fetch']].forEach(([href, as]) => {
+    const l = document.createElement('link');
+    l.rel = 'prefetch';
+    l.href = href;
+    l.as = as;
+    l.fetchPriority = 'low';
+    // La escena se pide con CORS: sin esto la entrada de caché no le sirve.
+    if (as === 'fetch') l.crossOrigin = 'anonymous';
+    document.head.appendChild(l);
+  });
 
   let loaded = false;
   function ensureRuntime() {
@@ -1200,6 +1392,9 @@ function renderPhone(chatEl, statusEl, scenario) {
     modal.classList.add('is-open');
     modal.setAttribute('aria-hidden', 'false');
     document.body.classList.add('demo-open');
+    // Calentar Cal.com aqui: abrir el modal es intencion, siempre ocurre
+    // despues del LCP, y da margen a que embed.js llegue mientras rellenan.
+    ensureCal().catch(() => {});
     const first = modal.querySelector('input, button[type="submit"]');
     if (first) window.setTimeout(() => first.focus(), 60);
     document.addEventListener('keydown', onKey);
@@ -1208,6 +1403,12 @@ function renderPhone(chatEl, statusEl, scenario) {
     modal.classList.remove('is-open');
     modal.setAttribute('aria-hidden', 'true');
     document.body.classList.remove('demo-open');
+    // Volver al paso 1 para la proxima apertura. El iframe montado se queda
+    // en el DOM: remontarlo en cada visita cuesta otra descarga.
+    const f = modal.querySelector('form[data-lead-form]');
+    const panelModal = modal.querySelector('.lead-cal');
+    if (f && panelModal) { f.hidden = false; panelModal.hidden = true; }
+    if (card) card.classList.remove('is-step2');
     document.removeEventListener('keydown', onKey);
     if (lastFocus && lastFocus.focus) lastFocus.focus();
   }

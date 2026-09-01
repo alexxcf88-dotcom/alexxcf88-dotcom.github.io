@@ -25,15 +25,17 @@
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- Robot 3D autoalojado: se calienta la caché con prefetch (prioridad baja,
-       fuera del camino crítico). Antes eran modulepreload + preload, que metían
-       1,8 MB por delante del primer pintado: el runtime se compilaba antes de
-       que se viera el titular. Quien monta la escena es el
-       IntersectionObserver de landing.js, no estas etiquetas. -->
-  <link rel="prefetch" href="/features/landing/spline/spline-viewer.js" as="script" fetchpriority="low">
-  <link rel="prefetch" href="/features/landing/voice.splinecode" as="fetch" crossorigin fetchpriority="low">
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Bitter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <!-- El robot 3D NO se precarga aquí. Estos <link rel="prefetch"> vivían en el
+       <head> y bajaban 1,85 MB en TODOS los dispositivos, pero initVoiceSpline
+       sale antes en táctil y equipos flojos, así que en móvil ese peso no se
+       usaba jamás: era el 67% de la carga y el LCP se iba a 13,6 s. Ahora los
+       inyecta landing.js, detrás del mismo check que decide si hay 3D. -->
+  <!-- Las dos familias en UNA sola peticion (antes eran dos hojas bloqueantes).
+       De Archivo se ha quitado el peso 500, que no lo usa ninguna regla de
+       landing.css. OJO: el CSS si usa 650, 750, 850 y 950, que no estan en esta
+       lista y el navegador redondea al peso disponible mas cercano; servirlos de
+       verdad seria pedir el rango variable wght@400..900. -->
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Bitter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <!-- Safari/WebKit (todos los navegadores de iOS y Safari de Mac): el degradado
        animado con background-clip:text del titular se pinta a veces SIN recortar
        (carrera con la carga de fuentes) y cubre el hero con un bloque blanco.
@@ -44,7 +46,7 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260822-hero">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260901-pie-demo">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -610,7 +612,7 @@
             <p class="plan-nombre">Premium</p>
             <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>349&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>290&nbsp;&euro;</strong><em>/mes</em></span></p>
             <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
-            <p class="plan-extra">+ 399&nbsp;&euro; de instalaci&oacute;n, pago &uacute;nico</p>
+            <p class="plan-extra">+ 299&nbsp;&euro; de instalaci&oacute;n, pago &uacute;nico</p>
             <p class="plan-para">Metido en vuestro programa</p>
             <ul class="plan-lista">
               <li class="plan-clave"><strong>Las citas se escriben solas en vuestro programa de gesti&oacute;n</strong></li>
@@ -763,12 +765,28 @@
         <button class="primary-btn primary-btn-full" type="submit">Solicitar demo</button>
         <p class="lead-status" role="status" aria-live="polite"></p>
       </form>
+
+      <!-- Paso 2: el calendario solo aparece cuando el lead YA esta guardado en
+           nuestro backend. Asi no se pierde el contacto si abandonan aqui, y
+           Cal.com solo carga para quien ha convertido. Sin id: hay dos, uno por
+           formulario, y se localizan como hermanos del <form>. -->
+      <div class="lead-cal" hidden>
+        <div class="lead-cal-head">
+          <strong>Listo. Ya tenemos tus datos.</strong>
+          <p>Si quieres, elige hora ahora y lo dejamos cerrado. Si no, te escribimos en 24&nbsp;h.</p>
+        </div>
+        <div class="lead-cal-embed"></div>
+        <button class="lead-cal-skip" type="button" data-cal-skip>Prefiero que me escrib&aacute;is</button>
+      </div>
     </section>
   </main>
 
   <footer class="site-footer">
     <a class="brand" href="#inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
     <div>
+      <!-- Mismo disparador que el boton de la barra: data-demo-open abre el
+           modal de demo en dos pasos. El href a #contacto es el respaldo sin JS. -->
+      <a class="footer-demo" href="#contacto" data-demo-open>Solicitar demo</a>
       <a href="integraciones.html">Integraciones</a>
       <a href="como-funciona.html">C&oacute;mo funciona</a>
       <a href="legal/privacidad.html">Privacidad</a>
@@ -823,9 +841,22 @@
         <button class="primary-btn primary-btn-full" type="submit">Solicitar demo</button>
         <p class="lead-status" role="status" aria-live="polite"></p>
       </form>
+
+      <!-- Paso 2: el calendario solo aparece cuando el lead YA esta guardado en
+           nuestro backend. Asi no se pierde el contacto si abandonan aqui, y
+           Cal.com solo carga para quien ha convertido. Sin id: hay dos, uno por
+           formulario, y se localizan como hermanos del <form>. -->
+      <div class="lead-cal" hidden>
+        <div class="lead-cal-head">
+          <strong>Listo. Ya tenemos tus datos.</strong>
+          <p>Si quieres, elige hora ahora y lo dejamos cerrado. Si no, te escribimos en 24&nbsp;h.</p>
+        </div>
+        <div class="lead-cal-embed"></div>
+        <button class="lead-cal-skip" type="button" data-cal-skip>Prefiero que me escrib&aacute;is</button>
+      </div>
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260831-spline-lazy"></script>
+  <script defer src="features/landing/landing.js?v=20260901-cal-pastilla"></script>
 </body>
 </html>
