@@ -244,3 +244,17 @@ th {
 
 /* El nombre no se parte al final de una linea. El 'AI' lo pinta .b-ai. */
 .marca { white-space: nowrap; }
+
+/* ── Movil: menos relleno anidado y enlaces pulsables ────────────────────────
+   Pagina, tarjeta y recuadro sumaban tres rellenos: el texto quedaba en una
+   columna de 220 px. Los enlaces median 16 px de alto. */
+@media (max-width: 620px) {
+  .legal-head,
+  .legal-body { padding: 1rem; }
+  .legal-links a,
+  .back-link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+}

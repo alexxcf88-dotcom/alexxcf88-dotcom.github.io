@@ -6015,3 +6015,96 @@ body.demo-open { overflow: hidden; }
 /* "- se cobra mes a mes" puede partir de linea: a 1440 solo sobran 13 px y no
    quiero que dependa de como cargue la fuente. */
 .plan-facturacion .precio-total { white-space: normal; }
+
+/* ── Movil: margenes, precio, lectura y zonas tactiles ───────────────────────
+   Todo va dentro de media queries: a 1440 px no cambia ningun estilo. A 360 px
+   el margen de 8 px pegaba el texto al borde, el conmutador anual se cortaba y
+   habia textos de 10 px y enlaces de 17 px de alto. */
+@media (max-width: 620px) {
+  /* Margen lateral de 8 a 16 px */
+  .hero,
+  .audit-section,
+  .discovery-section,
+  .voice-section,
+  .story-section,
+  .ops-section,
+  .inbox-section,
+  .commercial-section,
+  .faq-section,
+  .cta-section { width: calc(100% - 2rem); }
+  .site-nav { width: calc(100% - 1.5rem); }
+  .pricing-shell { padding: 0.6rem; }
+
+  /* Mensual / anual: dos columnas y el anual puede partir linea */
+  .price-switch.ciclo {
+    width: 100%;
+    grid-template-columns: auto minmax(0, 1fr);
+    border-radius: 24px;
+  }
+  .ciclo-btn {
+    padding: 0.45rem 0.9rem;
+    line-height: 1.2;
+    white-space: normal;
+    text-align: center;
+  }
+
+  /* Botones del hero: uno por linea y atajos legibles */
+  .hero-actions { flex-wrap: wrap; }
+  .hero-actions .primary-btn,
+  .hero-actions .secondary-btn {
+    flex: 1 1 100%;
+    font-size: 0.92rem;
+  }
+  .hero-fast-path a {
+    min-height: 42px;
+    font-size: 0.75rem;
+  }
+
+  /* Titulares a todo el ancho (con la especificidad de sus reglas de escritorio) */
+  .system-minimal .system-copy h2,
+  .trust-section .audit-copy h2,
+  .cta-copy h2 { max-width: none; }
+
+  /* "Desliza para descubrir el proceso" en una linea a 360 px */
+  .hero-cue { letter-spacing: 0.1em; }
+
+  /* Tamano minimo de lectura */
+  .os-kpi small,
+  .os-disclaimer { font-size: 0.72rem; }
+  .story-note p { font-size: 0.78rem; }
+
+  /* Zonas tactiles */
+  .nav-cta { min-height: 44px; }
+  .site-footer div a {
+    display: inline-flex;
+    align-items: center;
+    min-height: 40px;
+  }
+  .consent input[type="checkbox"] {
+    width: 22px;
+    height: 22px;
+  }
+
+  /* iOS hace zoom al enfocar un campo con letra de menos de 16 px */
+  input:not([type="checkbox"]):not([type="radio"]),
+  select,
+  textarea,
+  #voice-mic { font-size: 16px; }
+
+  /* La ventana de la llamada, mas baja: esta vacia hasta que avanza el guion */
+  .voice-transcript .call-chat { height: clamp(300px, 44vh, 400px); }
+
+  /* Etiquetas: si parten linea, el punto va con la primera palabra en vez de
+     quedarse solo a la izquierda (con inline-flex el texto ocupaba todo el ancho). */
+  .eyebrow { display: inline-block; text-wrap: balance; }
+  .eyebrow span {
+    display: inline-block;
+    margin-right: 0.5rem;
+    vertical-align: 0.1em;
+  }
+}
+
+/* Menu desplegable opaco: con 0.97 de alfa el titular del hero se leia detras. */
+@media (max-width: 1040px) {
+  .site-nav.menu-open .nav-links { background: var(--bg); }
+}
