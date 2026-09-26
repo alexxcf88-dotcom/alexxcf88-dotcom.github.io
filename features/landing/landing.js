@@ -868,7 +868,7 @@ function renderPhone(chatEl, statusEl, scenario) {
 (function initReveal() {
   if (reduceMotion || !('IntersectionObserver' in window)) return;
   const els = Array.from(document.querySelectorAll(
-    '.hero-copy, .section-copy, .audit-grid, .trust-faq, .voice-copy, .voice-skill-board, .voice-chat-example, .discovery-board, .producto-grid, .story-phone-pin, .mail-app, .pricing-shell, .cta-copy, .lead-form'
+    '.hero-copy, .section-copy, .audit-grid, .trust-faq, .voice-copy, .voice-skill-board, .voice-chat-example, .discovery-board, .story-phone-pin, .mail-app, .pricing-shell, .cta-copy, .lead-form'
   ));
   document.documentElement.classList.add('reveal-ready');
   els.forEach((el) => el.classList.add('reveal-item'));
