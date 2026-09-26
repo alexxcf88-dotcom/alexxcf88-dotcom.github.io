@@ -470,3 +470,102 @@ html, body { overflow-x: clip; }
   .plan-cab { padding-left: 0; padding-top: calc(var(--sello-tam) + 10px); min-height: 0; }
   .plan-datos { grid-template-columns: minmax(0, 1fr); }
 }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   «Qué hace AItomat»: el catálogo de lo que entregamos, en bloques legibles.
+   Cada tarjeta lleva su estado real al pie, para no vender humo ni esconder
+   lo que todavía se configura durante la puesta en marcha.
+   ───────────────────────────────────────────────────────────────────────────── */
+.producto-section {
+  padding: clamp(3.5rem, 7vw, 6rem) clamp(1.25rem, 5vw, 4.5rem);
+}
+.producto-copy { max-width: 62ch; }
+/* El titular de sección vive a escala de lectura, no de portada. */
+.producto-copy h2 { font-size: clamp(1.9rem, 3.4vw, 3rem); line-height: 1.06; letter-spacing: -.04em; }
+.producto-copy a { color: var(--orange); text-decoration: underline; text-underline-offset: .2em; }
+.producto-grid {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: clamp(.8rem, 1.6vw, 1.1rem);
+  margin-top: clamp(1.6rem, 4vw, 2.6rem);
+}
+.prod {
+  grid-column: span 2;
+  display: flex;
+  flex-direction: column;
+  gap: .55rem;
+  padding: clamp(1.1rem, 2.2vw, 1.6rem);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--panel);
+  transition: border-color 240ms var(--ease), transform 240ms var(--ease);
+}
+.prod:hover { border-color: rgba(90, 240, 216, .22); transform: translateY(-2px); }
+.prod--ancha { grid-column: span 3; }
+.prod--plana { flex-direction: row; align-items: flex-start; gap: 1rem; grid-column: span 3; }
+.prod--plana > div { flex: 1; min-width: 0; }
+.prod-ic {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  border: 1px solid rgba(90, 240, 216, .2);
+  border-radius: 12px;
+  background: rgba(90, 240, 216, .07);
+  color: var(--aqua);
+  flex: none;
+}
+.prod-ic svg { width: 20px; height: 20px; }
+.prod h3 {
+  margin: .2rem 0 0;
+  font-size: 1.12rem;
+  letter-spacing: -.02em;
+}
+.prod-lead { margin: 0; color: var(--soft); font-size: .95rem; line-height: 1.55; }
+.prod ul { list-style: none; margin: .1rem 0 0; padding: 0; display: grid; gap: .45rem; }
+.prod li {
+  position: relative;
+  padding-left: 1.05rem;
+  color: var(--soft);
+  font-size: .93rem;
+  line-height: 1.55;
+}
+.prod li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .58em;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--aqua);
+  opacity: .8;
+}
+.prod li strong { color: var(--ink); }
+.prod-estado {
+  margin: auto 0 0;
+  padding-top: .8rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.5;
+}
+.prod-estado a { color: var(--orange); text-decoration: underline; text-underline-offset: .2em; }
+.prod-estado--ok { color: var(--aqua); }
+.prod-estado--ok a { color: var(--aqua); }
+
+@media (max-width: 1040px) {
+  .producto-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .prod, .prod--ancha { grid-column: span 1; }
+  .prod--plana { grid-column: span 2; }
+}
+@media (max-width: 760px) {
+  .producto-section { padding-left: 0; padding-right: 0; }
+  .producto-grid { grid-template-columns: minmax(0, 1fr); gap: 14px; margin-top: 24px; }
+  .prod, .prod--ancha, .prod--plana { grid-column: span 1; }
+  .prod { padding: 20px; border-radius: 18px; }
+  .prod--plana { flex-direction: column; }
+  .prod h3 { font-size: 1.08rem; }
+  .prod li, .prod-lead { font-size: .95rem; }
+  .prod:hover { transform: none; }
+}
