@@ -2,7 +2,8 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <title>Integraciones - AItomat</title>
   <meta name="description" content="Con qué sistemas se conecta AItomat, qué lee y qué escribe en cada uno, y en qué punto está cada integración. Sin promesas: el estado real.">
   <meta name="theme-color" content="#050706">
@@ -16,10 +17,10 @@
   <meta property="og:image" content="https://aitomat.es/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
-  <link rel="stylesheet" href="legal/legal.css?v=20260926-refresh">
-  <link rel="stylesheet" href="css/paginas.css?v=20260926-refresh">
+  <link rel="stylesheet" href="legal/legal.css?v=20260926-planes">
+  <link rel="stylesheet" href="css/paginas.css?v=20260926-planes">
   <link rel="stylesheet" href="css/fonts.css?v=20260926">
-  <link rel="stylesheet" href="css/refresh.css?v=20260926">
+  <link rel="stylesheet" href="css/refresh.css?v=20260926-planes">
 </head>
 <body>
   <main class="legal-shell">
@@ -39,12 +40,21 @@
         <p class="legal-kicker">Integraciones</p>
         <h1>Con qué se conecta</h1>
         <p class="legal-lead"><span class="marca"><span class="b-ai">AI</span>tomat</span> necesita leer y escribir en una agenda. Esta página dice, sistema por sistema, qué lee, qué escribe y en qué punto está de verdad. Si algo no se ha probado contra una instalación real, aquí lo pone.</p>
-        <p class="legal-updated">Última actualización: 21 de agosto de 2026</p>
+        <p class="legal-updated">Última actualización: 26 de septiembre de 2026</p>
       </header>
 
       <div class="legal-body">
         <p class="notice">
           <span class="marca"><span class="b-ai">AI</span>tomat</span> está en <strong>fase piloto</strong>. Hoy no hay ninguna clínica con su sistema conectado en producción. Lo que sigue describe el estado del software, no clientes en marcha.
+        </p>
+        <p>
+          Esta página y <a href="index.html#precio">los planes</a> responden a dos preguntas distintas.
+          Los planes dicen <strong>qué entregamos</strong> a una clínica que contrata: si una prestación
+          necesita configuración o integración, la dejamos lista durante la puesta en marcha y va
+          marcada como «configuración incluida». Esta página dice <strong>en qué punto técnico está
+          cada conexión hoy</strong>: lista, en desarrollo o sin empezar. Que algo esté aquí en
+          desarrollo no significa que quede fuera del plan; significa que el trabajo de dejarlo
+          funcionando lo hacemos nosotros al arrancar, y que no ponemos fecha antes de probarlo.
         </p>
 
         <!-- ── Grupo 1 ─────────────────────────────────────────────────────── -->
@@ -145,6 +155,23 @@
               </table>
             </div>
             <p class="int-falta"><strong>Qué falta:</strong> probarlo contra una cuenta real. Para activarlo hacen falta el token de API de la clínica y tres datos de su configuración: sucursal, dentista por defecto y cuál es su estado «anulado».</p>
+          </div>
+
+          <div class="int">
+            <h3>WhatsApp y el resto de canales de mensajería</h3>
+            <p>El canal de WhatsApp usa la Cloud API de Meta. El código de recordatorios y de reactivación está escrito, pero Meta no permite escribir a un paciente que lleva meses sin contactar salvo con una <strong>plantilla aprobada</strong>, y la cuenta de WhatsApp Business tiene que ser de la propia clínica. Instagram, Facebook, email y SMS comparten el mismo patrón: el mensaje entra, se entiende y se responde con el mismo criterio que una llamada.</p>
+            <div class="legal-table-wrap">
+              <table>
+                <thead><tr><th>Qué leería</th><th>Qué escribiría</th></tr></thead>
+                <tbody>
+                  <tr>
+                    <td data-label="Qué leería">Mensajes entrantes del paciente: motivo, preferencia de horario y datos de contacto que facilite.</td>
+                    <td data-label="Qué escribiría">Respuestas al paciente, recordatorios de cita y avisos de reactivación, por plantilla cuando Meta lo exige.</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+            <p class="int-falta"><strong>Qué falta:</strong> dar de alta la cuenta de WhatsApp Business de la clínica y conseguir la aprobación de Meta para las plantillas de recordatorio y reactivación. Es trámite, no desarrollo, y lo llevamos nosotros en la puesta en marcha: por eso la mensajería figura en los planes con «configuración incluida». Mientras no esté aprobada, la recepción por voz funciona igual.</p>
           </div>
         </section>
 

@@ -11,7 +11,7 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
   const hero = document.querySelector('[data-spotlight]');
   const words = Array.from(document.querySelectorAll('#hero-rotator .hero-rotator-word'));
 
-  if (words.length > 1 && !reduceMotion) {
+  if (words.length > 1 && !lightweightMotion) {
     let index = 0;
     window.setInterval(() => {
       if (document.hidden) return;
@@ -385,9 +385,9 @@ function renderPhone(chatEl, statusEl, scenario) {
       next: 'Preparar plantilla de reactivacion',
     },
     whatsapp: {
-      kicker: 'WhatsApp · Próximamente',
+      kicker: 'WhatsApp',
       title: 'Vista previa del canal de WhatsApp.',
-      copy: 'Ejemplo ilustrativo. WhatsApp no está disponible actualmente ni incluido como prestación activa en los planes.',
+      copy: 'Incluido en los planes. El canal se activa cuando Meta aprueba la cuenta de WhatsApp Business de la clínica y sus plantillas.',
       lines: ['82%', '58%', '70%'],
       detected: 'Paciente pide limpieza fuera de horario',
       decision: 'Confirmar datos y buscar hueco real',
@@ -479,7 +479,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     const total = rect.height - window.innerHeight;
     targetP = total > 0 ? Math.max(0, Math.min(1, -rect.top / total)) : 0;
     // El scroll dirige los 4 pasos (scrollytelling).
-    setStep(Math.max(0, Math.min(n - 1, Math.floor(targetP * n * 0.999))));
+    if (!mobileViewport) setStep(Math.max(0, Math.min(n - 1, Math.floor(targetP * n * 0.999))));
     if (!running && !reduceMotion) start();
   }
 
@@ -621,12 +621,12 @@ function renderPhone(chatEl, statusEl, scenario) {
       note: 'Vuelve a llenar agenda sin perseguir a mano.',
     },
     whatsapp: {
-      caption: 'WhatsApp: Pr\u00f3ximamente. Ejemplo ilustrativo de un canal que a\u00fan no est\u00e1 disponible.',
+      caption: 'Mensajer\u00eda por WhatsApp: incluida en los planes y configurada durante la puesta en marcha.',
       message: 'Hola, \u00bften\u00e9is hueco para una limpieza? Mejor por la tarde.',
       decision: 'Detecta intenci\u00f3n de cita y pregunta si es primera visita, motivo y preferencia horaria.',
       action: 'Ofrece dos huecos reales y deja la cita preparada cuando el paciente elige.',
       done: 14, human: 3, metric: 'Confianza de la respuesta', value: 92,
-      note: 'Pr\u00f3ximamente. No incluido como servicio activo.',
+      note: 'Se activa con la cuenta y las plantillas aprobadas por Meta.',
     },
   };
 
@@ -647,7 +647,7 @@ function renderPhone(chatEl, statusEl, scenario) {
 
   function countUp(el, target) {
     if (!el) return;
-    if (reduceMotion) { el.textContent = String(target); return; }
+    if (lightweightMotion) { el.textContent = String(target); return; }
     const start = performance.now();
     const dur = 650;
     const tick = (now) => {
@@ -669,6 +669,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     if (els.meter) els.meter.style.setProperty('--w', `${data.value}%`);
     win.style.setProperty('--os-scan', `${8 + data.value * 0.82}%`);
     win.setAttribute('aria-labelledby', `tab-${key}`);
+    document.getElementById('os-body')?.setAttribute('aria-labelledby', `tab-${key}`);
     countUp(els.done, data.done);
     countUp(els.human, data.human);
     tabs.forEach((tab) => {
@@ -710,7 +711,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     });
   });
 
-  if (!reduceMotion) {
+  if (!lightweightMotion) {
     auto = setInterval(() => {
       autoIndex = (autoIndex + 1) % keys.length;
       select(keys[autoIndex]);
@@ -1602,6 +1603,9 @@ function mountCal(destino) {
 
   const setOpen = (open) => {
     nav.classList.toggle('menu-open', open);
+    document.documentElement.classList.toggle('mobile-menu-open', open);
+    document.querySelector('main')?.toggleAttribute('inert', open);
+    document.querySelector('.site-footer')?.toggleAttribute('inert', open);
     toggle.setAttribute('aria-expanded', open ? 'true' : 'false');
     toggle.setAttribute('aria-label', open ? 'Cerrar menú' : 'Abrir menú');
   };
@@ -1619,9 +1623,17 @@ function mountCal(destino) {
   }
   if (cta) cta.addEventListener('click', () => setOpen(false));
 
+  window.matchMedia('(max-width: 1040px)').addEventListener('change', () => setOpen(false));
+
   // Cerrar con Escape o al tocar fuera del nav.
   document.addEventListener('keydown', (event) => {
-    if (event.key === 'Escape') setOpen(false);
+    if (event.key === 'Escape' && nav.classList.contains('menu-open')) { setOpen(false); toggle.focus(); }
+    if (event.key === 'Tab' && nav.classList.contains('menu-open')) {
+      const items = [...nav.querySelectorAll('a, button')].filter(el => el.getClientRects().length);
+      const first = items[0], last = items[items.length - 1];
+      if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+      else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+    }
   });
   document.addEventListener('click', (event) => {
     if (nav.classList.contains('menu-open') && !nav.contains(event.target)) setOpen(false);
