@@ -4,12 +4,12 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AItomat — Recepción automatizada para clínicas dentales</title>
-  <meta name="description" content="AItomat es recepción automatizada para clínicas dentales: atiende el teléfono, agenda sobre tu agenda real, envía recordatorios y recupera pacientes dormidos. Habla con el asistente desde la web.">
+  <meta name="description" content="AItomat es recepción automatizada para clínicas dentales: atiende el teléfono, agenda sobre tu agenda real, prepara los casos que necesitan a recepción. Habla con el asistente desde la web.">
   <meta name="theme-color" content="#050706">
   <link rel="canonical" href="https://aitomat.es/">
   <meta name="robots" content="index, follow">
   <meta property="og:title" content="AItomat — Recepción automatizada para clínicas dentales">
-  <meta property="og:description" content="Atiende el tel&eacute;fono, agenda sobre tu agenda real y recupera pacientes dormidos. Puedes hablar con el asistente desde la propia web.">
+  <meta property="og:description" content="Atiende el tel&eacute;fono, agenda sobre tu agenda real y prepara los casos para recepción. Puedes hablar con el asistente desde la propia web.">
   <meta property="og:type" content="website">
   <meta property="og:url" content="https://aitomat.es/">
   <meta property="og:site_name" content="AItomat">
@@ -20,22 +20,9 @@
   <meta property="og:image:alt" content="AItomat — Recepción automatizada para clínicas dentales">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AItomat — Recepción automatizada para clínicas dentales">
-  <meta name="twitter:description" content="Atiende el teléfono, gestiona la agenda y recupera pacientes dormidos para tu clínica dental.">
+  <meta name="twitter:description" content="Atiende el teléfono, gestiona la agenda y prepara los casos para recepción para tu clínica dental.">
   <meta name="twitter:image" content="https://aitomat.es/og-image.png">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <!-- El robot 3D NO se precarga aquí. Estos <link rel="prefetch"> vivían en el
-       <head> y bajaban 1,85 MB en TODOS los dispositivos, pero initVoiceSpline
-       sale antes en táctil y equipos flojos, así que en móvil ese peso no se
-       usaba jamás: era el 67% de la carga y el LCP se iba a 13,6 s. Ahora los
-       inyecta landing.js, detrás del mismo check que decide si hay 3D. -->
-  <!-- Las dos familias en UNA sola peticion (antes eran dos hojas bloqueantes).
-       De Archivo se ha quitado el peso 500, que no lo usa ninguna regla de
-       landing.css. OJO: el CSS si usa 650, 750, 850 y 950, que no estan en esta
-       lista y el navegador redondea al peso disponible mas cercano; servirlos de
-       verdad seria pedir el rango variable wght@400..900. -->
-  <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;600;700;800;900&family=Bitter:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
   <!-- Safari/WebKit (todos los navegadores de iOS y Safari de Mac): el degradado
        animado con background-clip:text del titular se pinta a veces SIN recortar
        (carrera con la carga de fuentes) y cubre el hero con un bloque blanco.
@@ -46,120 +33,134 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260919-movil">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260926-refresh">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
   <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Organization",
-        "@id": "https://aitomat.es/#organization",
-        "name": "AItomat",
-        "alternateName": ["AItomat España", "Aitomat"],
-        "url": "https://aitomat.es/",
-        "email": "hola@aitomat.es",
-        "sameAs": ["https://www.instagram.com/aitomat.es/"],
-        "logo": "https://aitomat.es/og-image.png",
-        "image": "https://aitomat.es/og-image.png",
-        "description": "Recepción automatizada para clínicas dentales: atiende llamadas, gestiona la agenda, envía recordatorios y recupera pacientes dormidos, con salida a recepción cuando hace falta.",
-        "areaServed": {
-          "@type": "Country",
-          "name": "España"
-        },
-        "knowsLanguage": "es-ES"
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "Organization",
+      "@id": "https://aitomat.es/#organization",
+      "name": "AItomat",
+      "alternateName": [
+        "AItomat España",
+        "Aitomat"
+      ],
+      "url": "https://aitomat.es/",
+      "email": "hola@aitomat.es",
+      "sameAs": [
+        "https://www.instagram.com/aitomat.es/"
+      ],
+      "logo": "https://aitomat.es/og-image.png",
+      "image": "https://aitomat.es/og-image.png",
+      "description": "Recepción automatizada para clínicas dentales: atiende llamadas, gestiona la agenda, prepara los casos que necesitan a recepción, con salida a recepción cuando hace falta.",
+      "areaServed": {
+        "@type": "Country",
+        "name": "España"
       },
-      {
-        "@type": "WebSite",
-        "@id": "https://aitomat.es/#website",
-        "url": "https://aitomat.es/",
-        "name": "AItomat",
-        "inLanguage": "es-ES",
-        "publisher": { "@id": "https://aitomat.es/#organization" }
-      },
-      {
-        "@type": "Service",
-        "name": "Recepción automatizada para clínicas dentales",
-        "serviceType": "Automatización de recepción para clínicas dentales",
-        "provider": { "@id": "https://aitomat.es/#organization" },
-        "areaServed": { "@type": "Country", "name": "España" },
-        "description": "Recepción automatizada que atiende llamadas, reserva en la agenda real, envía recordatorios y recupera pacientes inactivos, derivando a recepción los casos que lo requieren."
-      },
-      {
-        "@type": "FAQPage",
-        "@id": "https://aitomat.es/#faq",
-        "mainEntity": [
-          {
-            "@type": "Question",
-            "name": "¿Y si el paciente quiere hablar con una persona?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Se deriva a recepción. AItomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Se presenta como IA?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Sí. En llamadas se identifica como asistente de la clínica. No se vende como sustituto humano indistinguible, sino como una recepción siempre disponible."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué pasa con los datos de pacientes?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "Los datos de salud requieren especial cuidado. Antes de conectar canales reales se firma contrato de encargado de tratamiento y se define qué datos se tratan, dónde y con qué medidas."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Tengo que cambiar mi software de agenda?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar está contemplado; otras agendas se valoran caso a caso."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Y si falla o no entiende al paciente?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "El flujo debe tener salida humana. Si hay duda, urgencia, datos contradictorios o petición sensible, el caso se marca para recepción en lugar de improvisar."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué pasa si me paso de los minutos incluidos?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "El servicio no se corta nunca. Al llegar al 80 % del plan avisamos, y si un mes se pasa se sigue atendiendo con normalidad: se ajusta hablando, sin facturar nada por sorpresa. Los minutos consumidos y los restantes se ven en el panel."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Qué pasa si cancelo el plan anual antes de tiempo?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "El plan anual tiene descuento por comprometerse doce meses. Si se cancela antes, se ajusta a precio mensual la diferencia de los meses ya disfrutados. No hay penalización extra ni hay que pagar los meses restantes."
-            }
-          },
-          {
-            "@type": "Question",
-            "name": "¿Hay permanencia?",
-            "acceptedAnswer": {
-              "@type": "Answer",
-              "text": "No. La propuesta base es mensual y sin permanencia. Si una integración requiere trabajo específico, se explica antes de activarla."
-            }
-          }
-        ]
+      "knowsLanguage": "es-ES"
+    },
+    {
+      "@type": "WebSite",
+      "@id": "https://aitomat.es/#website",
+      "url": "https://aitomat.es/",
+      "name": "AItomat",
+      "inLanguage": "es-ES",
+      "publisher": {
+        "@id": "https://aitomat.es/#organization"
       }
-    ]
-  }
+    },
+    {
+      "@type": "Service",
+      "name": "Recepción automatizada para clínicas dentales",
+      "serviceType": "Automatización de recepción para clínicas dentales",
+      "provider": {
+        "@id": "https://aitomat.es/#organization"
+      },
+      "areaServed": {
+        "@type": "Country",
+        "name": "España"
+      },
+      "description": "Recepción automatizada que atiende llamadas, consulta disponibilidad y prepara las solicitudes de cita, derivando a recepción los casos que lo requieren."
+    },
+    {
+      "@type": "FAQPage",
+      "@id": "https://aitomat.es/#faq",
+      "mainEntity": [
+        {
+          "@type": "Question",
+          "name": "¿Y si el paciente quiere hablar con una persona?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Se deriva a recepción. AItomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Se presenta como IA?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Sí. Cristina se presenta al inicio como la asistente virtual con inteligencia artificial de la clínica."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué pasa con los datos de pacientes?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Los datos de salud requieren especial cuidado. Antes de conectar canales reales se firma contrato de encargado de tratamiento y se define qué datos se tratan, dónde y con qué medidas."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Tengo que cambiar mi software de agenda?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar está contemplado; otras agendas se valoran caso a caso."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Y si falla o no entiende al paciente?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El flujo debe tener salida humana. Si hay duda, urgencia, datos contradictorios o petición sensible, el caso se marca para recepción en lugar de improvisar."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué pasa si me paso de los minutos incluidos?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "Superar los minutos incluidos no bloquea la atención. Los minutos adicionales tienen una tarifa de 0,24 €/min en Básico y 0,22 €/min en Medio y Premium, más IVA."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Hay permanencia?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "No. La propuesta base es mensual y sin permanencia. Si una integración requiere trabajo específico, se explica antes de activarla."
+          }
+        },
+        {
+          "@type": "Question",
+          "name": "¿Qué incluye el primer mes gratis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El primer mes del piloto es gratis en la cuota mensual del plan elegido. Los minutos incluidos y la tarifa por minuto adicional son los del plan."
+          }
+        }
+      ]
+    }
+  ]
+}
   </script>
+  <link rel="stylesheet" href="css/fonts.css?v=20260926">
+  <link rel="stylesheet" href="css/refresh.css?v=20260926">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
@@ -167,9 +168,9 @@
   <div class="ambient" aria-hidden="true">
     <!-- Autoalojado: antes colgaba de un CloudFront ajeno (16,1 MB). Si el v&iacute;deo no
          llega a cargar, el p&oacute;ster deja el mismo primer fotograma de fondo. -->
-    <video class="ambient-video" id="bg-video" autoplay loop muted playsinline preload="metadata"
+    <video class="ambient-video" id="bg-video" loop muted playsinline preload="none"
       poster="features/landing/media/hero-poster.jpg"
-      src="features/landing/media/hero.mp4"></video>
+      data-src="features/landing/media/hero.mp4"></video>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
     <div class="ambient-tint" id="bg-tint"></div>
@@ -200,18 +201,19 @@
     <section id="inicio" class="hero" data-spotlight>
       <div class="hero-spotlight" aria-hidden="true"></div>
       <div class="hero-copy">
-        <p class="eyebrow"><span></span> Automatizaci&oacute;n real para cl&iacute;nicas dentales</p>
+        <p class="eyebrow"><span></span> Recepci&oacute;n con IA para cl&iacute;nicas dentales</p>
+        <a class="pilot-badge" href="#precio"><span>PRIMER MES GRATIS</span><small>Piloto inicial · cuota mensual</small><span aria-hidden="true">↗</span></a>
         <div class="hero-title-wrap">
           <h1>La recepci&oacute;n de tu cl&iacute;nica, <span class="shiny">automatizada.</span></h1>
         </div>
         <div class="hero-rotator" aria-label="Lo que atiende AItomat en la recepci&oacute;n de la cl&iacute;nica">
           <span class="hero-rotator-label">Atiende</span>
-          <span class="hero-rotator-window" id="hero-rotator" aria-live="polite">
+          <span class="hero-rotator-window" id="hero-rotator" aria-live="off">
             <span class="hero-rotator-word is-active">llamadas</span>
             <span class="hero-rotator-word">la agenda</span>
-            <span class="hero-rotator-word">recordatorios</span>
-            <span class="hero-rotator-word">no-shows</span>
-            <span class="hero-rotator-word">pacientes dormidos</span>
+            <span class="hero-rotator-word">las citas</span>
+
+
           </span>
         </div>
         <p class="hero-lead">
@@ -224,7 +226,7 @@
           <a class="secondary-btn" href="#contacto" data-demo-open>Pedir una demo</a>
         </div>
         <div class="hero-fast-path" aria-label="Atajos principales">
-          <a href="#precio">Ver precio desde 99&nbsp;&euro;/mes</a>
+          <a href="#precio">Ver precio desde 89&nbsp;&euro;/mes + IVA</a>
           <a href="#faq">Resolver dudas de RGPD y fallos</a>
         </div>
         <a class="hero-cue" href="#proceso">desliza para descubrir el proceso</a>
@@ -247,12 +249,12 @@
         <div class="os-tabs" id="system-cases" role="tablist" aria-label="Casos que resuelve AItomat">
           <button class="os-tab active" id="tab-llamadas" type="button" role="tab" aria-selected="true" aria-controls="os-body" data-case="llamadas">Llamadas</button>
             <button class="os-tab" id="tab-agenda" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="agenda">Agenda</button>
-            <button class="os-tab" id="tab-noshows" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="noshows">No-shows</button>
-            <button class="os-tab" id="tab-reactivacion" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="reactivacion">Reactivaci&oacute;n</button>
-            <button class="os-tab" id="tab-whatsapp" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="whatsapp">WhatsApp &middot; pronto</button>
+            <button class="os-tab" id="tab-noshows" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="noshows">No-shows · Pr&oacute;ximamente</button>
+            <button class="os-tab" id="tab-reactivacion" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="reactivacion">Reactivaci&oacute;n · Pr&oacute;ximamente</button>
+            <button class="os-tab" id="tab-whatsapp" type="button" role="tab" aria-selected="false" aria-controls="os-body" data-case="whatsapp">WhatsApp &middot; Pr&oacute;ximamente</button>
           </div>
         <p class="os-caption" id="os-caption">Recupera llamadas perdidas sin fingir que no es IA.</p>
-        <div class="os-body" id="os-body" role="tabpanel" aria-live="polite" aria-labelledby="tab-whatsapp">
+        <div class="os-body" id="os-body" role="tabpanel" aria-live="polite" aria-labelledby="tab-llamadas">
           <div class="os-pipeline">
             <article class="os-step" data-step="0">
               <span class="os-step-label"><i>Entrada</i> Llega el mensaje</span>
@@ -289,7 +291,7 @@
         <p class="eyebrow"><span></span> Inbox inteligente</p>
         <h2>Una sola bandeja para toda la cl&iacute;nica.</h2>
         <p>Mensajes a la izquierda, resumen inteligente a la derecha y la acci&oacute;n ya preparada.</p>
-        <p class="os-disclaimer">Ejemplo ilustrativo de la bandeja: mensajes y respuestas de muestra para ense&ntilde;ar el flujo, no una captura en vivo.</p>
+        <p class="os-disclaimer">Ejemplo ilustrativo de la bandeja: mensajes y respuestas de muestra, no una captura en vivo. WhatsApp: Pr&oacute;ximamente, a&uacute;n no disponible.</p>
       </div>
 
       <div class="mail-app liquid-glass" aria-label="Bandeja inteligente de AItomat">
@@ -359,6 +361,7 @@
         <p class="eyebrow"><span></span> En acci&oacute;n</p>
         <h2>Mira c&oacute;mo atiende a un paciente, paso a paso.</h2>
         <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
+        <p class="os-disclaimer">Ejemplo ilustrativo: la conversaci&oacute;n se representa en formato chat. Recordatorios y reactivaci&oacute;n por WhatsApp: pr&oacute;ximamente. La demo de texto funciona en esta web; WhatsApp est&aacute; Pr&oacute;ximamente y no est&aacute; disponible.</p>
         <span class="story-scrollcue" aria-hidden="true">Desliza para ver el flujo</span>
       </div>
       <div class="story-phone-pin">
@@ -400,7 +403,7 @@
               <span class="wa-ic wa-video" aria-hidden="true"></span>
               <span class="wa-ic wa-call" aria-hidden="true"></span>
             </div>
-            <div class="wa-chat" id="story-phone-chat"></div>
+            <div class="wa-chat" id="story-phone-chat" role="log" aria-label="Conversaci&oacute;n de demostraci&oacute;n" aria-live="polite"></div>
             <button type="button" class="voice-talk-btn wa-live-pill" id="demo-probar" hidden>
               <span class="vt-ic" aria-hidden="true">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.38 8.38 0 0 1-8.5 8.5 8.5 8.5 0 0 1-3.6-.8L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 8.5-8.5 8.38 8.38 0 0 1 8.5 8.5Z"/></svg>
@@ -442,14 +445,14 @@
           <article class="story-note note-c" data-story-step="2">
             <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="M12 8v4l2.5 1.5"/></svg></span>
             <div>
-              <h3>Evita la ausencia</h3>
+              <h3>Recordatorios · Pr&oacute;ximamente</h3>
               <p>Pide confirmaci&oacute;n o reprogramaci&oacute;n antes de perder el hueco.</p>
             </div>
           </article>
           <article class="story-note note-d" data-story-step="3">
             <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4"/></svg></span>
             <div>
-              <h3>Recupera al paciente</h3>
+              <h3>Reactivaci&oacute;n · Pr&oacute;ximamente</h3>
               <p>Reactiva a quien lleva meses sin venir, sin perseguir a mano.</p>
             </div>
           </article>
@@ -461,7 +464,7 @@
       <div class="voice-head">
         <p class="eyebrow"><span></span> Recepci&oacute;n por voz &middot; incluida en todos los planes</p>
         <h2>Llamadas en vivo, sin perder el hilo.</h2>
-        <p class="voice-sub">Incluida en todos los planes, desde 200 minutos al mes hasta llamadas ilimitadas: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Usa la misma agenda y los mismos criterios que el resto del sistema.</p>
+        <p class="voice-sub">Incluida en todos los planes, con 200, 600 o 1.200 minutos al mes seg&uacute;n el plan: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Usa la misma agenda y los mismos criterios que el resto del sistema.</p>
       </div>
       <div class="voice-stage">
         <div class="voice-robot" id="voice-3d" data-spline data-scene="/features/landing/voice.splinecode" aria-hidden="true">
@@ -508,9 +511,9 @@
     <section class="sistemas" aria-labelledby="sistemas-tit">
       <div class="sistemas-copy">
         <p class="eyebrow"><span></span> Programas de gesti&oacute;n</p>
-        <h2 id="sistemas-tit">Da igual qu&eacute; programa us&eacute;is.</h2>
+        <h2 id="sistemas-tit">Tu agenda, con una conexi&oacute;n clara.</h2>
         <p class="sistemas-lead">
-          Todos exportan las citas a Excel o CSV, y <span class="b-ai">AI</span>tomat las importa hoy.
+          Si vuestro programa exporta las citas a Excel o CSV, <span class="b-ai">AI</span>tomat las importa hoy.
           Las integraciones directas van sistema por sistema:
           <a href="integraciones.html">mira en qu&eacute; punto est&aacute; el vuestro</a>.
         </p>
@@ -552,79 +555,52 @@
       <div class="pricing-shell planes-shell">
         <div class="pricing-head">
           <p class="eyebrow"><span></span> Precio</p>
-          <h2>Tres planes. Mensual sin permanencia, anual con descuento.</h2>
+          <h2>Tres planes. Pago mensual sin permanencia.</h2>
           <p class="pricing-lead">
-            Cada plan se lee entero: lo que ves es todo lo que incluye, sin
-            &laquo;lo anterior m&aacute;s&raquo;.
+            Elige por los minutos que necesita tu cl&iacute;nica. Primer mes gratis de cuota mensual como piloto inicial.
           </p>
         </div>
 
 
-        <div class="ciclo-wrap">
-          <div class="price-switch ciclo" role="group" aria-label="Ciclo de pago">
-            <button type="button" class="ciclo-btn active" data-ciclo="mensual"
-                    aria-pressed="true">Mensual</button>
-            <button type="button" class="ciclo-btn" data-ciclo="anual"
-                    aria-pressed="false">Anual &middot; 2 meses gratis &middot; 12 meses</button>
-          </div>
-        </div>
-
         <div class="planes">
-          <article class="plan">
+          <article class="plan" data-plan="basico">
             <p class="plan-nombre">B&aacute;sico</p>
-            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>99&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>80&nbsp;&euro;</strong><em>/mes</em></span></p>
-            <p class="plan-regalo">Primer mes gratis</p>
-            <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>89&nbsp;&euro;</strong><em>/mes + IVA</em></span></p>
+            <p class="plan-extra">Minuto adicional: 0,24&nbsp;&euro;/min + IVA</p>
             <p class="plan-para">Que no se pierda ninguna llamada</p>
             <ul class="plan-lista">
-              <li>Voz 24/7 &middot; <strong>200 minutos</strong> al mes (unas 100 llamadas)</li>
-              <li>Mensajes: WhatsApp &middot; hasta 100 al mes</li>
+              <li>Voz 24/7 &middot; <strong>200 minutos</strong> al mes</li>
               <li>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong></li>
               <li>Panel de <strong>recepci&oacute;n</strong></li>
-              <li><strong>Recordatorios</strong> de cita</li>
-              <li><strong>1 local</strong></li>
             </ul>
             <a class="secondary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
           </article>
 
-          <article class="plan plan--destacado">
+          <article class="plan plan--destacado" data-plan="medio">
             <p class="plan-nombre">Medio <span class="plan-sello">Recomendado</span></p>
-            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>179&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>145&nbsp;&euro;</strong><em>/mes</em></span></p>
-            <p class="plan-regalo">Primer mes gratis</p>
-            <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
-            <p class="plan-para">Que entre m&aacute;s dinero</p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>159&nbsp;&euro;</strong><em>/mes + IVA</em></span></p>
+            <p class="plan-extra">Minuto adicional: 0,22&nbsp;&euro;/min + IVA</p>
+            <p class="plan-para">M&aacute;s capacidad para tu recepci&oacute;n</p>
             <ul class="plan-lista">
-              <li>Voz 24/7 &middot; <strong>600 minutos</strong> al mes (unas 300 llamadas)</li>
-              <li>Mensajes: WhatsApp &middot; Instagram &middot; Facebook &middot; Email &middot; SMS &mdash; hasta 400 al mes</li>
+              <li>Voz 24/7 &middot; <strong>600 minutos</strong> al mes</li>
               <li>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong></li>
               <li>Panel de <strong>recepci&oacute;n</strong></li>
               <li>Panel del <strong>responsable</strong> con m&eacute;tricas</li>
-              <li><strong>Recordatorios</strong> de cita</li>
-              <li><strong>Reactivaci&oacute;n</strong> de pacientes dormidos</li>
-              <li><strong>Lista de espera</strong> que rellena huecos al cancelar</li>
-              <li>Hasta <strong>3 locales</strong></li>
             </ul>
             <a class="primary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
           </article>
 
-          <article class="plan">
+          <article class="plan" data-plan="premium">
             <p class="plan-nombre">Premium</p>
-            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>349&nbsp;&euro;</strong><em>/mes</em></span><span class="precio-ciclo precio-anual"><strong>290&nbsp;&euro;</strong><em>/mes</em></span></p>
-            <p class="plan-facturacion">12 meses de compromiso <span class="precio-total">&middot; se cobra mes a mes</span></p>
-            <p class="plan-extra">+ 299&nbsp;&euro; de instalaci&oacute;n, pago &uacute;nico</p>
-            <p class="plan-para">Metido en vuestro programa</p>
+            <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>299&nbsp;&euro;</strong><em>/mes + IVA</em></span></p>
+            <p class="plan-extra">Minuto adicional: 0,22&nbsp;&euro;/min + IVA</p>
+            <p class="plan-para">Para un mayor volumen de llamadas</p>
             <ul class="plan-lista">
-              <li class="plan-clave"><strong>Las citas se escriben solas en vuestro programa de gesti&oacute;n</strong></li>
               <li>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong></li>
-              <li>Voz 24/7 &middot; <strong>llamadas ilimitadas</strong></li>
-              <li>Mensajes: WhatsApp &middot; Instagram &middot; Facebook &middot; Email &middot; SMS &mdash; ilimitados</li>
+              <li>Voz 24/7 &middot; <strong>1.200 minutos</strong> al mes</li>
               <li>Panel de <strong>recepci&oacute;n</strong></li>
               <li>Panel del <strong>responsable</strong> con m&eacute;tricas</li>
-              <li><strong>Recordatorios</strong> de cita</li>
-              <li><strong>Reactivaci&oacute;n</strong> de pacientes dormidos</li>
-              <li><strong>Lista de espera</strong> que rellena huecos al cancelar</li>
-              <li>Instalaci&oacute;n y configuraci&oacute;n</li>
-              <li><strong>Locales sin l&iacute;mite</strong></li>
+              <li>Puesta en marcha guiada</li>
             </ul>
             <a class="secondary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
           </article>
@@ -632,19 +608,20 @@
 
         <ul class="planes-pie">
           <li><strong>Mensual:</strong> sin permanencia, cancelas cuando quieras.</li>
-          <li>Si te pasas de minutos <strong>el servicio no se corta nunca</strong>: avisamos antes y lo ajustamos hablando.</li>
+          <li>Superar los minutos incluidos <strong>no bloquea la atenci&oacute;n</strong>. Minutos extra: 0,24&nbsp;&euro;/min en B&aacute;sico y 0,22&nbsp;&euro;/min en Medio y Premium, m&aacute;s IVA.</li>
         </ul>
         <p class="planes-nota">
-          El canal de WhatsApp a&uacute;n no est&aacute; activo: se conecta cuando la cuenta de la
-          cl&iacute;nica est&eacute; aprobada. La escritura directa en vuestro programa de gesti&oacute;n
+          <strong>WhatsApp: Pr&oacute;ximamente.</strong> No est&aacute; disponible ni incluido como prestaci&oacute;n activa en los planes.
+          El env&iacute;o autom&aacute;tico de recordatorios y reactivaciones por WhatsApp tambi&eacute;n est&aacute; pendiente de activaci&oacute;n.
+          La escritura directa en vuestro programa de gesti&oacute;n
           depende de cu&aacute;l us&eacute;is; el estado de cada uno est&aacute; en
           <a href="integraciones.html">integraciones</a>.
         </p>
 
         <aside class="pilot-panel">
-          <p class="pilot-label">Piloto guiado</p>
-          <h3>Primero vemos si encaja.</h3>
-          <p>Se revisa el caso antes de vender: canales, agenda, derivaci&oacute;n humana y lo que no debe automatizarse.</p>
+          <p class="pilot-label">PRIMER MES GRATIS</p>
+          <h3>Pru&eacute;balo en tu cl&iacute;nica.</h3>
+          <p>El primer mes gratis corresponde a la cuota mensual del plan. Revisamos contigo agenda, derivaci&oacute;n humana y puesta en marcha.</p>
           <div class="pilot-terms">
             <span>Setup acompa&ntilde;ado</span>
             <span>Sin permanencia</span>
@@ -680,13 +657,14 @@
         </div>
 
         <div class="faq-list trust-faq">
+          <details class="faq-item"><summary>¿Qué incluye el primer mes gratis?<span aria-hidden="true">+</span></summary><p>El primer mes del piloto es gratis en la cuota mensual del plan elegido. Los minutos incluidos y la tarifa por minuto adicional son los del plan.</p></details>
           <details>
             <summary>&iquest;Y si el paciente quiere hablar con una persona?</summary>
             <p>Se deriva a recepci&oacute;n. <span class="b-ai">AI</span>tomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere.</p>
           </details>
           <details>
             <summary>&iquest;Se presenta como IA?</summary>
-            <p>S&iacute;. En llamadas se identifica como asistente de la cl&iacute;nica. No se vende como sustituto humano indistinguible, sino como una recepci&oacute;n siempre disponible.</p>
+            <p>S&iacute;. Cristina se presenta al inicio como la asistente virtual con inteligencia artificial de la cl&iacute;nica.</p>
           </details>
           <details>
             <summary>&iquest;Qu&eacute; pasa con los datos de pacientes?</summary>
@@ -702,15 +680,7 @@
           </details>
           <details>
             <summary>&iquest;Qu&eacute; pasa si me paso de los minutos incluidos?</summary>
-            <p>El servicio <strong>no se corta nunca</strong>. Al llegar al 80&nbsp;% del plan te avisamos,
-               y si un mes te pasas seguimos atendiendo con normalidad: lo ajustamos hablando, sin
-               facturarte nada por sorpresa. Los minutos consumidos y los que quedan se ven en el panel.</p>
-          </details>
-          <details>
-            <summary>&iquest;Qu&eacute; pasa si cancelo el plan anual antes de tiempo?</summary>
-            <p>El plan anual tiene descuento por comprometerse doce meses. Si cancelas antes,
-               se ajusta a precio mensual la diferencia de los meses que ya has disfrutado.
-               <strong>No hay penalizaci&oacute;n extra ni pagas los meses que quedaban.</strong></p>
+            <p>Superar los minutos incluidos no bloquea la atenci&oacute;n. Los minutos adicionales tienen una tarifa de 0,24&nbsp;&euro;/min en B&aacute;sico y 0,22&nbsp;&euro;/min en Medio y Premium, m&aacute;s IVA.</p>
           </details>
           <details>
             <summary>&iquest;Hay permanencia?</summary>
@@ -725,7 +695,7 @@
       <div class="cta-copy">
         <p class="eyebrow"><span></span> Demo</p>
         <h2>Vemos si encaja en tu cl&iacute;nica.</h2>
-        <p>Te respondemos con una propuesta clara para llamadas, agenda y pacientes dormidos.</p>
+        <p>Te respondemos con una propuesta clara para llamadas, agenda y puesta en marcha.</p>
         <ul class="cta-points">
           <li>Qu&eacute; se puede automatizar</li>
           <li>Qu&eacute; debe pasar a recepci&oacute;n</li>
@@ -750,7 +720,7 @@
           <input id="lead-clinica" name="clinica" type="text" autocomplete="organization" required>
         </div>
         <div class="field">
-          <label for="lead-whatsapp">WhatsApp</label>
+          <label for="lead-whatsapp">Tel&eacute;fono de contacto</label>
           <input id="lead-whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required>
         </div>
         <div class="lead-hp" aria-hidden="true">
@@ -806,7 +776,7 @@
         <p class="eyebrow"><span></span> Demo</p>
         <h2 id="demo-modal-title">Pon a <span class="b-ai">AI</span>tomat a trabajar en tu cl&iacute;nica.</h2>
         <ul class="cta-points">
-          <li>Revisamos tus WhatsApp, agenda y llamadas sin atender</li>
+          <li>Revisamos tu agenda y llamadas sin atender</li>
           <li>Te decimos qu&eacute; automatizar y qu&eacute; dejar en manos de recepci&oacute;n</li>
           <li>Sin permanencia; puesta en marcha tras revisar canales y agenda</li>
         </ul>
@@ -826,7 +796,7 @@
           <input id="demo-clinica" name="clinica" type="text" autocomplete="organization" required>
         </div>
         <div class="field">
-          <label for="demo-whatsapp">WhatsApp</label>
+          <label for="demo-whatsapp">Tel&eacute;fono de contacto</label>
           <input id="demo-whatsapp" name="whatsapp" type="tel" inputmode="tel" autocomplete="tel" required>
         </div>
         <div class="lead-hp" aria-hidden="true">
@@ -856,7 +826,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260901-cal-pastilla"></script>
+  <script defer src="features/landing/landing.js?v=20260926-refresh"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

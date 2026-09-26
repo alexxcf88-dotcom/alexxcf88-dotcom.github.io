@@ -1,0 +1,97 @@
+/* Shared refresh: dark / aqua identity, with a restrained warm accent. */
+:root {
+  --orange: #ffad70;
+  --orange-ink: #1e1007;
+  --orange-soft: rgba(255, 173, 112, .1);
+  --orange-line: rgba(255, 173, 112, .36);
+  --muted: rgba(247, 251, 248, .66);
+}
+html { scroll-padding-top: 100px; }
+.pilot-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: .45rem .9rem;
+  max-width: 100%;
+  margin: .6rem 0 1rem;
+  padding: .7rem 1rem;
+  border: 1px solid var(--orange-line);
+  border-radius: 14px;
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: .76rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-decoration: none;
+}
+.pilot-badge small { color: var(--soft); font-size: .75rem; font-weight: 500; letter-spacing: 0; }
+.pilot-badge:hover { border-color: var(--orange); }
+.hero h1 { font-size: clamp(2.5rem, 7.3vw, 6.25rem); line-height: 1; }
+.hero .hero-lead { max-width: 58ch; line-height: 1.65; }
+.hero .hero-actions { margin-top: 1.35rem; }
+.primary-btn { background: var(--aqua); color: var(--bg); }
+.nav-cta { background: var(--orange); color: var(--orange-ink); }
+.secondary-btn:hover { border-color: var(--orange-line); background: var(--orange-soft); }
+.pilot-label, .plan-sello, .trust-section .audit-question > span { color: var(--orange); }
+.plan-sello { background: var(--orange-soft); border-color: var(--orange-line); }
+.pilot-panel { border-color: var(--orange-line); background: linear-gradient(115deg, var(--orange-soft), var(--panel)); }
+.plan { display: flex; flex-direction: column; min-width: 0; }
+.plan--destacado { border-color: var(--orange-line); border-top: 3px solid var(--orange); }
+.plan .plan-lista { flex: 1; }
+.plan .plan-btn { min-height: 48px; }
+.plan-extra { line-height: 1.6; color: var(--soft); }
+.pricing-lead { max-width: 52ch; }
+.planes-nota { line-height: 1.7; }
+.legal-doc h2 { border-left: 2px solid var(--orange); padding-left: .8rem; }
+.legal-doc p, .legal-doc li { line-height: 1.75; }
+.legal-links a:hover, .legal-footer a:hover { color: var(--orange); }
+.legal-nav { gap: 1.25rem; }
+.legal-links a { display: inline-flex; align-items: center; min-height: 44px; }
+/* Both the scripted and live chat use one fixed outer box. Flex children may
+   shrink; message content is never allowed to determine the phone height. */
+#flujo .story-phone, #flujo.demo-live .story-phone {
+  width: clamp(280px, 26vw, 340px);
+  height: clamp(574px, 53.3vw, 697px);
+  min-height: 0;
+  flex: none;
+  transition: transform 700ms var(--ease);
+}
+#flujo .phone-screen { min-height: 0; height: 100%; isolation: isolate; }
+#story-phone-chat { flex: 1 1 0; min-height: 0; overflow-x: hidden; overflow-y: auto; overscroll-behavior: contain; scroll-behavior: smooth; }
+#story-phone-chat > * { flex-shrink: 0; overflow-wrap: anywhere; }
+#flujo .wa-header, #flujo .wa-statusbar, #flujo .wa-inputbar, #flujo .phone-home { flex-shrink: 0; }
+#story-phone-chat .bubble { max-width: 90%; }
+#flujo .wa-field-live { min-width: 0; }
+@media (max-width: 760px) {
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: min(76vw, 288px); height: min(155.8vw, 590.4px); }
+  .hero h1 { font-size: clamp(2.3rem, 9vw, 4.4rem); line-height: 1.06; }
+  .pilot-badge { gap: .35rem .6rem; padding: .65rem .8rem; font-size: .7rem; }
+  .pilot-badge small { font-size: .7rem; }
+  .hero-fast-path { row-gap: .6rem; }
+  .plan { padding: 1.5rem; }
+  .legal-nav { align-items: flex-start; }
+  .legal-links { gap: .25rem .75rem; }
+  .os-tab { min-height: 44px; }
+}
+@media (max-width: 380px) {
+  .pilot-badge small { flex-basis: 100%; order: 1; }
+  .hero-actions > a { width: 100%; }
+}
+@media (prefers-reduced-motion: reduce) {
+  html, #story-phone-chat { scroll-behavior: auto; }
+  #flujo .story-phone, #flujo.demo-live .story-phone { transition: none; }
+}
+
+/* Legible metadata and text links; avoid continuous repainting on small screens. */
+.mi-time, .mi-prev, .voice-topic-pill > span { color: var(--soft); }
+.sistemas-lead a, .planes-nota a { text-decoration: underline; text-underline-offset: .2em; }
+@media (max-width: 760px), (prefers-reduced-motion: reduce) {
+  .hero h1 .shiny { animation: none; background-image: none; color: var(--aqua); -webkit-text-fill-color: var(--aqua); }
+  .robot-local, .marquesina-pista { animation: none; }
+  .site-nav, .liquid-glass, .story-note { backdrop-filter: none; -webkit-backdrop-filter: none; }
+  #flujo .story-phone { transform: none; }
+}
+
+/* Contain decorative effects without creating a horizontal scroll area. */
+html, body { overflow-x: clip; }

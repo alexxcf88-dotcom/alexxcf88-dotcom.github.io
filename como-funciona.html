@@ -16,11 +16,10 @@
   <meta property="og:image" content="https://aitomat.es/og-image.png">
   <meta name="twitter:card" content="summary_large_image">
   <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="legal/legal.css?v=20260919-movil">
-  <link rel="stylesheet" href="css/paginas.css?v=20260919-movil">
+  <link rel="stylesheet" href="legal/legal.css?v=20260926-refresh">
+  <link rel="stylesheet" href="css/paginas.css?v=20260926-refresh">
+  <link rel="stylesheet" href="css/fonts.css?v=20260926">
+  <link rel="stylesheet" href="css/refresh.css?v=20260926">
 </head>
 <body>
   <main class="legal-shell">
@@ -64,12 +63,12 @@
         </ul>
 
         <h2>3. Dónde viven los datos</h2>
-        <p>El servicio es una aplicación en Python (FastAPI) alojada en <strong>Railway</strong>, en la región <strong>US West (Estados Unidos)</strong>, con volumen persistente. Los datos operativos —conversaciones, citas, recordatorios— se guardan en ese volumen.</p>
-        <p class="int-falta"><strong>Eso está fuera de la Unión Europea</strong>, y conviene decirlo antes de que lo pregunte nadie: hoy la infraestructura no está en suelo europeo. Mientras solo hay datos de demo inventados, no tiene consecuencias. Para datos de pacientes reales, sí.</p>
-        <p><strong>Por eso migrar el alojamiento a una región de la UE es requisito previo a tratar datos de pacientes reales</strong>, no una opción a valorar según la clínica. Es un cambio de configuración del proveedor, no de producto, y se hace antes de conectar la primera clínica. Hasta entonces, aquí no entran datos reales.</p>
+        <p>El servicio es una aplicación en Python (FastAPI) alojada en <strong>Railway</strong>, en la región <strong>EU West (Países Bajos)</strong>, con volumen persistente. Los datos operativos —conversaciones, citas, recordatorios— se guardan en ese volumen.</p>
+        <p>La aplicación y su volumen persistente se migraron a EU West el 26 de septiembre de 2026. Los proveedores de voz, IA y reservas tienen sus propias condiciones y ubicaciones de tratamiento.</p>
+        <p>El alojamiento europeo no implica que todos los proveedores del servicio procesen exclusivamente en la UE. Su revisión forma parte de la preparación de cada clínica.</p>
 
         <h2>4. Copias de seguridad</h2>
-        <p class="int-falta"><strong>Hoy no hay copias de seguridad configuradas.</strong> Para una demo con datos inventados da igual; para una clínica con su agenda dentro, no. Es uno de los puntos que hay que dejar resueltos antes de conectar la primera clínica, y por eso aparece aquí y no escondido.</p>
+        <p class="int-falta">La migración europea contó con un backup de SQLite verificado y conservado fuera del volumen. Eso no sustituye una política de copias periódicas, retención y pruebas de restauración, que debe quedar definida antes de conectar una clínica.</p>
 
         <h2>5. Cifrado</h2>
         <ul>
@@ -87,7 +86,7 @@
           <table>
             <thead><tr><th>Proveedor</th><th>Para qué</th></tr></thead>
             <tbody>
-              <tr><td data-label="Proveedor"><strong>Railway</strong></td><td data-label="Para qué">Alojamiento de la aplicación y de la base de datos (US West).</td></tr>
+              <tr><td data-label="Proveedor"><strong>Railway</strong></td><td data-label="Para qué">Alojamiento de la aplicación y de la base de datos (EU West, Países Bajos).</td></tr>
               <tr><td data-label="Proveedor"><strong>Anthropic</strong></td><td data-label="Para qué">El modelo de lenguaje que redacta las respuestas.</td></tr>
               <tr><td data-label="Proveedor"><strong>Vapi</strong> y <strong>ElevenLabs</strong></td><td data-label="Para qué">Agente de voz: telefonía y voz sintética.</td></tr>
               <tr><td data-label="Proveedor"><strong>Google</strong></td><td data-label="Para qué">Google Calendar, solo si la clínica elige esa opción de agenda.</td></tr>
@@ -104,7 +103,7 @@
         <h2>9. Qué hace falta antes de conectar una clínica</h2>
         <p>Resumido, lo que queda por cerrar y que aparece arriba repartido:</p>
         <ul>
-          <li><strong>Migrar el alojamiento a una región de la UE.</strong> Requisito, no opción.</li>
+          <li><strong>Alojamiento europeo completado.</strong> Revisar los demás proveedores y su tratamiento antes de conectar datos de una clínica.</li>
           <li>Copias de seguridad configuradas y probadas.</li>
           <li>Confirmación por escrito del cifrado en reposo del proveedor.</li>
           <li>Plazos de retención concretos y contrato de encargado de tratamiento firmado.</li>

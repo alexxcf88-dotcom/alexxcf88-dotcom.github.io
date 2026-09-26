@@ -516,7 +516,7 @@ if (document.fonts && document.fonts.ready) {
         body: JSON.stringify(data),
       });
       if (!resp.ok) throw new Error('bad status');
-      setStatus('Recibido. Te escribimos hoy mismo por WhatsApp.', 'ok');
+      setStatus('Recibido. Contactaremos contigo para preparar la demo.', 'ok');
       form.reset();
     } catch (err) {
       setStatus('No se pudo enviar. Inténtalo de nuevo o escríbenos a hola@aitomat.es.', 'err');

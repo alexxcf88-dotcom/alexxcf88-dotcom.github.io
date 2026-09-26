@@ -21,7 +21,7 @@ body {
     radial-gradient(680px 520px at 16% 8%, rgba(90, 240, 216, 0.12), transparent 64%),
     linear-gradient(180deg, #07100e 0%, var(--bg) 58%, #020303 100%);
   color: var(--ink);
-  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+  font-family: Archivo, system-ui, -apple-system, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
 }
 
@@ -53,7 +53,7 @@ a { color: inherit; }
   align-items: baseline;
   gap: 0.02em;
   color: var(--ink);
-  font-family: "Instrument Serif", Georgia, serif;
+  font-family: Bitter, Georgia, serif;
   font-size: 1.65rem;
   line-height: 1;
   text-decoration: none;
@@ -62,7 +62,7 @@ a { color: inherit; }
 
 .b-ai {
   color: var(--aqua);
-  font-family: Inter, system-ui, sans-serif;
+  font-family: Archivo, system-ui, sans-serif;
   font-weight: 900;
   letter-spacing: -0.06em;
 }

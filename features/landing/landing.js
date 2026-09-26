@@ -14,6 +14,7 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
   if (words.length > 1 && !reduceMotion) {
     let index = 0;
     window.setInterval(() => {
+      if (document.hidden) return;
       const current = words[index];
       const nextIndex = (index + 1) % words.length;
       const next = words[nextIndex];
@@ -303,18 +304,22 @@ function renderPhone(chatEl, statusEl, scenario) {
   const video = document.getElementById('bg-video');
   const tint = document.getElementById('bg-tint');
   if (!video && !tint) return;
-  if (lightweightMotion) {
-    // El vídeo ambiental SÍ se queda en móvil/táctil (sin él la página
-    // "pierde el fondo"): sigue en bucle con autoplay, solo se salta el
-    // parallax. Únicamente se retira con reduced-motion o equipo flojo.
-    if (video && (reduceMotion || lowEndDevice)) {
-      video.pause();
-      video.removeAttribute('src');
-      video.load();
-      video.hidden = true;
-    }
-    return;
+  // The poster paints immediately; decoration never competes with the hero.
+  if (video && !lightweightMotion && !navigator.connection?.saveData) {
+    const loadVideo = () => {
+      video.src = video.dataset.src;
+      video.play().catch(() => {});
+    };
+    window.addEventListener('load', () => {
+      if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, { timeout: 3500 });
+      else setTimeout(loadVideo, 1500);
+    }, { once: true });
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) video.pause();
+      else if (video.getAttribute('src')) video.play().catch(() => {});
+    });
   }
+  if (lightweightMotion) return;
 
   let ticking = false;
   function update() {
@@ -380,9 +385,9 @@ function renderPhone(chatEl, statusEl, scenario) {
       next: 'Preparar plantilla de reactivacion',
     },
     whatsapp: {
-      kicker: 'Mensaje sin responder',
-      title: 'Convierte mensajes en citas reales.',
-      copy: 'Detecta motivo, urgencia y disponibilidad, y pregunta lo necesario antes de proponer el siguiente hueco.',
+      kicker: 'WhatsApp · Próximamente',
+      title: 'Vista previa del canal de WhatsApp.',
+      copy: 'Ejemplo ilustrativo. WhatsApp no está disponible actualmente ni incluido como prestación activa en los planes.',
       lines: ['82%', '58%', '70%'],
       detected: 'Paciente pide limpieza fuera de horario',
       decision: 'Confirmar datos y buscar hueco real',
@@ -467,6 +472,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   // Valores suavizados que se animan hacia el objetivo (damping):
   let curP = 0, curMX = 0, curMY = 0;
   let running = false;
+  let visible = false;
 
   function readScroll() {
     const rect = section.getBoundingClientRect();
@@ -511,10 +517,11 @@ function renderPhone(chatEl, statusEl, scenario) {
     curMX += (tgtMX - curMX) * 0.06;
     curMY += (tgtMY - curMY) * 0.06;
     applyMotion();
+    if (Math.abs(targetP-curP) + Math.abs(tgtMX-curMX) + Math.abs(tgtMY-curMY) < 0.001) { stop(); return; }
     requestAnimationFrame(loop);
   }
   function start() {
-    if (running || demoLive) return;
+    if (running || demoLive || lightweightMotion || !visible || document.hidden) return;
     running = true;
     requestAnimationFrame(loop);
   }
@@ -530,7 +537,7 @@ function renderPhone(chatEl, statusEl, scenario) {
     // Solo animamos cuando la seccion esta a la vista.
     if ('IntersectionObserver' in window) {
       const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => (e.isIntersecting ? start() : stop()));
+        entries.forEach((e) => { visible = e.isIntersecting; visible ? start() : stop(); });
       }, { threshold: 0 });
       io.observe(section);
       // Arranca la 1a conversacion (efecto de tecleo) cuando el telefono entra
@@ -542,6 +549,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       }, { threshold: 0.3 });
       chatIO.observe(phone);
     } else {
+      visible = true;
       start();
       startChat();
     }
@@ -549,6 +557,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       window.addEventListener('mousemove', (e) => {
         tgtMX = (e.clientX / window.innerWidth - 0.5) * 2;
         tgtMY = (e.clientY / window.innerHeight - 0.5) * 2;
+        start();
       }, { passive: true });
     }
   }
@@ -612,12 +621,12 @@ function renderPhone(chatEl, statusEl, scenario) {
       note: 'Vuelve a llenar agenda sin perseguir a mano.',
     },
     whatsapp: {
-      caption: 'Pregunta, cualifica y prepara los mensajes que nadie contesta. Canal de WhatsApp en preparaci\u00f3n.',
+      caption: 'WhatsApp: Pr\u00f3ximamente. Ejemplo ilustrativo de un canal que a\u00fan no est\u00e1 disponible.',
       message: 'Hola, \u00bften\u00e9is hueco para una limpieza? Mejor por la tarde.',
       decision: 'Detecta intenci\u00f3n de cita y pregunta si es primera visita, motivo y preferencia horaria.',
       action: 'Ofrece dos huecos reales y deja la cita preparada cuando el paciente elige.',
       done: 14, human: 3, metric: 'Confianza de la respuesta', value: 92,
-      note: 'Sin esperar a que recepci\u00f3n abra.',
+      note: 'Pr\u00f3ximamente. No incluido como servicio activo.',
     },
   };
 
@@ -1229,24 +1238,7 @@ function mountCal(destino) {
   const lowEnd = (navigator.deviceMemory && navigator.deviceMemory < 4)
     || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4);
   const coarse = window.matchMedia('(pointer: coarse)').matches;
-  if (reduceMotion || coarse || lowEnd) return;
-
-  // Calentar la caché SOLO en los equipos que van a montar la escena. Antes
-  // eran dos <link rel="prefetch"> en el <head>, que se descargaban en todos
-  // los dispositivos: en táctil son 1,85 MB muertos, porque la función ya ha
-  // salido arriba por `coarse`. Al ir aquí, el check decide una sola vez y no
-  // se pueden desincronizar el HTML y el JS.
-  [['/features/landing/spline/spline-viewer.js', 'script'],
-   ['/features/landing/voice.splinecode', 'fetch']].forEach(([href, as]) => {
-    const l = document.createElement('link');
-    l.rel = 'prefetch';
-    l.href = href;
-    l.as = as;
-    l.fetchPriority = 'low';
-    // La escena se pide con CORS: sin esto la entrada de caché no le sirve.
-    if (as === 'fetch') l.crossOrigin = 'anonymous';
-    document.head.appendChild(l);
-  });
+  if (reduceMotion || coarse || lowEnd || navigator.connection?.saveData) return;
 
   let loaded = false;
   function ensureRuntime() {
@@ -1344,7 +1336,7 @@ function mountCal(destino) {
       entries.forEach((e) => {
         if (e.isIntersecting) { load(); io.disconnect(); }
       });
-    }, { rootMargin: '4000px' });
+    }, { rootMargin: '160px' });
     io.observe(fig);
   } else {
     load();
@@ -1353,7 +1345,7 @@ function mountCal(destino) {
   // NO se llama a load() aquí. El arranque inmediato costaba ~22 s de bloqueo
   // del hilo principal en la carga: descargaba, parseaba e instanciaba WebGL
   // para un robot que está varias pantallas por debajo del hero. El
-  // IntersectionObserver de arriba manda, con 4000px de margen para que la
+  // IntersectionObserver de arriba manda, con 160px de margen para que la
   // escena llegue montada a la sección.
 })();
 
@@ -2342,33 +2334,7 @@ function mountCal(destino) {
       // Precarga INMEDIATA del módulo del SDK (~1 MB): al pulsar solo queda
       // autorizar (voz-start), construir Vapi con la key y conectar. No se
       // construye Vapi aquí porque la key llega por-llamada tras el gate.
-      cargarSDK()
-        .then(() => console.log('[voz] módulo del SDK precargado y listo'))
-        .catch((err) => console.error('[voz] precarga del SDK falló (se reintentará al pulsar):', err));
+      // El SDK se carga desde conectar() al iniciar la llamada, no al visitar la web.
     })
     .catch(() => {});
-})();
-
-/* Conmutador mensual / anual del bloque de precios. Sin dependencias: alterna
-   una clase en el contenedor y el CSS decide que precio se ve. */
-(function initCicloPrecio() {
-  const grupo = document.querySelector('.ciclo');
-  const shell = document.querySelector('.pricing-shell');
-  if (!grupo || !shell) return;
-
-  const botones = Array.from(grupo.querySelectorAll('[data-ciclo]'));
-
-  function elegir(btn) {
-    shell.classList.toggle('anual', btn.dataset.ciclo === 'anual');
-    botones.forEach((b) => {
-      const activo = b === btn;
-      b.classList.toggle('active', activo);
-      b.setAttribute('aria-pressed', activo ? 'true' : 'false');
-    });
-  }
-
-  grupo.addEventListener('click', (event) => {
-    const btn = event.target.closest('[data-ciclo]');
-    if (btn) elegir(btn);
-  });
 })();
