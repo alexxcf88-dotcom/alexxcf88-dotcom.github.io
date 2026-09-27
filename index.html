@@ -38,7 +38,7 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260927-movil22">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260927-cierre2">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -146,16 +146,20 @@
     }
   ]
 }</script>
-  <link rel="stylesheet" href="css/fonts.css?v=20260927-movil22">
-  <link rel="stylesheet" href="css/refresh.css?v=20260927-spline-mobile">
+  <link rel="stylesheet" href="css/fonts.css?v=20260927-cierre2">
+  <link rel="stylesheet" href="css/refresh.css?v=20260927-cierre">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
+    <!-- Vídeo autoalojado: el hero recupera profundidad sin colgar de un
+         CloudFront ajeno (un tercero más viendo la IP de cada visita, fuera
+         de la lista de proveedores que publicamos). Solo en escritorio y al
+         quedar libre el hilo; en móvil manda el póster con CSS. -->
     <video class="ambient-video" id="bg-video" autoplay loop muted playsinline preload="none"
       poster="features/landing/media/hero-poster.jpg"
-      data-src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260508_064122_c4750c0e-7476-4b44-94a2-a85a65c63bf2.mp4"></video>
+      data-src="features/landing/media/hero.mp4"></video>
     <div class="ambient-poster"></div>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
@@ -652,7 +656,6 @@
       <div class="section-copy audit-copy">
         <p class="eyebrow"><span></span> Dudas antes de pedir demo</p>
         <h2>Lo que conviene aclarar antes.</h2>
-        <p>Sin porcentajes inventados. Solo las preguntas que afectan al valor real: recepci&oacute;n, datos, agenda y salida humana.</p>
       </div>
       <div class="trust-stack">
         <div class="faq-list trust-faq">
@@ -692,16 +695,13 @@
       <div class="cta-glow" aria-hidden="true"></div>
       <div class="cta-copy">
         <p class="eyebrow"><span></span> Demo</p>
-        <h2>Vemos si encaja en tu cl&iacute;nica.</h2>
-        <p>Te respondemos con una propuesta clara para llamadas, WhatsApp, agenda, recordatorios y pacientes dormidos.</p>
+        <h2>Veamos c&oacute;mo encaja en tu cl&iacute;nica.</h2>
+        <p>Miramos vuestras llamadas, vuestra agenda y vuestros canales, y os decimos qu&eacute; se puede automatizar y qu&eacute; no. Sin compromiso y con propuesta cerrada.</p>
         <ul class="cta-points">
           <li>Qu&eacute; se puede automatizar</li>
           <li>Qu&eacute; debe pasar a recepci&oacute;n</li>
           <li>Precio y puesta en marcha sin permanencia</li>
         </ul>
-        <div class="cta-trust">
-          <p>Datos y privacidad explicados en la <a href="legal/privacidad.html">pol&iacute;tica de privacidad</a>.</p>
-        </div>
       </div>
 
       <form id="lead-form" class="lead-form" data-lead-form novalidate>
@@ -749,18 +749,31 @@
   </main>
 
   <footer class="site-footer">
-    <a class="brand" href="#inicio"><img class="brand-wordmark" src="brand/logo/logo-aitomat.svg" alt="AItomat" width="4574" height="808"></a>
-    <div>
-      <!-- Mismo disparador que el boton de la barra: data-demo-open abre el
-           modal de demo en dos pasos. El href a #contacto es el respaldo sin JS. -->
-      <a class="footer-demo" href="#contacto" data-demo-open>Solicitar demo</a>
-      <a href="integraciones.html">Integraciones</a>
-      <a href="como-funciona.html">C&oacute;mo funciona</a>
-      <a href="legal/privacidad.html">Privacidad</a>
-      <a href="legal/terminos.html">T&eacute;rminos</a>
-      <a href="legal/cookies.html">Cookies</a>
-      <a href="mailto:hola@aitomat.es">hola@aitomat.es</a>
+    <div class="footer-marca">
+      <a class="brand" href="#inicio"><img class="brand-wordmark" src="brand/logo/logo-aitomat.svg" alt="AItomat" width="4574" height="808"></a>
+      <p>Recepci&oacute;n automatizada para cl&iacute;nicas dentales.</p>
+      <a class="footer-demo" href="#contacto" data-demo-open>Pedir demo</a>
     </div>
+    <nav class="footer-enlaces" aria-label="Pie de p&aacute;gina">
+      <div>
+        <p class="footer-titulo">Producto</p>
+        <a href="#precio">Precio</a>
+        <a href="integraciones.html">Integraciones</a>
+        <a href="como-funciona.html">C&oacute;mo funciona</a>
+      </div>
+      <div>
+        <p class="footer-titulo">Legal</p>
+        <a href="legal/privacidad.html">Privacidad</a>
+        <a href="legal/terminos.html">T&eacute;rminos</a>
+        <a href="legal/cookies.html">Cookies</a>
+      </div>
+      <div>
+        <p class="footer-titulo">Contacto</p>
+        <a href="mailto:hola@aitomat.es">hola@aitomat.es</a>
+        <a href="https://www.instagram.com/aitomat.es/" rel="noopener">Instagram</a>
+      </div>
+    </nav>
+    <p class="footer-legal">&copy; 2026 <span class="b-ai">AI</span>tomat &middot; Espa&ntilde;a</p>
   </footer>
 
 
@@ -825,7 +838,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260927-spline-mobile"></script>
+  <script defer src="features/landing/landing.js?v=20260927-cierre"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

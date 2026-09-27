@@ -1456,3 +1456,247 @@ html.webkit-safe .hero h1 .shiny {
 @media (max-width: 760px) and (prefers-reduced-motion: reduce) {
   .hero::after { animation: none; }
 }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   Pricing en móvil: carrusel con anclaje, no tres columnas encogidas.
+   Tres cards de 109 px con texto a 0,58 rem cabían, pero no se leían. Ahora
+   cada plan ocupa el 78 % del ancho, se lee con tipografía normal y se ve
+   asomar el siguiente: se entiende que hay tres y se comparan deslizando.
+   Todo es CSS (scroll-snap), sin JS ni coste por frame.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  .planes {
+    display: grid;
+    grid-auto-flow: column;
+    grid-auto-columns: 78%;
+    grid-template-columns: none;
+    gap: 14px;
+    /* Cada card mide lo que ocupa su contenido: igualarlas dejaba a BÁSICO
+       con un palmo de hueco antes del botón. */
+    align-items: start;
+    /* El sello de PRO sobresale por arriba y a la derecha: el carrusel
+       necesita ese colchón o lo recorta al activar overflow. */
+    padding: 26px 16px 10px;
+    margin-inline: -16px;
+    overflow-x: auto;
+    overflow-y: visible;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: 16px;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  .planes::-webkit-scrollbar { display: none; }
+
+  .plan, .plan--destacado {
+    scroll-snap-align: center;
+    min-width: 0;
+    margin: 0;
+    padding: 22px 18px 18px;
+    border-radius: 20px;
+    transform: none;
+  }
+
+  /* Tipografía de lectura, no de tabla comprimida. */
+  .plan-cab, .plan--destacado .plan-cab { min-height: 0; padding-right: 74px; margin-bottom: 14px; }
+  .plan-nombre { font-size: .95rem; letter-spacing: .1em; }
+  .plan-sello { display: inline-block; width: auto; margin: 0 0 0 .4rem; padding: .22rem .5rem; font-size: .58rem; }
+  .plan-para { font-size: .92rem; line-height: 1.4; }
+  .plan .plan-precio { margin: 0 0 16px; }
+  .plan .plan-precio strong { font-size: 3.1rem; letter-spacing: -.05em; }
+  .plan-precio em { font-size: .92rem; }
+
+  .plan-datos {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0 12px;
+    margin: 0 0 16px;
+    padding: 12px 0;
+    text-align: left;
+  }
+  .plan-datos li { padding: 0; text-align: left; }
+  .plan-datos span { display: block; font-size: .66rem; letter-spacing: .1em; }
+  .plan-datos strong { font-size: 1rem; }
+  .plan-datos small { display: block; font-size: .76rem; line-height: 1.35; }
+
+  .plan-lista { display: grid; gap: 9px; margin: 0 0 18px; }
+  .plan-lista li { padding-left: 1.5rem; font-size: .92rem; line-height: 1.45; }
+  .plan-lista li::before { top: .5em; width: 10px; height: 5px; border-width: 1.7px; }
+  .plan-lista li.plan-clave { font-size: .92rem; }
+  .plan .plan-btn { min-height: 50px; padding: 12px; font-size: 1rem; }
+  .plan .plan-extra { display: block; margin-top: 10px; font-size: .8rem; text-align: center; }
+
+  /* El sello vuelve a su tamaño legible: hay sitio en la card grande. */
+  .plan-pegatina { --sello-tam: 64px; top: -14px; right: -8px; }
+  .plan-pegatina-txt b { font-size: 11px; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   Tercio inferior: precio → dudas → demo → marca.
+   Antes era una sucesión de cajas. Ahora cada paso tiene su peso: el precio
+   cierra con aire, las dudas ocupan poco, la demo es el cierre comercial y el
+   pie remata con la marca.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Después del precio: respiro antes de entrar en objeciones. */
+.planes-nota { max-width: 70ch; }
+.planes-detalle { margin-bottom: 0; }
+#precio { padding-bottom: calc(var(--pad-seccion) + 1rem); }
+
+/* Dudas: filas compactas, títulos cómodos, respuestas con medida de lectura. */
+#faq .section-copy { margin-bottom: clamp(1.4rem, 3vw, 2rem); }
+.trust-faq { gap: 8px; }
+.trust-faq.faq-list summary { min-height: 52px; padding: .7rem .95rem; font-size: .95rem; line-height: 1.35; }
+.trust-faq.faq-list details p { max-width: 68ch; padding: 0 .95rem .9rem; font-size: .9rem; line-height: 1.6; }
+.trust-faq.faq-list summary::after { width: 1.4rem; height: 1.4rem; font-size: .85rem; }
+
+/* Pedir demo: el cierre de la página, no un formulario más.
+   La luz y la rejilla del hero vuelven muy atenuadas: reconoces el sitio sin
+   repetir la portada. */
+#contacto {
+  position: relative;
+  isolation: isolate;
+  border-top: 1px solid var(--line);
+  padding-top: calc(var(--pad-seccion) + .5rem);
+}
+#contacto::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background:
+    radial-gradient(90% 60% at 18% 0%, rgba(90, 240, 216, .10), transparent 62%),
+    radial-gradient(70% 60% at 92% 12%, rgba(255, 173, 112, .07), transparent 60%);
+  pointer-events: none;
+}
+#contacto::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  opacity: .16;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
+  background-size: 84px 84px;
+  mask-image: linear-gradient(180deg, #000, transparent 78%);
+  -webkit-mask-image: linear-gradient(180deg, #000, transparent 78%);
+  pointer-events: none;
+}
+.cta-copy h2 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.02; letter-spacing: -.04em; }
+.cta-copy > p { max-width: 46ch; font-size: 1.05rem; line-height: 1.65; }
+.cta-points { margin-top: 1.6rem; gap: .7rem; }
+.cta-points li { font-size: 1rem; }
+.lead-form .consent { margin-top: 1rem; }
+.lead-form .lead-status { margin-top: .8rem; font-size: .86rem; }
+/* El aviso de datos vive al pie del formulario, pequeño pero donde importa. */
+.lead-form::after {
+  content: 'Respuesta en 24 h. Tratamos tus datos según la política de privacidad.';
+  display: block;
+  margin-top: 1rem;
+  color: var(--muted);
+  font-size: .78rem;
+  line-height: 1.5;
+}
+
+/* Pie: la marca cierra. */
+.site-footer {
+  display: grid;
+  grid-template-columns: minmax(0, 1.1fr) minmax(0, 1.4fr);
+  gap: clamp(2rem, 5vw, 4rem);
+  align-items: start;
+  padding-block: clamp(3rem, 6vw, 4.5rem) clamp(2rem, 4vw, 3rem);
+  border-top: 1px solid var(--line);
+}
+/* landing.css pone `display:flex; justify-content:flex-end` a cualquier div
+   del pie: hay que desmontarlo para las dos columnas nuevas. */
+.site-footer .footer-marca {
+  display: grid;
+  justify-items: start;
+  justify-content: start;
+  flex-wrap: nowrap;
+  gap: 1rem;
+}
+.site-footer .footer-enlaces div { justify-content: flex-start; }
+.footer-marca .brand-wordmark { height: 30px; }
+.footer-marca p { margin: 0; max-width: 32ch; color: var(--soft); font-size: .95rem; line-height: 1.6; }
+.footer-marca .footer-demo {
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 1.1rem;
+  border: 1px solid var(--orange-line);
+  border-radius: 999px;
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: .85rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.footer-marca .footer-demo:hover { border-color: var(--orange); }
+.footer-enlaces {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: clamp(1.2rem, 3vw, 2.4rem);
+}
+.footer-enlaces div { display: grid; align-content: start; gap: .1rem; }
+.footer-titulo {
+  margin: 0 0 .5rem;
+  color: var(--muted);
+  font-size: .68rem;
+  font-weight: 800;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.footer-enlaces a {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  color: var(--soft);
+  font-size: .95rem;
+}
+.footer-enlaces a:hover { color: var(--ink); }
+.footer-legal {
+  grid-column: 1 / -1;
+  margin: 0;
+  padding-top: 1.4rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: .82rem;
+}
+
+@media (max-width: 760px) {
+  #contacto { padding-top: calc(var(--pad-seccion) + 4px); }
+  .cta-copy h2 { font-size: clamp(2rem, 8.4vw, 2.5rem); }
+  .cta-copy > p { font-size: 1rem; }
+  .site-footer {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 28px;
+    padding-block: 40px 28px;
+  }
+  .footer-enlaces { grid-template-columns: 1fr 1fr; gap: 20px 16px; }
+  .footer-enlaces a { min-height: 44px; font-size: 1rem; }
+  .footer-marca .brand-wordmark { height: 26px; }
+  .footer-legal { padding-top: 18px; }
+  .trust-faq.faq-list summary { font-size: .95rem; padding: .8rem .9rem; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   Pantallas de 320-360 px: la ventana del sistema no cabía.
+   `.discovery-section` reserva 360 px para su segunda columna y las pestañas
+   iban en `nowrap`, así que el mínimo de contenido era 321 px y se salía por
+   la derecha. Aquí se deja encoger y las piezas se reordenan.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 380px) {
+  #proceso.discovery-section { grid-template-columns: minmax(0, 1fr); }
+  .os-window, .os-bar, .os-tabs, .os-body, .os-pipeline, .os-panel { min-width: 0; }
+  .os-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 4px; }
+  .os-tab { white-space: normal; font-size: .58rem; line-height: 1.2; }
+  .os-pipeline { grid-template-columns: minmax(0, 1fr); gap: 6px; }
+  .os-step p { font-size: .72rem; }
+  .os-step-label { font-size: .6rem; }
+  .os-panel { grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); }
+  .os-panel > *, .os-kpis, .os-kpi, .os-meter, .os-meter-top, .os-note { min-width: 0; }
+  .os-panel-label { max-width: 100%; }
+  .mail-body { grid-template-columns: minmax(96px, 40%) minmax(0, 1fr); }
+}
