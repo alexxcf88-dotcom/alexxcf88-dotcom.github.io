@@ -75,11 +75,11 @@ button { color: inherit; }
     radial-gradient(900px 520px at 68% -12%, rgb(57 120 255 / calc(0.2 * var(--glow))), transparent 62%),
     radial-gradient(680px 520px at 18% 12%, rgb(90 240 216 / calc(0.13 * var(--glow))), transparent 64%),
     linear-gradient(180deg, #07100e 0%, #050706 58%, #020303 100%);
-  /* Difumina TODO el perímetro a transparente: ninguna capa de fondo (video,
-     grid, tint, beam) deja un canto recto que el glow pueda revelar. Al ser
-     fija, cubre todas las secciones a la vez. */
-  -webkit-mask-image: radial-gradient(145% 135% at 50% 26%, #000 60%, transparent 100%);
-          mask-image: radial-gradient(145% 135% at 50% 26%, #000 60%, transparent 100%);
+  /* OJO: nada de mask-image aqui. Una mascara sobre este contenedor obliga a
+     rasterizar el grupo entero en el hilo principal, y entonces las capas
+     animadas de dentro (aurora, haz) dejan de componerse en GPU. El
+     difuminado del perimetro lo hace .ambient-tint con un degradado normal,
+     que se pinta una vez y no vuelve a costar. */
 }
 .ambient-video {
   position: absolute;
@@ -128,7 +128,6 @@ button { color: inherit; }
   height: 44rem;
   transform: translateX(-50%) rotate(24deg);
   background: conic-gradient(from 180deg, transparent 0 28%, rgba(90,240,216,0.12), transparent 48% 100%);
-  filter: blur(18px);
   opacity: var(--glow);
 }
 .ambient-particles {
@@ -5055,8 +5054,8 @@ body.demo-open { overflow: hidden; }
 @media (max-width: 760px) {
   .spline-ring,            /* splineDrift  · anillo de luz a la deriva */
   .spline-core,            /* splineFloat  · orbe brillante flotante   */
-  .v3d-core,               /* splineFloat  · núcleo del fallback voz   */
-  .v3d-ring,               /* v3dSpin      · anillo girando            */
+  /* .v3d-core y .v3d-ring vuelven a girar: son el robot suplente cuando
+     Spline no entra en el teléfono, y quietos parecen un error de carga. */
   .story-radar span,       /* radarPulse   · anillos de radar          */
   .wa-ping,                /* waPulse      · onda de "ping"            */
   .story-scrollcue::after  /* cueBob       · rebote de la flecha cue   */
@@ -5065,23 +5064,11 @@ body.demo-open { overflow: hidden; }
   }
 }
 
-/* ===================================================================
-   Fix Safari/WebKit — bloque blanco del hero.
-   En WebKit, el degradado animado con background-clip:text del titular
-   se pinta a veces SIN recortar (carrera con la carga de fuentes) y
-   cubre el hero con un bloque blanco gigante. Con html.webkit-safe
-   (la pone un script inline en el head) el titular pasa a aqua sólido:
-   mismo color que el resto de acentos, cero riesgo. El resto de
-   navegadores conserva el degradado animado.
-   =================================================================== */
-.webkit-safe .hero h1 .shiny {
-  background-image: none;
-  background-clip: border-box;
-  -webkit-background-clip: border-box;
-  color: var(--aqua);
-  -webkit-text-fill-color: var(--aqua);
-  animation: none;
-}
+/* Bloque blanco del hero en WebKit: la causa era la carrera entre
+   background-clip:text y la carga de la fuente. Ya no se detecta el
+   navegador; el recorte espera a document.fonts.ready (clase .fx-listo,
+   en landing.js) y hasta entonces el titular es aqua sólido. Ver el
+   bloque «automatizada» de css/refresh.css. */
 
 /* ===================================================================
    Móvil compacto y horizontal (≤760px). Objetivo: menos "torre"

@@ -7,21 +7,88 @@ const lowEndDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurr
   || (navigator.deviceMemory && navigator.deviceMemory <= 2);
 const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEndDevice;
 
-/* El vídeo completo solo se pide en pantallas grandes. En móvil el mismo
-   fotograma se mueve con CSS: conserva profundidad sin descargar varios MB. */
+/* Fondo vivo del hero.
+   Dos cortes del mismo plano: 1280x720 (586 KB) en escritorio y 640x360
+   (80 KB) en movil. Ninguno viaja con la pagina: preload="none" y src puesto por JS
+   cuando el hilo queda libre, asi que no compite con el LCP. Y se pausa en
+   cuanto el hero sale de pantalla: el vídeo esta en una capa fija que cubre
+   toda la web, y decodificar durante el resto del scroll no aporta nada.
+   Si el dispositivo pide ahorro de datos, va por red lenta, tiene muy poca
+   memoria o pide menos movimiento, no se descarga nada: mandan las capas CSS
+   (aurora + haz + rejilla), que ya se mueven solas. */
 (function initAmbientVideo() {
   const video = document.getElementById('bg-video');
-  if (!video || reduceMotion || mobileViewport) return;
-  const source = video.dataset.src;
-  if (!source) return;
-  const start = () => {
-    if (video.src) return;
-    video.src = source;
+  if (!video || reduceMotion) return;
+
+  const red = navigator.connection || {};
+  const redLenta = red.saveData === true || /(^|-)2g$/.test(red.effectiveType || '');
+  const memoriaJusta = typeof navigator.deviceMemory === 'number' && navigator.deviceMemory <= 1;
+  if (redLenta || memoriaJusta) return;
+
+  const fuente = mobileViewport ? (video.dataset.srcMovil || video.dataset.src) : video.dataset.src;
+  if (!fuente) return;
+
+  let montado = false;
+  const montar = () => {
+    if (montado) return;
+    montado = true;
+    video.src = fuente;
     video.load();
     video.play().catch(() => {});
+    video.classList.add('is-live');
   };
-  if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1200 });
-  else window.setTimeout(start, 500);
+  if ('requestIdleCallback' in window) requestIdleCallback(montar, { timeout: 1500 });
+  else window.setTimeout(montar, 600);
+
+  // Solo se reproduce mientras el hero esta a la vista.
+  const hero = document.getElementById('inicio');
+  if (!hero || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver((entradas) => {
+    const visible = entradas.some((e) => e.isIntersecting);
+    if (!montado) return;
+    if (visible) video.play().catch(() => {});
+    else video.pause();
+  }, { rootMargin: '10% 0px' }).observe(hero);
+})();
+
+/* El recorte del degradado de «automatizada» espera a que las fuentes estén
+   cargadas: pintar texto recortado mientras la fuente cambia es lo que en
+   WebKit dejaba el degradado SIN recortar y tapaba el hero con un bloque
+   blanco. Hasta entonces el titular es aqua sólido, perfectamente legible, y
+   si JS no llega se queda así. Además el destello se pausa en cuanto el hero
+   sale de pantalla: es la única animación que repinta texto. */
+(function initTituloDestello() {
+  const raiz = document.documentElement;
+  const encender = () => raiz.classList.add('fx-listo');
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(encender).catch(encender);
+    window.setTimeout(encender, 2500);
+  } else {
+    encender();
+  }
+
+  if (reduceMotion) return;
+
+  /* Las animaciones decorativas del hero (aurora, haz y el destello del
+     titular) arrancan cuando la pagina ya esta cargada y el hilo libre.
+     Medido: corriendo durante la carga, el TBT movil pasa de ~310 ms a
+     ~1.000 ms; arrancando despues, la carga no las paga y el usuario las ve
+     igual. */
+  const arrancar = () => {
+    const ahora = () => raiz.classList.add('fx-anima');
+    if ('requestIdleCallback' in window) requestIdleCallback(ahora, { timeout: 1200 });
+    else window.setTimeout(ahora, 400);
+  };
+  if (document.readyState === 'complete') arrancar();
+  else window.addEventListener('load', arrancar, { once: true });
+
+  // Y se paran en cuanto el hero sale de pantalla: la capa es fija y cubre
+  // toda la web, asi que animarla durante el resto del scroll no aporta nada.
+  const hero = document.getElementById('inicio');
+  if (!hero || !('IntersectionObserver' in window)) return;
+  new IntersectionObserver((entradas) => {
+    raiz.classList.toggle('fx-quieto', !entradas.some((e) => e.isIntersecting));
+  }, { rootMargin: '10% 0px' }).observe(hero);
 })();
 
 (function initHeroEnhancements() {
@@ -354,6 +421,25 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
   const pause = chooser.querySelector('[data-scene-pause]');
   const caption = document.getElementById('story-scene-caption');
   const labels = phoneScenarios.map((escena) => escena.label);
+  // Rail de avance: seis tramos, el activo se llena durante lo que dura la
+  // escena. Es lo que convierte el carrusel automatico en un recorrido: se ve
+  // por donde vas y cuanto queda. Solo transform en una barra de 2 px.
+  const tramos = [...document.querySelectorAll('#story-avance > span')];
+  function pintarAvance(activo, duracion) {
+    tramos.forEach((tramo, i) => {
+      const barra = tramo.firstElementChild;
+      tramo.classList.toggle('es-pasado', i < activo);
+      tramo.classList.toggle('es-activo', i === activo);
+      if (barra) barra.style.animation = 'none';
+    });
+    // El reinicio se hace en el siguiente fotograma. Leer offsetWidth para
+    // forzarlo, como se suele hacer, son seis reflows sincronos por escena.
+    requestAnimationFrame(() => {
+      const barra = tramos[activo] && tramos[activo].firstElementChild;
+      if (!barra) return;
+      barra.style.animation = duracion ? `storyAvance ${duracion}ms linear forwards` : '';
+    });
+  }
   let index = 0, timer = null, visible = false, paused = reduceMotion;
   function stop() {
     clearTimeout(timer);
@@ -368,7 +454,10 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
     if (demoEstadoPromise && demoMostrarCTA) demoEstadoPromise.then(ok => { if (ok) demoMostrarCTA(); }).catch(() => {});
     if (!paused) {
       const reading = phoneScenarios[index].bubbles.reduce((sum, bubble) => sum + Math.max(1800, Math.min(4200, bubble[1].length * 35)) + 170, 5000);
+      pintarAvance(index, reading);
       timer = setTimeout(() => show((index + 1) % phoneScenarios.length), reading);
+    } else {
+      pintarAvance(index, 0);
     }
   }
   buttons.forEach((button, i) => button.addEventListener('click', () => show(i)));
@@ -1987,21 +2076,67 @@ function mountCal(destino) {
 /* Robot 3D original de Spline, autoalojado. Se descarga solo cuando la sección
    está cerca: el hero y el contenido inicial no pagan ni el runtime ni WebGL.
    En táctil se conserva el robot, pero sin seguimiento global del puntero. */
+/* === El robot de Spline ==================================================
+   Escena y runtime propios (nada de unpkg): /features/landing/spline/.
+   Carga en dos tiempos para que no compita nunca con el hero:
+     1. El robot de CSS esta pintado desde el primer momento (no hay hueco).
+     2. A ~1400 px de la seccion y con el hilo libre se prepara el RUNTIME.
+     3. A ~400 px se monta el visor y se pide la ESCENA.
+     4. Cuando el visor emite load-complete/rendered se funde el relevo.
+   Antes de acercarse a Voz no se pide un solo byte de Spline.
+
+   En tactil no se descarta por user-agent: se comprueban capacidades reales
+   (WebGL, memoria, nucleos, tipo de red) y, si pasan, se monta igual PERO con
+   un vigilante de fluidez encima: si los primeros segundos de render no
+   sostienen el ritmo, se desmonta el visor y vuelve el robot de CSS. Es la
+   unica forma honesta de saber si el telefono puede: probarlo y medirlo. */
 (function initVoiceSpline() {
   const fig = document.getElementById('voice-3d');
   if (!fig) return;
-  const scene = fig.getAttribute('data-scene');
-  if (!scene) return;
-  // Solo donde sale a cuenta: la escena y su runtime pesan ~2,8 MB y arrancan
-  // WebGL. En táctil y con reduced-motion se queda el robot de CSS, que ya
-  // respira y no descarga nada.
-  if (reduceMotion || window.matchMedia('(hover: none)').matches || window.innerWidth < 981) return;
+  const escena = fig.getAttribute('data-scene');
+  if (!escena) return;
+  if (reduceMotion) return;
 
-  let loaded = false;
-  function ensureRuntime() {
+  const red = navigator.connection || {};
+  if (red.saveData === true || /(^|-)(2g|slow-2g)$/.test(red.effectiveType || '')) return;
+
+  // WebGL de verdad, no "existe la propiedad": se pide el contexto y se suelta.
+  function soportaWebGL() {
+    try {
+      const c = document.createElement('canvas');
+      const gl = c.getContext('webgl2') || c.getContext('webgl');
+      if (!gl) return false;
+      const perdido = gl.getExtension('WEBGL_lose_context');
+      if (perdido) perdido.loseContext();
+      return true;
+    } catch (e) { return false; }
+  }
+  if (!soportaWebGL()) return;
+
+  const nucleos = navigator.hardwareConcurrency || 0;
+  const memoria = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
+  const modesto = (nucleos && nucleos < 4) || (memoria !== null && memoria < 4);
+  if (modesto) return;
+
+  /* En tactil el liston sube y ademas se vigila el resultado. No es esnobismo
+     de gama: bajar 3,7 MB y encender WebGL en un telefono corto es justo lo
+     que producia el lag que habia que quitar. Nada de user-agent: nucleos,
+     memoria y tipo de red, que es lo que de verdad determina si aguanta. */
+  const vigilar = touchDevice || mobileViewport;
+  if (vigilar) {
+    const buenaRed = (red.effectiveType || '4g') === '4g';
+    const suficiente = nucleos >= 6 && (memoria === null || memoria >= 4);
+    if (!buenaRed || !suficiente) return;
+  }
+
+  let runtimePedido = false;
+  let visorMontado = false;
+  let visor = null;
+
+  function prepararRuntime() {
     if (window.customElements && customElements.get('spline-viewer')) return Promise.resolve();
-    if (window.__splineLoading) return window.__splineLoading;
-    window.__splineLoading = new Promise((resolve, reject) => {
+    if (window.__splineRuntime) return window.__splineRuntime;
+    window.__splineRuntime = new Promise((resolve, reject) => {
       const script = document.createElement('script');
       script.type = 'module';
       script.src = '/features/landing/spline/spline-viewer.js';
@@ -2009,65 +2144,139 @@ function mountCal(destino) {
       script.onerror = reject;
       document.head.appendChild(script);
     });
-    return window.__splineLoading;
+    return window.__splineRuntime;
   }
 
-  function load() {
-    if (loaded) return;
-    loaded = true;
-    ensureRuntime().then(() => {
-      const viewer = document.createElement('spline-viewer');
-      viewer.setAttribute('url', scene);
-      viewer.setAttribute('loading', 'eager');
-      viewer.setAttribute('loading-anim-type', 'none');
-      if (window.matchMedia('(pointer: fine)').matches && !reduceMotion) {
-        viewer.setAttribute('events-target', 'global');
+  function enReposo(fn, margen) {
+    if ('requestIdleCallback' in window) requestIdleCallback(fn, { timeout: margen || 2000 });
+    else window.setTimeout(fn, 200);
+  }
+
+  function pedirRuntime() {
+    if (runtimePedido) return;
+    runtimePedido = true;
+    enReposo(() => { prepararRuntime().catch(() => { runtimePedido = false; }); }, 2500);
+  }
+
+  /* Vuelta atras: se quita el visor, se recupera el robot de CSS y no se
+     reintenta. Pasa si WebGL falla, si la escena no carga o si el vigilante
+     ve que el telefono no sostiene el render. */
+  function rendirse() {
+    fig.classList.remove('is-live', 'is-spline-mounted');
+    if (visor && visor.parentNode) visor.parentNode.removeChild(visor);
+    visor = null;
+  }
+
+  /* Mide los primeros ~2,6 s de render ya con la escena viva. Si la mediana de
+     frame pasa de 30 ms (por debajo de ~33 fps) o hay parones largos, el robot
+     real no compensa: fuera. */
+  function vigilarFluidez() {
+    const muestras = [];
+    let previo = performance.now();
+    let parado = false;
+    const fin = previo + 2600;
+    function tic(ahora) {
+      if (parado) return;
+      muestras.push(ahora - previo);
+      previo = ahora;
+      if (ahora < fin) { requestAnimationFrame(tic); return; }
+      parado = true;
+      if (muestras.length < 20) return;
+      const ordenadas = muestras.slice(8).sort((a, b) => a - b);
+      const mediana = ordenadas[Math.floor(ordenadas.length / 2)];
+      const parones = ordenadas.filter((d) => d > 120).length;
+      if (mediana > 30 || parones > 3) rendirse();
+    }
+    requestAnimationFrame(tic);
+  }
+
+  function montarVisor() {
+    if (visorMontado) return;
+    visorMontado = true;
+    pedirRuntime();
+    prepararRuntime().then(() => {
+      visor = document.createElement('spline-viewer');
+      visor.setAttribute('url', escena);
+      // eager: con "auto" el runtime se niega a cargar la escena mientras el
+      // elemento esta fuera del viewport, y la intro se reproduciria al llegar.
+      visor.setAttribute('loading', 'eager');
+      visor.setAttribute('loading-anim-type', 'none');
+      // events-target=global: el runtime escucha el puntero a nivel de VENTANA,
+      // asi la cabeza sigue al raton por toda la pagina y no solo encima del
+      // canvas. En tactil no hay puntero que seguir, asi que no se pone.
+      if (window.matchMedia('(pointer: fine)').matches) {
+        visor.setAttribute('events-target', 'global');
       }
       fig.classList.add('is-spline-mounted');
 
-      let watermarkStyled = false;
-      let revealed = false;
-      function prepareShadow() {
-        const root = viewer.shadowRoot;
-        if (!root) return;
-        if (!watermarkStyled) {
-          const style = document.createElement('style');
-          style.textContent = '#logo,a[href*="spline" i],[class*="logo" i]{display:none!important;opacity:0!important;pointer-events:none!important}';
-          root.appendChild(style);
-          watermarkStyled = true;
-        }
-        const canvas = root.querySelector('canvas');
-        if (canvas) canvas.style.visibility = 'visible';
+      // La marca de agua se TAPA, no se borra: el runtime guarda this._logo y
+      // le toca el style justo antes de 'load-complete'. Si se elimina el nodo
+      // revienta ahi, nunca emite el evento y el canvas se queda invisible.
+      let marcaTapada = false;
+      function taparMarca() {
+        const raiz = visor && visor.shadowRoot;
+        if (!raiz || marcaTapada) return;
+        try {
+          const estilo = document.createElement('style');
+          estilo.textContent = '#logo,a[href*="spline" i],[class*="logo" i]{display:none!important;opacity:0!important;pointer-events:none!important}';
+          raiz.appendChild(estilo);
+          marcaTapada = true;
+        } catch (e) { /* shadow DOM cerrado */ }
       }
-      function reveal() {
-        if (revealed) return;
-        prepareShadow();
-        revealed = true;
+
+      let revelado = false;
+      function revelar() {
+        if (revelado || !visor) return;
+        revelado = true;
+        taparMarca();
+        try {
+          const lienzo = visor.shadowRoot && visor.shadowRoot.querySelector('canvas');
+          if (lienzo) lienzo.style.visibility = 'visible';
+        } catch (e) { /* ignore */ }
         fig.classList.add('is-live');
+        if (vigilar) vigilarFluidez();
       }
-      viewer.addEventListener('load-complete', reveal, { once: true });
-      viewer.addEventListener('rendered', reveal, { once: true });
-      fig.appendChild(viewer);
+      visor.addEventListener('load-complete', revelar);
+      visor.addEventListener('rendered', revelar);
+      fig.appendChild(visor);
 
-      let checks = 0;
-      const timer = window.setInterval(() => {
-        prepareShadow();
-        checks += 1;
-        if ((revealed && watermarkStyled) || checks > 80) window.clearInterval(timer);
-      }, 180);
-    }).catch(() => { loaded = false; });
+      // Red de seguridad: si los eventos no llegan pero el canvas lleva 5 s
+      // presente, ya ha pintado. Y si a los ~24 s no hay nada, se rinde.
+      let vueltas = 0;
+      let lienzoDesde = 0;
+      const reloj = window.setInterval(() => {
+        taparMarca();
+        const lienzo = visor && visor.shadowRoot && visor.shadowRoot.querySelector('canvas');
+        if (!revelado && lienzo) {
+          if (!lienzoDesde) lienzoDesde = Date.now();
+          else if (Date.now() - lienzoDesde > 5000) revelar();
+        }
+        vueltas += 1;
+        if ((revelado && marcaTapada) || vueltas > 160) {
+          window.clearInterval(reloj);
+          if (!revelado) rendirse();
+        }
+      }, 150);
+    }).catch(() => { visorMontado = false; rendirse(); });
   }
 
-  if ('IntersectionObserver' in window) {
-    const observer = new IntersectionObserver((entries) => {
-      if (!entries.some((entry) => entry.isIntersecting)) return;
-      observer.disconnect();
-      load();
-    }, { rootMargin: '0px' });
-    observer.observe(fig);
-  } else {
-    load();
-  }
+  if (!('IntersectionObserver' in window)) { montarVisor(); return; }
+  // Etapa 1: runtime.
+  const cerca = new IntersectionObserver((entradas) => {
+    if (!entradas.some((e) => e.isIntersecting)) return;
+    cerca.disconnect();
+    pedirRuntime();
+  }, { rootMargin: vigilar ? '700px 0px' : '1400px 0px' });
+  cerca.observe(fig);
+  // Etapa 2: escena.
+  const encima = new IntersectionObserver((entradas) => {
+    if (!entradas.some((e) => e.isIntersecting)) return;
+    encima.disconnect();
+    enReposo(montarVisor, 1200);
+    // En tactil se espera a tenerla casi encima: si no llegas a Voz, no se
+    // descarga la escena.
+  }, { rootMargin: vigilar ? '150px 0px' : '400px 0px' });
+  encima.observe(fig);
 })();
 
 /* Anclas que caen donde deben.

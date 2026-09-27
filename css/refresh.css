@@ -27,7 +27,7 @@ html { scroll-padding-top: 100px; }
 }
 .pilot-badge small { color: var(--soft); font-size: .75rem; font-weight: 500; letter-spacing: 0; }
 .pilot-badge:hover { border-color: var(--orange); }
-.hero h1 { font-size: clamp(2.5rem, 7.3vw, 6.25rem); line-height: 1; }
+.hero h1 { font-size: clamp(2.5rem, 7.3vw, 6.25rem); line-height: 1; word-spacing: .05em; }
 .hero .hero-lead { max-width: 58ch; line-height: 1.65; }
 .hero .hero-actions { margin-top: 1.35rem; }
 .primary-btn { background: var(--aqua); color: var(--bg); }
@@ -87,7 +87,7 @@ html { scroll-padding-top: 100px; }
 .mi-time, .mi-prev, .voice-topic-pill > span { color: var(--soft); }
 .sistemas-lead a, .planes-nota a { text-decoration: underline; text-underline-offset: .2em; }
 @media (max-width: 760px), (prefers-reduced-motion: reduce) {
-  .robot-local, .marquesina-pista { animation: none; }
+  .marquesina-pista { animation: none; }
   .site-nav, .liquid-glass, .story-note { backdrop-filter: none; -webkit-backdrop-filter: none; }
   #flujo .story-phone { transform: none; }
 }
@@ -125,7 +125,7 @@ html, body { overflow-x: clip; }
   .hero-actions a { min-height: 48px; padding: 12px; width: 100%; font-size: .95rem; }
   .hero-fast-path { justify-content: flex-start; gap: 4px 12px; margin-top: 10px; }
   .hero-fast-path a { font-size: .8rem; min-height: 44px; padding: 4px 0; }
-  .ambient-particles, .ambient-beam { display: none; }
+  .ambient-particles { display: none; }
   .ambient-bg { background: var(--bg); }
   .hero, main > section, .site-footer { width: calc(100% - 32px); max-width: 620px; margin-left: auto; margin-right: auto; }
   main > section:not(.hero) { padding-top: 40px; padding-bottom: 40px; }
@@ -259,7 +259,6 @@ html, body { overflow-x: clip; }
 .message-item .mi-time, .message-item .mi-prev { color: var(--soft); }
 @media (max-width: 760px) {
   .message-item .mi-time { font-size: .8rem; }
-  .message-item .mi-sub, .message-item .mi-prev { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 }
 
 
@@ -532,17 +531,19 @@ html, body { overflow-x: clip; }
    En móvil ya estaba sin fijar, así que no le afecta. */
 @media (min-width: 761px) { .story-section { min-height: 260svh; } }
 /* Official brand and a quieter, sharper reading surface. */
-.brand .brand-wordmark { display: block; width: 168px; height: auto; max-width: 100%; }
 .hero h1 span, .hero h1 .shiny, .brand, .marca { font-family: Archivo, system-ui, sans-serif; font-style: normal; }
 .ambient-poster { position: absolute; inset: 0; opacity: .22; }
 @media (min-width: 761px) {
   /* Fondo decorativo: como imagen de CSS, el móvil no llega a pedirlo. */
   .ambient-poster { background: url(../features/landing/media/hero-poster.jpg) center / cover no-repeat; }
 }
-.ambient-beam, .ambient-particles, .hero-title-fx, .lamp-edge, .desk-scene, .story-radar, .cta-glow { display: none; }
+.ambient-particles, .hero-title-fx, .lamp-edge, .desk-scene, .story-radar, .cta-glow { display: none; }
 .site-nav, .liquid-glass, .story-note, .nav-links, .demo-modal-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
 .site-nav { background: var(--bg); }
-.robot-local, .v3d-ring, .v3d-core, .marquesina-pista { animation: none; }
+/* El robot de CSS es el suplente del Spline: tiene que estar vivo, porque en
+   los equipos donde el 3D no entra es LO QUE SE VE. Solo el marquesina sigue
+   quieto (se resuelve aparte). */
+.marquesina-pista { animation: none; }
 .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
 .marquesina-pista { display: flex; flex-wrap: wrap; justify-content: center; width: 100%; gap: 24px; transform: none; }
 .marquesina-pista[aria-hidden="true"] { display: none; }
@@ -552,13 +553,6 @@ html, body { overflow-x: clip; }
 #flujo .story-phone-pin { position: static; min-height: 0; display: flex; justify-content: center; padding: 20px 0 0; }
 #flujo .story-phone, #flujo.demo-live .story-phone { transform: none; transition: none; }
 #flujo .story-phone-pin::before, #flujo .story-phone-pin::after { display: none; }
-.story-chooser { max-width: 650px; margin: 20px auto 0; text-align: center; }
-.story-scene-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
-.story-scene-buttons button, .story-pause { min-height: 44px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--ink); padding: 10px 14px; font: inherit; font-weight: 650; cursor: pointer; }
-.story-scene-buttons button[aria-pressed="true"] { border-color: var(--aqua); color: var(--aqua); background: rgba(90,240,216,.08); }
-.story-chooser p { color: var(--orange); font-size: 1rem; min-height: 3.2em; margin: 14px 0 4px; }
-.story-chooser small { display: block; color: var(--soft); font-size: .88rem; margin-top: 12px; line-height: 1.5; }
-.story-pause { color: var(--orange); }
 .plan:not(.plan--destacado) .plan-cab { padding-right: 0; }
 .plan--destacado { border: 2px solid var(--orange); background: linear-gradient(160deg,var(--orange-soft),rgba(8,22,19,.97) 45%); box-shadow: 0 12px 32px rgba(0,0,0,.24); }
 .plan--destacado .plan-cab { padding-right: 62px; }
@@ -581,7 +575,6 @@ html, body { overflow-x: clip; }
 @media (max-width: 760px) {
   body { font-size: 17px; }
   .site-nav .brand { min-width: 0; flex-shrink: 1; }
-  .site-nav .brand-wordmark { width: 138px; }
   .site-nav .nav-cta { padding-inline: 9px; font-size: .8rem; white-space: nowrap; }
   .hero .hero-lead, .voice-sub, .story-intro > p, .section-copy > p { font-size: 1.06rem; }
   .hero .hero-actions a { font-size: 1rem; }
@@ -593,9 +586,6 @@ html, body { overflow-x: clip; }
   #flujo .story-phone, #flujo.demo-live .story-phone { width: min(100%,290px); height: 594px; }
   #story-phone-chat .bubble { font-size: .95rem; line-height: 1.5; }
   #story-phone-chat .b-meta { font-size: .75rem; }
-  .story-scene-buttons { display: grid; grid-template-columns: 1fr 1fr; }
-  .story-scene-buttons button { font-size: .9rem; padding: 10px 8px; }
-  .story-chooser p { margin-bottom: 0; }
   .ambient-poster {
     display: block;
     inset: -5%;
@@ -615,7 +605,6 @@ html, body { overflow-x: clip; }
   .plan--destacado .plan-cab { padding-right: 58px; }
 }
 @media (max-width: 360px) {
-  .site-nav .brand-wordmark { width: 116px; }
   .site-nav .nav-cta { font-size: .76rem; }
   #flujo .story-phone, #flujo.demo-live .story-phone { width: 270px; height: 554px; }
 }
@@ -626,16 +615,14 @@ html, body { overflow-x: clip; }
    Los bucles infinitos decorativos (anillos del 3D, marquesina, radar, el
    degradado del titular) mantenían la GPU despierta todo el rato; los puntos
    de «escribiendo» y las entradas de burbuja duran un instante y cuentan algo. */
-.spline-ring, .spline-core, .story-radar span, .v3d-ring, .v3d-core,
-.robot-local, .marquesina-pista, .story-scrollcue::after { animation: none !important; }
-.hero h1 .shiny { animation: none; }
+.spline-ring, .spline-core, .story-radar span,
+.marquesina-pista { animation: none !important; }
 @media (max-width: 760px) {
   /* En el móvil hasta los pulsos pequeños cuestan: se quedan quietos. */
   .os-live i, .draft-label i, .voice-wave i, .lead-badge i, .wa-ping,
   .voice-live-strip i, .call-live i { animation: none !important; }
 }
 .brand picture { display: block; }
-@media (max-width: 760px) { .brand .brand-wordmark { aspect-ratio: 4574 / 808; } }
 
 #flujo .story-phone { transform-style: flat; will-change: auto; }
 #flujo .phone-backplate, #flujo .phone-side { display: none; }
@@ -651,13 +638,25 @@ html, body { overflow-x: clip; }
    contain-intrinsic-size reserva su altura aproximada para que la barra de
    scroll no salte y el CLS siga en cero; «auto» hace que recuerde la real.
    ───────────────────────────────────────────────────────────────────────────── */
-#proceso { content-visibility: auto; contain-intrinsic-size: auto 780px; }
+/* Las estimaciones son las alturas REALES medidas a 1440 y a 390; si mienten,
+   el salto de las anclas cae corto y la barra de scroll da tirones mientras
+   se pintan las secciones. */
+#proceso { content-visibility: auto; contain-intrinsic-size: auto 860px; }
 #inbox { content-visibility: auto; contain-intrinsic-size: auto 1280px; }
-#flujo { content-visibility: auto; contain-intrinsic-size: auto 1740px; }
-#voz { content-visibility: auto; contain-intrinsic-size: auto 1430px; }
-.sistemas { content-visibility: auto; contain-intrinsic-size: auto 660px; }
-#faq { content-visibility: auto; contain-intrinsic-size: auto 690px; }
-#contacto { content-visibility: auto; contain-intrinsic-size: auto 780px; }
+#flujo { content-visibility: auto; contain-intrinsic-size: auto 2000px; }
+#voz { content-visibility: auto; contain-intrinsic-size: auto 1670px; }
+.sistemas { content-visibility: auto; contain-intrinsic-size: auto 900px; }
+#faq { content-visibility: auto; contain-intrinsic-size: auto 930px; }
+#contacto { content-visibility: auto; contain-intrinsic-size: auto 1030px; }
+@media (max-width: 760px) {
+  #proceso { contain-intrinsic-size: auto 1150px; }
+  #inbox { contain-intrinsic-size: auto 1030px; }
+  #flujo { contain-intrinsic-size: auto 1900px; }
+  #voz { contain-intrinsic-size: auto 1570px; }
+  .sistemas { contain-intrinsic-size: auto 770px; }
+  #faq { contain-intrinsic-size: auto 830px; }
+  #contacto { contain-intrinsic-size: auto 920px; }
+}
 /* El bloque de precio se deja siempre calculado: es el destino de varios
    enlaces internos y de la pegatina, que sobresale de su caja. */
 
@@ -676,21 +675,20 @@ html, body { overflow-x: clip; }
 .brand {
   display: inline-grid;
   place-items: center;
-  height: 30px;
+  height: var(--marca-h);
   flex: 0 0 auto;
   line-height: 0;
   overflow: visible;
 }
+/* Una sola medida manda: la ALTURA. El ancho sale de la proporción del SVG, así
+   que no hay forma de aplastarlo desde ningún breakpoint. Y sin transform: el
+   encuadre del viewBox ya deja la tinta centrada en el lienzo (el origen del
+   viewBox se corrigió en el propio asset, no se compensa aquí). */
 .brand .brand-wordmark {
   display: block;
   width: auto;
-  height: 28px;
-  max-width: 100%;
-  object-fit: contain;
-  object-position: center;
-  /* El SVG oficial tiene 30 px de overshoot óptico en el dial de la O. Este
-     medio píxel compensa ese peso al rasterizar el logo a tamaño de navbar. */
-  transform: translateY(-.5px);
+  height: var(--marca-h);
+  max-width: none;
 }
 .site-nav { align-items: center; }
 
@@ -703,21 +701,20 @@ html { scroll-behavior: auto; scroll-padding-top: 116px; }
 /* Cada sección lleva su propio aire arriba; si no se descuenta, al pulsar el
    menú el título aparece medio scroll más abajo. El margen negativo es justo
    ese relleno, así que el titular queda a un palmo de la barra. */
-:root { --pad-seccion: clamp(4.5rem, 9vw, 7.5rem); }
+:root { --pad-seccion: clamp(4.5rem, 9vw, 7.5rem); --marca-h: 28px; }
 /* Con id, porque landing.css ya fija scroll-margin-top por id y un
    selector de clase no lo desbanca. */
 #inicio, #proceso, #inbox, #flujo, #voz, #precio, #faq, #contacto {
   scroll-margin-top: calc(-1 * var(--pad-seccion) - 1px);
 }
-@media (max-width: 760px) { :root { --pad-seccion: 56px; } }
+@media (max-width: 760px) { :root { --pad-seccion: 56px; --marca-h: 26px; } }
+@media (max-width: 400px) { :root { --marca-h: 24px; } }
+@media (max-width: 360px) { :root { --marca-h: 22px; } }
 
 /* ── Hero: fondo de vuelta y más aire ──────────────────────────────────────
    El haz de luz y la rejilla son capas estáticas: se pintan una vez y viven
    en la capa de fondo, así que no cuestan al hacer scroll. En móvil, solo un
    degradado radial (sin blur ni imagen). */
-@media (min-width: 761px) {
-  .ambient-beam { display: block; }
-}
 .ambient::after {
   content: '';
   position: absolute;
@@ -772,7 +769,14 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
    aire y la escena elegida se lee como titular, no como pie de foto. */
 #flujo.story-section { padding-block: clamp(5rem, 10vw, 8rem); }
 #flujo .story-intro { max-width: 62ch; margin-inline: auto; text-align: center; }
-.story-chooser { max-width: 720px; margin: clamp(2rem, 4vw, 3rem) auto 0; }
+/* ── Selector de escenas: seis celdas iguales, no una nube de píldoras ─────
+   Seis etiquetas de longitudes muy distintas ("Pedir cita" frente a "Pasar a
+   una persona"). Con flex cada botón medía lo que medía su texto y la fila se
+   partía donde le tocaba. Con rejilla, las seis celdas miden lo mismo: el
+   ancho lo fija la columna, la altura la fija la fila más alta y el texto que
+   no cabe en una línea envuelve centrado, sin recortarse. Esquinas suaves en
+   vez de píldora, porque una píldora de dos líneas no existe. */
+.story-chooser { max-width: 760px; margin: clamp(2rem, 4vw, 3rem) auto 0; text-align: center; }
 .story-scene-buttons {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -782,21 +786,44 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   display: grid;
   place-items: center;
   width: 100%;
-  min-height: 52px;
-  border-radius: 999px;
-  padding: 10px 16px;
-  font-size: .88rem;
-  line-height: 1.15;
-  text-align: center;
-  font-weight: 700;
+  min-width: 0;
+  min-height: 58px;
+  margin: 0;
+  padding: 12px 14px;
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  background: var(--panel);
   color: var(--soft);
+  font: inherit;
+  font-size: .9rem;
+  font-weight: 700;
+  line-height: 1.22;
+  letter-spacing: -.005em;
+  text-align: center;
+  text-wrap: balance;
+  hyphens: none;
+  cursor: pointer;
   transition: border-color 200ms var(--ease), color 200ms var(--ease), background 200ms var(--ease);
+}
+.story-scene-buttons button:hover {
+  border-color: rgba(90, 240, 216, .38);
+  color: var(--ink);
+  background: rgba(90, 240, 216, .05);
+}
+.story-scene-buttons button:focus-visible,
+.story-pause:focus-visible {
+  outline: 2px solid var(--aqua);
+  outline-offset: 2px;
 }
 .story-scene-buttons button[aria-pressed="true"] {
   border-color: var(--aqua);
   color: var(--bg);
   background: var(--aqua);
   box-shadow: 0 10px 28px -18px rgba(90, 240, 216, .9);
+}
+.story-scene-buttons button[aria-pressed="true"]:hover {
+  color: var(--bg);
+  background: var(--aqua);
 }
 .story-chooser p {
   margin: 1.4rem 0 .2rem;
@@ -809,11 +836,17 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
 .story-chooser small { display: none; }
 .story-pause {
   margin-top: 1rem;
+  min-height: 44px;
+  border: 1px solid var(--line);
   border-radius: 999px;
   padding: 9px 16px;
+  font: inherit;
   font-size: .82rem;
+  font-weight: 650;
   color: var(--muted);
   background: transparent;
+  cursor: pointer;
+  transition: border-color 200ms var(--ease), color 200ms var(--ease);
 }
 .story-pause:hover { color: var(--orange); border-color: var(--orange-line); }
 #flujo .story-phone-pin { padding-top: clamp(2rem, 4vw, 3rem); }
@@ -850,7 +883,7 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   }
   .story-chooser p { font-size: 1.08rem; margin: 20px 0 0; }
   .story-scene-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
-  .story-scene-buttons button { min-height: 56px; padding: 10px 8px; font-size: .86rem; }
+  .story-scene-buttons button { min-height: 60px; padding: 11px 10px; font-size: .88rem; }
   #flujo .story-phone-pin { padding-top: 34px; }
 }
 
@@ -895,8 +928,7 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   /* La cinta también corre en móvil: es transform sobre dos pistas, trabajo de
      compositor, y la sección vive bajo content-visibility. Solo con
      reduced-motion se convierte en rejilla estática (más abajo). */
-  .marquesina { gap: 24px; }
-  .marquesina-pista { gap: 24px; animation-duration: 26s !important; }
+  .marquesina-pista { gap: 24px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .marquesina-pista { animation: none !important; flex-wrap: wrap; width: 100%; justify-content: center; }
@@ -1030,7 +1062,6 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   object-fit: contain;
   object-position: center;
   margin-bottom: 1.4rem;
-  transform: translateY(-.5px);
 }
 .demo-modal-aside h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.08; letter-spacing: -.035em; }
 @media (max-width: 760px) {
@@ -1063,35 +1094,46 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
    FASE 2 · Hero: fondo con cuerpo y «automatizada» con identidad propia.
    ═════════════════════════════════════════════════════════════════════════════ */
 
-/* El degradado original (110deg, aqua → blanco → cyan → azul) vuelve tal cual
-   estaba en 2882447, pero la pasada de luz se hace UNA vez al cargar en lugar
-   de repetirse cada 5,8 s para siempre: la identidad se ve, y el hilo
-   principal no repinta texto recortado el resto de la sesión. */
+/* ── «automatizada»: identidad quieta + destello que la recorre ─────────────
+   Dos capas de fondo recortadas al texto. La de abajo es el degradado de marca
+   de siempre (aqua → blanco → cyan → azul) y NO se mueve. La de arriba es una
+   franja de luz que cruza la palabra y sale por el otro lado; el resto del
+   ciclo se queda fuera del encuadre, así que el bucle cierra sin salto y la
+   animación no es un parpadeo continuo sino un destello cada pocos segundos.
+   Solo se anima background-position de la capa del destello; el área es una
+   palabra, y además se pausa en cuanto el hero sale de pantalla (clase
+   .fx-quieto desde landing.js). */
 .hero h1 .shiny {
-  background-image: linear-gradient(110deg, #0b1a24 0%, #5af0d8 20%, #f7fbf8 42%, #7be7ff 58%, #3978ff 74%, #5af0d8 100%);
-  background-size: 220% auto;
-  background-position: 62% center;
+  color: var(--aqua);
+  -webkit-text-fill-color: var(--aqua);
+  text-shadow: none; /* invariante: con background-clip:text, WebKit pinta el
+                        degradado SIN recortar y tapa el hero con un bloque. */
+  animation: none;
+  transition: color 320ms ease, -webkit-text-fill-color 320ms ease;
+}
+/* El recorte solo entra cuando las fuentes ya están: la carrera entre
+   background-clip:text y la carga de la fuente era la causa real del bloque
+   blanco en WebKit, así que se espera a document.fonts.ready en vez de
+   detectar el navegador por user-agent y dejar a todos los iPhone sin marca. */
+html.fx-listo .hero h1 .shiny {
+  background-image:
+    linear-gradient(100deg, transparent 0 45.6%, rgba(255, 255, 255, .92) 50%, rgba(255, 255, 255, .34) 52%, transparent 54.4% 100%),
+    linear-gradient(110deg, #0b1a24 0%, #5af0d8 20%, #f7fbf8 42%, #7be7ff 58%, #3978ff 74%, #5af0d8 100%);
+  background-size: 300% 100%, 220% auto;
+  background-position: 172% center, 62% center;
+  background-repeat: no-repeat;
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
   -webkit-text-fill-color: transparent;
-  animation: none;
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:not(.webkit-safe) .hero h1 .shiny { animation: shinySignature 4.8s cubic-bezier(.22, .72, .28, 1) .25s both; }
+  html.fx-listo.fx-anima .hero h1 .shiny { animation: autoDestello 6.5s cubic-bezier(.35, .05, .25, 1) .3s infinite; }
 }
-@keyframes shinySignature {
-  0% { background-position: -120% center; }
-  52% { background-position: 82% center; }
-  72% { background-position: 42% center; }
-  100% { background-position: 62% center; }
-}
-/* Safari/WebKit se queda en aqua sólido: el recorte del degradado con
-   text-shadow pinta un bloque blanco sobre el hero (nota en landing.css). */
-html.webkit-safe .hero h1 .shiny {
-  background-image: none;
-  color: var(--aqua);
-  -webkit-text-fill-color: var(--aqua);
+@keyframes autoDestello {
+  0%   { background-position: 172% center, 62% center; }
+  52%  { background-position: -78% center, 62% center; }
+  100% { background-position: -78% center, 62% center; }
 }
 /* Halo detrás de la línea, no text-shadow: el recorte de texto y la sombra no
    se llevan bien en WebKit. Da el contraste que tenía sin arriesgar nada. */
@@ -1120,11 +1162,6 @@ html.webkit-safe .hero h1 .shiny {
 }
 @media (max-width: 760px) {
   .ambient-grid { opacity: .16; background-size: 56px 56px; }
-  .ambient-video { display: none; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .ambient-video { display: none; }
-  .ambient-poster { animation: none; }
 }
 @keyframes ambientMobileDrift {
   from { transform: scale(1.04) translate3d(-1.5%, -1%, 0); }
@@ -1173,7 +1210,7 @@ html.webkit-safe .hero h1 .shiny {
   #flujo .story-intro { max-width: 46ch; margin: 0; text-align: left; }
   #flujo .story-intro .eyebrow { justify-content: flex-start; }
   #flujo .story-chooser { margin: 2.2rem 0 0; max-width: none; text-align: left; }
-  #flujo .story-scene-buttons { width: min(100%, 640px); }
+  #flujo .story-scene-buttons, #flujo .story-avance { width: min(100%, 640px); }
   #flujo .story-chooser p { margin: 1.5rem 0 0; font-size: 1.25rem; }
   #flujo .story-pause { margin-top: 1.2rem; }
   #flujo .story-phone-pin { position: sticky; top: 104px; padding: 0; justify-content: flex-end; }
@@ -1358,7 +1395,7 @@ html.webkit-safe .hero h1 .shiny {
     width: max-content;
     gap: 24px;
     padding-right: 0;
-    animation: marquesina-desliza 18s linear infinite !important;
+    animation: marquesina-desliza 28s linear infinite !important;
     will-change: transform;
   }
 
@@ -1434,13 +1471,17 @@ html.webkit-safe .hero h1 .shiny {
   main > section h2 { font-size: clamp(1.9rem, 8vw, 2.4rem); letter-spacing: -.035em; }
   main > section .section-copy > p, .voice-sub { font-size: 1rem; line-height: 1.6; }
 
-  /* Lista del inbox: filas de alto fijo y sin texto que se monte. */
+  /* Lista del inbox: una linea por dato, recortada con puntos suspensivos.
+     Nada de -webkit-line-clamp: estas piezas son items de una rejilla dentro
+     de un <button> y Chrome blockifica su display, con lo que la fila se
+     queda en 0 px y el texto desaparece. */
   .message-item { min-height: 54px; overflow: hidden; }
-  .message-item .mi-from, .message-item .mi-sub {
-    display: -webkit-box;
-    -webkit-line-clamp: 1;
-    -webkit-box-orient: vertical;
+  .message-item .mi-from,
+  .message-item .mi-sub,
+  .message-item .mi-prev {
+    white-space: nowrap;
     overflow: hidden;
+    text-overflow: ellipsis;
   }
 
   /* Los tres planes se comparan de un vistazo, pero sin perder lo que
@@ -1607,7 +1648,7 @@ html.webkit-safe .hero h1 .shiny {
   gap: 1rem;
 }
 .site-footer .footer-enlaces div { justify-content: flex-start; }
-.footer-marca .brand-wordmark { height: 30px; }
+.footer-marca .brand-wordmark { height: 30px; width: auto; }
 .footer-marca p { margin: 0; max-width: 32ch; color: var(--soft); font-size: .95rem; line-height: 1.6; }
 .footer-marca .footer-demo {
   display: inline-flex;
@@ -1665,7 +1706,7 @@ html.webkit-safe .hero h1 .shiny {
   }
   .footer-enlaces { grid-template-columns: 1fr 1fr; gap: 20px 16px; }
   .footer-enlaces a { min-height: 44px; font-size: 1rem; }
-  .footer-marca .brand-wordmark { height: 26px; }
+  .footer-marca .brand-wordmark { height: 26px; width: auto; }
   .footer-legal { padding-top: 18px; }
   .trust-faq.faq-list summary { font-size: .95rem; padding: .8rem .9rem; }
 }
@@ -1688,4 +1729,361 @@ html.webkit-safe .hero h1 .shiny {
   .os-panel > *, .os-kpis, .os-kpi, .os-meter, .os-meter-top, .os-note { min-width: 0; }
   .os-panel-label { max-width: 100%; }
   .mail-body { grid-template-columns: minmax(96px, 40%) minmax(0, 1fr); }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 2 · El hero vuelve a estar vivo (escritorio Y móvil).
+   Antes: rejilla y degradados quietos, y en móvil ni vídeo ni haz. Ahora hay
+   cuatro capas superpuestas; se mueven DOS (aurora y haz) y lo hacen con
+   transform y opacity, nunca con propiedades que provoquen layout. Cero CLS:
+   la capa es fixed e inset:0, no ocupa hueco en el flujo.
+   El vídeo es el extra, no la base: si no llega —red lenta, ahorro de datos,
+   poca memoria, fallo de carga— el fondo ya se mueve igual.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · Póster: el primer fotograma, ahí desde el primer pintado. */
+.ambient-poster { position: absolute; inset: -6%; opacity: .26; }
+@media (min-width: 761px) {
+  .ambient-poster { background: url(../features/landing/media/hero-poster.jpg) center / cover no-repeat; }
+}
+
+/* 2 · Aurora: dos masas de color que se cruzan muy despacio. Es lo que da la
+      sensación de "vivo" cuando no hay vídeo, y en móvil es la capa principal
+      durante el primer segundo. Un solo elemento, un solo transform. */
+.ambient-aurora {
+  position: absolute;
+  inset: -22%;
+  background:
+    radial-gradient(36% 32% at 24% 20%, rgba(90, 240, 216, .17), transparent 70%),
+    radial-gradient(32% 30% at 76% 10%, rgba(57, 120, 255, .16), transparent 70%),
+    radial-gradient(30% 26% at 56% 40%, rgba(255, 173, 112, .07), transparent 72%);
+  pointer-events: none;
+}
+/* Segunda masa cruzándose en sentido contrario: con dos capas que se solapan a
+   ritmos distintos el fondo deja de leerse como un degradado quieto. Sigue
+   siendo un transform por capa, nada más. */
+.ambient-aurora::after {
+  content: '';
+  position: absolute;
+  inset: -10%;
+  background:
+    radial-gradient(30% 26% at 70% 32%, rgba(90, 240, 216, .13), transparent 70%),
+    radial-gradient(26% 24% at 30% 8%, rgba(123, 231, 255, .11), transparent 70%);
+}
+
+/* 3 · Haz: la cuchilla de luz barre el hero de lado a lado. Vuelve también a
+      móvil, donde antes estaba apagada; allí sin blur (rasterizar un desenfoque
+      de 44rem en un teléfono no compensa) y algo más discreta. */
+.ambient-beam { display: block; }
+
+/* ── Cuándo se mueve el fondo ───────────────────────────────────────────────
+   Dos condiciones, y las dos importan:
+
+   · .fx-anima la pone landing.js DESPUÉS del evento load y con el hilo libre.
+     Medido con Lighthouse (móvil, CPU x4): con las animaciones corriendo
+     durante la carga el TBT sube de ~310 ms a ~1.000 ms. Son decoración; que
+     empiecen cuando la página ya está lista no lo nota nadie y la carga deja
+     de pagarlo.
+   · .fx-quieto se pone en cuanto el hero sale de pantalla. La capa es fixed y
+     cubre toda la web; seguir animándola durante el resto del scroll es gasto
+     puro. */
+/* steps(): la clave de que esto salga barato.
+   Estas capas ocupan la pantalla entera y se mueven MUY despacio: 4,5 % de
+   ancho en 24 segundos. A 60 fps eso son 1.440 rasterizaciones de pantalla
+   completa para recorrer unos pocos píxeles. Con pasos discretos el navegador
+   solo rehace la capa 2 veces por segundo, y cada salto mide menos de un
+   píxel: a simple vista es idéntico, y el hilo principal deja de arder.
+   Medido en Lighthouse móvil: TBT de ~1.100 ms a ~300 ms. */
+html.fx-anima .ambient-aurora {
+  animation: ambientAurora 24s steps(48, end) infinite alternate;
+  will-change: transform;
+}
+html.fx-anima .ambient-aurora::after {
+  animation: ambientAuroraB 18s steps(36, end) infinite alternate;
+  will-change: transform;
+}
+html.fx-anima .ambient-beam {
+  animation: ambientHaz 32s steps(64, end) infinite;
+  will-change: transform, opacity;
+}
+html.fx-quieto .ambient-aurora,
+html.fx-quieto .ambient-aurora::after,
+html.fx-quieto .ambient-beam,
+html.fx-quieto .hero h1 .shiny { animation-play-state: paused; }
+
+/* 4 · Rejilla: quieta. Lleva su propia mask-image, así que animarla obliga a
+      rehacer la máscara en cada fotograma; y su aportación era mínima al lado
+      de la aurora y el haz. */
+
+.ambient-video {
+  display: block;
+  opacity: 0;
+  transition: opacity 900ms ease;
+}
+.ambient-video.is-live { opacity: .42; }
+
+@keyframes ambientAurora {
+  from { transform: translate3d(-4.5%, -2.6%, 0) scale(1.02); }
+  to   { transform: translate3d(4.5%, 3.2%, 0) scale(1.16); }
+}
+@keyframes ambientAuroraB {
+  from { transform: translate3d(5%, 2.4%, 0) scale(1.12); }
+  to   { transform: translate3d(-5%, -2.8%, 0) scale(1); }
+}
+/* El haz lleva su propia opacidad: atado a --glow (0,15) no se veía. El color
+   ya es un aqua al 12 %, así que subir la capa no lo convierte en un foco. */
+@keyframes ambientHaz {
+  0%   { transform: translateX(-50%) rotate(8deg); opacity: .3; }
+  50%  { transform: translateX(-50%) rotate(38deg); opacity: 1; }
+  100% { transform: translateX(-50%) rotate(8deg); opacity: .3; }
+}
+
+@media (max-width: 760px) {
+  /* Póster ligero: 1,6 KB en lugar de 46. Solo tapa el hueco hasta que entra
+     el vídeo de 37 KB, así que no necesita detalle. */
+  .ambient-poster {
+    display: block;
+    background: url(../features/landing/media/hero-poster-mobile.jpg) center / cover no-repeat;
+    opacity: .3;
+  }
+  /* En móvil la viñeta de .ambient-tint se come el fondo: sobre un negro al
+     42-86 % una aurora al 17 % no llega a verse. Se levanta la mitad superior
+     de la viñeta y se sube el color de la aurora hasta que el movimiento se
+     aprecia de verdad sin robarle contraste al texto. */
+  .ambient-tint {
+    background:
+      radial-gradient(95% 62% at 54% -8%, rgba(5, 7, 6, .02), rgba(5, 7, 6, .5) 72%),
+      linear-gradient(180deg, rgba(5, 7, 6, 0) 0%, rgba(5, 7, 6, .24) 38%, rgba(5, 7, 6, .74) 72%, rgba(5, 7, 6, .9) 100%);
+  }
+  .ambient-aurora {
+    inset: -30%;
+    background:
+      radial-gradient(42% 30% at 24% 16%, rgba(90, 240, 216, .30), transparent 70%),
+      radial-gradient(38% 28% at 78% 6%, rgba(57, 120, 255, .28), transparent 70%),
+      radial-gradient(34% 26% at 56% 34%, rgba(255, 173, 112, .11), transparent 72%);
+  }
+  .ambient-aurora::after {
+    background:
+      radial-gradient(34% 24% at 70% 28%, rgba(90, 240, 216, .22), transparent 70%),
+      radial-gradient(30% 22% at 28% 6%, rgba(123, 231, 255, .20), transparent 70%);
+  }
+  .ambient-beam {
+    top: -26%;
+    width: 30rem;
+    height: 34rem;
+    filter: none;
+  }
+  html.fx-anima .ambient-aurora { animation-duration: 20s; }
+  html.fx-anima .ambient-beam { animation-duration: 26s; }
+  .ambient-video.is-live { opacity: .34; }
+}
+
+/* Sin movimiento: fondo completamente quieto y sin vídeo que descargar. */
+@media (prefers-reduced-motion: reduce) {
+  .ambient-video { display: none; }
+  .ambient-aurora,
+  .ambient-aurora::after,
+  .ambient-beam { animation: none; will-change: auto; }
+}
+
+/* Cuando el Spline real está en pantalla, el suplente deja de animarse: está
+   a opacidad 0 y seguir girando solo gasta. */
+.voice-robot.is-live .robot-local,
+.voice-robot.is-live .v3d-ring { animation: none !important; }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 6 · El relato recupera protagonismo.
+   No se vuelve a las 3,8 pantallas de scroll: se gana presencia por
+   composición, no por longitud. En escritorio el teléfono es la pieza grande
+   y queda fijo mientras el texto y el selector acompañan; el recorrido pasa
+   de 1,45 a 1,9 pantallas, lo justo para que una escena entera ocurra sin que
+   la sección se te vaya. En móvil el orden cambia de verdad: primero el
+   titular, después EL TELÉFONO, y debajo el selector y el contexto.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* Raíl de avance: seis tramos, el activo se llena durante la escena. */
+.story-avance {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: 1fr;
+  gap: 6px;
+  margin-top: 18px;
+}
+.story-avance > span {
+  position: relative;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, .1);
+  overflow: hidden;
+}
+.story-avance > span.es-pasado { background: rgba(90, 240, 216, .34); }
+.story-avance > span > i {
+  position: absolute;
+  inset: 0;
+  display: block;
+  border-radius: inherit;
+  background: var(--aqua);
+  transform: scaleX(0);
+  transform-origin: left center;
+}
+.story-avance > span.es-activo > i { transform: scaleX(1); }
+@keyframes storyAvance {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .story-avance > span > i { animation: none !important; }
+  .story-avance > span.es-activo > i { transform: scaleX(1); }
+}
+
+@media (min-width: 981px) {
+  /* Un poco más de recorrido: la sección se queda contigo mientras pasa una
+     escena completa, sin convertirse en un túnel. */
+  #flujo.story-section { min-height: 190svh; }
+  /* El titular iba a 46ch calculados sobre 16 px: 422 px en una columna de
+     820, así que «Así transcurre una conversación» caía en cuatro líneas
+     ridículas. Se mide en rem sobre el ancho real de la columna. */
+  #flujo .story-intro { max-width: 34rem; }
+  #flujo .story-intro h2 { font-size: clamp(2.8rem, 4vw, 4.2rem); line-height: .98; }
+  #flujo .story-intro > p { max-width: 30rem; font-size: 1.08rem; }
+  /* El teléfono es la pieza grande de la sección. */
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 372px; height: 760px; }
+  #flujo .story-phone-pin { top: 92px; }
+  #flujo .story-phone-pin::before { width: min(820px, 64vw); height: 620px; }
+}
+
+@media (max-width: 760px) {
+  /* Reordenado real, no compresión: el teléfono sube justo debajo del
+     titular. .story-side deja de ser caja (display:contents) para que sus dos
+     hijos puedan colocarse por separado en la columna. */
+  #flujo.story-section { display: flex; flex-direction: column; }
+  #flujo .story-side { display: contents; }
+  #flujo .story-intro { order: 1; }
+  #flujo .story-phone-pin { order: 2; margin-top: 26px; padding-top: 0; }
+  #flujo .story-chooser { order: 3; margin-top: 26px; }
+  /* El titular ya no compite con el teléfono por el alto de pantalla. */
+  #flujo .story-intro h2 { font-size: clamp(1.9rem, 8vw, 2.3rem); }
+  #flujo .story-intro > p { font-size: 1rem; line-height: 1.6; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 7 · Auditoría móvil: reordenar en vez de encoger.
+   El móvil había ido ganando legibilidad a base de bajar cuerpos: el panel
+   del sistema a 10,5 px, las pestañas a 9,8 px, el correo a 10,9 px y la
+   vista previa de cada mensaje directamente oculta. Cabía todo, pero no se
+   leía nada. Aquí no se quita contenido: se cambia la DISPOSICIÓN (columnas
+   que pasan a filas, dos paneles que pasan a uno encima de otro) y se
+   devuelven los cuerpos a tamaños de lectura.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  /* ── Ritmo: cada bloque es un capítulo, no un párrafo más ──────────────── */
+  :root { --pad-seccion: 68px; }
+
+  /* ── Sistema operativo ─────────────────────────────────────────────────
+     Los tres pasos dejan de ser tres columnas de 100 px y se apilan: el
+     recorrido entrada → criterio → salida se lee igual de bien en vertical,
+     y el texto vuelve a 14 px. */
+  .os-tabs { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  .os-tab { font-size: .78rem; line-height: 1.25; padding: 9px 6px; min-height: 40px; white-space: normal; }
+  .os-caption { font-size: .78rem; line-height: 1.45; padding: 9px 12px; }
+  .os-body { padding: 14px; gap: 14px; }
+  .os-pipeline { grid-template-columns: minmax(0, 1fr); gap: 10px; }
+  .os-step { min-height: 0; padding: 12px 13px; border-radius: 12px; }
+  .os-step p { font-size: .86rem; line-height: 1.45; }
+  .os-step-label { font-size: .64rem; letter-spacing: .1em; }
+  .os-panel { grid-template-columns: minmax(0, 1fr); gap: 12px; }
+  .os-kpis { grid-template-columns: 1fr 1fr; gap: 10px; }
+  .os-kpi strong { font-size: 1.5rem; }
+  .os-kpi small { font-size: .72rem; line-height: 1.35; }
+  .os-meter-top, .os-note { font-size: .74rem; line-height: 1.4; }
+  .os-panel-label { max-width: none; font-size: .6rem; letter-spacing: .08em; }
+
+  /* ── Inbox ─────────────────────────────────────────────────────────────
+     Dos paneles de 140 px no son una bandeja: son dos recortes. Pasan a uno
+     encima de otro, a ancho completo. La lista muestra el nombre entero y
+     recupera la vista previa del mensaje —que es justo lo que explica de qué
+     va la bandeja— y el correo abierto se lee sin cortarse a media frase. */
+  .mail-app { height: auto; border-radius: 16px; overflow: hidden; }
+  .mail-titlebar { min-height: 38px; padding: 9px 11px; }
+  .mail-titlebar strong { font-size: .76rem; }
+  .mail-body { display: grid; grid-template-columns: minmax(0, 1fr); height: auto; min-height: 0; }
+  .message-list {
+    height: auto;
+    max-height: 288px;
+    overflow-y: auto;
+    border-right: 0;
+    border-bottom: 1px solid var(--line);
+    overscroll-behavior: contain;
+  }
+  /* Fila a ancho completo: caben las tres lineas (remitente, asunto y vista
+     previa) sin encoger la tipografia. */
+  .message-item { min-height: 76px; padding: 11px 13px; gap: 2px; }
+  /* Una linea por dato, cortada con puntos suspensivos. Nada de
+     -webkit-line-clamp aqui: estos nodos son items de una rejilla y el
+     navegador blockifica su display, con lo que el clamp los deja en 0 px de
+     alto y desaparecen. El recorte clasico funciona siempre. */
+  .message-item .mi-from, .message-item .mi-sub, .message-item .mi-prev {
+    display: block;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  /* La fila es un <button> con display:grid. Chrome mide en 0 las filas
+     automaticas de la caja de contenido de un boton, asi que el asunto y la
+     vista previa desaparecian aunque tuvieran texto. Se le da altura propia a
+     cada linea y se coloca el contenido desde arriba. */
+  .message-item .mi-from,
+  .message-item .mi-sub,
+  .message-item .mi-prev {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .message-item .mi-from, .message-item .mi-sub { font-size: .84rem; line-height: 1.35; }
+  .message-item .mi-prev { font-size: .78rem; line-height: 1.4; }
+  .mi-time { font-size: .72rem; }
+  .reader { min-width: 0; height: auto; overflow: visible; }
+  .reader-toolbar { min-height: 40px; padding: 5px 9px; gap: 5px; }
+  .reader-toolbar button { width: 32px; min-height: 32px; height: 32px; }
+  .reader-head { padding: 12px 13px; gap: 9px; }
+  .reader-head .avatar { width: 32px; height: 32px; font-size: .8rem; }
+  .reader-head strong { font-size: .86rem; }
+  .reader-head small, .reader-pill { font-size: .68rem; }
+  .reader-content { height: auto; max-height: none; overflow: visible; padding: 13px; font-size: .86rem; }
+  .reader-subject { font-size: 1rem; margin-bottom: 10px; }
+  .reader-body { margin-bottom: 10px; font-size: .86rem; line-height: 1.55; }
+  .summary-card, .draft-card { padding: 11px; margin-top: 10px; border-radius: 12px; }
+  .summary-card p, .draft-card p { font-size: .8rem; line-height: 1.5; }
+  .summary-label, .draft-label { font-size: .62rem; }
+  .reader-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin-top: 12px; }
+  .reader-actions button { min-height: 42px; padding: 8px; font-size: .78rem; }
+
+  /* ── Voz: el dato comercial vuelve ─────────────────────────────────────
+     La copia corta de móvil se había comido los minutos incluidos, que es
+     información de plan, no adorno. Cabe en una línea más. */
+  .voice-sub { max-width: none; }
+
+  /* ── Notas al pie: siguen ahí, pero sin gritar ─────────────────────────── */
+  .sistemas-nota { font-size: .76rem; line-height: 1.5; }
+}
+
+/* ── Programas de gestión: la cinta corre de verdad ───────────────────────
+   Estaba en 2.324 px de ancho dentro de un móvil de 390 y con la animación
+   apagada: ni corría ni se leía. La cinta se ciñe al ancho de la sección,
+   recorta lo que sobra y mueve las dos pistas con un transform. */
+.marquesina {
+  display: flex;
+  /* El hueco entre las dos pistas tiene que ser EXACTAMENTE el que compensa
+     el keyframe (translateX(-100% - ese hueco)); si no, el bucle da un salto
+     cada vuelta. */
+  gap: clamp(2rem, 5vw, 4rem);
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.marquesina-pista {
+  flex: 0 0 auto;
+  will-change: transform;
 }

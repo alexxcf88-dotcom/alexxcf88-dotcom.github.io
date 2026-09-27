@@ -28,17 +28,7 @@
   <link rel="icon" type="image/png" sizes="32x32" href="brand/icono/icono-aitomat-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="brand/icono/icono-aitomat-180.png">
   <link rel="manifest" href="site.webmanifest">
-  <!-- Safari/WebKit (todos los navegadores de iOS y Safari de Mac): el degradado
-       animado con background-clip:text del titular se pinta a veces SIN recortar
-       (carrera con la carga de fuentes) y cubre el hero con un bloque blanco.
-       La clase webkit-safe activa en el CSS un titular en aqua sólido. Va inline
-       en el head para existir ANTES del primer pintado. -->
-  <script>
-    if (/AppleWebKit/i.test(navigator.userAgent) && !/Chrom(e|ium)|Edg|OPR/i.test(navigator.userAgent)) {
-      document.documentElement.classList.add('webkit-safe');
-    }
-  </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260927-cierre2">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260928-hero">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -146,21 +136,25 @@
     }
   ]
 }</script>
-  <link rel="stylesheet" href="css/fonts.css?v=20260927-cierre2">
-  <link rel="stylesheet" href="css/refresh.css?v=20260927-cierre">
+  <link rel="stylesheet" href="css/fonts.css?v=20260928-hero">
+  <link rel="stylesheet" href="css/refresh.css?v=20260928-hero">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
-    <!-- Vídeo autoalojado: el hero recupera profundidad sin colgar de un
-         CloudFront ajeno (un tercero más viendo la IP de cada visita, fuera
-         de la lista de proveedores que publicamos). Solo en escritorio y al
-         quedar libre el hilo; en móvil manda el póster con CSS. -->
-    <video class="ambient-video" id="bg-video" autoplay loop muted playsinline preload="none"
-      poster="features/landing/media/hero-poster.jpg"
-      data-src="features/landing/media/hero.mp4"></video>
+    <!-- Fondo vivo del hero. Vídeo autoalojado (nada de CloudFront ajeno: sería
+         un tercero más viendo la IP de cada visita, fuera de la lista de
+         proveedores que publicamos). Dos cortes: 1280p para escritorio y uno de
+         640×360 y 80 KB para móvil. Ninguno se pide con la página: los carga JS
+         cuando el hilo queda libre y se pausan al salir el hero de pantalla.
+         Mientras tanto —y siempre que el dispositivo no dé para vídeo— mandan
+         las capas CSS (aurora, haz y rejilla), que se mueven en el compositor. -->
+    <video class="ambient-video" id="bg-video" loop muted playsinline preload="none"
+      data-src="features/landing/media/hero.mp4"
+      data-src-movil="features/landing/media/hero-mobile.mp4"></video>
     <div class="ambient-poster"></div>
+    <div class="ambient-aurora"></div>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
     <div class="ambient-tint" id="bg-tint"></div>
@@ -257,7 +251,7 @@
       <div class="section-copy center">
         <p class="eyebrow"><span></span> Inbox inteligente</p>
         <h2>Una sola bandeja para toda la cl&iacute;nica.</h2>
-        <p><strong>WhatsApp, Instagram, Facebook, email y SMS</strong> en el mismo sitio: mensajes a la izquierda, resumen y clasificaci&oacute;n en el centro y la respuesta ya escrita a la derecha. Incluida en los planes.</p>
+        <p><strong>WhatsApp, Instagram, Facebook, email y SMS</strong> en el mismo sitio: cada mensaje llega con su resumen, su clasificaci&oacute;n y la respuesta ya escrita. Incluida en los planes.</p>
       </div>
 
       <div class="mail-app liquid-glass" aria-label="Bandeja inteligente de AItomat">
@@ -339,6 +333,9 @@
             <button type="button" data-scene="4" aria-pressed="false">Pasar a una persona</button>
             <button type="button" data-scene="5" aria-pressed="false">Paciente dormido</button>
           </div>
+          <div class="story-avance" id="story-avance" aria-hidden="true">
+            <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
+          </div>
           <p id="story-scene-caption" aria-live="polite">Pedir una cita</p>
           <button type="button" class="story-pause" data-scene-pause aria-pressed="false">Leer sin animación</button>
         </div>
@@ -415,7 +412,7 @@
       <div class="voice-head">
         <p class="eyebrow"><span></span> Recepci&oacute;n por voz &middot; incluida en todos los planes</p>
         <h2>Llamadas en vivo, sin perder el hilo.</h2>
-        <p class="voice-sub"><span class="voice-desktop-copy">Incluida en todos los planes, con 200, 600 o 1.200 minutos al mes seg&uacute;n el plan: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Usa la misma agenda y los mismos criterios que el resto del sistema.</span><span class="voice-mobile-copy">Atiende, entiende el motivo y deja la cita o el caso preparado para recepci&oacute;n.</span></p>
+        <p class="voice-sub"><span class="voice-desktop-copy">Incluida en todos los planes, con 200, 600 o 1.200 minutos al mes seg&uacute;n el plan: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Usa la misma agenda y los mismos criterios que el resto del sistema.</span><span class="voice-mobile-copy">Atiende, entiende el motivo y deja la cita o el caso preparado para recepci&oacute;n. Con 200, 600 o 1.200 minutos al mes seg&uacute;n el plan.</span></p>
       </div>
       <div class="voice-stage">
         <div class="voice-robot" id="voice-3d" data-spline data-scene="/features/landing/voice.splinecode" aria-hidden="true">
@@ -838,7 +835,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260927-cierre"></script>
+  <script defer src="features/landing/landing.js?v=20260928-hero"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
