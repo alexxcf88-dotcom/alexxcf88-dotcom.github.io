@@ -94,12 +94,18 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
 (function initHeroEnhancements() {
   const hero = document.querySelector('[data-spotlight]');
   if (!hero || reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
+  let frame = 0;
   hero.addEventListener('pointermove', (event) => {
-    const rect = hero.getBoundingClientRect();
-    const x = ((event.clientX - rect.left) / rect.width) * 100;
-    const y = ((event.clientY - rect.top) / rect.height) * 100;
-    hero.style.setProperty('--spotlight-x', `${x.toFixed(2)}%`);
-    hero.style.setProperty('--spotlight-y', `${y.toFixed(2)}%`);
+    const clientX = event.clientX, clientY = event.clientY;
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      const rect = hero.getBoundingClientRect();
+      const x = ((clientX - rect.left) / rect.width) * 100;
+      const y = ((clientY - rect.top) / rect.height) * 100;
+      hero.style.setProperty('--spotlight-x', `${x.toFixed(2)}%`);
+      hero.style.setProperty('--spotlight-y', `${y.toFixed(2)}%`);
+      frame = 0;
+    });
   });
 })();
 
@@ -404,10 +410,16 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
     node.addEventListener('click', () => select(node.dataset.discovery));
   });
 
+  let pointerFrame = 0;
   board.addEventListener('pointermove', (event) => {
-    const rect = board.getBoundingClientRect();
-    board.style.setProperty('--mx', `${((event.clientX - rect.left) / rect.width) * 100}%`);
-    board.style.setProperty('--my', `${((event.clientY - rect.top) / rect.height) * 100}%`);
+    const clientX = event.clientX, clientY = event.clientY;
+    if (pointerFrame) return;
+    pointerFrame = requestAnimationFrame(() => {
+      const rect = board.getBoundingClientRect();
+      board.style.setProperty('--mx', `${((clientX - rect.left) / rect.width) * 100}%`);
+      board.style.setProperty('--my', `${((clientY - rect.top) / rect.height) * 100}%`);
+      pointerFrame = 0;
+    });
   });
 })();
 
@@ -602,13 +614,21 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
   // Auto-demo: rota entre casos hasta que el usuario interactua.
   let autoIndex = 0;
   let auto = null;
+  let userStoppedAuto = false;
   const keys = Object.keys(cases);
   function stopAuto() { if (auto) { clearInterval(auto); auto = null; } }
+  function startAuto() {
+    if (lightweightMotion || userStoppedAuto || auto || document.hidden) return;
+    auto = setInterval(() => {
+      autoIndex = (autoIndex + 1) % keys.length;
+      select(keys[autoIndex]);
+    }, 4200);
+  }
 
   tabs.forEach((tab) => {
-    tab.addEventListener('click', () => { stopAuto(); select(tab.dataset.case); });
-    tab.addEventListener('mouseenter', () => { stopAuto(); select(tab.dataset.case); });
-    tab.addEventListener('focus', () => { stopAuto(); select(tab.dataset.case); });
+    tab.addEventListener('click', () => { userStoppedAuto = true; stopAuto(); select(tab.dataset.case); });
+    tab.addEventListener('mouseenter', () => { userStoppedAuto = true; stopAuto(); select(tab.dataset.case); });
+    tab.addEventListener('focus', () => { userStoppedAuto = true; stopAuto(); select(tab.dataset.case); });
     tab.addEventListener('keydown', (event) => {
       const current = tabs.indexOf(tab);
       let next = current;
@@ -618,18 +638,20 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       else if (event.key === 'End') next = tabs.length - 1;
       else return;
       event.preventDefault();
+      userStoppedAuto = true;
       stopAuto();
       select(tabs[next].dataset.case);
       tabs[next].focus();
     });
   });
 
-  if (!lightweightMotion) {
-    auto = setInterval(() => {
-      autoIndex = (autoIndex + 1) % keys.length;
-      select(keys[autoIndex]);
-    }, 4200);
-  }
+  if (!lightweightMotion && 'IntersectionObserver' in window) {
+    new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting)) startAuto();
+      else stopAuto();
+    }, { rootMargin: '120px 0px' }).observe(win);
+    document.addEventListener('visibilitychange', () => document.hidden ? stopAuto() : startAuto());
+  } else if (!lightweightMotion) startAuto();
 
   select(keys[0]);
 })();
@@ -2073,6 +2095,19 @@ function mountCal(destino) {
   els.forEach((el) => observer.observe(el));
 })();
 
+/* Las animaciones decorativas dejan de consumir composición cuando su capítulo
+   está lejos. La marquesina se excluye: su continuidad es parte funcional del
+   bloque de integraciones. */
+(function initMotionBudget() {
+  if (reduceMotion || !('IntersectionObserver' in window)) return;
+  const sections = ['#inicio', '#proceso', '#flujo', '#voz']
+    .map((selector) => document.querySelector(selector)).filter(Boolean);
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => entry.target.classList.toggle('is-offscreen', !entry.isIntersecting));
+  }, { rootMargin: '160px 0px' });
+  sections.forEach((section) => observer.observe(section));
+})();
+
 /* Robot 3D original de Spline, autoalojado. Se descarga solo cuando la sección
    está cerca: el hero y el contenido inicial no pagan ni el runtime ni WebGL.
    En táctil se conserva el robot, pero sin seguimiento global del puntero. */
@@ -2302,4 +2337,29 @@ function mountCal(destino) {
     if (id && document.getElementById(id)) setTimeout(encajar, 0);
   });
   if (location.hash) setTimeout(encajar, 60);
+})();
+
+(function initPricingCarousel() {
+  const rail = document.querySelector('.pricing-section .planes');
+  const nav = document.querySelector('.pricing-mobile-nav');
+  if (!rail || !nav) return;
+  const cards = [...rail.querySelectorAll('.plan')];
+  const dots = [...nav.querySelectorAll('.pricing-dots i')];
+  const go = (delta) => {
+    const current = cards.reduce((best, card, index) =>
+      Math.abs(card.offsetLeft - rail.scrollLeft) < Math.abs(cards[best].offsetLeft - rail.scrollLeft) ? index : best, 0);
+    cards[Math.max(0, Math.min(cards.length - 1, current + delta))].scrollIntoView({ behavior: reduceMotion ? 'auto' : 'smooth', block: 'nearest', inline: 'start' });
+  };
+  nav.querySelector('[data-plan-prev]').addEventListener('click', () => go(-1));
+  nav.querySelector('[data-plan-next]').addEventListener('click', () => go(1));
+  let frame = 0;
+  rail.addEventListener('scroll', () => {
+    if (frame) return;
+    frame = requestAnimationFrame(() => {
+      const active = cards.reduce((best, card, index) =>
+        Math.abs(card.offsetLeft - rail.scrollLeft) < Math.abs(cards[best].offsetLeft - rail.scrollLeft) ? index : best, 0);
+      dots.forEach((dot, index) => dot.classList.toggle('active', index === active));
+      frame = 0;
+    });
+  }, { passive: true });
 })();

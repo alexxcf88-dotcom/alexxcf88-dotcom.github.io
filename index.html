@@ -137,7 +137,7 @@
   ]
 }</script>
   <link rel="stylesheet" href="css/fonts.css?v=20260928-hero">
-  <link rel="stylesheet" href="css/refresh.css?v=20260928-premium">
+  <link rel="stylesheet" href="css/refresh.css?v=20260928-major-v2">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
@@ -324,14 +324,14 @@
           <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
 
         </div>
-        <div class="story-chooser" aria-label="Situaciones que resuelve AItomat">
+        <div id="story-controls" class="story-chooser" aria-label="Situaciones que resuelve AItomat">
           <div class="story-scene-buttons" role="group" aria-label="Elegir conversación">
-            <button type="button" data-scene="0" aria-pressed="true">Pedir cita</button>
-            <button type="button" data-scene="1" aria-pressed="false">Cambiar cita</button>
-            <button type="button" data-scene="2" aria-pressed="false">Recordatorio</button>
-            <button type="button" data-scene="3" aria-pressed="false">Lista de espera</button>
-            <button type="button" data-scene="4" aria-pressed="false">Pasar a una persona</button>
-            <button type="button" data-scene="5" aria-pressed="false">Paciente dormido</button>
+            <button type="button" data-scene="0" aria-pressed="true"><i aria-hidden="true">+</i><span>Pedir cita</span></button>
+            <button type="button" data-scene="1" aria-pressed="false"><i aria-hidden="true">↔</i><span>Cambiar cita</span></button>
+            <button type="button" data-scene="2" aria-pressed="false"><i aria-hidden="true">◷</i><span>Recordatorio</span></button>
+            <button type="button" data-scene="3" aria-pressed="false"><i aria-hidden="true">↗</i><span>Lista de espera</span></button>
+            <button type="button" data-scene="4" aria-pressed="false"><i aria-hidden="true">◎</i><span>Pasar a una persona</span></button>
+            <button type="button" data-scene="5" aria-pressed="false"><i aria-hidden="true">◔</i><span>Paciente dormido</span></button>
           </div>
           <div class="story-avance" id="story-avance" aria-hidden="true">
             <span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span><span><i></i></span>
@@ -403,8 +403,15 @@
           </div>
           <span class="phone-home" aria-hidden="true"></span>
         </article>
-
-
+        <aside class="story-context" aria-label="Resultado de la conversación">
+          <p><span></span> Conversación en curso</p>
+          <strong>Entiende, consulta y deja el siguiente paso preparado.</strong>
+          <dl>
+            <div><dt>Entrada</dt><dd>Voz o mensaje</dd></div>
+            <div><dt>Contexto</dt><dd>Agenda real</dd></div>
+            <div><dt>Salida</dt><dd>Cita o traspaso</dd></div>
+          </dl>
+        </aside>
       </div>
     </section>
 
@@ -456,7 +463,7 @@
     </section>
 
 
-    <section class="sistemas" aria-labelledby="sistemas-tit">
+    <section id="programas" class="sistemas" aria-labelledby="sistemas-tit">
       <div class="sistemas-copy">
         <p class="eyebrow"><span></span> Programas de gesti&oacute;n</p>
         <h2 id="sistemas-tit">Da igual qu&eacute; programa us&eacute;is.</h2>
@@ -467,7 +474,7 @@
         </p>
       </div>
 
-      <div class="marquesina" role="group" aria-label="Programas de gesti&oacute;n del sector dental">
+      <div id="programas-cinta" class="marquesina" role="group" aria-label="Programas de gesti&oacute;n del sector dental">
           <!-- Cuatro pistas idénticas, no dos. Con dos, al cerrar el bucle la
                primera ya ha salido y solo queda una cubriendo 1.231 px: en un
                monitor de 1.440 o 1.920 eso dejaba medio metro de vacío a la
@@ -615,6 +622,11 @@
           </article>
         </div>
 
+        <div class="pricing-mobile-nav" aria-label="Navegar por los planes">
+          <button type="button" data-plan-prev aria-label="Plan anterior">←</button>
+          <div class="pricing-dots" aria-hidden="true"><i class="active"></i><i></i><i></i></div>
+          <button type="button" data-plan-next aria-label="Plan siguiente">→</button>
+        </div>
         <p class="planes-nota">
           Mensual, <strong>sin permanencia</strong>, con el <strong>primer mes de cuota mensual gratis</strong> en los tres planes.
           Superar los minutos no bloquea la atenci&oacute;n: se facturan al precio del minuto adicional del plan.
@@ -727,6 +739,7 @@
           <li>Qu&eacute; debe pasar a recepci&oacute;n</li>
           <li>Precio y puesta en marcha sin permanencia</li>
         </ul>
+        <div class="cta-signal" aria-hidden="true"><span>Agenda</span><i></i><span>Llamadas</span><i></i><span>Canales</span></div>
       </div>
 
       <form id="lead-form" class="lead-form" data-lead-form novalidate>
@@ -811,11 +824,12 @@
       <div class="demo-modal-aside">
         <img class="demo-modal-marca" src="brand/logo/logo-aitomat.svg" alt="AItomat" width="4574" height="808">
         <p class="eyebrow"><span></span> Demo</p>
-        <h2 id="demo-modal-title">Pon a <span class="b-ai">AI</span>tomat a trabajar en tu cl&iacute;nica.</h2>
+        <h2 id="demo-modal-title">Tu recepci&oacute;n puede empezar a respirar.</h2>
+        <p class="demo-modal-lead">Vemos tu operativa real y te enseñamos dónde puede entrar <span class="b-ai">AI</span>tomat.</p>
         <ul class="cta-points">
-          <li>Revisamos tu agenda y llamadas sin atender</li>
-          <li>Te decimos qu&eacute; automatizar y qu&eacute; dejar en manos de recepci&oacute;n</li>
-          <li>Sin permanencia; puesta en marcha tras revisar canales y agenda</li>
+          <li><b>01</b><span><strong>Diagnóstico claro</strong>Agenda, llamadas y canales</span></li>
+          <li><b>02</b><span><strong>Demo a medida</strong>Con casos de tu clínica</span></li>
+          <li><b>03</b><span><strong>Sin permanencia</strong>Una propuesta cerrada</span></li>
         </ul>
         <p class="demo-modal-trust">Respuesta en 24&nbsp;h &middot; datos tratados seg&uacute;n la <a href="legal/privacidad.html">pol&iacute;tica de privacidad</a>.</p>
       </div>
@@ -863,7 +877,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260928-premium"></script>
+  <script defer src="features/landing/landing.js?v=20260928-major-v2"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
