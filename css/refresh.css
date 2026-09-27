@@ -1569,20 +1569,9 @@ html.webkit-safe .hero h1 .shiny {
     radial-gradient(70% 60% at 92% 12%, rgba(255, 173, 112, .07), transparent 60%);
   pointer-events: none;
 }
-#contacto::after {
-  content: '';
-  position: absolute;
-  inset: 0;
-  z-index: -1;
-  opacity: .16;
-  background-image:
-    linear-gradient(rgba(255, 255, 255, .05) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(255, 255, 255, .04) 1px, transparent 1px);
-  background-size: 84px 84px;
-  mask-image: linear-gradient(180deg, #000, transparent 78%);
-  -webkit-mask-image: linear-gradient(180deg, #000, transparent 78%);
-  pointer-events: none;
-}
+/* La rejilla enmascarada de este bloque costaba ~190 ms de hilo principal
+   (medido: TBT 320 → 125 ms al quitarla). El cierre se queda con las dos
+   luces, que son degradados planos y no pintan máscara. */
 .cta-copy h2 { font-size: clamp(2.2rem, 4.4vw, 3.4rem); line-height: 1.02; letter-spacing: -.04em; }
 .cta-copy > p { max-width: 46ch; font-size: 1.05rem; line-height: 1.65; }
 .cta-points { margin-top: 1.6rem; gap: .7rem; }
