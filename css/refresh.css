@@ -87,7 +87,6 @@ html { scroll-padding-top: 100px; }
 .mi-time, .mi-prev, .voice-topic-pill > span { color: var(--soft); }
 .sistemas-lead a, .planes-nota a { text-decoration: underline; text-underline-offset: .2em; }
 @media (max-width: 760px), (prefers-reduced-motion: reduce) {
-  .hero h1 .shiny { animation: none; background-image: none; color: var(--aqua); -webkit-text-fill-color: var(--aqua); }
   .robot-local, .marquesina-pista { animation: none; }
   .site-nav, .liquid-glass, .story-note { backdrop-filter: none; -webkit-backdrop-filter: none; }
   #flujo .story-phone { transform: none; }
@@ -543,7 +542,6 @@ html, body { overflow-x: clip; }
 .ambient-beam, .ambient-particles, .hero-title-fx, .lamp-edge, .desk-scene, .story-radar, .cta-glow { display: none; }
 .site-nav, .liquid-glass, .story-note, .nav-links, .demo-modal-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
 .site-nav { background: var(--bg); }
-.hero h1 .shiny { background-position: 22% 50%; }
 .robot-local, .v3d-ring, .v3d-core, .marquesina-pista { animation: none; }
 .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
 .marquesina-pista { display: flex; flex-wrap: wrap; justify-content: center; width: 100%; gap: 24px; transform: none; }
@@ -715,20 +713,6 @@ html { scroll-behavior: auto; scroll-padding-top: 116px; }
 }
 /* El degradado del titular vuelve también en móvil: quieto no cuesta nada. */
 @media (max-width: 760px) {
-  .hero h1 .shiny {
-    background-image: linear-gradient(110deg, #5af0d8 0%, #7be7ff 42%, #f7fbf8 78%);
-    background-size: 100% auto;
-    background-position: 0 0;
-    -webkit-background-clip: text;
-    background-clip: text;
-    color: transparent;
-    -webkit-text-fill-color: transparent;
-  }
-}
-html.webkit-safe .hero h1 .shiny {
-  background-image: none;
-  color: var(--aqua);
-  -webkit-text-fill-color: var(--aqua);
 }
 .hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 8rem); }
 .hero-copy > * + * { margin-top: 0; }
@@ -852,11 +836,27 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
    Es una animación de transform sobre dos pistas idénticas: la GPU la mueve
    sola y la sección está bajo content-visibility, así que fuera de pantalla
    ni se pinta. En móvil se queda la rejilla estática, que se lee mejor. */
-@media (min-width: 761px) {
-  .marquesina { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
-  .marquesina-pista { display: flex; flex-wrap: nowrap; width: max-content; justify-content: flex-start; animation: marquesina-desliza 34s linear infinite !important; }
-  .marquesina-pista[aria-hidden="true"] { display: flex; }
-  .sistemas:hover .marquesina-pista { animation-play-state: paused !important; }
+/* La cinta corre en pantallas amplias: son dos pistas idénticas movidas con
+   transform, trabajo de compositor, y la sección está bajo content-visibility,
+   así que fuera de pantalla ni se pinta. En móvil se priorizan lectura y batería. */
+.marquesina {
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+.marquesina-pista {
+  display: flex;
+  flex-wrap: nowrap;
+  width: max-content;
+  justify-content: flex-start;
+  animation: marquesina-desliza 34s linear infinite !important;
+}
+.marquesina-pista[aria-hidden="true"] { display: flex; }
+.sistemas:hover .marquesina-pista { animation-play-state: paused !important; }
+@media (max-width: 760px) {
+  .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
+  .marquesina-pista { flex-wrap: wrap; width: 100%; justify-content: center; gap: 24px; animation: none !important; }
+  .marquesina-pista[aria-hidden="true"] { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .marquesina-pista { animation: none !important; flex-wrap: wrap; width: 100%; justify-content: center; }
@@ -975,3 +975,117 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   .demo-modal-marca { width: 112px; margin-bottom: 1rem; }
   .cta-section { gap: 28px; }
 }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 2 · Hero: fondo con cuerpo y «automatizada» con identidad propia.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* El degradado original (110deg, aqua → blanco → cyan → azul) vuelve tal cual
+   estaba en 2882447, pero la pasada de luz se hace UNA vez al cargar en lugar
+   de repetirse cada 5,8 s para siempre: la identidad se ve, y el hilo
+   principal no repinta texto recortado el resto de la sesión. */
+.hero h1 .shiny {
+  background-image: linear-gradient(110deg, #0b1a24 0%, #5af0d8 20%, #f7fbf8 42%, #7be7ff 58%, #3978ff 74%, #5af0d8 100%);
+  background-size: 220% auto;
+  background-position: 62% center;
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  -webkit-text-fill-color: transparent;
+  animation: none;
+}
+@media (prefers-reduced-motion: no-preference) {
+  html:not(.webkit-safe) .hero h1 .shiny { animation: shinyOnce 2.6s cubic-bezier(.25, .8, .3, 1) .15s both; }
+}
+@keyframes shinyOnce {
+  from { background-position: -120% center; }
+  to { background-position: 62% center; }
+}
+/* Safari/WebKit se queda en aqua sólido: el recorte del degradado con
+   text-shadow pinta un bloque blanco sobre el hero (nota en landing.css). */
+html.webkit-safe .hero h1 .shiny {
+  background-image: none;
+  color: var(--aqua);
+  -webkit-text-fill-color: var(--aqua);
+}
+/* Halo detrás de la línea, no text-shadow: el recorte de texto y la sombra no
+   se llevan bien en WebKit. Da el contraste que tenía sin arriesgar nada. */
+.hero-title-wrap { position: relative; }
+.hero-title-wrap::after {
+  content: '';
+  position: absolute;
+  left: 50%;
+  bottom: -6%;
+  width: min(760px, 78%);
+  height: 46%;
+  transform: translateX(-50%);
+  background: radial-gradient(closest-side, rgba(90, 240, 216, .16), transparent 74%);
+  pointer-events: none;
+  z-index: -1;
+}
+
+/* El fondo recupera cuerpo: rejilla + haz + viñeta, todo estático. En móvil
+   la rejilla es más suave y no hay imagen que descargar. */
+.ambient-grid { opacity: .3; }
+@media (max-width: 760px) {
+  .ambient-grid { opacity: .16; background-size: 56px 56px; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 3 · Bloques superiores: que respiren.
+   El texto de cabecera y el mockup iban casi pegados; se separan de forma
+   proporcional (misma escala que el relleno de sección) y las piezas internas
+   ganan aire sin cambiar su composición.
+   ═════════════════════════════════════════════════════════════════════════════ */
+#proceso .section-copy, #inbox .section-copy { margin-bottom: clamp(2.2rem, 4.5vw, 3.4rem); }
+#proceso .os-window { margin-top: 0; }
+.os-window { padding-bottom: clamp(.6rem, 1.4vw, 1rem); }
+.os-tabs { gap: .5rem; padding-block: .7rem; }
+.os-body { gap: clamp(1rem, 2.4vw, 1.6rem); padding: clamp(1.1rem, 2.4vw, 1.7rem); }
+.os-pipeline { gap: clamp(.7rem, 1.6vw, 1.1rem); }
+.os-panel { gap: clamp(.8rem, 1.6vw, 1.1rem); }
+.mail-app { margin-top: 0; }
+.mail-body { min-height: 420px; }
+.inbox-section .section-copy.center { max-width: 62ch; }
+@media (max-width: 760px) {
+  #proceso .section-copy, #inbox .section-copy { margin-bottom: 26px; }
+  .os-body { padding: 16px; gap: 16px; }
+  .mail-body { min-height: 0; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 4 · El relato vuelve a ser una pieza central.
+   En escritorio, dos columnas: el texto y el selector a la izquierda, el
+   teléfono a la derecha, ambos fijos mientras dura la sección. El recorrido
+   es de 1,45 pantallas: suficiente para que el bloque se quede contigo
+   mientras pasa una escena, lejos de las casi cuatro pantallas de antes.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 981px) {
+  #flujo.story-section {
+    display: grid;
+    grid-template-columns: minmax(320px, 1fr) auto;
+    gap: clamp(2.5rem, 5vw, 5rem);
+    align-items: start;
+    min-height: 145svh;
+    width: min(calc(100% - 2rem), 1240px);
+  }
+  #flujo .story-side { position: sticky; top: 132px; }
+  #flujo .story-intro { max-width: 46ch; margin: 0; text-align: left; }
+  #flujo .story-intro .eyebrow { justify-content: flex-start; }
+  #flujo .story-chooser { margin: 2.2rem 0 0; max-width: none; text-align: left; }
+  #flujo .story-scene-buttons { justify-content: flex-start; }
+  #flujo .story-chooser p { margin: 1.5rem 0 0; font-size: 1.25rem; }
+  #flujo .story-pause { margin-top: 1.2rem; }
+  #flujo .story-phone-pin { position: sticky; top: 104px; padding: 0; justify-content: flex-end; }
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 348px; height: 712px; }
+}
+/* Entre tablet y escritorio pequeño se mantiene en una columna, pero el
+   teléfono manda y el texto no se estira. */
+@media (min-width: 761px) and (max-width: 980px) {
+  #flujo .story-intro, #flujo .story-chooser { max-width: 60ch; margin-inline: auto; }
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 330px; height: 676px; }
+}
+/* El viewport del móvil es fijo: los mensajes entran por abajo, los viejos
+   suben y se van por arriba. Nada de crecer ni de mover el layout. */
+.story-phone .wa-chat { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
+.story-phone .phone-screen { overflow: hidden; }

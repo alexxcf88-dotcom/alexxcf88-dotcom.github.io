@@ -155,7 +155,7 @@
   ]
 }</script>
   <link rel="stylesheet" href="css/fonts.css?v=20260927-pulido">
-  <link rel="stylesheet" href="css/refresh.css?v=20260927-pulido">
+  <link rel="stylesheet" href="css/refresh.css?v=20260927-pulido2">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
@@ -254,7 +254,7 @@
             </article>
           </div>
           <aside class="os-panel">
-            <span class="os-panel-label">Ejemplo de un d&iacute;a en demo</span>
+            <span class="os-panel-label">Simulaci&oacute;n de un d&iacute;a en el panel</span>
             <div class="os-kpis">
               <div class="os-kpi"><strong class="os-num" id="case-done" data-target="14">14</strong><small>preparados antes de recepci&oacute;n</small></div>
               <div class="os-kpi"><strong class="os-num" id="case-human" data-target="3">3</strong><small>pasados a una persona</small></div>
@@ -264,7 +264,6 @@
               <i><span id="case-meter" style="--w:92%"></span></i>
             </div>
             <p class="os-note" id="case-note">Sin esperar a que recepci&oacute;n abra.</p>
-            <p class="os-disclaimer">Cifras de ejemplo.</p>
           </aside>
         </div>
       </div>
@@ -275,7 +274,7 @@
         <p class="eyebrow"><span></span> Inbox inteligente</p>
         <h2>Una sola bandeja para toda la cl&iacute;nica.</h2>
         <p><strong>WhatsApp, Instagram, Facebook, email y SMS</strong> en el mismo sitio: mensajes a la izquierda, resumen y clasificaci&oacute;n en el centro y la respuesta ya escrita a la derecha. Incluida en los planes.</p>
-        <p class="os-disclaimer">Bandeja de muestra. Cada canal se conecta en la puesta en marcha &mdash; <a href="integraciones.html">estado de cada uno</a>.</p>
+        <p class="os-disclaimer">Cada canal se conecta durante la puesta en marcha. <a href="integraciones.html">Consulta el estado de las integraciones</a>.</p>
       </div>
 
       <div class="mail-app liquid-glass" aria-label="Bandeja inteligente de AItomat">
@@ -341,26 +340,27 @@
     </section>
 
     <section id="flujo" class="story-section">
-      <div class="story-intro">
-        <p class="eyebrow"><span></span> En acci&oacute;n</p>
-        <h2>Así transcurre una conversación.</h2>
-        <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
-        <p class="os-disclaimer">Conversaciones de ejemplo. WhatsApp, recordatorios y reactivaci&oacute;n van incluidos y se configuran en la puesta en marcha.</p>
+      <div class="story-side">
+        <div class="story-intro">
+          <p class="eyebrow"><span></span> En acci&oacute;n</p>
+          <h2>Así transcurre una conversación.</h2>
+          <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
 
-      </div>
-      <div class="story-chooser" aria-label="Situaciones de ejemplo">
-        <div class="story-scene-buttons" role="group" aria-label="Elegir conversación">
-          <button type="button" data-scene="0" aria-pressed="true">Pedir cita</button>
-          <button type="button" data-scene="1" aria-pressed="false">Cambiar cita</button>
-          <button type="button" data-scene="2" aria-pressed="false">Recordatorio</button>
-          <button type="button" data-scene="3" aria-pressed="false">Lista de espera</button>
-          <button type="button" data-scene="4" aria-pressed="false">Pasar a una persona</button>
-          <button type="button" data-scene="5" aria-pressed="false">Paciente dormido</button>
         </div>
-        <p id="story-scene-caption" aria-live="polite">Pedir una cita</p>
-        <button type="button" class="story-pause" data-scene-pause aria-pressed="false">Leer sin animación</button>
-        <small>Ejemplos ilustrativos. Puedes elegir una escena y leerla a tu ritmo.</small>
+        <div class="story-chooser" aria-label="Situaciones que resuelve AItomat">
+          <div class="story-scene-buttons" role="group" aria-label="Elegir conversación">
+            <button type="button" data-scene="0" aria-pressed="true">Pedir cita</button>
+            <button type="button" data-scene="1" aria-pressed="false">Cambiar cita</button>
+            <button type="button" data-scene="2" aria-pressed="false">Recordatorio</button>
+            <button type="button" data-scene="3" aria-pressed="false">Lista de espera</button>
+            <button type="button" data-scene="4" aria-pressed="false">Pasar a una persona</button>
+            <button type="button" data-scene="5" aria-pressed="false">Paciente dormido</button>
+          </div>
+          <p id="story-scene-caption" aria-live="polite">Pedir una cita</p>
+          <button type="button" class="story-pause" data-scene-pause aria-pressed="false">Leer sin animación</button>
+        </div>
       </div>
+
       <div class="story-phone-pin">
         <div class="desk-scene" aria-hidden="true">
           <span class="desk-monitor"></span>
