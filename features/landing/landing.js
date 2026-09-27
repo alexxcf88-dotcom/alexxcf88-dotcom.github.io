@@ -1966,3 +1966,70 @@ function mountCal(destino) {
   }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
   els.forEach((el) => observer.observe(el));
 })();
+
+/* El robot de la sección de voz sigue al puntero.
+   Antes esto lo hacía una escena 3D de Spline de 6 MB. Ahora son dos
+   variables CSS que el navegador resuelve con transform: el listener solo
+   guarda la posición y un rAF por fotograma la escribe. Solo en escritorio
+   con puntero fino, sin reduced-motion, y solo mientras la sección se ve. */
+(function initRobotMirada() {
+  const zona = document.getElementById('voz');
+  const robot = document.getElementById('voice-3d');
+  if (!zona || !robot || reduceMotion) return;
+  if (window.matchMedia('(hover: none)').matches) return;   // táctil: sin puntero al que mirar
+
+  let x = 0, y = 0, pedido = false, activo = false;
+
+  function pintar() {
+    pedido = false;
+    // Transform directo: una sola capa que mueve el compositor. Se escribe
+    // aquí y no con variables CSS porque la sección vive bajo
+    // content-visibility y ahí la sustitución de var() es menos de fiar.
+    robot.style.transform = x || y
+      ? `translate3d(${(x * 9).toFixed(1)}px, ${(y * 6).toFixed(1)}px, 0) rotate(${(x * 2.6).toFixed(2)}deg)`
+      : '';
+  }
+  function mover(evento) {
+    const caja = zona.getBoundingClientRect();
+    x = Math.max(-1, Math.min(1, (evento.clientX - (caja.left + caja.width / 2)) / (caja.width / 2)));
+    y = Math.max(-1, Math.min(1, (evento.clientY - (caja.top + caja.height / 2)) / (caja.height / 2)));
+    if (!pedido) { pedido = true; requestAnimationFrame(pintar); }
+  }
+  const observador = new IntersectionObserver((entradas) => {
+    const visible = entradas[0].isIntersecting;
+    if (visible === activo) return;
+    activo = visible;
+    if (visible) {
+      window.addEventListener('pointermove', mover, { passive: true });
+    } else {
+      window.removeEventListener('pointermove', mover);
+      x = 0; y = 0; pintar();
+    }
+  }, { rootMargin: '10% 0px' });
+  observador.observe(zona);
+})();
+
+/* Anclas que caen donde deben.
+   Las secciones de debajo del pliegue usan content-visibility: su alto es una
+   estimación hasta que se pintan, así que el primer salto puede quedarse
+   corto o largo. Tras navegar se repite el encaje cuando el layout ya es
+   real: scrollIntoView respeta scroll-margin-top y scroll-padding-top. */
+(function initAnclasExactas() {
+  function encajar() {
+    const id = decodeURIComponent(location.hash.slice(1));
+    if (!id) return;
+    const destino = document.getElementById(id);
+    if (!destino) return;
+    requestAnimationFrame(() => destino.scrollIntoView());
+    setTimeout(() => destino.scrollIntoView(), 120);
+    setTimeout(() => destino.scrollIntoView(), 420);
+  }
+  window.addEventListener('hashchange', encajar);
+  document.addEventListener('click', (evento) => {
+    const enlace = evento.target.closest('a[href^="#"]');
+    if (!enlace || enlace.hasAttribute('data-demo-open')) return;
+    const id = enlace.getAttribute('href').slice(1);
+    if (id && document.getElementById(id)) setTimeout(encajar, 0);
+  });
+  if (location.hash) setTimeout(encajar, 60);
+})();

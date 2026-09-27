@@ -646,15 +646,332 @@ html, body { overflow-x: clip; }
    contain-intrinsic-size reserva su altura aproximada para que la barra de
    scroll no salte y el CLS siga en cero; «auto» hace que recuerde la real.
    ───────────────────────────────────────────────────────────────────────────── */
-#proceso { content-visibility: auto; contain-intrinsic-size: auto 820px; }
-#inbox { content-visibility: auto; contain-intrinsic-size: auto 1300px; }
-#flujo { content-visibility: auto; contain-intrinsic-size: auto 1480px; }
-#voz { content-visibility: auto; contain-intrinsic-size: auto 1200px; }
-.sistemas { content-visibility: auto; contain-intrinsic-size: auto 430px; }
-#faq { content-visibility: auto; contain-intrinsic-size: auto 560px; }
-#contacto { content-visibility: auto; contain-intrinsic-size: auto 650px; }
+#proceso { content-visibility: auto; contain-intrinsic-size: auto 780px; }
+#inbox { content-visibility: auto; contain-intrinsic-size: auto 1280px; }
+#flujo { content-visibility: auto; contain-intrinsic-size: auto 1740px; }
+#voz { content-visibility: auto; contain-intrinsic-size: auto 1430px; }
+.sistemas { content-visibility: auto; contain-intrinsic-size: auto 660px; }
+#faq { content-visibility: auto; contain-intrinsic-size: auto 690px; }
+#contacto { content-visibility: auto; contain-intrinsic-size: auto 780px; }
 /* El bloque de precio se deja siempre calculado: es el destino de varios
    enlaces internos y de la pegatina, que sobresale de su caja. */
 
 /* Sin will-change residual: reservaba capas de composición para siempre. */
 .story-phone, .phone-screen, .os-window, .mail-app { will-change: auto; }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   Pulido final: marca bien compuesta, hero con aire, relato con protagonismo,
+   planes con pieza física y menos letra pequeña por todas partes.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* ── Marca en la barra ──────────────────────────────────────────────────────
+   El wordmark es una imagen, no texto: la línea base del texto ya no sirve
+   para alinearlo. Se centra ópticamente y se mide por altura, que es lo que
+   lo empareja con los enlaces del menú. */
+.brand { display: inline-flex; align-items: center; gap: 0; line-height: 0; }
+.brand .brand-wordmark {
+  display: block;
+  width: auto;
+  height: 26px;
+  max-width: 100%;
+  /* La palabra tiene más masa a la izquierda (la A); un pelo de aire a la
+     derecha la deja centrada a ojo dentro de la barra. */
+  margin-right: 2px;
+}
+.site-nav { align-items: center; }
+
+/* Los anchors dejaban la sección pegada a la barra y, con el scroll suave,
+   aterrizaban corto: la animación calcula el destino al empezar y las
+   secciones con content-visibility cambian de alto mientras baja. Salto
+   directo y con el hueco de la barra reservado: cae siempre en su sitio. */
+html { scroll-behavior: auto; scroll-padding-top: 116px; }
+@media (max-width: 760px) { html { scroll-padding-top: 92px; } }
+/* Cada sección lleva su propio aire arriba; si no se descuenta, al pulsar el
+   menú el título aparece medio scroll más abajo. El margen negativo es justo
+   ese relleno, así que el titular queda a un palmo de la barra. */
+:root { --pad-seccion: clamp(4.5rem, 9vw, 7.5rem); }
+/* Con id, porque landing.css ya fija scroll-margin-top por id y un
+   selector de clase no lo desbanca. */
+#inicio, #proceso, #inbox, #flujo, #voz, #precio, #faq, #contacto {
+  scroll-margin-top: calc(-1 * var(--pad-seccion) - 1px);
+}
+@media (max-width: 760px) { :root { --pad-seccion: 56px; } }
+
+/* ── Hero: fondo de vuelta y más aire ──────────────────────────────────────
+   El haz de luz y la rejilla son capas estáticas: se pintan una vez y viven
+   en la capa de fondo, así que no cuestan al hacer scroll. En móvil, solo un
+   degradado radial (sin blur ni imagen). */
+@media (min-width: 761px) {
+  .ambient-beam { display: block; }
+}
+.ambient::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(120% 70% at 50% -8%, rgba(90, 240, 216, .10), transparent 58%),
+    radial-gradient(90% 60% at 82% 8%, rgba(57, 120, 255, .09), transparent 62%);
+  pointer-events: none;
+}
+/* El degradado del titular vuelve también en móvil: quieto no cuesta nada. */
+@media (max-width: 760px) {
+  .hero h1 .shiny {
+    background-image: linear-gradient(110deg, #5af0d8 0%, #7be7ff 42%, #f7fbf8 78%);
+    background-size: 100% auto;
+    background-position: 0 0;
+    -webkit-background-clip: text;
+    background-clip: text;
+    color: transparent;
+    -webkit-text-fill-color: transparent;
+  }
+}
+html.webkit-safe .hero h1 .shiny {
+  background-image: none;
+  color: var(--aqua);
+  -webkit-text-fill-color: var(--aqua);
+}
+.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 8rem); }
+.hero-copy > * + * { margin-top: 0; }
+.hero .eyebrow { margin-bottom: 1.5rem; }
+.hero .pilot-badge {
+  margin: 0 0 2.1rem;
+  padding: .5rem .95rem;
+  border-radius: 999px;
+  font-size: .72rem;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.hero-title-wrap { margin-bottom: 1.9rem; }
+.hero .hero-lead { margin: 0 auto; max-width: 56ch; font-size: 1.12rem; line-height: 1.7; }
+.hero .hero-actions { margin-top: 2.6rem; gap: .9rem; }
+@media (max-width: 760px) {
+  .hero { padding: 104px 0 56px; }
+  .hero .pilot-badge { margin: 0 0 22px; }
+  .hero-title-wrap { margin-bottom: 20px; }
+  .hero .hero-lead { font-size: 1.05rem; margin-top: 0; }
+  .hero .hero-actions { margin-top: 26px; }
+}
+
+/* ── Aire entre bloques ─────────────────────────────────────────────────────
+   Las secciones venían pegadas unas a otras; se les da respiración sin
+   alargar la página con scroll vacío. */
+#proceso, #inbox, #flujo, #voz, #precio, #faq, #contacto, .sistemas {
+  padding-block: var(--pad-seccion);
+}
+main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 8rem); }
+.section-copy { margin-bottom: clamp(2rem, 4vw, 3rem); }
+@media (max-width: 760px) {
+  #proceso, #inbox, #flujo, #voz, #precio, #faq, #contacto, .sistemas { padding-block: var(--pad-seccion); }
+}
+/* Las notas al pie de los bloques dejan de competir con el contenido. */
+.os-disclaimer { font-size: .82rem; line-height: 1.55; color: var(--muted); max-width: 62ch; }
+.sistemas-nota { font-size: .8rem; color: var(--muted); }
+
+/* ── Relato: la pieza estrella ─────────────────────────────────────────────
+   El teléfono crece, el selector de escena se coloca debajo del texto con
+   aire y la escena elegida se lee como titular, no como pie de foto. */
+#flujo.story-section { padding-block: clamp(5rem, 10vw, 8rem); }
+#flujo .story-intro { max-width: 62ch; margin-inline: auto; text-align: center; }
+.story-chooser { max-width: 720px; margin: clamp(2rem, 4vw, 3rem) auto 0; }
+.story-scene-buttons { gap: 10px; }
+.story-scene-buttons button {
+  border-radius: 999px;
+  padding: 11px 18px;
+  font-size: .88rem;
+  font-weight: 700;
+  color: var(--soft);
+  transition: border-color 200ms var(--ease), color 200ms var(--ease), background 200ms var(--ease);
+}
+.story-scene-buttons button[aria-pressed="true"] {
+  border-color: var(--aqua);
+  color: var(--bg);
+  background: var(--aqua);
+}
+.story-chooser p {
+  margin: 1.4rem 0 .2rem;
+  min-height: 0;
+  color: var(--ink);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -.01em;
+}
+.story-chooser small { display: none; }
+.story-pause {
+  margin-top: 1rem;
+  border-radius: 999px;
+  padding: 9px 16px;
+  font-size: .82rem;
+  color: var(--muted);
+  background: transparent;
+}
+.story-pause:hover { color: var(--orange); border-color: var(--orange-line); }
+#flujo .story-phone-pin { padding-top: clamp(2rem, 4vw, 3rem); }
+@media (min-width: 981px) {
+  /* En escritorio el teléfono manda: más alto y con su halo detrás. */
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 330px; height: 676px; }
+  #flujo .story-phone-pin { position: relative; }
+  #flujo .story-phone-pin::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 8%;
+    left: 50%;
+    width: min(760px, 70vw);
+    height: 560px;
+    transform: translateX(-50%);
+    background: radial-gradient(closest-side, rgba(90, 240, 216, .12), transparent 72%);
+    pointer-events: none;
+  }
+}
+@media (max-width: 760px) {
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: min(100%, 310px); height: 634px; }
+  .story-chooser { margin-top: 26px; }
+  .story-chooser p { font-size: 1.05rem; margin: 18px 0 0; }
+  .story-scene-buttons { grid-template-columns: 1fr 1fr; gap: 8px; }
+  .story-scene-buttons button { padding: 11px 10px; font-size: .86rem; }
+  #flujo .story-phone-pin { padding-top: 26px; }
+}
+
+/* ── El robot vuelve a mirar al cursor ─────────────────────────────────────
+   Sin 3D ni WebGL: el robot ya existía en CSS. El puntero solo actualiza dos
+   variables y el navegador mueve tres capas pequeñas con transform, que es
+   trabajo de compositor. Fuera del escritorio y con reduced-motion no se
+   registra ni el listener (ver landing.js). */
+/* El grupo entero se inclina hacia el puntero: una sola capa que mueve el
+   compositor, en vez de tocar cada pieza (que además ya vienen centradas con
+   transform propio). Da la misma lectura: el robot te mira. */
+.voice-robot { transition: transform 520ms var(--ease); }
+@media (prefers-reduced-motion: reduce) {
+  .voice-robot { transform: none !important; transition: none !important; }
+}
+@media (max-width: 760px) {
+  .voice-robot { transform: none; }
+}
+
+/* ── Programas de gestión: la cinta vuelve a correr ────────────────────────
+   Es una animación de transform sobre dos pistas idénticas: la GPU la mueve
+   sola y la sección está bajo content-visibility, así que fuera de pantalla
+   ni se pinta. En móvil se queda la rejilla estática, que se lee mejor. */
+@media (min-width: 761px) {
+  .marquesina { overflow: hidden; mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent); }
+  .marquesina-pista { display: flex; flex-wrap: nowrap; width: max-content; justify-content: flex-start; animation: marquesina-desliza 34s linear infinite !important; }
+  .marquesina-pista[aria-hidden="true"] { display: flex; }
+  .sistemas:hover .marquesina-pista { animation-play-state: paused !important; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquesina-pista { animation: none !important; flex-wrap: wrap; width: 100%; justify-content: center; }
+  .marquesina-pista[aria-hidden="true"] { display: none; }
+  .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
+}
+
+/* ── Planes: pieza física, precio al mando y PRO sin gritar ────────────────── */
+.plan {
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 20px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, 0) 38%),
+    var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .07),
+    0 1px 0 rgba(0, 0, 0, .5),
+    0 18px 34px -28px rgba(0, 0, 0, .9);
+}
+.plan--destacado {
+  border: 1px solid var(--orange-line);
+  background:
+    linear-gradient(180deg, rgba(255, 173, 112, .07), rgba(255, 255, 255, 0) 42%),
+    var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 173, 112, .22),
+    0 1px 0 rgba(0, 0, 0, .5),
+    0 22px 40px -28px rgba(0, 0, 0, .95);
+}
+@media (min-width: 981px) { .plan--destacado { transform: translateY(-6px); } }
+.plan--destacado .plan-nombre { font-size: 1rem; }
+.plan-sello { font-size: .62rem; letter-spacing: .12em; }
+.plan--destacado .plan-sello { display: inline-block; width: auto; margin-top: 0; font-size: .62rem; }
+.plan--destacado .plan-cab .plan-para { color: var(--soft); }
+
+/* El precio es lo primero que se lee. */
+.plan .plan-precio { align-items: baseline; margin: .2rem 0 1.2rem; }
+.plan .plan-precio strong {
+  font-size: clamp(3.1rem, 4.8vw, 3.9rem);
+  letter-spacing: -.05em;
+  line-height: .92;
+}
+.plan .plan-precio em { font-size: .95rem; color: var(--soft); }
+.plan-datos strong { font-size: 1.05rem; }
+.plan-lista li { line-height: 1.5; }
+@media (max-width: 760px) {
+  .plan .plan-precio strong { font-size: 3.2rem; }
+  .plan--destacado { margin-top: 6px; }
+}
+
+/* ── FAQ: todas las preguntas iguales ──────────────────────────────────────
+   El marcador circular +/− ya existía y funciona; lo que sobraba era un «+»
+   suelto escrito a mano en la primera pregunta, que pintaba un punto blanco.
+   Aquí solo se iguala el ritmo de la lista. */
+.trust-faq { gap: 10px; }
+.trust-faq.faq-list summary { min-height: 56px; font-size: .96rem; }
+.trust-faq.faq-list details p { line-height: 1.6; font-size: .9rem; }
+
+/* ── Pedir demo: mismo lenguaje que el resto de la web ─────────────────────── */
+.cta-section { align-items: center; gap: clamp(2rem, 5vw, 4rem); }
+.cta-copy .eyebrow { margin-bottom: 1.1rem; }
+.cta-points li { line-height: 1.6; }
+.cta-trust p, .demo-modal-trust { font-size: .84rem; color: var(--muted); }
+.lead-form, .demo-modal-card {
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 22px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .035), rgba(255, 255, 255, 0) 40%),
+    var(--panel-strong);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 24px 50px -34px rgba(0, 0, 0, .95);
+}
+.lead-form-head { align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
+.lead-form-head strong { font-size: 1.05rem; letter-spacing: -.01em; }
+.lead-badge {
+  border: 1px solid var(--orange-line);
+  border-radius: 999px;
+  padding: .28rem .62rem;
+  background: var(--orange-soft);
+  color: var(--orange);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.lead-form .field + .field { margin-top: .9rem; }
+.lead-form .field label { font-size: .78rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
+/* El consentimiento es una frase, no una etiqueta de campo: casilla a la
+   izquierda, texto en caja normal y toda la fila clicable. */
+.lead-form .consent {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin-top: 1.1rem;
+  font-size: .86rem;
+  line-height: 1.5;
+  letter-spacing: 0;
+  text-transform: none;
+  color: var(--soft);
+  cursor: pointer;
+}
+.lead-form .consent input { width: 18px; height: 18px; min-height: 0; flex: none; margin-top: .15rem; accent-color: var(--aqua); }
+.lead-form .consent a { color: var(--aqua); text-decoration: underline; text-underline-offset: .2em; }
+.lead-form input, .lead-form select {
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 12px;
+  background: rgba(0, 0, 0, .28);
+  min-height: 48px;
+  transition: border-color 180ms var(--ease), background 180ms var(--ease);
+}
+.lead-form input:focus, .lead-form select:focus { border-color: var(--aqua); background: rgba(0, 0, 0, .42); }
+.primary-btn-full { margin-top: 1.2rem; min-height: 52px; font-size: 1rem; }
+.demo-modal-card { padding: clamp(1.6rem, 3vw, 2.4rem); gap: clamp(1.6rem, 3vw, 2.6rem); }
+.demo-modal-marca { display: block; width: 132px; height: auto; margin-bottom: 1.4rem; }
+.demo-modal-aside h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.08; letter-spacing: -.035em; }
+@media (max-width: 760px) {
+  .demo-modal-marca { width: 112px; margin-bottom: 1rem; }
+  .cta-section { gap: 28px; }
+}

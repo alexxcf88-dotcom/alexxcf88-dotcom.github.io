@@ -38,7 +38,7 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260927-perf">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260927-pulido">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -154,15 +154,16 @@
     }
   ]
 }</script>
-  <link rel="stylesheet" href="css/fonts.css?v=20260927-perf">
-  <link rel="stylesheet" href="css/refresh.css?v=20260927-perf">
+  <link rel="stylesheet" href="css/fonts.css?v=20260927-pulido">
+  <link rel="stylesheet" href="css/refresh.css?v=20260927-pulido">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
-    <!-- Autoalojado: antes colgaba de un CloudFront ajeno (16,1 MB). Si el v&iacute;deo no
-         llega a cargar, el p&oacute;ster deja el mismo primer fotograma de fondo. -->
+    <!-- Fondo del hero, todo CSS: rejilla, haz de luz y tinte sobre el p&oacute;ster.
+         El v&iacute;deo que hab&iacute;a aqu&iacute; pesaba 600 KB y no aportaba nada que no d&eacute;
+         una capa est&aacute;tica. -->
     <div class="ambient-poster"></div>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
@@ -170,12 +171,11 @@
   </div>
 
   <nav class="site-nav" aria-label="Principal">
-    <a class="brand" href="#inicio" aria-label="AItomat, inicio"><picture><source media="(max-width: 760px), (prefers-reduced-motion: reduce)" srcset="brand/logo/logo-aitomat.svg"><img class="brand-wordmark" src="brand/animado/logo-aitomat-animado.svg" alt="AItomat" width="4914" height="808"></picture></a>
+    <a class="brand" href="#inicio" aria-label="AItomat, inicio"><img class="brand-wordmark" src="brand/logo/logo-aitomat.svg" alt="AItomat" width="4574" height="808" fetchpriority="high"></a>
     <div class="nav-links" id="primary-menu">
-      <a href="#voz">Voz</a>
+      <a href="#proceso">Sistema</a>
       <a href="#inbox">Inbox</a>
-      <a href="como-funciona.html">C&oacute;mo funciona</a>
-      <a href="integraciones.html">Integraciones</a>
+      <a href="#voz">Voz</a>
       <a href="#precio">Precio</a>
       <a href="#faq">FAQ</a>
       <a href="#contacto">Demo</a>
@@ -193,7 +193,7 @@
       <div class="hero-spotlight" aria-hidden="true"></div>
       <div class="hero-copy">
         <p class="eyebrow"><span></span> Automatizaci&oacute;n de recepci&oacute;n para cl&iacute;nicas dentales</p>
-        <a class="pilot-badge" href="#precio"><span>PRIMER MES GRATIS</span><small>Piloto inicial · cuota mensual</small><span aria-hidden="true">↗</span></a>
+        <a class="pilot-badge" href="#precio"><span>Primer mes gratis</span><span aria-hidden="true">↗</span></a>
         <div class="hero-title-wrap">
           <h1><span class="hero-desktop-title">La recepci&oacute;n de tu cl&iacute;nica, <span class="shiny">automatizada.</span></span><span class="hero-mobile-title">Tu recepci&oacute;n atiende.<br><span class="shiny">Aunque no puedas.</span></span></h1>
         </div>
@@ -202,11 +202,6 @@
           <a class="primary-btn" href="#contacto" data-demo-open>Solicitar mi mes de prueba</a>
           <a class="secondary-btn" href="#voz">Escuchar al asistente</a>
         </div>
-        <div class="hero-fast-path" aria-label="Atajos principales">
-          <a href="#precio">Ver los tres planes desde 89&nbsp;&euro;/mes</a>
-          <a href="#faq">Dudas y privacidad</a>
-        </div>
-        <a class="hero-cue" href="#proceso">desliza para descubrir el proceso</a>
       </div>
     </section>
 
@@ -226,7 +221,7 @@
       <div class="section-copy system-copy">
         <p class="eyebrow"><span></span> Sistema operativo</p>
         <h2>De la llamada al siguiente paso.</h2>
-        <p>Explora ejemplos de cómo se organiza cada solicitud. Las prestaciones que los planes marcan como <em>configuración incluida</em> se dejan listas durante la puesta en marcha; su estado técnico está en <a href="integraciones.html">integraciones</a>.</p>
+        <p>Cómo se organiza cada solicitud, paso a paso.</p>
       </div>
 
       <div class="os-window" id="discovery-board">
@@ -269,7 +264,7 @@
               <i><span id="case-meter" style="--w:92%"></span></i>
             </div>
             <p class="os-note" id="case-note">Sin esperar a que recepci&oacute;n abra.</p>
-            <p class="os-disclaimer">Cifras ilustrativas para explicar el flujo. La demo real se calcula con vuestros canales y agenda.</p>
+            <p class="os-disclaimer">Cifras de ejemplo.</p>
           </aside>
         </div>
       </div>
@@ -280,7 +275,7 @@
         <p class="eyebrow"><span></span> Inbox inteligente</p>
         <h2>Una sola bandeja para toda la cl&iacute;nica.</h2>
         <p><strong>WhatsApp, Instagram, Facebook, email y SMS</strong> en el mismo sitio: mensajes a la izquierda, resumen y clasificaci&oacute;n en el centro y la respuesta ya escrita a la derecha. Incluida en los planes.</p>
-        <p class="os-disclaimer">Ejemplo ilustrativo de la bandeja: mensajes y respuestas de muestra, no una captura en vivo. Cada canal se conecta durante la puesta en marcha; el estado de cada uno est&aacute; en <a href="integraciones.html">integraciones</a>.</p>
+        <p class="os-disclaimer">Bandeja de muestra. Cada canal se conecta en la puesta en marcha &mdash; <a href="integraciones.html">estado de cada uno</a>.</p>
       </div>
 
       <div class="mail-app liquid-glass" aria-label="Bandeja inteligente de AItomat">
@@ -350,7 +345,7 @@
         <p class="eyebrow"><span></span> En acci&oacute;n</p>
         <h2>Así transcurre una conversación.</h2>
         <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
-        <p class="os-disclaimer">Ejemplo de llamada representado como chat. WhatsApp, recordatorios y reactivación van incluidos en los planes y se dejan configurados en la puesta en marcha.</p>
+        <p class="os-disclaimer">Conversaciones de ejemplo. WhatsApp, recordatorios y reactivaci&oacute;n van incluidos y se configuran en la puesta en marcha.</p>
 
       </div>
       <div class="story-chooser" aria-label="Situaciones de ejemplo">
@@ -576,11 +571,12 @@
               <li><span>Locales</span><strong>Hasta 3 locales</strong><small>una sola recepci&oacute;n</small></li>
             </ul>
             <ul class="plan-lista">
-              <li class="plan-herencia">Todo lo de BÁSICO, además de:</li>
-              <li>Panel del <strong>responsable</strong> con m&eacute;tricas</li>
+              <li>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong></li>
+              <li>Panel de <strong>recepci&oacute;n</strong> y del <strong>responsable</strong> con m&eacute;tricas</li>
+              <li><strong>Recordatorios</strong> de cita</li>
               <li><strong>Reactivaci&oacute;n</strong> de pacientes dormidos</li>
               <li><strong>Lista de espera</strong> que rellena huecos</li>
-              <li>Mensajer&iacute;a completa: <strong>WhatsApp, Instagram, Facebook, email y SMS</strong></li>
+              <li>Mensajer&iacute;a: <strong>WhatsApp, Instagram, Facebook, email y SMS</strong></li>
             </ul>
             <a class="primary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
             <p class="plan-extra">Minuto adicional: 0,22&nbsp;&euro;/min</p>
@@ -593,12 +589,17 @@
             </div>
             <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>299&nbsp;&euro;</strong><em>/mes</em></span></p>
             <ul class="plan-datos">
-              <li><span>Voz 24/7</span><strong>1.200 minutos</strong><small>al mes</small></li>
+              <li><span>Voz 24/7</span><strong>1.200 minutos</strong><small>al mes &middot; unas 600 llamadas</small></li>
               <li><span>Locales</span><strong>Locales ilimitados</strong><small>sin l&iacute;mite de sedes</small></li>
             </ul>
             <ul class="plan-lista">
-              <li class="plan-herencia">Todo lo de PRO, además de:</li>
               <li class="plan-clave"><strong>Las citas se escriben solas en vuestro programa de gesti&oacute;n</strong></li>
+              <li>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong></li>
+              <li>Panel de <strong>recepci&oacute;n</strong> y del <strong>responsable</strong> con m&eacute;tricas</li>
+              <li><strong>Recordatorios</strong> de cita</li>
+              <li><strong>Reactivaci&oacute;n</strong> de pacientes dormidos</li>
+              <li><strong>Lista de espera</strong> que rellena huecos</li>
+              <li>Mensajer&iacute;a: <strong>WhatsApp, Instagram, Facebook, email y SMS</strong></li>
               <li><strong>Puesta en marcha</strong> y adaptaci&oacute;n a vuestra cl&iacute;nica</li>
             </ul>
             <a class="secondary-btn plan-btn" href="#contacto" data-demo-open>Pedir propuesta</a>
@@ -678,7 +679,10 @@
       </div>
       <div class="trust-stack">
         <div class="faq-list trust-faq">
-          <details class="faq-item"><summary>¿Qué incluye el primer mes gratis?<span aria-hidden="true">+</span></summary><p>El primer mes del piloto es gratis en la cuota mensual del plan elegido. Los minutos incluidos y la tarifa por minuto adicional son los del plan.</p></details>
+          <details>
+            <summary>&iquest;Qu&eacute; incluye el primer mes gratis?</summary>
+            <p>El primer mes del piloto es gratis en la cuota mensual del plan elegido. Los minutos incluidos y la tarifa por minuto adicional son los del plan.</p>
+          </details>
           <details>
             <summary>&iquest;Es solo un contestador de llamadas?</summary>
             <p>No. La voz es la puerta de entrada, pero el servicio cubre tambi&eacute;n la bandeja &uacute;nica de mensajes (WhatsApp, Instagram, Facebook, email y SMS), la agenda, los recordatorios y confirmaciones, la lista de espera, la reactivaci&oacute;n de pacientes dormidos y el panel de recepci&oacute;n y del responsable. Est&aacute; todo detallado en <a href="#precio">el apartado de precio</a>, y el estado t&eacute;cnico de cada conexi&oacute;n, en <a href="integraciones.html">integraciones</a>.</p>
@@ -794,6 +798,7 @@
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
       <div class="demo-modal-aside">
+        <img class="demo-modal-marca" src="brand/logo/logo-aitomat.svg" alt="AItomat" width="4574" height="808">
         <p class="eyebrow"><span></span> Demo</p>
         <h2 id="demo-modal-title">Pon a <span class="b-ai">AI</span>tomat a trabajar en tu cl&iacute;nica.</h2>
         <ul class="cta-points">
@@ -847,7 +852,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260927-perf"></script>
+  <script defer src="features/landing/landing.js?v=20260927-pulido"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
