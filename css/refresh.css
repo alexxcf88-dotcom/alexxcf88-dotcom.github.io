@@ -125,7 +125,7 @@ html, body { overflow-x: clip; }
   .hero-actions a { min-height: 48px; padding: 12px; width: 100%; font-size: .95rem; }
   .hero-fast-path { justify-content: flex-start; gap: 4px 12px; margin-top: 10px; }
   .hero-fast-path a { font-size: .8rem; min-height: 44px; padding: 4px 0; }
-  .ambient-video, .ambient-particles, .ambient-beam { display: none; }
+  .ambient-particles, .ambient-beam { display: none; }
   .ambient-bg { background: var(--bg); }
   .hero, main > section, .site-footer { width: calc(100% - 32px); max-width: 620px; margin-left: auto; margin-right: auto; }
   main > section:not(.hero) { padding-top: 40px; padding-bottom: 40px; }
@@ -249,7 +249,7 @@ html, body { overflow-x: clip; }
 }
 @media (max-width: 760px) {
   .voice-head h2 { max-width: none; }
-  .voice-robot { height: 230px; transform: none; }
+  .voice-robot { height: 300px; transform: none; }
   .voice-robot .voice-3d-fallback { transform: scale(.8); }
   .voice-sub { font-size: 1rem; }
 }
@@ -596,7 +596,14 @@ html, body { overflow-x: clip; }
   .story-scene-buttons { display: grid; grid-template-columns: 1fr 1fr; }
   .story-scene-buttons button { font-size: .9rem; padding: 10px 8px; }
   .story-chooser p { margin-bottom: 0; }
-  .ambient-poster { display: none; }
+  .ambient-poster {
+    display: block;
+    inset: -5%;
+    background: url(../features/landing/media/hero-poster.jpg) center / cover no-repeat;
+    opacity: .3;
+    animation: ambientMobileDrift 12s ease-in-out infinite alternate;
+    will-change: transform;
+  }
   .phone, .os-window, .mail-app, .legal-doc, .plan, .lead-form { box-shadow: none; }
   .phone-screen { transform: none; }
   .planes-detalle > summary { font-size: .9rem; letter-spacing: .03em; }
@@ -666,15 +673,24 @@ html, body { overflow-x: clip; }
    El wordmark es una imagen, no texto: la línea base del texto ya no sirve
    para alinearlo. Se centra ópticamente y se mide por altura, que es lo que
    lo empareja con los enlaces del menú. */
-.brand { display: inline-flex; align-items: center; gap: 0; line-height: 0; }
+.brand {
+  display: inline-grid;
+  place-items: center;
+  height: 30px;
+  flex: 0 0 auto;
+  line-height: 0;
+  overflow: visible;
+}
 .brand .brand-wordmark {
   display: block;
   width: auto;
-  height: 26px;
+  height: 28px;
   max-width: 100%;
-  /* La palabra tiene más masa a la izquierda (la A); un pelo de aire a la
-     derecha la deja centrada a ojo dentro de la barra. */
-  margin-right: 2px;
+  object-fit: contain;
+  object-position: center;
+  /* El SVG oficial tiene 30 px de overshoot óptico en el dial de la O. Este
+     medio píxel compensa ese peso al rasterizar el logo a tamaño de navbar. */
+  transform: translateY(-.5px);
 }
 .site-nav { align-items: center; }
 
@@ -757,11 +773,21 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
 #flujo.story-section { padding-block: clamp(5rem, 10vw, 8rem); }
 #flujo .story-intro { max-width: 62ch; margin-inline: auto; text-align: center; }
 .story-chooser { max-width: 720px; margin: clamp(2rem, 4vw, 3rem) auto 0; }
-.story-scene-buttons { gap: 10px; }
+.story-scene-buttons {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
 .story-scene-buttons button {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  min-height: 52px;
   border-radius: 999px;
-  padding: 11px 18px;
+  padding: 10px 16px;
   font-size: .88rem;
+  line-height: 1.15;
+  text-align: center;
   font-weight: 700;
   color: var(--soft);
   transition: border-color 200ms var(--ease), color 200ms var(--ease), background 200ms var(--ease);
@@ -770,6 +796,7 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   border-color: var(--aqua);
   color: var(--bg);
   background: var(--aqua);
+  box-shadow: 0 10px 28px -18px rgba(90, 240, 216, .9);
 }
 .story-chooser p {
   margin: 1.4rem 0 .2rem;
@@ -808,12 +835,23 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   }
 }
 @media (max-width: 760px) {
-  #flujo .story-phone, #flujo.demo-live .story-phone { width: min(100%, 310px); height: 634px; }
-  .story-chooser { margin-top: 26px; }
-  .story-chooser p { font-size: 1.05rem; margin: 18px 0 0; }
-  .story-scene-buttons { grid-template-columns: 1fr 1fr; gap: 8px; }
-  .story-scene-buttons button { padding: 11px 10px; font-size: .86rem; }
-  #flujo .story-phone-pin { padding-top: 26px; }
+  #flujo.story-section { padding-inline: 16px; }
+  #flujo .story-intro { max-width: 34ch; }
+  #flujo .story-intro h2 { margin-bottom: 18px; }
+  #flujo .story-intro > p:last-child { line-height: 1.7; }
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: min(100%, 316px); height: 646px; }
+  .story-chooser {
+    width: min(100%, 380px);
+    margin-top: 32px;
+    padding: 18px 14px 16px;
+    border: 1px solid rgba(255,255,255,.07);
+    border-radius: 22px;
+    background: rgba(255,255,255,.025);
+  }
+  .story-chooser p { font-size: 1.08rem; margin: 20px 0 0; }
+  .story-scene-buttons { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+  .story-scene-buttons button { min-height: 56px; padding: 10px 8px; font-size: .86rem; }
+  #flujo .story-phone-pin { padding-top: 34px; }
 }
 
 /* ── El robot vuelve a mirar al cursor ─────────────────────────────────────
@@ -942,6 +980,7 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 40px 90px -30px rgba(0, 0, 0, .9);
 }
 .demo-modal-backdrop { background: rgba(2, 6, 5, .88); }
+.demo-modal { z-index: 500; }
 .lead-form-head { align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
 .lead-form-head strong { font-size: 1.05rem; letter-spacing: -.01em; }
 .lead-badge {
@@ -983,10 +1022,40 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
 .lead-form input:focus, .lead-form select:focus { border-color: var(--aqua); background: rgba(0, 0, 0, .42); }
 .primary-btn-full { margin-top: 1.2rem; min-height: 52px; font-size: 1rem; }
 .demo-modal-card { padding: clamp(1.6rem, 3vw, 2.4rem); gap: clamp(1.6rem, 3vw, 2.6rem); }
-.demo-modal-marca { display: block; width: 132px; height: auto; margin-bottom: 1.4rem; }
+.demo-modal-marca {
+  display: block;
+  width: 132px;
+  height: auto;
+  aspect-ratio: 4574 / 808;
+  object-fit: contain;
+  object-position: center;
+  margin-bottom: 1.4rem;
+  transform: translateY(-.5px);
+}
 .demo-modal-aside h2 { font-size: clamp(1.7rem, 3vw, 2.4rem); line-height: 1.08; letter-spacing: -.035em; }
 @media (max-width: 760px) {
+  .demo-modal { padding: max(10px, env(safe-area-inset-top)) 10px max(10px, env(safe-area-inset-bottom)); }
+  .demo-modal-card {
+    width: 100%;
+    max-height: calc(100dvh - 20px - env(safe-area-inset-top) - env(safe-area-inset-bottom));
+    overflow-x: hidden;
+    border-radius: 22px;
+    background:
+      radial-gradient(circle at 12% 0%, rgba(90, 240, 216, .11), transparent 38%),
+      #0a100f;
+  }
   .demo-modal-marca { width: 112px; margin-bottom: 1rem; }
+  .demo-modal-aside .cta-points {
+    display: grid;
+    gap: 8px;
+    margin-top: 16px;
+  }
+  .demo-modal-aside .cta-points li {
+    min-height: 0;
+    font-size: .88rem;
+    line-height: 1.45;
+  }
+  .demo-modal-trust { margin-top: 14px; }
   .cta-section { gap: 28px; }
 }
 
@@ -1009,11 +1078,13 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
   animation: none;
 }
 @media (prefers-reduced-motion: no-preference) {
-  html:not(.webkit-safe) .hero h1 .shiny { animation: shinyOnce 2.6s cubic-bezier(.25, .8, .3, 1) .15s both; }
+  html:not(.webkit-safe) .hero h1 .shiny { animation: shinySignature 4.8s cubic-bezier(.22, .72, .28, 1) .25s both; }
 }
-@keyframes shinyOnce {
-  from { background-position: -120% center; }
-  to { background-position: 62% center; }
+@keyframes shinySignature {
+  0% { background-position: -120% center; }
+  52% { background-position: 82% center; }
+  72% { background-position: 42% center; }
+  100% { background-position: 62% center; }
 }
 /* Safari/WebKit se queda en aqua sólido: el recorte del degradado con
    text-shadow pinta un bloque blanco sobre el hero (nota en landing.css). */
@@ -1041,8 +1112,23 @@ html.webkit-safe .hero h1 .shiny {
 /* El fondo recupera cuerpo: rejilla + haz + viñeta, todo estático. En móvil
    la rejilla es más suave y no hay imagen que descargar. */
 .ambient-grid { opacity: .3; }
+.ambient-video {
+  display: block;
+  opacity: .42;
+  filter: saturate(1.14) contrast(1.06);
+  transform: scale(1.025);
+}
 @media (max-width: 760px) {
   .ambient-grid { opacity: .16; background-size: 56px 56px; }
+  .ambient-video { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ambient-video { display: none; }
+  .ambient-poster { animation: none; }
+}
+@keyframes ambientMobileDrift {
+  from { transform: scale(1.04) translate3d(-1.5%, -1%, 0); }
+  to { transform: scale(1.12) translate3d(1.5%, 1%, 0); }
 }
 
 /* ═════════════════════════════════════════════════════════════════════════════
@@ -1087,7 +1173,7 @@ html.webkit-safe .hero h1 .shiny {
   #flujo .story-intro { max-width: 46ch; margin: 0; text-align: left; }
   #flujo .story-intro .eyebrow { justify-content: flex-start; }
   #flujo .story-chooser { margin: 2.2rem 0 0; max-width: none; text-align: left; }
-  #flujo .story-scene-buttons { justify-content: flex-start; }
+  #flujo .story-scene-buttons { width: min(100%, 640px); }
   #flujo .story-chooser p { margin: 1.5rem 0 0; font-size: 1.25rem; }
   #flujo .story-pause { margin-top: 1.2rem; }
   #flujo .story-phone-pin { position: sticky; top: 104px; padding: 0; justify-content: flex-end; }

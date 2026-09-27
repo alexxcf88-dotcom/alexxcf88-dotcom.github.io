@@ -7,6 +7,23 @@ const lowEndDevice = (navigator.hardwareConcurrency && navigator.hardwareConcurr
   || (navigator.deviceMemory && navigator.deviceMemory <= 2);
 const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEndDevice;
 
+/* El vídeo completo solo se pide en pantallas grandes. En móvil el mismo
+   fotograma se mueve con CSS: conserva profundidad sin descargar varios MB. */
+(function initAmbientVideo() {
+  const video = document.getElementById('bg-video');
+  if (!video || reduceMotion || mobileViewport) return;
+  const source = video.dataset.src;
+  if (!source) return;
+  const start = () => {
+    if (video.src) return;
+    video.src = source;
+    video.load();
+    video.play().catch(() => {});
+  };
+  if ('requestIdleCallback' in window) requestIdleCallback(start, { timeout: 1200 });
+  else window.setTimeout(start, 500);
+})();
+
 (function initHeroEnhancements() {
   const hero = document.querySelector('[data-spotlight]');
   if (!hero || reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
@@ -1967,46 +1984,86 @@ function mountCal(destino) {
   els.forEach((el) => observer.observe(el));
 })();
 
-/* El robot de la sección de voz sigue al puntero.
-   Antes esto lo hacía una escena 3D de Spline de 6 MB. Ahora son dos
-   variables CSS que el navegador resuelve con transform: el listener solo
-   guarda la posición y un rAF por fotograma la escribe. Solo en escritorio
-   con puntero fino, sin reduced-motion, y solo mientras la sección se ve. */
-(function initRobotMirada() {
-  const zona = document.getElementById('voz');
-  const robot = document.getElementById('voice-3d');
-  if (!zona || !robot || reduceMotion) return;
-  if (window.matchMedia('(hover: none)').matches) return;   // táctil: sin puntero al que mirar
+/* Robot 3D original de Spline, autoalojado. Se descarga solo cuando la sección
+   está cerca: el hero y el contenido inicial no pagan ni el runtime ni WebGL.
+   En táctil se conserva el robot, pero sin seguimiento global del puntero. */
+(function initVoiceSpline() {
+  const fig = document.getElementById('voice-3d');
+  if (!fig) return;
+  const scene = fig.getAttribute('data-scene');
+  if (!scene) return;
 
-  let x = 0, y = 0, pedido = false, activo = false;
+  let loaded = false;
+  function ensureRuntime() {
+    if (window.customElements && customElements.get('spline-viewer')) return Promise.resolve();
+    if (window.__splineLoading) return window.__splineLoading;
+    window.__splineLoading = new Promise((resolve, reject) => {
+      const script = document.createElement('script');
+      script.type = 'module';
+      script.src = '/features/landing/spline/spline-viewer.js';
+      script.onload = resolve;
+      script.onerror = reject;
+      document.head.appendChild(script);
+    });
+    return window.__splineLoading;
+  }
 
-  function pintar() {
-    pedido = false;
-    // Transform directo: una sola capa que mueve el compositor. Se escribe
-    // aquí y no con variables CSS porque la sección vive bajo
-    // content-visibility y ahí la sustitución de var() es menos de fiar.
-    robot.style.transform = x || y
-      ? `translate3d(${(x * 9).toFixed(1)}px, ${(y * 6).toFixed(1)}px, 0) rotate(${(x * 2.6).toFixed(2)}deg)`
-      : '';
+  function load() {
+    if (loaded) return;
+    loaded = true;
+    ensureRuntime().then(() => {
+      const viewer = document.createElement('spline-viewer');
+      viewer.setAttribute('url', scene);
+      viewer.setAttribute('loading', 'eager');
+      viewer.setAttribute('loading-anim-type', 'none');
+      if (window.matchMedia('(pointer: fine)').matches && !reduceMotion) {
+        viewer.setAttribute('events-target', 'global');
+      }
+      fig.classList.add('is-spline-mounted');
+
+      let watermarkStyled = false;
+      let revealed = false;
+      function prepareShadow() {
+        const root = viewer.shadowRoot;
+        if (!root) return;
+        if (!watermarkStyled) {
+          const style = document.createElement('style');
+          style.textContent = '#logo,a[href*="spline" i],[class*="logo" i]{display:none!important;opacity:0!important;pointer-events:none!important}';
+          root.appendChild(style);
+          watermarkStyled = true;
+        }
+        const canvas = root.querySelector('canvas');
+        if (canvas) canvas.style.visibility = 'visible';
+      }
+      function reveal() {
+        if (revealed) return;
+        prepareShadow();
+        revealed = true;
+        fig.classList.add('is-live');
+      }
+      viewer.addEventListener('load-complete', reveal, { once: true });
+      viewer.addEventListener('rendered', reveal, { once: true });
+      fig.appendChild(viewer);
+
+      let checks = 0;
+      const timer = window.setInterval(() => {
+        prepareShadow();
+        checks += 1;
+        if ((revealed && watermarkStyled) || checks > 80) window.clearInterval(timer);
+      }, 180);
+    }).catch(() => { loaded = false; });
   }
-  function mover(evento) {
-    const caja = zona.getBoundingClientRect();
-    x = Math.max(-1, Math.min(1, (evento.clientX - (caja.left + caja.width / 2)) / (caja.width / 2)));
-    y = Math.max(-1, Math.min(1, (evento.clientY - (caja.top + caja.height / 2)) / (caja.height / 2)));
-    if (!pedido) { pedido = true; requestAnimationFrame(pintar); }
+
+  if ('IntersectionObserver' in window) {
+    const observer = new IntersectionObserver((entries) => {
+      if (!entries.some((entry) => entry.isIntersecting)) return;
+      observer.disconnect();
+      load();
+    }, { rootMargin: '0px' });
+    observer.observe(fig);
+  } else {
+    load();
   }
-  const observador = new IntersectionObserver((entradas) => {
-    const visible = entradas[0].isIntersecting;
-    if (visible === activo) return;
-    activo = visible;
-    if (visible) {
-      window.addEventListener('pointermove', mover, { passive: true });
-    } else {
-      window.removeEventListener('pointermove', mover);
-      x = 0; y = 0; pintar();
-    }
-  }, { rootMargin: '10% 0px' });
-  observador.observe(zona);
 })();
 
 /* Anclas que caen donde deben.
