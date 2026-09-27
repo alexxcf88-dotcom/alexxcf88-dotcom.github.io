@@ -1992,6 +1992,10 @@ function mountCal(destino) {
   if (!fig) return;
   const scene = fig.getAttribute('data-scene');
   if (!scene) return;
+  // Solo donde sale a cuenta: la escena y su runtime pesan ~2,8 MB y arrancan
+  // WebGL. En táctil y con reduced-motion se queda el robot de CSS, que ya
+  // respira y no descarga nada.
+  if (reduceMotion || window.matchMedia('(hover: none)').matches || window.innerWidth < 981) return;
 
   let loaded = false;
   function ensureRuntime() {
