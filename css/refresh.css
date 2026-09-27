@@ -854,9 +854,11 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
 .marquesina-pista[aria-hidden="true"] { display: flex; }
 .sistemas:hover .marquesina-pista { animation-play-state: paused !important; }
 @media (max-width: 760px) {
-  .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
-  .marquesina-pista { flex-wrap: wrap; width: 100%; justify-content: center; gap: 24px; animation: none !important; }
-  .marquesina-pista[aria-hidden="true"] { display: none; }
+  /* La cinta también corre en móvil: es transform sobre dos pistas, trabajo de
+     compositor, y la sección vive bajo content-visibility. Solo con
+     reduced-motion se convierte en rejilla estática (más abajo). */
+  .marquesina { gap: 24px; }
+  .marquesina-pista { gap: 24px; animation-duration: 26s !important; }
 }
 @media (prefers-reduced-motion: reduce) {
   .marquesina-pista { animation: none !important; flex-wrap: wrap; width: 100%; justify-content: center; }
@@ -920,7 +922,7 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
 .cta-copy .eyebrow { margin-bottom: 1.1rem; }
 .cta-points li { line-height: 1.6; }
 .cta-trust p, .demo-modal-trust { font-size: .84rem; color: var(--muted); }
-.lead-form, .demo-modal-card {
+.lead-form {
   border: 1px solid rgba(255, 255, 255, .09);
   border-radius: 22px;
   background:
@@ -928,6 +930,18 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
     var(--panel-strong);
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 24px 50px -34px rgba(0, 0, 0, .95);
 }
+/* La tarjeta del modal va SÓLIDA: al quitar el backdrop-filter por
+   rendimiento, un fondo translúcido dejaba ver el hero por debajo. */
+.demo-modal-card {
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 26px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .04), rgba(255, 255, 255, 0) 34%),
+    radial-gradient(circle at 12% 0%, rgba(90, 240, 216, .12), transparent 46%),
+    #0a100f;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .08), 0 40px 90px -30px rgba(0, 0, 0, .9);
+}
+.demo-modal-backdrop { background: rgba(2, 6, 5, .88); }
 .lead-form-head { align-items: center; gap: 1rem; margin-bottom: 1.2rem; }
 .lead-form-head strong { font-size: 1.05rem; letter-spacing: -.01em; }
 .lead-badge {
@@ -1089,3 +1103,55 @@ html.webkit-safe .hero h1 .shiny {
    suben y se van por arriba. Nada de crecer ni de mover el layout. */
 .story-phone .wa-chat { overflow-y: auto; overscroll-behavior: contain; scrollbar-width: none; }
 .story-phone .phone-screen { overflow: hidden; }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 7 · Planes.
+   PRO sigue mandando, pero un escalón menos: menos elevación y un tinte más
+   tenue. Las tres cards se leen como producto bueno; la lista pasa de puntos
+   a checks, que es lo que se espera en un plan.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 981px) { .plan--destacado { transform: translateY(-4px); } }
+.plan--destacado {
+  background:
+    linear-gradient(180deg, rgba(255, 173, 112, .045), rgba(255, 255, 255, 0) 40%),
+    var(--panel);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 173, 112, .16),
+    0 1px 0 rgba(0, 0, 0, .5),
+    0 18px 34px -30px rgba(0, 0, 0, .9);
+}
+/* Checks en lugar de puntos: mismo espacio, lectura de plan. */
+.plan-lista li { padding-left: 1.6rem; }
+.plan-lista li::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: .45em;
+  width: 11px;
+  height: 6px;
+  border-left: 1.8px solid var(--aqua);
+  border-bottom: 1.8px solid var(--aqua);
+  border-radius: 1px;
+  background: none;
+  transform: rotate(-45deg);
+}
+.plan-lista li.plan-clave::before { border-color: var(--aqua); }
+.plan--destacado .plan-lista li::before { border-color: var(--orange); }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 5 · Robot de llamadas.
+   En escritorio sigue al puntero (landing.js escribe un único transform).
+   En táctil no hay cursor: se queda con una respiración lenta de 4 px, solo
+   transform, y únicamente mientras la sección está en pantalla.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (hover: none) and (prefers-reduced-motion: no-preference) {
+  .voice-robot .robot-local { animation: robotRespira 7.5s ease-in-out infinite alternate !important; }
+}
+@keyframes robotRespira {
+  from { transform: translate3d(0, 0, 0); }
+  to { transform: translate3d(0, -4px, 0); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .voice-robot .robot-local { animation: none !important; transform: none !important; }
+  .voice-robot { transform: none !important; transition: none !important; }
+}
