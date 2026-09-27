@@ -5702,31 +5702,39 @@ body.demo-open { overflow: hidden; }
 
 .sistemas-lead a { color: var(--aqua); }
 
+/* El hueco es un valor FIJO en px, no un clamp, y aparece en dos sitios que
+   tienen que coincidir al milimetro: la separacion entre pistas y la
+   compensacion del keyframe. Si divergen, el bucle da un salto cada vuelta.
+   Y en px literal (no var()) porque asi Chrome puede componer la animacion
+   en la GPU en lugar de recalcularla en el hilo principal. */
 .marquesina {
   display: flex;
-  gap: clamp(2rem, 5vw, 4rem);
+  gap: 40px;
   overflow: hidden;
-  width: 100%;
+  /* Misma medida que el texto de la seccion: la cinta deja de ser una banda
+     a sangre desalineada del resto y pasa a leerse como parte del bloque. */
+  width: min(calc(100% - 2.5rem), var(--maxw, 1200px));
+  margin-inline: auto;
   /* Entran y salen difuminados por los lados. */
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 6%, #000 94%, transparent);
 }
 
 .marquesina-pista {
   display: flex;
   flex: 0 0 auto;
   align-items: center;
-  gap: clamp(2rem, 5vw, 4rem);
+  /* Logos mas juntos: con 64 px entre piezas la fila parecia medio vacia. */
+  gap: 40px;
   margin: 0;
   padding: 0;
   list-style: none;
-  animation: marquesina-desliza 26s linear infinite;
+  animation: marquesina-desliza 30s linear infinite;
+  will-change: transform;
 }
 
-.marquesina:hover .marquesina-pista,
-.marquesina:focus-within .marquesina-pista {
-  animation-play-state: paused;
-}
+/* Sin pausa al pasar el raton: la cinta no se detiene nunca. Dentro no hay
+   nada enfocable, asi que tampoco hace falta pararla al tabular. */
 
 .marquesina img {
   display: block;
@@ -5738,12 +5746,13 @@ body.demo-open { overflow: hidden; }
   transition: filter 0.3s var(--ease);
 }
 
-.marquesina:hover img { filter: brightness(0) invert(1) opacity(0.78); }
+.marquesina:hover img { filter: brightness(0) invert(1) opacity(0.72); }
 
 @keyframes marquesina-desliza {
-  from { transform: translateX(0); }
-  /* El gap del contenedor mueve la segunda pista: hay que compensarlo. */
-  to   { transform: translateX(calc(-100% - clamp(2rem, 5vw, 4rem))); }
+  from { transform: translate3d(0, 0, 0); }
+  /* -100% del ancho de la pista MAS el hueco que la separa de la siguiente:
+     al terminar, la pista 2 esta exactamente donde estaba la 1. */
+  to   { transform: translate3d(calc(-100% - 40px), 0, 0); }
 }
 
 .sistemas-nota {
@@ -5772,8 +5781,14 @@ body.demo-open { overflow: hidden; }
   .marquesina-pista[aria-hidden="true"] { display: none; }
 }
 
-@media (max-width: 620px) {
-  .marquesina img { max-height: 24px; }
+@media (max-width: 760px) {
+  .marquesina { gap: 28px; }
+  .marquesina-pista { gap: 28px; animation-duration: 24s; }
+  .marquesina img { max-height: 22px; }
+  @keyframes marquesina-desliza {
+    from { transform: translate3d(0, 0, 0); }
+    to   { transform: translate3d(calc(-100% - 28px), 0, 0); }
+  }
 }
 
 /* Marca sin logo usable: el nombre escrito como en su web, al mismo peso
@@ -5792,8 +5807,8 @@ body.demo-open { overflow: hidden; }
 
 .marquesina:hover .marquesina-nombre { color: rgba(247, 251, 248, 0.78); }
 
-@media (max-width: 620px) {
-  .marquesina-nombre { font-size: 19px; line-height: 24px; }
+@media (max-width: 760px) {
+  .marquesina-nombre { font-size: 17px; line-height: 22px; }
 }
 
 /* ── Conmutador mensual / anual ──────────────────────────────────────────────

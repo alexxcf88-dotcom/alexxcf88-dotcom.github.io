@@ -87,7 +87,6 @@ html { scroll-padding-top: 100px; }
 .mi-time, .mi-prev, .voice-topic-pill > span { color: var(--soft); }
 .sistemas-lead a, .planes-nota a { text-decoration: underline; text-underline-offset: .2em; }
 @media (max-width: 760px), (prefers-reduced-motion: reduce) {
-  .marquesina-pista { animation: none; }
   .site-nav, .liquid-glass, .story-note { backdrop-filter: none; -webkit-backdrop-filter: none; }
   #flujo .story-phone { transform: none; }
 }
@@ -173,9 +172,6 @@ html, body { overflow-x: clip; }
   .sistemas { padding-left: 0; padding-right: 0; }
   .sistemas h2 { font-size: 1.85rem; }
   .sistemas-lead { font-size: 1rem; }
-  .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
-  .marquesina-pista { width: 100%; display: flex; flex-wrap: wrap; justify-content: center; gap: 20px; animation: none; transform: none; }
-  .marquesina-pista[aria-hidden="true"] { display: none; }
   .pricing-shell { padding: 0; border: 0; background: none; box-shadow: none; }
   .planes { display: grid; grid-template-columns: minmax(0,1fr); gap: 20px; }
   .plan { padding: 24px 20px; border-radius: 20px; }
@@ -543,10 +539,6 @@ html, body { overflow-x: clip; }
 /* El robot de CSS es el suplente del Spline: tiene que estar vivo, porque en
    los equipos donde el 3D no entra es LO QUE SE VE. Solo el marquesina sigue
    quieto (se resuelve aparte). */
-.marquesina-pista { animation: none; }
-.marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
-.marquesina-pista { display: flex; flex-wrap: wrap; justify-content: center; width: 100%; gap: 24px; transform: none; }
-.marquesina-pista[aria-hidden="true"] { display: none; }
 .voice-robot { filter: none; }
 #flujo.story-section { min-height: 0; display: block; padding-block: 48px; }
 #flujo .story-intro { padding-top: 0; }
@@ -615,8 +607,7 @@ html, body { overflow-x: clip; }
    Los bucles infinitos decorativos (anillos del 3D, marquesina, radar, el
    degradado del titular) mantenían la GPU despierta todo el rato; los puntos
    de «escribiendo» y las entradas de burbuja duran un instante y cuentan algo. */
-.spline-ring, .spline-core, .story-radar span,
-.marquesina-pista { animation: none !important; }
+.spline-ring, .spline-core, .story-radar span { animation: none !important; }
 @media (max-width: 760px) {
   /* En el móvil hasta los pulsos pequeños cuestan: se quedan quietos. */
   .os-live i, .draft-label i, .voice-wave i, .lead-badge i, .wa-ping,
@@ -901,39 +892,6 @@ main > section.hero { padding-block: clamp(7rem, 14vh, 11rem) clamp(5rem, 10vh, 
 }
 @media (max-width: 760px) {
   .voice-robot { transform: none; }
-}
-
-/* ── Programas de gestión: la cinta vuelve a correr ────────────────────────
-   Es una animación de transform sobre dos pistas idénticas: la GPU la mueve
-   sola y la sección está bajo content-visibility, así que fuera de pantalla
-   ni se pinta. En móvil se queda la rejilla estática, que se lee mejor. */
-/* La cinta corre en pantallas amplias: son dos pistas idénticas movidas con
-   transform, trabajo de compositor, y la sección está bajo content-visibility,
-   así que fuera de pantalla ni se pinta. En móvil se priorizan lectura y batería. */
-.marquesina {
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-}
-.marquesina-pista {
-  display: flex;
-  flex-wrap: nowrap;
-  width: max-content;
-  justify-content: flex-start;
-  animation: marquesina-desliza 34s linear infinite !important;
-}
-.marquesina-pista[aria-hidden="true"] { display: flex; }
-.sistemas:hover .marquesina-pista { animation-play-state: paused !important; }
-@media (max-width: 760px) {
-  /* La cinta también corre en móvil: es transform sobre dos pistas, trabajo de
-     compositor, y la sección vive bajo content-visibility. Solo con
-     reduced-motion se convierte en rejilla estática (más abajo). */
-  .marquesina-pista { gap: 24px; }
-}
-@media (prefers-reduced-motion: reduce) {
-  .marquesina-pista { animation: none !important; flex-wrap: wrap; width: 100%; justify-content: center; }
-  .marquesina-pista[aria-hidden="true"] { display: none; }
-  .marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
 }
 
 /* ── Planes: pieza física, precio al mando y PRO sin gritar ────────────────── */
@@ -1377,28 +1335,6 @@ html.fx-listo .hero h1 .shiny {
   .voice-head h2 { max-width: 12ch; }
   .voice-sub { max-width: 31ch; }
 
-  /* Cinta continua acelerada por compositor, sin saltos ni paradas. */
-  .sistemas { overflow: hidden; }
-  .marquesina {
-    display: flex;
-    width: max-content;
-    overflow: visible;
-    gap: 24px;
-    mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-    -webkit-mask-image: linear-gradient(90deg, transparent, #000 8%, #000 92%, transparent);
-  }
-  .marquesina-pista,
-  .marquesina-pista[aria-hidden="true"] {
-    display: flex;
-    flex: none;
-    flex-wrap: nowrap;
-    width: max-content;
-    gap: 24px;
-    padding-right: 0;
-    animation: marquesina-desliza 28s linear infinite !important;
-    will-change: transform;
-  }
-
   /* Comparativa visible: tres tarjetas-resumen en la misma pantalla. */
   .pricing-head { margin-bottom: 22px; }
   .planes { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 7px; align-items: stretch; }
@@ -1426,12 +1362,6 @@ html.fx-listo .hero h1 .shiny {
   .plan-pegatina { --sello-tam: 46px; top: -15px; right: -5px; }
   .plan-pegatina-txt b { font-size: 8px; }
   .planes-nota { margin-top: 18px; }
-}
-
-@media (max-width: 760px) and (prefers-reduced-motion: reduce) {
-  .marquesina { width: 100%; overflow-x: auto; mask-image: none; -webkit-mask-image: none; }
-  .marquesina-pista { animation: none !important; }
-  .marquesina-pista[aria-hidden="true"] { display: none; }
 }
 
 /* ═════════════════════════════════════════════════════════════════════════════
@@ -1627,6 +1557,48 @@ html.fx-listo .hero h1 .shiny {
   color: var(--muted);
   font-size: .78rem;
   line-height: 1.5;
+}
+
+/* El modal ya explica privacidad junto al formulario: repetirla una tercera
+   vez al pie añadía ruido y alargaba innecesariamente la vista móvil. */
+.demo-modal-card .lead-form::after { display: none; }
+
+/* Modal de conversión: dos superficies claramente relacionadas, con el
+   formulario como pieza principal y sin una columna izquierda vacía. */
+.demo-modal-card .lead-form {
+  align-self: stretch;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.demo-modal-aside { max-width: 29rem; }
+.demo-modal-aside .cta-points li::before { box-shadow: 0 0 18px rgba(90,240,216,.18); }
+
+@media (max-width: 760px) {
+  .demo-modal { align-items: center; }
+  .demo-modal-card {
+    display: block;
+    padding: 16px;
+    max-height: calc(100dvh - 20px);
+    overflow-y: auto;
+    scrollbar-width: thin;
+  }
+  .demo-modal-aside { max-width: none; }
+  .demo-modal-marca { width: 104px; margin: 0 0 12px; }
+  .demo-modal-aside .eyebrow { margin-bottom: 8px; }
+  .demo-modal-aside h2 { max-width: 14ch; margin-bottom: 0; font-size: 1.55rem; }
+  .demo-modal-aside .cta-points,
+  .demo-modal-trust { display: none; }
+  .demo-modal-card .lead-form { margin-top: 16px; padding: 16px; border-radius: 18px; }
+  .demo-modal-card .lead-form-head { margin-bottom: 12px; }
+  .demo-modal-card .lead-form-head strong { font-size: 1rem; }
+  .demo-modal-card .lead-badge { font-size: .61rem; padding: .22rem .5rem; }
+  .demo-modal-card .lead-form .field + .field { margin-top: 8px; }
+  .demo-modal-card .lead-form .field label { margin-bottom: 4px; font-size: .68rem; }
+  .demo-modal-card .lead-form input { min-height: 44px; }
+  .demo-modal-card .lead-form .consent { margin-top: 10px; font-size: .78rem; }
+  .demo-modal-card .primary-btn-full { min-height: 46px; margin-top: 12px; }
+  .demo-modal-close { top: 12px; right: 12px; }
 }
 
 /* Pie: la marca cierra. */
@@ -2067,23 +2039,23 @@ html.fx-quieto .hero h1 .shiny { animation-play-state: paused; }
   .sistemas-nota { font-size: .76rem; line-height: 1.5; }
 }
 
-/* ── Programas de gestión: la cinta corre de verdad ───────────────────────
-   Estaba en 2.324 px de ancho dentro de un móvil de 390 y con la animación
-   apagada: ni corría ni se leía. La cinta se ciñe al ancho de la sección,
-   recorta lo que sobra y mueve las dos pistas con un transform. */
-.marquesina {
-  display: flex;
-  /* El hueco entre las dos pistas tiene que ser EXACTAMENTE el que compensa
-     el keyframe (translateX(-100% - ese hueco)); si no, el bucle da un salto
-     cada vuelta. */
-  gap: clamp(2rem, 5vw, 4rem);
-  width: 100%;
-  max-width: 100%;
-  overflow: hidden;
-  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
-  -webkit-mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+/* Selector y conversación forman una sola demo en móvil: se elige el caso
+   antes de entrar en el teléfono, sin tener que recorrerlo entero y volver. */
+@media (max-width: 760px) {
+  #flujo .story-intro { order: 1; }
+  #flujo .story-chooser {
+    order: 2;
+    width: 100%;
+    margin: 20px 0 0;
+    padding: 12px;
+    border-radius: 16px;
+  }
+  #flujo .story-scene-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; }
+  #flujo .story-scene-buttons button { min-height: 44px; padding: 7px 4px; font-size: .72rem; }
+  #flujo .story-chooser p { min-height: 0; margin: 12px 0 0; font-size: .9rem; }
+  #flujo .story-pause { min-height: 40px; margin-top: 8px; padding: 7px 10px; font-size: .78rem; }
+  #flujo .story-phone-pin { order: 3; margin-top: 22px; }
+  #flujo .story-phone,
+  #flujo.demo-live .story-phone { width: min(100%, 300px); height: 614px; }
 }
-.marquesina-pista {
-  flex: 0 0 auto;
-  will-change: transform;
-}
+
