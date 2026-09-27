@@ -18,12 +18,16 @@
   <meta property="og:image" content="https://aitomat.es/og-image.png">
   <meta property="og:image:width" content="1200">
   <meta property="og:image:height" content="630">
+  <meta property="og:image:type" content="image/png">
   <meta property="og:image:alt" content="AItomat — Recepción automatizada para clínicas dentales">
   <meta name="twitter:card" content="summary_large_image">
   <meta name="twitter:title" content="AItomat — Recepción automatizada para clínicas dentales">
   <meta name="twitter:description" content="Atiende el teléfono, gestiona la agenda y prepara los casos para recepción para tu clínica dental.">
   <meta name="twitter:image" content="https://aitomat.es/og-image.png">
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23050706'/%3E%3Ctext x='32' y='42' font-family='Arial,sans-serif' font-size='26' font-weight='800' text-anchor='middle' fill='%235af0d8'%3EAI%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="brand/icono/icono-aitomat.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="brand/icono/icono-aitomat-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="brand/icono/icono-aitomat-180.png">
+  <link rel="manifest" href="site.webmanifest">
   <!-- Safari/WebKit (todos los navegadores de iOS y Safari de Mac): el degradado
        animado con background-clip:text del titular se pinta a veces SIN recortar
        (carrera con la carga de fuentes) y cubre el hero con un bloque blanco.
@@ -34,12 +38,11 @@
       document.documentElement.classList.add('webkit-safe');
     }
   </script>
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260926-simple">
+  <link rel="stylesheet" href="features/landing/landing.css?v=20260927-perf">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
-  <script type="application/ld+json">
-{
+  <script type="application/ld+json">{
   "@context": "https://schema.org",
   "@graph": [
     {
@@ -55,8 +58,8 @@
       "sameAs": [
         "https://www.instagram.com/aitomat.es/"
       ],
-      "logo": "https://aitomat.es/og-image.png",
-      "image": "https://aitomat.es/og-image.png",
+      "logo": "https://aitomat.es/brand/logo/logo-aitomat.png",
+      "image": "https://aitomat.es/brand/icono/icono-aitomat-1024.png",
       "description": "Recepción automatizada para clínicas dentales: atiende llamadas, gestiona la agenda, prepara los casos que necesitan a recepción, con salida a recepción cuando hace falta.",
       "areaServed": {
         "@type": "Country",
@@ -93,10 +96,18 @@
       "mainEntity": [
         {
           "@type": "Question",
+          "name": "¿Qué incluye el primer mes gratis?",
+          "acceptedAnswer": {
+            "@type": "Answer",
+            "text": "El primer mes del piloto es gratis en la cuota mensual del plan elegido. Los minutos incluidos y la tarifa por minuto adicional son los del plan."
+          }
+        },
+        {
+          "@type": "Question",
           "name": "¿Es solo un contestador de llamadas?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No. La voz es la puerta de entrada, pero el servicio cubre también la bandeja única de mensajes (WhatsApp, Instagram, Facebook, email y SMS), la agenda, los recordatorios y confirmaciones, la lista de espera, la reactivación de pacientes dormidos y el panel de recepción y del responsable."
+            "text": "No. La voz es la puerta de entrada, pero el servicio cubre también la bandeja única de mensajes (WhatsApp, Instagram, Facebook, email y SMS), la agenda, los recordatorios y confirmaciones, la lista de espera, la reactivación de pacientes dormidos y el panel de recepción y del responsable. Está todo detallado en el apartado de precio, y el estado técnico de cada conexión, en la página de integraciones."
           }
         },
         {
@@ -104,15 +115,7 @@
           "name": "¿Y si el paciente quiere hablar con una persona?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Se deriva a recepción. AItomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Se presenta como IA?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Sí. Cristina se presenta al inicio como la asistente virtual con inteligencia artificial de la clínica."
+            "text": "Se identifica como IA y se deriva a recepción si el paciente lo pide o si hay dudas. AItomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere."
           }
         },
         {
@@ -128,15 +131,7 @@
           "name": "¿Tengo que cambiar mi software de agenda?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar está contemplado; otras agendas se valoran caso a caso."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Y si falla o no entiende al paciente?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "El flujo debe tener salida humana. Si hay duda, urgencia, datos contradictorios o petición sensible, el caso se marca para recepción en lugar de improvisar."
+            "text": "No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar está contemplado; otras agendas se valoran caso a caso. Las conexiones incluidas se preparan durante la puesta en marcha. El estado técnico de cada sistema está en la página de integraciones."
           }
         },
         {
@@ -144,23 +139,7 @@
           "name": "¿Qué pasa si me paso de los minutos incluidos?",
           "acceptedAnswer": {
             "@type": "Answer",
-            "text": "Superar los minutos incluidos no bloquea la atención. Los minutos adicionales tienen una tarifa de 0,24 €/min en Básico y 0,22 €/min en Medio y Premium."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Cuántos locales incluye cada plan?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Básico incluye 1 local. Medio, hasta 3 locales. Premium, locales ilimitados. En Medio y Premium los locales comparten la misma recepción automática, con la agenda de cada sede."
-          }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Qué significa «configuración incluida»?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "Que esa prestación forma parte del plan y la dejamos lista durante la puesta en marcha, adaptada a tu clínica: recordatorios, reactivación, lista de espera, mensajería y, en Premium, la escritura en vuestro programa de gestión. No se contrata aparte."
+            "text": "Superar los minutos incluidos no bloquea la atención. Los minutos adicionales tienen una tarifa de 0,24 €/min en BÁSICO y 0,22 €/min en PRO y ULTRA."
           }
         },
         {
@@ -170,22 +149,13 @@
             "@type": "Answer",
             "text": "No. La propuesta base es mensual y sin permanencia. Si una integración requiere trabajo específico, se explica antes de activarla."
           }
-        },
-        {
-          "@type": "Question",
-          "name": "¿Qué incluye el primer mes gratis?",
-          "acceptedAnswer": {
-            "@type": "Answer",
-            "text": "El primer mes del piloto es gratis en la cuota mensual del plan elegido. Los minutos incluidos y la tarifa por minuto adicional son los del plan."
-          }
         }
       ]
     }
   ]
-}
-  </script>
-  <link rel="stylesheet" href="css/fonts.css?v=20260926">
-  <link rel="stylesheet" href="css/refresh.css?v=20260926-simple">
+}</script>
+  <link rel="stylesheet" href="css/fonts.css?v=20260927-perf">
+  <link rel="stylesheet" href="css/refresh.css?v=20260927-perf">
 </head>
 <body>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
@@ -193,17 +163,14 @@
   <div class="ambient" aria-hidden="true">
     <!-- Autoalojado: antes colgaba de un CloudFront ajeno (16,1 MB). Si el v&iacute;deo no
          llega a cargar, el p&oacute;ster deja el mismo primer fotograma de fondo. -->
-    <video class="ambient-video" id="bg-video" loop muted playsinline preload="none"
-      poster="features/landing/media/hero-poster.jpg"
-      data-src="features/landing/media/hero.mp4"></video>
+    <div class="ambient-poster"></div>
     <div class="ambient-grid"></div>
     <div class="ambient-beam"></div>
     <div class="ambient-tint" id="bg-tint"></div>
-    <canvas id="particles-canvas" class="ambient-particles"></canvas>
   </div>
 
   <nav class="site-nav" aria-label="Principal">
-    <a class="brand" href="#inicio" aria-label="AItomat, inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
+    <a class="brand" href="#inicio" aria-label="AItomat, inicio"><picture><source media="(max-width: 760px), (prefers-reduced-motion: reduce)" srcset="brand/logo/logo-aitomat.svg"><img class="brand-wordmark" src="brand/animado/logo-aitomat-animado.svg" alt="AItomat" width="4914" height="808"></picture></a>
     <div class="nav-links" id="primary-menu">
       <a href="#voz">Voz</a>
       <a href="#inbox">Inbox</a>
@@ -213,14 +180,13 @@
       <a href="#faq">FAQ</a>
       <a href="#contacto">Demo</a>
     </div>
-    <a class="nav-cta" href="#contacto" data-demo-open>Solicitar demo</a>
+    <a class="nav-cta" href="#contacto" data-demo-open>Pedir demo</a>
     <button class="nav-toggle" type="button" aria-label="Abrir menú" aria-expanded="false" aria-controls="primary-menu">
       <span class="nav-toggle-bar"></span>
       <span class="nav-toggle-bar"></span>
       <span class="nav-toggle-bar"></span>
     </button>
   </nav>
-  <div class="scroll-progress" id="scroll-progress" aria-hidden="true"></div>
 
   <main>
     <section id="inicio" class="hero" data-spotlight>
@@ -230,18 +196,6 @@
         <a class="pilot-badge" href="#precio"><span>PRIMER MES GRATIS</span><small>Piloto inicial · cuota mensual</small><span aria-hidden="true">↗</span></a>
         <div class="hero-title-wrap">
           <h1><span class="hero-desktop-title">La recepci&oacute;n de tu cl&iacute;nica, <span class="shiny">automatizada.</span></span><span class="hero-mobile-title">Tu recepci&oacute;n atiende.<br><span class="shiny">Aunque no puedas.</span></span></h1>
-        </div>
-        <div class="hero-rotator" aria-label="Lo que atiende AItomat en la recepci&oacute;n de la cl&iacute;nica">
-          <span class="hero-rotator-label">Atiende</span>
-          <span class="hero-rotator-window" id="hero-rotator" aria-live="off">
-            <span class="hero-rotator-word is-active">llamadas</span>
-            <span class="hero-rotator-word">la agenda</span>
-            <span class="hero-rotator-word">las citas</span>
-            <span class="hero-rotator-word">WhatsApp</span>
-            <span class="hero-rotator-word">recordatorios</span>
-            <span class="hero-rotator-word">no-shows</span>
-            <span class="hero-rotator-word">pacientes dormidos</span>
-          </span>
         </div>
         <p class="hero-lead">Atiende el tel&eacute;fono y el <strong>WhatsApp</strong> de la cl&iacute;nica, gestiona la agenda, recuerda las citas, recupera a los pacientes que no vuelven y lo deja todo en un panel. Lo que no debe automatizarse, pasa a tu equipo.</p>
         <div class="hero-actions">
@@ -397,7 +351,20 @@
         <h2>Así transcurre una conversación.</h2>
         <p>Entra una llamada que nadie puede coger. <span class="b-ai">AI</span>tomat la atiende, pregunta lo necesario, propone un hueco real y deja la cita puesta o el caso preparado para recepci&oacute;n.</p>
         <p class="os-disclaimer">Ejemplo de llamada representado como chat. WhatsApp, recordatorios y reactivación van incluidos en los planes y se dejan configurados en la puesta en marcha.</p>
-        <span class="story-scrollcue" aria-hidden="true">Desliza para ver el flujo</span>
+
+      </div>
+      <div class="story-chooser" aria-label="Situaciones de ejemplo">
+        <div class="story-scene-buttons" role="group" aria-label="Elegir conversación">
+          <button type="button" data-scene="0" aria-pressed="true">Pedir cita</button>
+          <button type="button" data-scene="1" aria-pressed="false">Cambiar cita</button>
+          <button type="button" data-scene="2" aria-pressed="false">Recordatorio</button>
+          <button type="button" data-scene="3" aria-pressed="false">Lista de espera</button>
+          <button type="button" data-scene="4" aria-pressed="false">Pasar a una persona</button>
+          <button type="button" data-scene="5" aria-pressed="false">Paciente dormido</button>
+        </div>
+        <p id="story-scene-caption" aria-live="polite">Pedir una cita</p>
+        <button type="button" class="story-pause" data-scene-pause aria-pressed="false">Leer sin animación</button>
+        <small>Ejemplos ilustrativos. Puedes elegir una escena y leerla a tu ritmo.</small>
       </div>
       <div class="story-phone-pin">
         <div class="desk-scene" aria-hidden="true">
@@ -462,36 +429,7 @@
           <span class="phone-home" aria-hidden="true"></span>
         </article>
 
-        <div class="story-notes">
-          <article class="story-note note-a active" data-story-step="0">
-            <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 11.5a8.4 8.4 0 0 1-11.9 7.6L3 21l1.9-6.1A8.4 8.4 0 1 1 21 11.5Z"/></svg></span>
-            <div>
-              <h3>Atiende la llamada</h3>
-              <p>Descuelga cuando recepci&oacute;n no puede y entiende el motivo al instante.</p>
-            </div>
-          </article>
-          <article class="story-note note-b" data-story-step="1">
-            <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4.5" width="18" height="16" rx="2.5"/><path d="M3 9h18M8 2.5v4M16 2.5v4"/><path d="m9 14 2 2 4-4"/></svg></span>
-            <div>
-              <h3>Pregunta antes de agendar</h3>
-              <p>Cruza tu agenda en vivo y ofrece horas reales cuando ya tiene el contexto.</p>
-            </div>
-          </article>
-          <article class="story-note note-c" data-story-step="2">
-            <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 5 6v5c0 4.2 2.9 7.6 7 9 4.1-1.4 7-4.8 7-9V6l-7-3Z"/><path d="M12 8v4l2.5 1.5"/></svg></span>
-            <div>
-              <h3>Evita la ausencia</h3>
-              <p>Pide confirmaci&oacute;n o reprogramaci&oacute;n antes de perder el hueco.</p>
-            </div>
-          </article>
-          <article class="story-note note-d" data-story-step="3">
-            <span class="note-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a9 9 0 1 1-3-6.7M21 4v4h-4"/></svg></span>
-            <div>
-              <h3>Recupera al paciente</h3>
-              <p>Reactiva a quien lleva meses sin venir, sin perseguir a mano.</p>
-            </div>
-          </article>
-        </div>
+
       </div>
     </section>
 
@@ -502,7 +440,7 @@
         <p class="voice-sub">Incluida en todos los planes, con 200, 600 o 1.200 minutos al mes seg&uacute;n el plan: el asistente atiende la llamada, pregunta lo justo y la deja lista para que recepci&oacute;n decida el siguiente paso. Usa la misma agenda y los mismos criterios que el resto del sistema.</p>
       </div>
       <div class="voice-stage">
-        <div class="voice-robot" id="voice-3d" data-spline data-scene="/features/landing/voice.splinecode" aria-hidden="true">
+        <div class="voice-robot" id="voice-3d" aria-hidden="true">
           <span class="voice-3d-fallback" aria-hidden="true">
             <i class="v3d-ring"></i><i class="v3d-ring v3d-ring-2"></i><i class="v3d-core"></i>
             <span class="robot-local">
@@ -604,12 +542,8 @@
 
         <div class="planes">
           <article class="plan" data-plan="basico">
-            <div class="plan-pegatina" role="img" aria-label="Primer mes gratis">
-              <svg class="plan-pegatina-sello" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#sello-mes-gratis"></use></svg>
-              <span class="plan-pegatina-txt"><b>MES</b><b>GRATIS</b></span>
-            </div>
             <div class="plan-cab">
-              <p class="plan-nombre">B&aacute;sico</p>
+              <p class="plan-nombre">BÁSICO</p>
               <p class="plan-para">Que no se pierda ninguna llamada</p>
             </div>
             <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>89&nbsp;&euro;</strong><em>/mes</em></span></p>
@@ -633,8 +567,8 @@
               <span class="plan-pegatina-txt"><b>MES</b><b>GRATIS</b></span>
             </div>
             <div class="plan-cab">
-              <p class="plan-nombre">Medio <span class="plan-sello">Recomendado</span></p>
-              <p class="plan-para">Que entre m&aacute;s dinero</p>
+              <p class="plan-nombre">PRO <span class="plan-sello">RECOMENDADO</span></p>
+              <p class="plan-para">El mejor equilibrio para crecer</p>
             </div>
             <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>159&nbsp;&euro;</strong><em>/mes</em></span></p>
             <ul class="plan-datos">
@@ -642,7 +576,7 @@
               <li><span>Locales</span><strong>Hasta 3 locales</strong><small>una sola recepci&oacute;n</small></li>
             </ul>
             <ul class="plan-lista">
-              <li class="plan-herencia">Todo lo del B&aacute;sico, y adem&aacute;s:</li>
+              <li class="plan-herencia">Todo lo de BÁSICO, además de:</li>
               <li>Panel del <strong>responsable</strong> con m&eacute;tricas</li>
               <li><strong>Reactivaci&oacute;n</strong> de pacientes dormidos</li>
               <li><strong>Lista de espera</strong> que rellena huecos</li>
@@ -653,13 +587,9 @@
           </article>
 
           <article class="plan" data-plan="premium">
-            <div class="plan-pegatina" role="img" aria-label="Primer mes gratis">
-              <svg class="plan-pegatina-sello" viewBox="0 0 100 100" aria-hidden="true" focusable="false"><use href="#sello-mes-gratis"></use></svg>
-              <span class="plan-pegatina-txt"><b>MES</b><b>GRATIS</b></span>
-            </div>
             <div class="plan-cab">
-              <p class="plan-nombre">Premium</p>
-              <p class="plan-para">Metido en vuestro programa</p>
+              <p class="plan-nombre">ULTRA</p>
+              <p class="plan-para">La solución más completa</p>
             </div>
             <p class="plan-precio"><span class="precio-ciclo precio-mensual"><strong>299&nbsp;&euro;</strong><em>/mes</em></span></p>
             <ul class="plan-datos">
@@ -667,7 +597,7 @@
               <li><span>Locales</span><strong>Locales ilimitados</strong><small>sin l&iacute;mite de sedes</small></li>
             </ul>
             <ul class="plan-lista">
-              <li class="plan-herencia">Todo lo del Medio, y adem&aacute;s:</li>
+              <li class="plan-herencia">Todo lo de PRO, además de:</li>
               <li class="plan-clave"><strong>Las citas se escriben solas en vuestro programa de gesti&oacute;n</strong></li>
               <li><strong>Puesta en marcha</strong> y adaptaci&oacute;n a vuestra cl&iacute;nica</li>
             </ul>
@@ -698,7 +628,7 @@
               </article>
               <article>
                 <h3>Agenda</h3>
-                <p>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong>, con consulta de huecos reales, reserva, cambio y cancelaci&oacute;n. Importaci&oacute;n por <strong>Excel o CSV</strong> desde casi cualquier programa, y escritura directa en vuestro programa de gesti&oacute;n en Premium.</p>
+                <p>Agenda propia de <span class="b-ai">AI</span>tomat o <strong>Google Calendar</strong>, con consulta de huecos reales, reserva, cambio y cancelaci&oacute;n. Importaci&oacute;n por <strong>Excel o CSV</strong> desde casi cualquier programa, y escritura directa en vuestro programa de gesti&oacute;n en ULTRA.</p>
               </article>
               <article>
                 <h3>Recordatorios y no-shows</h3>
@@ -716,7 +646,7 @@
 
             <div class="saltos">
               <article class="salto">
-                <p class="salto-cab">De B&aacute;sico a Medio <em>+70&nbsp;&euro;/mes</em></p>
+                <p class="salto-cab">De BÁSICO a PRO <em>+70&nbsp;&euro;/mes</em></p>
                 <ul>
                   <li><strong>+400 minutos</strong> de voz al mes: de 200 a 600</li>
                   <li>De <strong>1 local</strong> a <strong>hasta 3 locales</strong></li>
@@ -726,7 +656,7 @@
                 </ul>
               </article>
               <article class="salto">
-                <p class="salto-cab">De Medio a Premium <em>+140&nbsp;&euro;/mes</em></p>
+                <p class="salto-cab">De PRO a ULTRA <em>+140&nbsp;&euro;/mes</em></p>
                 <ul>
                   <li><strong>+600 minutos</strong> de voz al mes: de 600 a 1.200</li>
                   <li>De <strong>hasta 3 locales</strong> a <strong>locales ilimitados</strong></li>
@@ -755,36 +685,24 @@
           </details>
           <details>
             <summary>&iquest;Y si el paciente quiere hablar con una persona?</summary>
-            <p>Se deriva a recepci&oacute;n. <span class="b-ai">AI</span>tomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere.</p>
+            <p>Se identifica como IA y se deriva a recepción si el paciente lo pide o si hay dudas. <span class="b-ai">AI</span>tomat no fuerza el cierre: pregunta, prepara el contexto y pasa el caso cuando el paciente lo pide o cuando el motivo lo requiere.</p>
           </details>
-          <details>
-            <summary>&iquest;Se presenta como IA?</summary>
-            <p>S&iacute;. Cristina se presenta al inicio como la asistente virtual con inteligencia artificial de la cl&iacute;nica.</p>
-          </details>
+
           <details>
             <summary>&iquest;Qu&eacute; pasa con los datos de pacientes?</summary>
             <p>Los datos de salud requieren especial cuidado. Antes de conectar canales reales se firma contrato de encargado de tratamiento y se define qu&eacute; datos se tratan, d&oacute;nde y con qu&eacute; medidas.</p>
           </details>
           <details>
             <summary>&iquest;Tengo que cambiar mi software de agenda?</summary>
-            <p>No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar est&aacute; contemplado; otras agendas se valoran caso a caso. El estado de cada sistema est&aacute; en <a href="integraciones.html">integraciones</a>.</p>
+            <p>No como punto de partida. Se revisa vuestra agenda actual y se conecta lo viable. Para pilotos, Google Calendar est&aacute; contemplado; otras agendas se valoran caso a caso. Las conexiones incluidas se preparan durante la puesta en marcha. El estado técnico de cada sistema está en <a href="integraciones.html">integraciones</a>.</p>
           </details>
-          <details>
-            <summary>&iquest;Y si falla o no entiende al paciente?</summary>
-            <p>El flujo debe tener salida humana. Si hay duda, urgencia, datos contradictorios o petici&oacute;n sensible, el caso se marca para recepci&oacute;n en lugar de improvisar.</p>
-          </details>
+
           <details>
             <summary>&iquest;Qu&eacute; pasa si me paso de los minutos incluidos?</summary>
-            <p>Superar los minutos incluidos no bloquea la atenci&oacute;n. Los minutos adicionales tienen una tarifa de 0,24&nbsp;&euro;/min en B&aacute;sico y 0,22&nbsp;&euro;/min en Medio y Premium.</p>
+            <p>Superar los minutos incluidos no bloquea la atenci&oacute;n. Los minutos adicionales tienen una tarifa de 0,24&nbsp;&euro;/min en BÁSICO y 0,22&nbsp;&euro;/min en PRO y ULTRA.</p>
           </details>
-          <details>
-            <summary>&iquest;Cu&aacute;ntos locales incluye cada plan?</summary>
-            <p>B&aacute;sico incluye <strong>1 local</strong>. Medio, <strong>hasta 3 locales</strong>. Premium, <strong>locales ilimitados</strong>. En Medio y Premium los locales comparten la misma recepci&oacute;n autom&aacute;tica, con la agenda de cada sede.</p>
-          </details>
-          <details>
-            <summary>&iquest;Qu&eacute; significa &laquo;configuraci&oacute;n incluida&raquo;?</summary>
-            <p>Que esa prestaci&oacute;n forma parte del plan y la dejamos lista durante la puesta en marcha, adaptada a tu cl&iacute;nica: recordatorios, reactivaci&oacute;n, lista de espera, mensajer&iacute;a y, en Premium, la escritura en vuestro programa de gesti&oacute;n. No se contrata aparte. El estado t&eacute;cnico de cada sistema est&aacute; en <a href="integraciones.html">integraciones</a>.</p>
-          </details>
+
+
           <details>
             <summary>&iquest;Hay permanencia?</summary>
             <p>No. La propuesta base es mensual y sin permanencia. Si una integraci&oacute;n requiere trabajo espec&iacute;fico, se explica antes de activarla.</p>
@@ -854,7 +772,7 @@
   </main>
 
   <footer class="site-footer">
-    <a class="brand" href="#inicio"><span class="b-ai">AI</span><span class="brand-sep" aria-hidden="true"></span><span class="brand-rest">tomat</span></a>
+    <a class="brand" href="#inicio"><img class="brand-wordmark" src="brand/logo/logo-aitomat.svg" alt="AItomat" width="4574" height="808"></a>
     <div>
       <!-- Mismo disparador que el boton de la barra: data-demo-open abre el
            modal de demo en dos pasos. El href a #contacto es el respaldo sin JS. -->
@@ -929,7 +847,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260926-simple"></script>
+  <script defer src="features/landing/landing.js?v=20260927-perf"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4914 808" role="img" aria-label="AItomat">
+  <title>AItomat</title>
+  <defs>
+    <linearGradient id="ai-grad" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="var(--ai-grad-a, #5AF0D8)"/>
+      <stop offset="1" stop-color="var(--ai-grad-b, #35C9F0)"/>
+    </linearGradient>
+  </defs>
+  <style>
+    .ai{fill:url(#ai-grad)}
+    .ai-dim{fill:url(#ai-grad);opacity:.26}
+    .body{fill:var(--ai-ink, #ffffff)}
+    .body-dim{fill:var(--ai-ink, #ffffff);opacity:.30}
+    .bar{transform:scaleY(0);animation:bar .34s cubic-bezier(.2,.9,.3,1.3) forwards}
+    .b0{animation-delay:.10s} .b1{animation-delay:.22s}
+    .b2{animation-delay:.34s} .b3{animation-delay:.46s}
+    .dseg{opacity:0;animation:seg .18s linear forwards}
+    .d0{animation-delay:0.800s} .d1{animation-delay:0.862s} .d2{animation-delay:0.924s} .d3{animation-delay:0.986s} .d4{animation-delay:1.048s} .d5{animation-delay:1.110s} .d6{animation-delay:1.172s} .d7{animation-delay:1.234s} .d8{animation-delay:1.296s} .d9{animation-delay:1.358s} .d10{animation-delay:1.420s}
+    .dot{opacity:0;transform:translateX(994.5px);
+          animation:dot .62s linear forwards;animation-delay:1.62s}
+    .tomat{transform:translateX(340.0px);
+            animation:close .58s cubic-bezier(.35,.9,.25,1) forwards;animation-delay:1.96s}
+    @keyframes bar{to{transform:scaleY(1)}}
+    @keyframes seg{to{opacity:1}}
+    @keyframes dot{
+      0%{opacity:0;transform:translateX(994.5px)}
+      18%{opacity:1;transform:translateX(716.0px)}
+      64%{transform:translateX(218.8px)}
+      100%{opacity:1;transform:translateX(0)}
+    }
+    @keyframes close{to{transform:translateX(0)}}
+    @media (prefers-reduced-motion: reduce){
+      .bar,.dseg,.dot,.tomat{animation:none}
+      .bar{transform:scaleY(1)} .dseg{opacity:1}
+      .dot{opacity:1;transform:none} .tomat{transform:none}
+    }
+  </style>
+  <g class="ai">
+    <path transform="translate(60.0 748.0) scale(1 -1)" d="M10 0 261 688H518L769 0H535L506 97H265L236 0ZM311 251H461L428 361Q424 373 419.0 390.0Q414 407 409.0 426.0Q404 445 399.0 463.5Q394 482 390 496H382Q378 478 371.5 455.0Q365 432 358.0 407.5Q351 383 344 361Z"/>
+  </g>
+  <g class="ai-dim">
+    <rect x="868.0" y="60.0" width="361.6" height="85.3" rx="25.6"/>
+    <rect x="868.0" y="180.5" width="361.6" height="85.3" rx="25.6"/>
+  </g>
+  <g class="ai">
+    <g class="bar b0" style="transform-origin:0 748.0px"><rect x="868.0" y="662.7" width="361.6" height="85.3" rx="25.6"/></g><g class="bar b1" style="transform-origin:0 627.5px"><rect x="868.0" y="542.2" width="361.6" height="85.3" rx="25.6"/></g><g class="bar b2" style="transform-origin:0 506.9px"><rect x="868.0" y="421.6" width="361.6" height="85.3" rx="25.6"/></g><g class="bar b3" style="transform-origin:0 386.4px"><rect x="868.0" y="301.1" width="361.6" height="85.3" rx="25.6"/></g>
+  </g>
+  <g class="body tomat">
+    <path transform="translate(1291.6 748.0) scale(1 -1)" d="M284 -12Q230 -12 188.5 0.5Q147 13 124.0 44.0Q101 75 101 129V393H27V528H109L152 688H300V528H412V393H300V192Q300 158 311.0 140.5Q322 123 356 123H412V6Q396 1 372.5 -3.5Q349 -8 325.5 -10.0Q302 -12 284 -12Z"/><path transform="translate(2402.6 748.0) scale(1 -1)" d="M60 0V528H223L236 449H243Q262 479 290.0 499.5Q318 520 351.5 530.0Q385 540 420 540Q481 540 521.0 516.5Q561 493 580 449H587Q606 479 633.5 499.5Q661 520 694.0 530.0Q727 540 761 540Q822 540 862.0 516.5Q902 493 921.5 449.0Q941 405 941 342V0H742V318Q742 335 738.0 348.5Q734 362 726.0 372.0Q718 382 706.0 387.5Q694 393 679 393Q655 393 637.0 381.5Q619 370 609.5 351.5Q600 333 600 310V0H401V318Q401 335 397.0 348.5Q393 362 385.0 372.0Q377 382 365.0 387.5Q353 393 338 393Q314 393 296.5 381.5Q279 370 269.0 351.5Q259 333 259 310V0Z"/><path transform="translate(3402.6 748.0) scale(1 -1)" d="M216 -12Q175 -12 141.0 -4.5Q107 3 82.0 20.5Q57 38 43.5 66.5Q30 95 30 136Q30 195 54.5 232.0Q79 269 126.0 289.0Q173 309 240.5 316.5Q308 324 395 324V350Q395 372 384.5 385.5Q374 399 357.0 406.0Q340 413 318 413Q301 413 283.0 409.0Q265 405 253.5 395.0Q242 385 242 367V363H46Q45 367 45.0 370.0Q45 373 45 377Q45 426 76.5 462.5Q108 499 169.5 519.5Q231 540 321 540Q394 540 456.0 524.0Q518 508 556.0 470.5Q594 433 594 368V162Q594 146 602.0 134.5Q610 123 626 123H662V8Q650 1 622.5 -5.5Q595 -12 558 -12Q518 -12 488.0 -4.0Q458 4 439.5 19.0Q421 34 414 54H407Q386 35 358.5 20.0Q331 5 296.0 -3.5Q261 -12 216 -12ZM297 112Q316 112 333.5 117.5Q351 123 365.0 132.5Q379 142 387.0 155.5Q395 169 395 185V230Q336 230 299.5 221.0Q263 212 246.0 197.0Q229 182 229 162Q229 142 239.0 131.0Q249 120 264.5 116.0Q280 112 297 112Z"/><path transform="translate(4069.6 748.0) scale(1 -1)" d="M284 -12Q230 -12 188.5 0.5Q147 13 124.0 44.0Q101 75 101 129V393H27V528H109L152 688H300V528H412V393H300V192Q300 158 311.0 140.5Q322 123 356 123H412V6Q396 1 372.5 -3.5Q349 -8 325.5 -10.0Q302 -12 284 -12Z"/>
+  </g>
+  <g class="body-dim tomat">
+    <path d="M2072.2 781.5A297.5 297.5 0 0 1 1935.9 750.0L2010.5 601.0A130.9 130.9 0 0 0 2070.5 614.9Z"/>
+  </g>
+  <g class="body tomat">
+    <path class="dseg d0" d="M1923.1 743.2A297.5 297.5 0 0 1 1820.8 647.8L1959.8 556.1A130.9 130.9 0 0 0 2004.9 598.0Z"/>
+    <path class="dseg d1" d="M1813.0 635.4A297.5 297.5 0 0 1 1772.1 501.6L1938.5 491.8A130.9 130.9 0 0 0 1956.4 550.6Z"/>
+    <path class="dseg d2" d="M1771.6 487.1A297.5 297.5 0 0 1 1803.1 350.8L1952.1 425.4A130.9 130.9 0 0 0 1938.2 485.4Z"/>
+    <path class="dseg d3" d="M1809.9 338.0A297.5 297.5 0 0 1 1905.4 235.6L1997.1 374.7A130.9 130.9 0 0 0 1955.1 419.7Z"/>
+    <path class="dseg d4" d="M1917.7 227.9A297.5 297.5 0 0 1 2051.5 187.0L2061.4 353.3A130.9 130.9 0 0 0 2002.5 371.3Z"/>
+    <path class="dseg d5" d="M2066.0 186.5A297.5 297.5 0 0 1 2202.3 218.0L2127.7 367.0A130.9 130.9 0 0 0 2067.7 353.1Z"/>
+    <path class="dseg d6" d="M2215.2 224.8A297.5 297.5 0 0 1 2317.5 320.2L2178.4 411.9A130.9 130.9 0 0 0 2133.4 370.0Z"/>
+    <path class="dseg d7" d="M2325.2 332.6A297.5 297.5 0 0 1 2366.1 466.4L2199.8 476.2A130.9 130.9 0 0 0 2181.8 417.4Z"/>
+    <path class="dseg d8" d="M2366.6 480.9A297.5 297.5 0 0 1 2335.1 617.2L2186.2 542.6A130.9 130.9 0 0 0 2200.0 482.6Z"/>
+    <path class="dseg d9" d="M2328.3 630.0A297.5 297.5 0 0 1 2232.9 732.4L2141.2 593.3A130.9 130.9 0 0 0 2183.2 548.3Z"/>
+    <path class="dseg d10" d="M2220.6 740.1A297.5 297.5 0 0 1 2086.8 781.0L2076.9 614.7A130.9 130.9 0 0 0 2135.8 596.7Z"/>
+    <g class="dot"><circle cx="2069.1" cy="484.0" r="57.6"/></g>
+  </g>
+</svg>

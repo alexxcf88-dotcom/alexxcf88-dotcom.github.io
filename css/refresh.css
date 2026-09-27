@@ -532,3 +532,129 @@ html, body { overflow-x: clip; }
    media se sigue leyendo paso a paso y la mitad inferior deja de eternizarse.
    En móvil ya estaba sin fijar, así que no le afecta. */
 @media (min-width: 761px) { .story-section { min-height: 260svh; } }
+/* Official brand and a quieter, sharper reading surface. */
+.brand .brand-wordmark { display: block; width: 168px; height: auto; max-width: 100%; }
+.hero h1 span, .hero h1 .shiny, .brand, .marca { font-family: Archivo, system-ui, sans-serif; font-style: normal; }
+.ambient-poster { position: absolute; inset: 0; opacity: .22; }
+@media (min-width: 761px) {
+  /* Fondo decorativo: como imagen de CSS, el móvil no llega a pedirlo. */
+  .ambient-poster { background: url(../features/landing/media/hero-poster.jpg) center / cover no-repeat; }
+}
+.ambient-beam, .ambient-particles, .hero-title-fx, .lamp-edge, .desk-scene, .story-radar, .cta-glow { display: none; }
+.site-nav, .liquid-glass, .story-note, .nav-links, .demo-modal-backdrop { backdrop-filter: none; -webkit-backdrop-filter: none; }
+.site-nav { background: var(--bg); }
+.hero h1 .shiny { background-position: 22% 50%; }
+.robot-local, .v3d-ring, .v3d-core, .marquesina-pista { animation: none; }
+.marquesina { overflow: visible; mask-image: none; -webkit-mask-image: none; }
+.marquesina-pista { display: flex; flex-wrap: wrap; justify-content: center; width: 100%; gap: 24px; transform: none; }
+.marquesina-pista[aria-hidden="true"] { display: none; }
+.voice-robot { filter: none; }
+#flujo.story-section { min-height: 0; display: block; padding-block: 48px; }
+#flujo .story-intro { padding-top: 0; }
+#flujo .story-phone-pin { position: static; min-height: 0; display: flex; justify-content: center; padding: 20px 0 0; }
+#flujo .story-phone, #flujo.demo-live .story-phone { transform: none; transition: none; }
+#flujo .story-phone-pin::before, #flujo .story-phone-pin::after { display: none; }
+.story-chooser { max-width: 650px; margin: 20px auto 0; text-align: center; }
+.story-scene-buttons { display: flex; flex-wrap: wrap; gap: 8px; justify-content: center; }
+.story-scene-buttons button, .story-pause { min-height: 44px; border: 1px solid var(--line); border-radius: 12px; background: var(--panel); color: var(--ink); padding: 10px 14px; font: inherit; font-weight: 650; cursor: pointer; }
+.story-scene-buttons button[aria-pressed="true"] { border-color: var(--aqua); color: var(--aqua); background: rgba(90,240,216,.08); }
+.story-chooser p { color: var(--orange); font-size: 1rem; min-height: 3.2em; margin: 14px 0 4px; }
+.story-chooser small { display: block; color: var(--soft); font-size: .88rem; margin-top: 12px; line-height: 1.5; }
+.story-pause { color: var(--orange); }
+.plan:not(.plan--destacado) .plan-cab { padding-right: 0; }
+.plan--destacado { border: 2px solid var(--orange); background: linear-gradient(160deg,var(--orange-soft),rgba(8,22,19,.97) 45%); box-shadow: 0 12px 32px rgba(0,0,0,.24); }
+.plan--destacado .plan-cab { padding-right: 62px; }
+.plan--destacado .plan-nombre { font-size: 1.3rem; }
+.plan--destacado .plan-sello { display: block; width: fit-content; margin-top: 8px; font-size: .73rem; }
+.plan-pegatina { --sello-tam: 86px; top: -20px; right: -14px; transform: rotate(9deg); filter: drop-shadow(0 6px 10px rgba(0,0,0,.5)) drop-shadow(0 1px 0 rgba(255,255,255,.14)); }
+.plan-pegatina::before, .plan-pegatina::after { z-index: 1; }
+.plan-pegatina-txt { z-index: 2; }
+.plan-pegatina-txt b { font-size: 15px; }
+.plan .plan-precio strong { font-size: clamp(2.7rem,4.2vw,3.5rem); }
+.plan-datos strong { font-size: 1.15rem; }
+.plan-datos span, .plan-datos small, .plan-lista li.plan-herencia { color: var(--soft); font-size: .88rem; letter-spacing: 0; }
+.plan-lista { font-size: 1rem; }
+.plan-extra { font-size: .9rem; }
+.plan-btn { font-size: 1rem; min-height: 48px; }
+.planes, .pricing-shell.planes-shell { overflow: visible; }
+.trust-faq { gap: 8px; }
+.trust-faq summary { font-size: 1rem; min-height: 52px; }
+@media (min-width: 981px) { .plan--destacado { transform: translateY(-10px); } }
+@media (max-width: 760px) {
+  body { font-size: 17px; }
+  .site-nav .brand { min-width: 0; flex-shrink: 1; }
+  .site-nav .brand-wordmark { width: 138px; }
+  .site-nav .nav-cta { padding-inline: 9px; font-size: .8rem; white-space: nowrap; }
+  .hero .hero-lead, .voice-sub, .story-intro > p, .section-copy > p { font-size: 1.06rem; }
+  .hero .hero-actions a { font-size: 1rem; }
+  .hero h1 { font-size: clamp(2.15rem,9vw,2.8rem); }
+  .plan-cab .plan-para { font-size: 1rem; }
+  .plan--destacado { margin-top: 10px; }
+  .plan-pegatina { top: -24px; right: -6px; }
+  .plan--destacado .plan-cab { padding-right: 66px; }
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: min(100%,290px); height: 594px; }
+  #story-phone-chat .bubble { font-size: .95rem; line-height: 1.5; }
+  #story-phone-chat .b-meta { font-size: .75rem; }
+  .story-scene-buttons { display: grid; grid-template-columns: 1fr 1fr; }
+  .story-scene-buttons button { font-size: .9rem; padding: 10px 8px; }
+  .story-chooser p { margin-bottom: 0; }
+  .ambient-poster { display: none; }
+  .phone, .os-window, .mail-app, .legal-doc, .plan, .lead-form { box-shadow: none; }
+  .phone-screen { transform: none; }
+  .planes-detalle > summary { font-size: .9rem; letter-spacing: .03em; }
+  .trust-faq summary { padding-block: 14px; }
+}
+@media (max-width: 380px) {
+  /* En pantallas estrechas el sello encoge para no comerse el nombre del plan. */
+  .plan-pegatina { --sello-tam: 72px; top: -16px; right: -10px; }
+  .plan--destacado .plan-cab { padding-right: 58px; }
+}
+@media (max-width: 360px) {
+  .site-nav .brand-wordmark { width: 116px; }
+  .site-nav .nav-cta { font-size: .76rem; }
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 270px; height: 554px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { scroll-behavior: auto !important; animation: none !important; transition: none !important; }
+}
+/* Animación: se corta lo que gira eternamente y se conserva lo que informa.
+   Los bucles infinitos decorativos (anillos del 3D, marquesina, radar, el
+   degradado del titular) mantenían la GPU despierta todo el rato; los puntos
+   de «escribiendo» y las entradas de burbuja duran un instante y cuentan algo. */
+.spline-ring, .spline-core, .story-radar span, .v3d-ring, .v3d-core,
+.robot-local, .marquesina-pista, .story-scrollcue::after { animation: none !important; }
+.hero h1 .shiny { animation: none; }
+@media (max-width: 760px) {
+  /* En el móvil hasta los pulsos pequeños cuestan: se quedan quietos. */
+  .os-live i, .draft-label i, .voice-wave i, .lead-badge i, .wa-ping,
+  .voice-live-strip i, .call-live i { animation: none !important; }
+}
+.brand picture { display: block; }
+@media (max-width: 760px) { .brand .brand-wordmark { aspect-ratio: 4574 / 808; } }
+
+#flujo .story-phone { transform-style: flat; will-change: auto; }
+#flujo .phone-backplate, #flujo .phone-side { display: none; }
+#flujo .phone-screen { contain: paint; }
+
+/* ─────────────────────────────────────────────────────────────────────────────
+   Coste de estilo y layout: el cuello de botella real de esta página.
+   El perfil de Lighthouse (móvil, simulado) daba ~1,0-1,3 s de styleLayout
+   frente a 60 ms de ejecución de JS: no sobra script, sobra recálculo sobre un
+   DOM grande (bandeja, ventana OS, móvil, planes) con una hoja de estilo de
+   5.800 líneas. Con content-visibility el navegador se salta el layout y el
+   pintado de las secciones que no se ven, y solo las calcula al acercarse.
+   contain-intrinsic-size reserva su altura aproximada para que la barra de
+   scroll no salte y el CLS siga en cero; «auto» hace que recuerde la real.
+   ───────────────────────────────────────────────────────────────────────────── */
+#proceso { content-visibility: auto; contain-intrinsic-size: auto 820px; }
+#inbox { content-visibility: auto; contain-intrinsic-size: auto 1300px; }
+#flujo { content-visibility: auto; contain-intrinsic-size: auto 1480px; }
+#voz { content-visibility: auto; contain-intrinsic-size: auto 1200px; }
+.sistemas { content-visibility: auto; contain-intrinsic-size: auto 430px; }
+#faq { content-visibility: auto; contain-intrinsic-size: auto 560px; }
+#contacto { content-visibility: auto; contain-intrinsic-size: auto 650px; }
+/* El bloque de precio se deja siempre calculado: es el destino de varios
+   enlaces internos y de la pegatina, que sobresale de su caja. */
+
+/* Sin will-change residual: reservaba capas de composición para siempre. */
+.story-phone, .phone-screen, .os-window, .mail-app { will-change: auto; }

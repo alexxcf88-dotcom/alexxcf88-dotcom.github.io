@@ -1,0 +1,23 @@
+{
+  "name": "AItomat",
+  "short_name": "AItomat",
+  "lang": "es",
+  "start_url": "/",
+  "display": "browser",
+  "background_color": "#050706",
+  "theme_color": "#050706",
+  "icons": [
+    {
+      "src": "/brand/icono/icono-aitomat-256.png",
+      "sizes": "256x256",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/icono/icono-aitomat-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

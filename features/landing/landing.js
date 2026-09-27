@@ -9,23 +9,6 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
 
 (function initHeroEnhancements() {
   const hero = document.querySelector('[data-spotlight]');
-  const words = Array.from(document.querySelectorAll('#hero-rotator .hero-rotator-word'));
-
-  if (words.length > 1 && !lightweightMotion) {
-    let index = 0;
-    window.setInterval(() => {
-      if (document.hidden) return;
-      const current = words[index];
-      const nextIndex = (index + 1) % words.length;
-      const next = words[nextIndex];
-      current.classList.add('is-exiting');
-      current.classList.remove('is-active');
-      next.classList.add('is-active');
-      window.setTimeout(() => current.classList.remove('is-exiting'), 560);
-      index = nextIndex;
-    }, 2200);
-  }
-
   if (!hero || reduceMotion || !window.matchMedia('(pointer: fine)').matches) return;
   hero.addEventListener('pointermove', (event) => {
     const rect = hero.getBoundingClientRect();
@@ -41,6 +24,7 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
 const phoneScenarios = [
   {
     status: 'preguntando disponibilidad...',
+    label: 'Pedir una cita',
     action: 'Consulta cualificada',
     time: 'Limpieza · datos confirmados',
     bubbles: [
@@ -54,10 +38,11 @@ const phoneScenarios = [
   },
   {
     status: 'en línea',
-    action: 'Cita preconfirmada',
+    label: 'Cambiar una cita',
+    action: 'Cambio de cita solicitado',
     time: 'Pendiente de confirmación final',
     bubbles: [
-      ['patient', 'Si tienen algo esta semana a última hora, me vendría bien.', '9:43'],
+      ['patient', 'Necesito cambiar mi cita del jueves. ¿Puede ser por la tarde?', '9:43'],
       ['ai', 'Lo anoto. Antes de pasarlo a recepción: ¿sigue usando el teléfono terminado en 214?', '9:43'],
       ['patient', 'Sí, correcto.', '9:44'],
       ['ai', 'Perfecto. Recepción revisa agenda y le confirma la opción de última hora que encaje mejor.', '9:44'],
@@ -67,6 +52,7 @@ const phoneScenarios = [
   },
   {
     status: 'en línea',
+    label: 'Recordatorio y no-show · configuración incluida',
     action: 'Cambio preparado',
     time: 'Recepción avisada',
     bubbles: [
@@ -79,6 +65,33 @@ const phoneScenarios = [
   },
   {
     status: 'en línea',
+    label: 'Lista de espera · configuración incluida',
+    action: 'Hueco recolocado',
+    time: 'Lista de espera avisada',
+    bubbles: [
+      ['ai', 'Hola, Marta. Se ha liberado un hueco para mañana a las 17:30 y usted estaba en lista de espera. ¿Le interesa?', '16:20'],
+      ['patient', '¡Sí! Me viene mucho mejor que el de dentro de tres semanas.', '16:21'],
+      ['ai', '¿Le confirmo entonces que dejamos el de mañana y liberamos el otro?', '16:21'],
+      ['patient', 'Sí, perfecto.', '16:22'],
+      ['ai', 'Hecho. Recepción confirma el cambio y el hueco antiguo vuelve a la agenda.', '16:22'],
+    ],
+  },
+  {
+    status: 'en línea',
+    label: 'Pasar a una persona',
+    action: 'Pasado a recepción',
+    time: 'Prioridad alta',
+    bubbles: [
+      ['patient', 'Llevo desde anoche con un dolor de muela fuerte, casi no he dormido.', '8:12'],
+      ['ai', 'Lo siento. Para ayudarle bien: ¿hay inflamación, fiebre o dolor al morder?', '8:12'],
+      ['patient', 'Está algo hinchado y me duele al masticar.', '8:13'],
+      ['ai', 'Gracias. Esto lo valora una persona: aviso a recepción con prioridad alta para que le llamen cuanto antes.', '8:13'],
+      ['patient', 'Gracias, quedo atento.', '8:14'],
+    ],
+  },
+  {
+    status: 'en línea',
+    label: 'Paciente dormido · configuración incluida',
     action: 'Interés recuperado',
     time: 'Revisión solicitada',
     bubbles: [
@@ -153,7 +166,7 @@ function makeWaBubble(kind, text, time) {
   return bubble;
 }
 
-function renderPhone(chatEl, statusEl, scenario) {
+function renderPhone(chatEl, statusEl, scenario, instant = false) {
   if (!chatEl || !scenario || demoLive) return;
   if (chatEl._bubbleTimers) {
     chatEl._bubbleTimers.forEach((timer) => clearTimeout(timer));
@@ -176,7 +189,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   }
 
   // Sin animacion: pinta todo de golpe.
-  if (reduceMotion) {
+  if (reduceMotion || instant) {
     if (statusEl) statusEl.textContent = 'en l\u00ednea';
     scenario.bubbles.forEach(([kind, text, time]) => chatEl.appendChild(makeWaBubble(kind, text, time)));
     appendOutcome();
@@ -215,133 +228,16 @@ function renderPhone(chatEl, statusEl, scenario) {
       appendBubble(kind, text, time);
       if (statusEl) statusEl.textContent = 'en l\u00ednea';
     }, elapsed));
-    elapsed += kind === 'patient' ? 360 : 460;
+    elapsed += Math.max(1800, Math.min(4200, text.length * 35));
   });
   chatEl._bubbleTimers.push(setTimeout(appendOutcome, elapsed + 320));
 }
 
-(function initScrollProgress() {
-  const bar = document.getElementById('scroll-progress');
-  const nav = document.querySelector('.site-nav');
-  const processStage = document.getElementById('process-stage');
-  const processFill = document.getElementById('process-line-fill');
-  const processCards = Array.from(document.querySelectorAll('[data-process-card]'));
-  let ticking = false;
 
-  function update() {
-    const max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
-    const progress = Math.max(0, Math.min(1, window.scrollY / max));
-    if (bar) bar.style.setProperty('--scroll-progress', `${progress * 100}%`);
-    if (nav) nav.classList.toggle('scrolled', window.scrollY > 40);
 
-    if (processStage && processCards.length) {
-      const rect = processStage.getBoundingClientRect();
-      const local = Math.max(0, Math.min(1, (window.innerHeight * 0.72 - rect.top) / Math.max(1, rect.height)));
-      const active = Math.min(processCards.length - 1, Math.floor(local * processCards.length));
-      processCards.forEach((card, index) => card.classList.toggle('active', index <= active));
-      if (processFill) processFill.style.setProperty('--process-progress', `${((active + 1) / processCards.length) * 100}%`);
-    }
-    ticking = false;
-  }
 
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(update);
-      ticking = true;
-    }
-  }, { passive: true });
-  window.addEventListener('resize', update);
-  update();
-})();
 
-(function initParticles() {
-  const canvas = document.getElementById('particles-canvas');
-  if (!canvas) return;
-  if (lightweightMotion) {
-    canvas.hidden = true;
-    return;
-  }
-  const ctx = canvas.getContext('2d');
-  let dots = [];
 
-  function resize() {
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const count = Math.min(95, Math.floor((canvas.width * canvas.height) / 22000));
-    dots = Array.from({ length: count }, () => ({
-      x: Math.random() * canvas.width,
-      y: Math.random() * canvas.height,
-      vx: (Math.random() - 0.5) * 0.22,
-      vy: (Math.random() - 0.5) * 0.22,
-      r: Math.random() * 1.5 + 0.35,
-      a: Math.random() * 0.42 + 0.12,
-    }));
-  }
-
-  function frame() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    dots.forEach((dot) => {
-      dot.x += dot.vx;
-      dot.y += dot.vy;
-      if (dot.x < 0) dot.x = canvas.width;
-      if (dot.x > canvas.width) dot.x = 0;
-      if (dot.y < 0) dot.y = canvas.height;
-      if (dot.y > canvas.height) dot.y = 0;
-      ctx.beginPath();
-      ctx.arc(dot.x, dot.y, dot.r, 0, Math.PI * 2);
-      ctx.fillStyle = `rgba(255,255,255,${dot.a})`;
-      ctx.fill();
-    });
-    requestAnimationFrame(frame);
-  }
-
-  resize();
-  window.addEventListener('resize', resize);
-  requestAnimationFrame(frame);
-})();
-
-(function initBackgroundParallax() {
-  const video = document.getElementById('bg-video');
-  const tint = document.getElementById('bg-tint');
-  if (!video && !tint) return;
-  // The poster paints immediately; decoration never competes with the hero.
-  if (video && !lightweightMotion && !navigator.connection?.saveData) {
-    const loadVideo = () => {
-      video.src = video.dataset.src;
-      video.play().catch(() => {});
-    };
-    window.addEventListener('load', () => {
-      if ('requestIdleCallback' in window) requestIdleCallback(loadVideo, { timeout: 3500 });
-      else setTimeout(loadVideo, 1500);
-    }, { once: true });
-    document.addEventListener('visibilitychange', () => {
-      if (document.hidden) video.pause();
-      else if (video.getAttribute('src')) video.play().catch(() => {});
-    });
-  }
-  if (lightweightMotion) return;
-
-  let ticking = false;
-  function update() {
-    const y = window.scrollY || 0;
-    const vh = window.innerHeight || 1;
-    if (video) {
-      const shift = Math.min(y * 0.12, 130);
-      const scale = 1 + Math.min(y / vh, 1) * 0.06;
-      video.style.transform = `translate3d(0, ${shift}px, 0) scale(${scale})`;
-    }
-    if (tint) tint.style.opacity = String(1 + Math.min(y / (vh * 1.25), 1) * 0.32);
-    ticking = false;
-  }
-
-  window.addEventListener('scroll', () => {
-    if (!ticking) {
-      requestAnimationFrame(update);
-      ticking = true;
-    }
-  }, { passive: true });
-  update();
-})();
 
 (function initDiscovery() {
   const board = document.getElementById('discovery-board');
@@ -431,140 +327,51 @@ function renderPhone(chatEl, statusEl, scenario) {
   });
 })();
 
-(function initStoryScroll() {
-  const section = document.getElementById('flujo');
+(function initStoryScenes() {
   const phone = document.getElementById('story-phone');
-  const stage = section ? section.querySelector('.story-phone-pin') : null;
   const chat = document.getElementById('story-phone-chat');
-  if (!section || !phone || !chat) return;
   const status = document.getElementById('story-status');
-  const notes = document.querySelector('.story-notes');
-  const steps = Array.from(document.querySelectorAll('[data-story-step]'));
-  let active = -1;
-  // El chat NO se pinta al cargar la web: se difiere hasta que el telefono entra
-  // en pantalla, para que la 1a conversacion se empiece a escribir al llegar a la
-  // seccion (antes setStep(0) lo renderizaba en el init y ya llegabas con todo escrito).
-  let entered = false;
-
-  function setStep(index) {
-    if (index === active) return;
-    active = index;
-    steps.forEach((step, i) => {
-      step.classList.toggle('active', i === index);
-      step.classList.toggle('revealed', i <= index);
-    });
-    if (entered) renderPhone(chat, status, phoneScenarios[index]);
+  const chooser = document.querySelector('.story-chooser');
+  if (!phone || !chat || !chooser) return;
+  const buttons = [...chooser.querySelectorAll('[data-scene]')];
+  const pause = chooser.querySelector('[data-scene-pause]');
+  const caption = document.getElementById('story-scene-caption');
+  const labels = phoneScenarios.map((escena) => escena.label);
+  let index = 0, timer = null, visible = false, paused = reduceMotion;
+  function stop() {
+    clearTimeout(timer);
+    (chat._bubbleTimers || []).forEach(clearTimeout);
   }
-  function startChat() {
-    if (entered || demoLive) { entered = true; return; }
-    entered = true;
-    // V2: el guion arranca SIEMPRE de fondo; si el backend está vivo, el pill
-    // "Escribir yo" flota encima para pasar a la demo real.
-    renderPhone(chat, status, phoneScenarios[Math.max(0, active)]);
-    if (demoEstadoPromise && demoMostrarCTA) {
-      demoEstadoPromise.then((disponible) => { if (disponible) demoMostrarCTA(); }).catch(() => {});
+  function show(next = index) {
+    stop(); index = next;
+    buttons.forEach((button, i) => button.setAttribute('aria-pressed', String(i === index)));
+    caption.textContent = labels[index];
+    if (demoLive || !visible || document.hidden) return;
+    renderPhone(chat, status, phoneScenarios[index], paused);
+    if (demoEstadoPromise && demoMostrarCTA) demoEstadoPromise.then(ok => { if (ok) demoMostrarCTA(); }).catch(() => {});
+    if (!paused) {
+      const reading = phoneScenarios[index].bubbles.reduce((sum, bubble) => sum + Math.max(1800, Math.min(4200, bubble[1].length * 35)) + 170, 5000);
+      timer = setTimeout(() => show((index + 1) % phoneScenarios.length), reading);
     }
   }
-
-  const n = phoneScenarios.length;
-  let targetP = 0;       // progreso bruto del scroll (0..1)
-  let tgtMX = 0, tgtMY = 0;  // parallax de puntero (-1..1)
-  // Valores suavizados que se animan hacia el objetivo (damping):
-  let curP = 0, curMX = 0, curMY = 0;
-  let running = false;
-  let visible = false;
-
-  function readScroll() {
-    const rect = section.getBoundingClientRect();
-    const total = rect.height - window.innerHeight;
-    targetP = total > 0 ? Math.max(0, Math.min(1, -rect.top / total)) : 0;
-    // El scroll dirige los 4 pasos (scrollytelling).
-    if (!mobileViewport) setStep(Math.max(0, Math.min(n - 1, Math.floor(targetP * n * 0.999))));
-    if (!running && !reduceMotion) start();
-  }
-
-  function applyMotion() {
-    // Modo foco (chat real): movil frontal y quieto; el loop para.
-    // OJO: escala SIEMPRE 1 — scale() sobre la capa 3D rasterizada emborrona
-    // el movil; el tamano extra lo da el ancho real en CSS (.demo-live).
-    if (demoLive) {
-      phone.style.setProperty('--story-ry', '0deg');
-      phone.style.setProperty('--story-rx', '0deg');
-      phone.style.setProperty('--story-x', '0px');
-      phone.style.setProperty('--story-y', '0px');
-      phone.style.setProperty('--story-scale', '1');
-      stop();
-      return;
-    }
-    // Giro tipo plataforma: barrido suave de un lado a otro a lo largo del scroll.
-    const ry = (0.5 - curP) * 26 + curMX * 5;        // +13deg -> -13deg
-    const rx = 4 - curMY * 4 - Math.sin(curP * Math.PI) * 2;
-    const lift = -Math.sin(curP * Math.PI) * 16;     // flota un poco hacia el centro
-    const scale = 1 + Math.sin(curP * Math.PI) * 0.025;
-    phone.style.setProperty('--story-ry', `${ry.toFixed(2)}deg`);
-    phone.style.setProperty('--story-rx', `${rx.toFixed(2)}deg`);
-    phone.style.setProperty('--story-x', `${(curMX * 10).toFixed(1)}px`);
-    phone.style.setProperty('--story-y', `${lift.toFixed(1)}px`);
-    phone.style.setProperty('--story-scale', scale.toFixed(3));
-    phone.style.setProperty('--back-opacity', '1');
-    if (stage) stage.style.setProperty('--orbit-rotate', `${(curP * 10).toFixed(2)}deg`);
-  }
-
-  function loop() {
-    if (!running) return;
-    // Interpolacion exponencial -> movimiento mantequilla, sin tirones.
-    curP += (targetP - curP) * 0.085;
-    curMX += (tgtMX - curMX) * 0.06;
-    curMY += (tgtMY - curMY) * 0.06;
-    applyMotion();
-    if (Math.abs(targetP-curP) + Math.abs(tgtMX-curMX) + Math.abs(tgtMY-curMY) < 0.001) { stop(); return; }
-    requestAnimationFrame(loop);
-  }
-  function start() {
-    if (running || demoLive || lightweightMotion || !visible || document.hidden) return;
-    running = true;
-    requestAnimationFrame(loop);
-  }
-  function stop() { running = false; }
-
-  setStep(0);
-
-  if (reduceMotion) {
-    steps.forEach((step) => step.classList.add('revealed'));
-    startChat();  // sin animacion: muestra la conversacion directamente
-  } else {
-    if (notes) notes.classList.add('story-reveal');
-    // Solo animamos cuando la seccion esta a la vista.
-    if ('IntersectionObserver' in window) {
-      const io = new IntersectionObserver((entries) => {
-        entries.forEach((e) => { visible = e.isIntersecting; visible ? start() : stop(); });
-      }, { threshold: 0 });
-      io.observe(section);
-      // Arranca la 1a conversacion (efecto de tecleo) cuando el telefono entra
-      // en pantalla; se desconecta tras la primera vez.
-      const chatIO = new IntersectionObserver((entries) => {
-        entries.forEach((e) => {
-          if (e.isIntersecting) { startChat(); chatIO.disconnect(); }
-        });
-      }, { threshold: 0.3 });
-      chatIO.observe(phone);
-    } else {
-      visible = true;
-      start();
-      startChat();
-    }
-    if (!matchMedia('(hover: none)').matches) {
-      window.addEventListener('mousemove', (e) => {
-        tgtMX = (e.clientX / window.innerWidth - 0.5) * 2;
-        tgtMY = (e.clientY / window.innerHeight - 0.5) * 2;
-        start();
-      }, { passive: true });
-    }
-  }
-
-  window.addEventListener('scroll', readScroll, { passive: true });
-  window.addEventListener('resize', readScroll);
-  readScroll();
+  buttons.forEach((button, i) => button.addEventListener('click', () => show(i)));
+  pause.hidden = reduceMotion;
+  pause.addEventListener('click', () => {
+    if (reduceMotion) return;
+    paused = !paused;
+    pause.setAttribute('aria-pressed', String(paused));
+    pause.textContent = paused ? 'Reproducir escenas' : 'Leer sin animación';
+    show();
+  });
+  pause.setAttribute('aria-pressed', String(paused));
+  pause.textContent = paused ? 'Reproducir escenas' : 'Leer sin animación';
+  const observer = new IntersectionObserver(entries => {
+    visible = entries[0].isIntersecting;
+    if (visible) show(); else stop();
+  }, {threshold: .15});
+  observer.observe(phone);
+  document.addEventListener('visibilitychange', () => document.hidden ? stop() : show());
+  show();
 })();
 
 (function initSystemCases() {
@@ -634,7 +441,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   function lightSteps() {
     if (stepTimer) clearTimeout(stepTimer);
     steps.forEach((s) => s.classList.remove('lit'));
-    if (reduceMotion) { steps.forEach((s) => s.classList.add('lit')); return; }
+    if (lightweightMotion) { steps.forEach((s) => s.classList.add('lit')); return; }
     let i = 0;
     const next = () => {
       if (i >= steps.length) return;
@@ -678,7 +485,7 @@ function renderPhone(chatEl, statusEl, scenario) {
       tab.setAttribute('aria-selected', on ? 'true' : 'false');
       tab.tabIndex = on ? 0 : -1;
     });
-    if (!reduceMotion) {
+    if (!lightweightMotion) {
       win.classList.remove('swap');
       void win.offsetWidth;
       win.classList.add('swap');
@@ -865,22 +672,7 @@ function renderPhone(chatEl, statusEl, scenario) {
   render(0);
 })();
 
-(function initReveal() {
-  if (reduceMotion || !('IntersectionObserver' in window)) return;
-  const els = Array.from(document.querySelectorAll(
-    '.hero-copy, .section-copy, .audit-grid, .trust-faq, .voice-copy, .voice-skill-board, .voice-chat-example, .discovery-board, .story-phone-pin, .mail-app, .pricing-shell, .cta-copy, .lead-form'
-  ));
-  document.documentElement.classList.add('reveal-ready');
-  els.forEach((el) => el.classList.add('reveal-item'));
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (!entry.isIntersecting) return;
-      entry.target.classList.add('in-view');
-      observer.unobserve(entry.target);
-    });
-  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
-  els.forEach((el) => observer.observe(el));
-})();
+
 
 /* -------------------------------------------------------------------
    Cal.com — carga perezosa.
@@ -1153,202 +945,9 @@ function mountCal(destino) {
    #5 lamp lateral · #7 modal demo expandible.
    =================================================================== */
 
-(function initHeroTitleParticles() {
-  if (reduceMotion) return;
-  const canvas = document.getElementById('hero-title-fx');
-  const wrap = canvas && canvas.closest('.hero-title-wrap');
-  if (!canvas || !wrap) return;
-  const lowEnd = (navigator.deviceMemory && navigator.deviceMemory <= 2)
-    || (navigator.hardwareConcurrency && navigator.hardwareConcurrency <= 2);
-  if (lowEnd) return;
 
-  const ctx = canvas.getContext('2d');
-  const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const COLORS = ['90,240,216', '123,231,255', '247,251,248'];
-  let W = 0, H = 0, parts = [], raf = 0, running = false;
 
-  function make() {
-    return {
-      x: Math.random() * W,
-      y: Math.random() * H,
-      speed: Math.random() * 0.4 + 0.12,
-      len: Math.random() * 1.6 + 0.8,
-      op: Math.random() * 0.5 + 0.22,
-      fade: Date.now() + Math.random() * 2600 + 600,
-      out: false,
-      c: COLORS[(Math.random() * COLORS.length) | 0],
-    };
-  }
-  function resize() {
-    const r = canvas.getBoundingClientRect();
-    W = Math.max(1, Math.round(r.width));
-    H = Math.max(1, Math.round(r.height));
-    canvas.width = Math.round(W * dpr);
-    canvas.height = Math.round(H * dpr);
-    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    const count = Math.min(120, Math.floor((W * H) / 2200));
-    parts = Array.from({ length: count }, make);
-  }
-  function frame() {
-    ctx.clearRect(0, 0, W, H);
-    const now = Date.now();
-    for (const p of parts) {
-      p.y -= p.speed;
-      if (p.y < -4) Object.assign(p, make(), { y: H + 2 });
-      if (!p.out && now > p.fade) p.out = true;
-      if (p.out) {
-        p.op -= 0.006;
-        if (p.op <= 0) Object.assign(p, make(), { y: H + 2 });
-      }
-      ctx.fillStyle = `rgba(${p.c},${p.op})`;
-      ctx.fillRect(p.x, p.y, 0.7, p.len);
-    }
-    raf = requestAnimationFrame(frame);
-  }
-  function start() {
-    if (running) return;
-    running = true;
-    canvas.classList.add('is-live');
-    raf = requestAnimationFrame(frame);
-  }
-  function stop() {
-    running = false;
-    cancelAnimationFrame(raf);
-  }
 
-  resize();
-  window.addEventListener('resize', resize);
-  if (document.fonts && document.fonts.ready) document.fonts.ready.then(resize);
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => (e.isIntersecting ? start() : stop()));
-    }, { threshold: 0.05 });
-    io.observe(wrap);
-  } else {
-    start();
-  }
-})();
-
-(function initVoiceSpline() {
-  const fig = document.getElementById('voice-3d');
-  if (!fig) return;
-  const scene = fig.getAttribute('data-scene');
-  if (!scene) return;
-  // El 3D pesado solo en equipos capaces y con puntero fino; si no, se quedan
-  // las anillas de fallback (estética coherente, coste cero).
-  const lowEnd = (navigator.deviceMemory && navigator.deviceMemory < 4)
-    || (navigator.hardwareConcurrency && navigator.hardwareConcurrency < 4);
-  const coarse = window.matchMedia('(pointer: coarse)').matches;
-  if (reduceMotion || coarse || lowEnd || navigator.connection?.saveData) return;
-
-  let loaded = false;
-  function ensureRuntime() {
-    if (window.customElements && customElements.get('spline-viewer')) return Promise.resolve();
-    if (window.__splineLoading) return window.__splineLoading;
-    window.__splineLoading = new Promise((resolve, reject) => {
-      const s = document.createElement('script');
-      s.type = 'module';
-      // Runtime autoalojado: en la primera visita carga desde nuestro propio
-      // dominio (rápido y fiable), no desde unpkg. Los sub-módulos perezosos
-      // (navmesh/physics/...) viven en la misma carpeta y resuelven solos.
-      s.src = '/features/landing/spline/spline-viewer.js';
-      s.onload = resolve;
-      s.onerror = reject;
-      document.head.appendChild(s);
-    });
-    return window.__splineLoading;
-  }
-  function load() {
-    if (loaded) return;
-    loaded = true;
-    ensureRuntime().then(() => {
-      const viewer = document.createElement('spline-viewer');
-      viewer.setAttribute('url', scene);
-      // CLAVE: loading="eager". Sin esto el visor usa loading="auto" y su load()
-      // se niega a cargar la escena mientras el elemento esta fuera del viewport
-      // (guarda interna: !inViewport && loading!=="eager" -> no carga). Resultado:
-      // la escena solo cargaba al hacer scroll a la seccion y la intro (cara ->
-      // camara alejandose al cuerpo) se reproducia ahi. Con "eager" la escena
-      // carga al entrar en la web; la intro corre arriba mientras el robot esta
-      // oculto y al llegar a la seccion ya esta en su pose final, sin transicion.
-      viewer.setAttribute('loading', 'eager');
-      // events-target="global": el runtime escucha el raton a nivel de VENTANA
-      // (updateUseWindowEvents) en vez de solo sobre su canvas, asi la cabeza
-      // del robot sigue al raton por toda la pagina, no solo al pasar por encima.
-      viewer.setAttribute('events-target', 'global');
-      viewer.setAttribute('loading-anim-type', 'none');
-      fig.classList.add('is-spline-mounted');
-
-      // Oculta la marca de agua "Built with Spline" SIN borrar nodos. CLAVE:
-      // el runtime guarda this._logo y justo antes de disparar 'load-complete'
-      // ejecuta this._logo.style.display="flex". Si borramos ese nodo del shadow
-      // DOM, esa línea revienta ("reading 'style' of null"), NUNCA dispara
-      // 'load-complete' y el canvas se queda visibility:hidden -> el robot no
-      // aparece. Por eso lo tapamos con una hoja de estilos !important inyectada
-      // en el shadow root (el nodo sigue ahí, el runtime no peta).
-      let wmStyled = false;
-      function hideWatermark() {
-        const root = viewer.shadowRoot;
-        if (!root || wmStyled) return;
-        try {
-          const st = document.createElement('style');
-          st.textContent = '#logo,a[href*="spline" i],[class*="logo" i]{display:none!important;opacity:0!important;pointer-events:none!important}';
-          root.appendChild(st);
-          wmStyled = true;
-        } catch (e) { /* shadow DOM no accesible */ }
-      }
-
-      // Revelar = hacer visible el canvas del visor y fundir el robot local
-      // (is-live). El spline-viewer NO emite 'load'; emite 'load-complete'
-      // (escena cargada) y 'rendered' (1er frame). Escuchamos esos, y además
-      // forzamos nosotros la visibilidad del canvas por si el flujo fallara.
-      let revealed = false;
-      const reveal = () => {
-        if (revealed) return;
-        revealed = true;
-        try {
-          const c = viewer.shadowRoot && viewer.shadowRoot.querySelector('canvas');
-          if (c) c.style.visibility = 'visible';
-        } catch (e) { /* ignore */ }
-        fig.classList.add('is-live');
-      };
-      viewer.addEventListener('load-complete', reveal);
-      viewer.addEventListener('rendered', reveal);
-      fig.appendChild(viewer);
-
-      // Polling: oculta la marca de agua y, como red de seguridad si los eventos
-      // no llegaran, revela cuando el canvas lleva ~5s presente (ya ha pintado;
-      // en 1ª visita la escena tarda ~4-5s). El robot local cubre la espera.
-      let ticks = 0;
-      let canvasSeenAt = 0;
-      const iv = window.setInterval(() => {
-        hideWatermark();
-        if (!revealed && viewer.shadowRoot && viewer.shadowRoot.querySelector('canvas')) {
-          if (!canvasSeenAt) canvasSeenAt = Date.now();
-          else if (Date.now() - canvasSeenAt > 5000) reveal();
-        }
-        ticks += 1;
-        if ((revealed && wmStyled) || ticks > 140) window.clearInterval(iv);
-      }, 150);
-    }).catch(() => { loaded = false; });
-  }
-  if ('IntersectionObserver' in window) {
-    const io = new IntersectionObserver((entries) => {
-      entries.forEach((e) => {
-        if (e.isIntersecting) { load(); io.disconnect(); }
-      });
-    }, { rootMargin: '160px' });
-    io.observe(fig);
-  } else {
-    load();
-  }
-
-  // NO se llama a load() aquí. El arranque inmediato costaba ~22 s de bloqueo
-  // del hilo principal en la carga: descargaba, parseaba e instanciaba WebGL
-  // para un robot que está varias pantallas por debajo del hero. El
-  // IntersectionObserver de arriba manda, con 160px de margen para que la
-  // escena llegue montada a la sección.
-})();
 
 (function initLampEdges() {
   const sections = Array.from(document.querySelectorAll('[data-lamp]'));
@@ -2349,4 +1948,21 @@ function mountCal(destino) {
       // El SDK se carga desde conectar() al iniciar la llamada, no al visitar la web.
     })
     .catch(() => {});
+})();
+
+(function initReveal() {
+  if (reduceMotion || !('IntersectionObserver' in window)) return;
+  const els = Array.from(document.querySelectorAll(
+    '.section-copy, .audit-grid, .trust-faq, .voice-copy, .voice-skill-board, .voice-chat-example, .discovery-board, .story-phone-pin, .mail-app, .pricing-shell, .cta-copy, .lead-form'
+  ));
+  document.documentElement.classList.add('reveal-ready');
+  els.forEach((el) => el.classList.add('reveal-item'));
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (!entry.isIntersecting) return;
+      entry.target.classList.add('in-view');
+      observer.unobserve(entry.target);
+    });
+  }, { threshold: 0.12, rootMargin: '0px 0px -10% 0px' });
+  els.forEach((el) => observer.observe(el));
 })();
