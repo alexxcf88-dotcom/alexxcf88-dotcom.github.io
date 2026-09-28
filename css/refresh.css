@@ -3196,3 +3196,95 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #precio .planes-nota{margin-top:12px;font-size:.76rem;line-height:1.45}
 }
 @media(max-width:340px){#precio .planes{grid-auto-columns:82%}#precio .plan .plan-precio strong{font-size:2.5rem}#precio .plan-lista li,#precio .plan-lista li.plan-clave{font-size:.73rem}}
+
+/* Mobile polish · segunda pasada: densidad y proporción de producto. */
+@media(max-width:760px){
+ /* Las dos señales comerciales abren el ancho de la portada sin competir
+    con el titular. */
+ #inicio .hero-copy>.eyebrow{width:min(100%,360px);max-width:none;padding:8px 16px;border-block:1px solid rgba(90,240,216,.12)}
+ #inicio .pilot-badge{width:min(100%,300px);justify-content:space-between;padding:8px 14px}
+
+ /* Titulares más editoriales: siguen mandando, pero dejan ver el producto. */
+ #proceso .section-copy h2,#inbox .section-copy h2,#flujo .story-intro h2,#voz .voice-head h2,#precio .pricing-head h2,#faq .section-copy h2{font-size:clamp(1.72rem,7.2vw,2.08rem);line-height:1.04}
+
+ /* Sistema compacto y horizontal: las tres decisiones se entienden en una
+    sola mirada y el panel conserva métricas utilizables. */
+ #proceso .os-window{width:min(100%,330px)}
+ #proceso .os-tabs{grid-template-columns:repeat(5,minmax(0,1fr));gap:3px;padding:7px}
+ #proceso .os-tab{min-height:34px;padding:5px 2px;font-size:.56rem;letter-spacing:-.02em}
+ #proceso .os-caption{padding:7px 10px;font-size:.68rem}
+ #proceso .os-body{padding:8px;gap:8px}
+ #proceso .os-pipeline{grid-template-columns:repeat(3,minmax(0,1fr));gap:5px}
+ #proceso .os-step{min-height:142px;padding:8px 7px}
+ #proceso .os-step-label{display:grid;gap:4px;padding:0;font-size:.49rem;line-height:1.18}
+ #proceso .os-step-label i{width:max-content;padding:3px 5px}
+ #proceso .os-step p{font-size:.64rem;line-height:1.35}
+ #proceso .os-panel{grid-template-columns:1fr 1fr;gap:7px;padding:8px}
+ #proceso .os-panel-label,#proceso .os-kpis,#proceso .os-note{grid-column:1/-1}
+ #proceso .os-meter{grid-column:1/-1}
+ #proceso .os-kpi{padding:7px 8px}
+ #proceso .os-kpi strong{font-size:1.05rem}
+ #proceso .os-kpi small,#proceso .os-meter-top,#proceso .os-note{font-size:.58rem}
+
+ /* Inbox algo más pequeño, sin perder carpetas, lista ni lectura. */
+ #inbox .mail-app{width:min(100%,330px)}
+ #inbox .message-list{max-height:174px}
+ #inbox .reader-content{max-height:226px}
+
+ /* En acción: el producto explica el flujo; el párrafo repetía lo mismo. */
+ #flujo.story-section{display:grid;grid-template-columns:minmax(170px,1.5fr) minmax(100px,.75fr);grid-template-areas:"intro intro" "phone chooser";column-gap:9px;row-gap:18px;align-items:start}
+ #flujo .story-side{display:contents}
+ #flujo .story-intro{grid-area:intro}
+ #flujo .story-intro>p:last-child{display:none}
+ #flujo .story-phone-pin{grid-area:phone;margin:0;min-height:0}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,218px);height:auto;aspect-ratio:258/529;border-radius:40px;padding:6px}
+ #flujo .story-phone .phone-screen{border-radius:33px}
+ #flujo .story-chooser{grid-area:chooser;width:100%;margin:0;padding:7px 6px;border-radius:12px}
+ #flujo .story-scene-buttons{grid-template-columns:1fr;gap:4px}
+ #flujo .story-scene-buttons button{display:grid;grid-template-columns:18px minmax(0,1fr);min-height:35px;padding:4px;gap:4px;border-radius:8px;font-size:.58rem;line-height:1.1;transition:border-color .18s ease,background .18s ease,color .18s ease}
+ #flujo .story-scene-buttons button i{width:18px;height:18px;flex-basis:18px;border-radius:6px;font-size:.55rem}
+ #flujo .story-scene-buttons button[aria-pressed="true"]{border-color:rgba(90,240,216,.55);background:rgba(90,240,216,.12);box-shadow:inset 2px 0 var(--aqua)}
+ #flujo .story-chooser p{margin-top:7px;font-size:.62rem;line-height:1.2}
+ #flujo .story-pause{min-height:30px;margin-top:5px;padding:4px;font-size:.56rem}
+ #flujo .voice-talk-btn.wa-live-pill{bottom:60px;padding:.32rem .58rem .32rem .38rem;gap:.35rem;max-width:calc(100% - .6rem)}
+ #flujo .voice-talk-btn.wa-live-pill .vt-ic{width:23px;height:23px}
+ #flujo .voice-talk-btn.wa-live-pill .vt-copy strong{font-size:.64rem}
+ #flujo .voice-talk-btn.wa-live-pill .vt-copy small{font-size:.5rem}
+ #story-phone-chat.con-cta{padding-bottom:58px}
+
+ /* El robot local permanece como base del holograma hasta que el canvas ya
+    ha pintado; la caja horizontal tiene altura estable desde el primer frame. */
+ #voz .voice-stage{gap:12px}
+ #voz .voice-robot{width:min(100%,350px);height:224px;min-height:224px;overflow:hidden}
+ #voz .voice-robot spline-viewer{opacity:0;transition:opacity .32s ease}
+ #voz .voice-robot.is-live spline-viewer{opacity:1}
+ #voz .voice-robot .voice-3d-fallback{opacity:1;transition:opacity .45s ease .12s}
+ #voz .voice-robot.is-live .voice-3d-fallback{opacity:.08}
+ #voz .voice-transcript{min-height:276px}
+ #voz .voice-chat-wrap{min-height:226px}
+
+ /* Navegación encima y primer plan completamente dentro del raíl. */
+ #precio .pricing-mobile-nav{margin:2px auto 8px}
+ #precio .planes{width:calc(100% + 32px);margin-inline:-16px;grid-auto-columns:min(78%,278px);padding:8px 44px 8px 16px;scroll-padding-left:16px}
+ #precio .pricing-shell::after{top:190px}
+
+ /* FAQ y cierre más ligeros y táctiles. */
+ #faq{padding-block:64px}
+ #faq .section-copy{margin-bottom:14px}
+ #faq .trust-faq{gap:6px}
+ #faq .trust-faq.faq-list summary{min-height:46px;padding:.6rem .78rem;font-size:.84rem}
+ #faq .trust-faq.faq-list details p{padding:0 .78rem .75rem;font-size:.8rem;line-height:1.5}
+ #contacto.cta-section{padding:70px 20px 62px;gap:30px}
+ #contacto .cta-copy h2{font-size:clamp(2.35rem,11.5vw,3.15rem);max-width:10ch;margin-bottom:1.1rem}
+ #contacto .cta-copy>p:not(.eyebrow){font-size:.86rem;line-height:1.52}
+ #contacto .cta-points{margin-top:16px}
+ #contacto>.lead-form{padding:16px;border:1px solid rgba(255,255,255,.09);border-radius:20px;background:linear-gradient(145deg,rgba(255,255,255,.045),rgba(255,255,255,.015));box-shadow:0 24px 70px rgba(0,0,0,.24)}
+ #contacto>.lead-form input[type="text"],#contacto>.lead-form input[type="tel"]{height:46px}
+ #contacto .lead-trust{font-size:.68rem}
+}
+
+@media(max-width:340px){
+ #flujo.story-section{grid-template-columns:minmax(170px,1.5fr) minmax(100px,.75fr);column-gap:7px}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,184px)}
+ #flujo .story-scene-buttons button{font-size:.54rem}
+}

@@ -2274,8 +2274,16 @@ function mountCal(destino) {
           const lienzo = visor.shadowRoot && visor.shadowRoot.querySelector('canvas');
           if (lienzo) lienzo.style.visibility = 'visible';
         } catch (e) { /* ignore */ }
-        fig.classList.add('is-live');
-        if (vigilar) vigilarFluidez();
+        /* El evento puede adelantarse al primer frame realmente pintado del
+           canvas. Dos frames y un breve colchón mantienen el robot local por
+           debajo hasta que el holograma ya existe, evitando el hueco negro. */
+        requestAnimationFrame(() => requestAnimationFrame(() => {
+          window.setTimeout(() => {
+            if (!visor) return;
+            fig.classList.add('is-live');
+            if (vigilar) vigilarFluidez();
+          }, 180);
+        }));
       }
       visor.addEventListener('load-complete', revelar);
       visor.addEventListener('rendered', revelar);
@@ -2313,10 +2321,12 @@ function mountCal(destino) {
   const encima = new IntersectionObserver((entradas) => {
     if (!entradas.some((e) => e.isIntersecting)) return;
     encima.disconnect();
-    enReposo(montarVisor, 1200);
+    /* La escena ya está cerca: montarla directamente evita que el callback
+       idle quede bloqueado por scroll y aparezca tarde al entrar en Voz. */
+    montarVisor();
     // En tactil se espera a tenerla casi encima: si no llegas a Voz, no se
     // descarga la escena.
-  }, { rootMargin: vigilar ? '150px 0px' : '400px 0px' });
+  }, { rootMargin: vigilar ? '700px 0px' : '700px 0px' });
   encima.observe(fig);
 })();
 
