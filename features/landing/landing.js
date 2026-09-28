@@ -2150,7 +2150,7 @@ function mountCal(destino) {
 
   const nucleos = navigator.hardwareConcurrency || 0;
   const memoria = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
-  const modesto = (nucleos && nucleos < 4) || (memoria !== null && memoria < 4);
+  const modesto = (nucleos && nucleos < 4) || (memoria !== null && memoria < 3);
   if (modesto) return;
 
   /* En tactil el liston sube y ademas se vigila el resultado. No es esnobismo
@@ -2159,8 +2159,14 @@ function mountCal(destino) {
      memoria y tipo de red, que es lo que de verdad determina si aguanta. */
   const vigilar = touchDevice || mobileViewport;
   if (vigilar) {
-    const buenaRed = (red.effectiveType || '4g') === '4g';
-    const suficiente = nucleos >= 6 && (memoria === null || memoria >= 4);
+    /* Antes se exigían 6 núcleos, 4 GB declarados y effectiveType === 4g.
+       Safari no publica deviceMemory y algunas conexiones rápidas no exponen
+       effectiveType, de modo que móviles capaces ni siquiera lo intentaban.
+       El filtro inicial ya descarta ahorro de datos y redes 2g; aquí basta con
+       cuatro núcleos y 3 GB cuando el dato existe. El vigilante de FPS sigue
+       teniendo la última palabra tras montar la escena. */
+    const buenaRed = !/(^|-)(2g|slow-2g)$/.test(red.effectiveType || '');
+    const suficiente = (!nucleos || nucleos >= 4) && (memoria === null || memoria >= 3);
     if (!buenaRed || !suficiente) return;
   }
 
