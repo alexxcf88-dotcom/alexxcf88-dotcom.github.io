@@ -3368,3 +3368,53 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #contacto>.lead-form .primary-btn-full{min-height:44px;margin-top:9px}
  #contacto .lead-trust{display:none}
 }
+
+/* Legibilidad final de las dos demos móviles. */
+@media(max-width:760px){
+ /* Seis acciones grandes a la derecha, sin volver a agrandar el teléfono. */
+ #flujo.story-section{grid-template-columns:minmax(0,1.08fr) minmax(125px,.92fr);column-gap:9px;padding-inline:16px}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,190px)}
+ #flujo .story-chooser{padding:8px}
+ #flujo .story-scene-buttons{gap:6px}
+ #flujo .story-scene-buttons button{grid-template-columns:22px minmax(0,1fr);min-height:44px;padding:6px;gap:6px;font-size:.66rem;line-height:1.16}
+ #flujo .story-scene-buttons button i{width:22px;height:22px;flex-basis:22px;font-size:.62rem}
+ #flujo .story-chooser p{font-size:.68rem}
+ #flujo .story-pause{min-height:34px;font-size:.61rem}
+
+ /* Inbox adaptado al móvil: carpetas arriba; lista y correo debajo. Ningún
+    texto se escala o se comprime dentro de columnas de 70 px. */
+ #inbox .mail-app{height:430px}
+ #inbox .mail-body{grid-template-columns:118px minmax(0,1fr);grid-template-rows:42px 358px;height:400px;min-height:400px}
+ #inbox .mail-sidebar{grid-column:1/-1;grid-row:1;display:flex;align-items:center;gap:5px;padding:5px 7px;overflow-x:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.06);scrollbar-width:none}
+ #inbox .mail-sidebar::-webkit-scrollbar{display:none}
+ #inbox .compose-btn,#inbox .mail-labels{display:none}
+ #inbox .mail-nav-list{display:flex;flex:0 0 auto;gap:5px}
+ #inbox .mail-sidebar .mail-nav{display:inline-flex;width:auto;min-height:29px;padding:5px 8px;gap:4px;flex:0 0 auto;border:1px solid rgba(255,255,255,.08);border-radius:999px;font-size:.61rem}
+ #inbox .mail-nav em{margin-left:2px;font-size:.52rem}
+ #inbox .message-list{grid-column:1;grid-row:2;height:358px;padding:5px}
+ #inbox .message-item{min-height:70px;padding:7px 6px}
+ #inbox .message-item .mi-from{font-size:.69rem}
+ #inbox .message-item .mi-sub{font-size:.64rem;line-height:1.22}
+ #inbox .message-item .mi-prev{font-size:.57rem;line-height:1.22}
+ #inbox .mi-time{font-size:.5rem}
+ #inbox .reader{grid-column:2;grid-row:2;height:358px}
+ #inbox .reader-toolbar{height:32px;min-height:32px;padding:3px 6px}
+ #inbox .reader-toolbar button{width:25px;height:25px;min-height:25px}
+ #inbox .reader-head{padding:7px;gap:5px}
+ #inbox .reader-head .avatar{width:25px;height:25px;font-size:.62rem}
+ #inbox .reader-head strong{font-size:.7rem}
+ #inbox .reader-head small,#inbox .reader-pill{font-size:.51rem}
+ #inbox .reader-content{height:279px;padding:9px;font-size:.66rem}
+ #inbox .reader-subject{font-size:.82rem;line-height:1.2}
+ #inbox .reader-body{font-size:.66rem;line-height:1.45}
+ #inbox .summary-card p,#inbox .draft-card p{font-size:.6rem;line-height:1.4}
+ #inbox .summary-label,#inbox .draft-label{font-size:.48rem}
+ #inbox .reader-actions button{font-size:.58rem}
+}
+
+@media(max-width:340px){
+ #flujo.story-section{grid-template-columns:minmax(0,1fr) minmax(122px,.92fr);column-gap:7px}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,170px)}
+ #flujo .story-scene-buttons button{font-size:.61rem;padding-inline:5px}
+ #inbox .mail-body{grid-template-columns:108px minmax(0,1fr)}
+}
