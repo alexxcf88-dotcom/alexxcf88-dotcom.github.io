@@ -1304,6 +1304,7 @@ html.fx-listo .hero h1 .shiny {
   .mail-app { height: 430px; border-radius: 16px; overflow: hidden; }
   .mail-titlebar { min-height: 34px; padding: 7px 9px; }
   .mail-titlebar strong { font-size: .68rem; }
+  .mail-titlebar .mail-brand img { width: 62px; }
   .mail-body {
     display: grid;
     grid-template-columns: minmax(104px, 38%) minmax(0, 1fr);
