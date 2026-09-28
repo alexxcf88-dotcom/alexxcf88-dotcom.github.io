@@ -630,24 +630,26 @@ html, body { overflow-x: clip; }
    contain-intrinsic-size reserva su altura aproximada para que la barra de
    scroll no salte y el CLS siga en cero; «auto» hace que recuerde la real.
    ───────────────────────────────────────────────────────────────────────────── */
-/* Las estimaciones son las alturas REALES medidas a 1440 y a 390; si mienten,
-   el salto de las anclas cae corto y la barra de scroll da tirones mientras
-   se pintan las secciones. */
-#proceso { content-visibility: auto; contain-intrinsic-size: auto 860px; }
+/* Alturas REALES, medidas recorriendo la pagina entera. Ojo: si se miden sin
+   recorrerla, las secciones bajo content-visibility devuelven su ESTIMACION y
+   no su alto, asi que el valor se confirma a si mismo. Con estimaciones que
+   mienten, la barra de scroll pega tirones y el salto de las anclas cae
+   corto: se percibe como lag aunque no lo sea. */
+#proceso { content-visibility: auto; contain-intrinsic-size: auto 880px; }
 #inbox { content-visibility: auto; contain-intrinsic-size: auto 1280px; }
-#flujo { content-visibility: auto; contain-intrinsic-size: auto 2000px; }
-#voz { content-visibility: auto; contain-intrinsic-size: auto 1670px; }
-.sistemas { content-visibility: auto; contain-intrinsic-size: auto 900px; }
-#faq { content-visibility: auto; contain-intrinsic-size: auto 930px; }
-#contacto { content-visibility: auto; contain-intrinsic-size: auto 1030px; }
+#flujo { content-visibility: auto; contain-intrinsic-size: auto 2640px; }
+#voz { content-visibility: auto; contain-intrinsic-size: auto 2150px; }
+#programas, .sistemas { content-visibility: auto; contain-intrinsic-size: auto 1300px; }
+#faq { content-visibility: auto; contain-intrinsic-size: auto 1410px; }
+#contacto { content-visibility: auto; contain-intrinsic-size: auto 1670px; }
 @media (max-width: 760px) {
-  #proceso { contain-intrinsic-size: auto 1150px; }
-  #inbox { contain-intrinsic-size: auto 1030px; }
-  #flujo { contain-intrinsic-size: auto 1900px; }
-  #voz { contain-intrinsic-size: auto 1570px; }
-  .sistemas { contain-intrinsic-size: auto 770px; }
-  #faq { contain-intrinsic-size: auto 830px; }
-  #contacto { contain-intrinsic-size: auto 920px; }
+  #proceso { contain-intrinsic-size: auto 1120px; }
+  #inbox { contain-intrinsic-size: auto 1140px; }
+  #flujo { contain-intrinsic-size: auto 1340px; }
+  #voz { contain-intrinsic-size: auto 1150px; }
+  #programas, .sistemas { contain-intrinsic-size: auto 560px; }
+  #faq { contain-intrinsic-size: auto 800px; }
+  #contacto { contain-intrinsic-size: auto 1270px; }
 }
 /* El bloque de precio se deja siempre calculado: es el destino de varios
    enlaces internos y de la pegatina, que sobresale de su caja. */
@@ -1550,15 +1552,9 @@ html.fx-listo .hero h1 .shiny {
 .cta-points li { font-size: 1rem; }
 .lead-form .consent { margin-top: 1rem; }
 .lead-form .lead-status { margin-top: .8rem; font-size: .86rem; }
-/* El aviso de datos vive al pie del formulario, pequeño pero donde importa. */
-.lead-form::after {
-  content: 'Respuesta en 24 h. Tratamos tus datos según la política de privacidad.';
-  display: block;
-  margin-top: 1rem;
-  color: var(--muted);
-  font-size: .78rem;
-  line-height: 1.5;
-}
+/* La nota de datos es un <p class="lead-trust"> real dentro de cada
+   formulario: con un ::after generado salian dos avisos casi identicos uno
+   debajo del otro, y el generado ni se selecciona ni se traduce. */
 
 /* El modal ya explica privacidad junto al formulario: repetirla una tercera
    vez al pie añadía ruido y alargaba innecesariamente la vista móvil. */
@@ -2082,8 +2078,8 @@ html.fx-quieto .hero h1 .shiny { animation-play-state: paused; }
 #contacto.cta-section::before{content:"";position:absolute;left:50%;top:17%;bottom:17%;width:1px;background:linear-gradient(transparent,rgba(90,240,216,.28),rgba(255,173,112,.18),transparent)}
 #contacto .cta-glow{display:block;position:absolute;inset:0;background:linear-gradient(110deg,transparent 0 48%,rgba(255,255,255,.025) 48.1%,transparent 48.3%);animation:none}
 #contacto .cta-copy{position:relative;padding:0;max-width:570px}#contacto .cta-copy h2{max-width:9ch;margin:.7rem 0 1.6rem;font-size:clamp(3.4rem,5.8vw,6rem);line-height:.91;letter-spacing:-.06em}#contacto .cta-copy>p:not(.eyebrow){max-width:43ch;font-size:1.08rem;line-height:1.7}#contacto .cta-points{display:flex;flex-wrap:wrap;gap:8px;margin-top:28px}#contacto .cta-points li{padding:9px 12px;border:1px solid rgba(255,255,255,.08);border-radius:999px;background:rgba(255,255,255,.025);font-size:.75rem}#contacto .cta-points li::before,#contacto .cta-points li::after{display:none}.cta-signal{display:flex;align-items:center;gap:10px;margin-top:42px;color:rgba(247,251,248,.42);font-size:.65rem;font-weight:800;letter-spacing:.11em;text-transform:uppercase}.cta-signal i{width:34px;height:1px;background:linear-gradient(90deg,var(--aqua),var(--orange))}
-#contacto>.lead-form{position:relative;margin:0;padding:8px 0 8px clamp(1rem,3vw,2.4rem);border:0;border-radius:0;background:transparent;box-shadow:none}#contacto>.lead-form::before{content:"Cuéntanos solo lo esencial";display:block;margin-bottom:28px;color:#fff;font-size:1.5rem;font-weight:800;letter-spacing:-.025em}#contacto>.lead-form .lead-form-head{padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid rgba(255,255,255,.1)}#contacto>.lead-form .field{margin-bottom:18px}#contacto>.lead-form input[type="text"],#contacto>.lead-form input[type="tel"]{height:58px;border:0;border-bottom:1px solid rgba(255,255,255,.18);border-radius:0;background:transparent;padding-inline:0;font-size:1rem}#contacto>.lead-form input:focus{border-bottom-color:var(--aqua);box-shadow:none}#contacto>.lead-form .primary-btn{min-height:58px;margin-top:12px;border-radius:14px}
-@media(max-width:760px){#contacto.cta-section{min-height:0;padding:88px 20px 74px;grid-template-columns:1fr;gap:48px}#contacto.cta-section::before{left:20px;right:20px;top:auto;bottom:auto;height:1px;width:auto;background:linear-gradient(90deg,transparent,rgba(90,240,216,.25),transparent)}#contacto .cta-copy h2{font-size:clamp(2.8rem,14vw,4rem);max-width:8ch}#contacto .cta-copy>p:not(.eyebrow){font-size:.95rem;line-height:1.6}#contacto .cta-points{gap:6px;margin-top:22px}#contacto .cta-points li{font-size:.68rem;padding:8px 10px}.cta-signal{margin-top:28px;gap:7px;font-size:.55rem}.cta-signal i{width:18px}#contacto>.lead-form{padding:0;border:0;background:transparent}#contacto>.lead-form::before{font-size:1.25rem;margin-bottom:18px}#contacto>.lead-form input[type="text"],#contacto>.lead-form input[type="tel"]{height:50px}}
+#contacto>.lead-form{position:relative;margin:0;padding:8px 0 8px clamp(1rem,3vw,2.4rem);border:0;border-radius:0;background:transparent;box-shadow:none}#contacto>.lead-form .lead-form-head{padding-bottom:18px;margin-bottom:22px;border-bottom:1px solid rgba(255,255,255,.1)}#contacto>.lead-form .field{margin-bottom:18px}#contacto>.lead-form input[type="text"],#contacto>.lead-form input[type="tel"]{height:58px;border:0;border-bottom:1px solid rgba(255,255,255,.18);border-radius:0;background:transparent;padding-inline:0;font-size:1rem}#contacto>.lead-form input:focus{border-bottom-color:var(--aqua);box-shadow:none}#contacto>.lead-form .primary-btn{min-height:58px;margin-top:12px;border-radius:14px}
+@media(max-width:760px){#contacto.cta-section{min-height:0;padding:88px 20px 74px;grid-template-columns:1fr;gap:48px}#contacto.cta-section::before{left:20px;right:20px;top:auto;bottom:auto;height:1px;width:auto;background:linear-gradient(90deg,transparent,rgba(90,240,216,.25),transparent)}#contacto .cta-copy h2{font-size:clamp(2.8rem,14vw,4rem);max-width:8ch}#contacto .cta-copy>p:not(.eyebrow){font-size:.95rem;line-height:1.6}#contacto .cta-points{gap:6px;margin-top:22px}#contacto .cta-points li{font-size:.68rem;padding:8px 10px}.cta-signal{margin-top:28px;gap:7px;font-size:.55rem}.cta-signal i{width:18px}#contacto>.lead-form{padding:0;border:0;background:transparent}#contacto>.lead-form input[type="text"],#contacto>.lead-form input[type="tel"]{height:50px}}
 
 /* Presupuesto de movimiento: capítulos fuera de vista no componen en bucle. */
 #inicio.is-offscreen *,#proceso.is-offscreen *,#flujo.is-offscreen *,#voz.is-offscreen *{animation-play-state:paused!important}
@@ -2092,7 +2088,7 @@ html.fx-quieto .hero h1 .shiny { animation-play-state: paused; }
 
 /* Automatizada v2 · el color viaja de forma continua, sin destello aislado. */
 @keyframes automatizadaViva{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
-html.fx-listo .hero h1 .shiny{color:transparent;background-image:linear-gradient(100deg,#5af0d8 0%,#f8fffd 19%,#73cfff 38%,#2de0e8 58%,#fff 76%,#5af0d8 100%);background-size:260% 100%;background-position:0% 50%;-webkit-background-clip:text;background-clip:text;text-shadow:0 0 34px rgba(90,240,216,.14)}
+html.fx-listo .hero h1 .shiny{color:transparent;background-image:linear-gradient(100deg,#5af0d8 0%,#f8fffd 19%,#73cfff 38%,#2de0e8 58%,#fff 76%,#5af0d8 100%);background-size:260% 100%;background-position:0% 50%;-webkit-background-clip:text;background-clip:text}
 html.fx-listo.fx-anima:not(.fx-quieto) .hero h1 .shiny{animation:automatizadaViva 8s ease-in-out infinite!important}
 html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 @media(prefers-reduced-motion:reduce){html.fx-listo .hero h1 .shiny{animation:none!important;background-position:38% 50%}}
@@ -2105,9 +2101,9 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #inbox .mail-app{width:1120px;max-width:none;height:auto;zoom:.32;border-radius:26px;box-shadow:0 32px 90px rgba(0,0,0,.45)}
  #inbox .mail-titlebar{height:46px;padding:0 1rem}#inbox .mail-titlebar strong{font-size:.78rem}#inbox .mail-body{display:grid;grid-template-columns:220px 360px 540px;height:560px;min-height:560px}#inbox .mail-sidebar{display:block;padding:1rem}#inbox .message-list{height:560px;max-height:none;padding:.7rem;overflow:hidden;border-right:1px solid rgba(255,255,255,.04);border-bottom:0}#inbox .message-item{min-height:auto;padding:.68rem .8rem .68rem .72rem;gap:.18rem .6rem}#inbox .message-item .mi-from{font-size:.86rem}#inbox .message-item .mi-sub{font-size:.8rem}#inbox .message-item .mi-prev{display:block;font-size:.72rem}#inbox .reader{height:560px;overflow:hidden}#inbox .reader-content{height:calc(560px - 104px);overflow:hidden;padding:1.2rem;font-size:.88rem}#inbox .reader-toolbar{min-height:46px;padding:6px 12px}#inbox .reader-head{padding:12px 18px}#inbox .summary-card,#inbox .draft-card{padding:13px;margin-top:12px}
 }
-@media(max-width:339px){#proceso .os-window{zoom:.351}#inbox .mail-app{zoom:.257}}
-@media(min-width:340px) and (max-width:374px){#proceso .os-window{zoom:.4}#inbox .mail-app{zoom:.293}}
-@media(min-width:401px) and (max-width:440px){#proceso .os-window{zoom:.485}#inbox .mail-app{zoom:.355}}
+
+
+
 
 /* Story v2 · dos columnas editoriales y controles de producto. */
 @media(min-width:981px){#flujo.story-section{min-height:0;display:grid;grid-template-columns:minmax(0,45fr) minmax(0,55fr);gap:clamp(3rem,6vw,7rem);align-items:center;padding-block:clamp(7rem,11vw,10rem)}#flujo .story-side{position:relative;align-self:center}#flujo .story-intro{position:static;max-width:34rem;margin:0;text-align:left}#flujo .story-intro .eyebrow{justify-content:flex-start}#flujo .story-intro h2{font-size:clamp(3.1rem,4.4vw,4.8rem);line-height:.92}#flujo .story-chooser{margin:2rem 0 0;max-width:580px;text-align:left;padding:18px;border:1px solid rgba(255,255,255,.075);border-radius:22px;background:rgba(255,255,255,.025)}#flujo .story-phone-pin{position:relative;top:auto;min-height:690px;padding:0;display:grid;grid-template-columns:330px minmax(150px,1fr);gap:22px;align-items:center;justify-content:center}#flujo .story-phone,#flujo.demo-live .story-phone{width:310px;height:635px;justify-self:end}#flujo .story-phone-pin::before{width:620px;height:540px}.story-context{display:grid;gap:20px;padding:22px 0}.story-context>p{display:flex;align-items:center;gap:8px;margin:0;color:var(--orange);font-size:.68rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.story-context>p span{width:8px;height:8px;border-radius:50%;background:var(--aqua);box-shadow:0 0 14px var(--aqua)}.story-context>strong{font-size:1.2rem;line-height:1.35}.story-context dl{display:grid;gap:8px;margin:0}.story-context dl div{padding:12px;border-left:1px solid rgba(90,240,216,.28);background:linear-gradient(90deg,rgba(90,240,216,.055),transparent)}.story-context dt{color:rgba(247,251,248,.42);font-size:.6rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase}.story-context dd{margin:4px 0 0;color:#fff;font-size:.82rem;font-weight:700}}
@@ -2121,3 +2117,982 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 
 /* Ritmo móvil v2 · capítulos separados, componentes compactos. */
 @media(max-width:760px){main>section:not(#inicio){position:relative;padding-top:76px;padding-bottom:76px}main>section:not(#inicio)::before{content:"";position:absolute;top:0;left:16px;right:16px;height:1px;background:linear-gradient(90deg,transparent,rgba(90,240,216,.18),rgba(255,173,112,.1),transparent)}#proceso .section-copy,#inbox .section-copy{margin-bottom:26px}#proceso .section-copy p,#inbox .section-copy p{max-width:34ch;margin-inline:auto}.voice-head{margin-bottom:24px}.voice-sub{line-height:1.55}.sistemas{padding-block:68px}.pricing-section{padding-block:78px}.pricing-head{margin-bottom:20px}.pricing-lead{font-size:.9rem;line-height:1.55}}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 2 · «Pedir demo»: de formulario dentro de una caja a pieza de cierre.
+   El problema no era el formulario, era el envoltorio: una tarjeta con borde y
+   sombra metida dentro de otra tarjeta con borde y sombra, y el mismo mensaje
+   («respuesta en 24 h») repetido tres veces en 600 px. Aquí el panel interior
+   desaparece: las dos mitades viven sobre la MISMA superficie y solo las separa
+   una línea de un píxel. La izquierda cuenta, la derecha ejecuta.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.demo-modal-card {
+  position: relative;
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, .98fr);
+  gap: 0;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid rgba(255, 255, 255, .1);
+  border-radius: 28px;
+  background:
+    /* La luz de marca entra por la esquina del relato, no por el formulario. */
+    radial-gradient(120% 90% at 0% 0%, rgba(90, 240, 216, .13), transparent 52%),
+    radial-gradient(80% 70% at 12% 100%, rgba(57, 120, 255, .07), transparent 60%),
+    #080d0c;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, .09),
+    0 50px 110px -40px rgba(0, 0, 0, .95);
+}
+
+/* Las dos mitades: mismo fondo, una línea entre ellas. Nada de cajas. */
+.demo-modal-aside {
+  display: flex;
+  flex-direction: column;
+  padding: clamp(2rem, 3.4vw, 3rem);
+}
+.demo-modal-card .lead-form {
+  position: relative;
+  display: block;
+  padding: clamp(2rem, 3.4vw, 3rem);
+  border: 0;
+  border-left: 1px solid rgba(255, 255, 255, .08);
+  border-radius: 0;
+  /* Un velo apenas perceptible marca el lado de la acción sin dibujar caja. */
+  background: linear-gradient(180deg, rgba(0, 0, 0, .26), rgba(0, 0, 0, .34));
+  box-shadow: none;
+}
+/* La nota de datos ya va dentro del formulario, en su sitio. */
+.demo-modal-card .lead-form::after { content: none; }
+
+.demo-modal-marca { width: 118px; margin-bottom: 1.6rem; }
+.demo-modal-aside .eyebrow { margin-bottom: 1rem; }
+.demo-modal-aside h2 {
+  margin: 0 0 1.6rem;
+  font-size: clamp(1.8rem, 2.9vw, 2.5rem);
+  line-height: 1.04;
+  letter-spacing: -.035em;
+  text-wrap: balance;
+}
+.demo-modal-aside .cta-points { display: grid; gap: .9rem; margin: 0; }
+.demo-modal-aside .cta-points li { font-size: .97rem; line-height: 1.55; }
+.demo-modal-firma {
+  margin: auto 0 0;
+  padding-top: 1.8rem;
+  color: var(--muted);
+  font-size: .85rem;
+  line-height: 1.55;
+  max-width: 34ch;
+}
+
+/* ── Formulario: campos con cuerpo, no rectángulos planos ─────────────────── */
+.lead-form-label {
+  margin: 0 0 1.3rem;
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 800;
+  letter-spacing: .16em;
+  text-transform: uppercase;
+}
+.demo-modal-card .lead-form .field + .field { margin-top: 1rem; }
+.demo-modal-card .lead-form .field label {
+  display: block;
+  margin-bottom: .45rem;
+  font-size: .7rem;
+  letter-spacing: .1em;
+}
+.demo-modal-card .lead-form input[type="text"],
+.demo-modal-card .lead-form input[type="tel"],
+.demo-modal-card .lead-form input[type="email"],
+.demo-modal-card .lead-form select {
+  width: 100%;
+  min-height: 54px;
+  padding: 0 1rem;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, .34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045);
+  color: var(--ink);
+  font-size: 1rem;
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease), background 160ms var(--ease);
+}
+.demo-modal-card .lead-form input:hover { border-color: rgba(255, 255, 255, .16); }
+.demo-modal-card .lead-form input:focus,
+.demo-modal-card .lead-form select:focus {
+  outline: none;
+  border-color: var(--aqua);
+  background: rgba(0, 0, 0, .46);
+  /* Anillo suave en vez de borde grueso: no mueve el layout. */
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 0 0 3px rgba(90, 240, 216, .18);
+}
+
+/* Casilla propia: la nativa no se deja dar tamaño ni radio de forma fiable. */
+.demo-modal-card .lead-form .consent { margin-top: 1.3rem; gap: .7rem; align-items: flex-start; }
+.demo-modal-card .lead-form .consent input {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  margin: .1rem 0 0;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .34);
+  cursor: pointer;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease);
+}
+.demo-modal-card .lead-form .consent input:hover { border-color: rgba(90, 240, 216, .5); }
+.demo-modal-card .lead-form .consent input:checked {
+  border-color: var(--aqua);
+  background:
+    /* La marca de verificación, dibujada con dos degradados: sin SVG extra. */
+    linear-gradient(45deg, transparent 44%, var(--bg) 44% 56%, transparent 56%) 6px 2px / 9px 12px no-repeat,
+    linear-gradient(-45deg, transparent 44%, var(--bg) 44% 56%, transparent 56%) 2px 5px / 7px 8px no-repeat,
+    var(--aqua);
+}
+.demo-modal-card .lead-form .consent input:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+
+.demo-modal-card .primary-btn-full {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  width: 100%;
+  margin-top: 1.5rem;
+  min-height: 58px;
+  border-radius: 16px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  letter-spacing: -.005em;
+  box-shadow: 0 18px 40px -22px rgba(90, 240, 216, .85);
+  transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), filter 160ms var(--ease);
+}
+.demo-modal-card .primary-btn-full:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 46px -20px rgba(90, 240, 216, .95);
+  filter: brightness(1.04);
+}
+.demo-modal-card .primary-btn-full:active { transform: translateY(0); }
+.btn-flecha { font-size: 1.05em; line-height: 1; transition: transform 160ms var(--ease); }
+.demo-modal-card .primary-btn-full:hover .btn-flecha { transform: translateX(3px); }
+
+.demo-modal-card .demo-modal-trust {
+  margin: 1.1rem 0 0;
+  font-size: .8rem;
+  line-height: 1.5;
+  color: var(--muted);
+}
+.demo-modal-card .lead-status:empty { display: none; }
+
+/* Cerrar: pastilla en la esquina, por encima de las dos mitades. */
+.demo-modal-close {
+  position: absolute;
+  top: 14px;
+  right: 14px;
+  z-index: 3;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  border: 1px solid rgba(255, 255, 255, .12);
+  border-radius: 999px;
+  background: rgba(8, 13, 12, .72);
+  color: var(--soft);
+  cursor: pointer;
+  transition: color 150ms var(--ease), border-color 150ms var(--ease), background 150ms var(--ease);
+}
+.demo-modal-close:hover { color: var(--ink); border-color: rgba(255, 255, 255, .26); background: rgba(8, 13, 12, .95); }
+.demo-modal-close:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+
+/* El paso 2 (calendario) hereda la misma superficie, sin caja añadida. */
+.demo-modal-card .lead-cal {
+  grid-column: 1 / -1;
+  padding: clamp(1.6rem, 3vw, 2.4rem);
+  border-top: 1px solid rgba(255, 255, 255, .08);
+}
+
+@media (max-width: 860px) {
+  /* Una columna: la línea pasa a ser horizontal. */
+  .demo-modal-card { grid-template-columns: minmax(0, 1fr); }
+  .demo-modal-card .lead-form {
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, .08);
+  }
+  .demo-modal-firma { padding-top: 1.4rem; }
+}
+
+@media (max-width: 760px) {
+  .demo-modal-card { border-radius: 24px; padding: 0; }
+  .demo-modal-aside { padding: 26px 20px 22px; }
+  .demo-modal-card .lead-form { padding: 22px 20px 26px; }
+  .demo-modal-marca { width: 104px; margin-bottom: 1.1rem; }
+  .demo-modal-aside h2 { font-size: clamp(1.55rem, 6.6vw, 1.95rem); margin-bottom: 1.2rem; }
+  .demo-modal-aside .cta-points { gap: .7rem; }
+  .demo-modal-aside .cta-points li { font-size: .92rem; }
+  /* En móvil manda el espacio; la frase no se pierde, su contenido vive en el
+     pie del formulario. */
+  .demo-modal-firma { display: none; }
+  .demo-modal-card .lead-form input[type="text"],
+  .demo-modal-card .lead-form input[type="tel"],
+  .demo-modal-card .lead-form select { min-height: 50px; }
+  .demo-modal-card .primary-btn-full { min-height: 54px; }
+  .demo-modal-close { top: 10px; right: 10px; width: 38px; height: 38px; }
+}
+
+/* ── Los tres pasos del aside: en columna, no en tres columnas ─────────────
+   La idea de numerarlos es buena, pero puestos en tres columnas dentro de una
+   mitad de 430 px cada tarjeta se quedaba en 130 px: «Agenda, llamadas y
+   canales» caía en cuatro líneas de dos palabras. En vertical se leen de
+   corrido, el número hace de guía y sobra aire. */
+.demo-modal-aside .demo-modal-lead {
+  margin: 0 0 1.6rem;
+  max-width: 40ch;
+  color: var(--soft);
+  font-size: .98rem;
+  line-height: 1.6;
+}
+.demo-modal-aside .cta-points {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 10px;
+  margin: 0;
+}
+.demo-modal-aside .cta-points li {
+  display: grid;
+  grid-template-columns: 26px minmax(0, 1fr);
+  align-items: start;
+  gap: 14px;
+  min-height: 0;
+  padding: 14px 16px;
+  border: 1px solid rgba(255, 255, 255, .07);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .028);
+  font-size: .9rem;
+  line-height: 1.5;
+}
+.demo-modal-aside .cta-points b {
+  display: block;
+  padding-top: .1rem;
+  color: var(--orange);
+  font-size: .72rem;
+  font-weight: 800;
+  letter-spacing: .04em;
+}
+.demo-modal-aside .cta-points strong {
+  display: block;
+  margin-bottom: 2px;
+  color: var(--ink);
+  font-size: .95rem;
+  font-weight: 700;
+  letter-spacing: -.005em;
+}
+.demo-modal-aside .cta-points span { display: block; color: var(--muted); font-size: .86rem; }
+
+@media (max-width: 760px) {
+  .demo-modal-aside .demo-modal-lead { margin-bottom: 1.1rem; font-size: .92rem; }
+  .demo-modal-aside .cta-points { gap: 8px; }
+  .demo-modal-aside .cta-points li {
+    grid-template-columns: 22px minmax(0, 1fr);
+    gap: 11px;
+    padding: 11px 13px;
+    font-size: .85rem;
+  }
+  .demo-modal-aside .cta-points strong { font-size: .88rem; }
+  /* Codex lo dejaba en font-size:0 para esconder el detalle: se recupera. */
+  .demo-modal-aside .cta-points li span { font-size: .8rem; }
+  .demo-modal-aside .cta-points b { font-size: .68rem; }
+}
+
+/* Remates del modal: el titular respira en dos o tres líneas en vez de cuatro,
+   el formulario se centra en su mitad (si no, todo el vacío se acumulaba
+   abajo) y el chip de «Demo» deja de ocupar el ancho completo en móvil. */
+.demo-modal-aside h2 { max-width: 16ch; }
+.demo-modal-aside .eyebrow { width: fit-content; }
+@media (min-width: 861px) {
+  .demo-modal-card .lead-form { align-content: center; display: grid; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 3 · Sección Demo: un solo lenguaje de formulario en toda la web.
+   El mismo formulario se estaba pintando de dos maneras: campos rellenos de
+   54 px en el modal y campos de línea inferior al 18 % de opacidad en la
+   sección. Sobre fondo oscuro, esa línea casi no se ve y en móvil desaparecía.
+   Ahora los dos usan la misma pieza; lo que cambia entre sitios es la
+   composición, no el componente.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+.lead-form .field + .field { margin-top: 1rem; }
+.lead-form .field label {
+  display: block;
+  margin-bottom: .45rem;
+  color: var(--muted);
+  font-size: .7rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+.lead-form input[type="text"],
+.lead-form input[type="tel"],
+.lead-form input[type="email"],
+.lead-form select {
+  width: 100%;
+  height: auto;
+  min-height: 54px;
+  padding: 0 1rem;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, .34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045);
+  color: var(--ink);
+  font-size: 1rem;
+  transition: border-color 160ms var(--ease), box-shadow 160ms var(--ease), background 160ms var(--ease);
+}
+.lead-form input:hover { border-color: rgba(255, 255, 255, .16); }
+.lead-form input:focus,
+.lead-form select:focus {
+  outline: none;
+  border-color: var(--aqua);
+  background: rgba(0, 0, 0, .46);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 0 0 3px rgba(90, 240, 216, .18);
+}
+
+/* Casilla propia también fuera del modal. */
+.lead-form .consent { margin-top: 1.3rem; gap: .7rem; align-items: flex-start; }
+.lead-form .consent input[type="checkbox"] {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 20px;
+  height: 20px;
+  min-height: 0;
+  margin: .1rem 0 0;
+  padding: 0;
+  border: 1px solid rgba(255, 255, 255, .22);
+  border-radius: 6px;
+  background: rgba(0, 0, 0, .34);
+  box-shadow: none;
+  cursor: pointer;
+  transition: border-color 150ms var(--ease), background 150ms var(--ease);
+}
+.lead-form .consent input[type="checkbox"]:hover { border-color: rgba(90, 240, 216, .5); }
+.lead-form .consent input[type="checkbox"]:checked {
+  border-color: var(--aqua);
+  background:
+    linear-gradient(45deg, transparent 44%, var(--bg) 44% 56%, transparent 56%) 6px 2px / 9px 12px no-repeat,
+    linear-gradient(-45deg, transparent 44%, var(--bg) 44% 56%, transparent 56%) 2px 5px / 7px 8px no-repeat,
+    var(--aqua);
+}
+.lead-form .consent input[type="checkbox"]:focus-visible { outline: 2px solid var(--aqua); outline-offset: 2px; }
+
+/* El botón: la flecha necesita su hueco, y el realce es una elevación, no un
+   foco de escenario. */
+.lead-form .primary-btn-full {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .6rem;
+  width: 100%;
+  min-height: 58px;
+  margin-top: 1.5rem;
+  border-radius: 16px;
+  font-size: 1.02rem;
+  font-weight: 800;
+  box-shadow: 0 18px 40px -24px rgba(90, 240, 216, .7);
+  transition: transform 160ms var(--ease), box-shadow 160ms var(--ease), filter 160ms var(--ease);
+}
+.lead-form .primary-btn-full:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 22px 46px -22px rgba(90, 240, 216, .8);
+  filter: brightness(1.04);
+}
+.lead-form .primary-btn-full:active { transform: translateY(0); }
+.lead-form .primary-btn-full:hover .btn-flecha { transform: translateX(3px); }
+
+/* Cabecera del formulario: un solo título, sin chapa que repita el pie. */
+.lead-form-head { display: block; margin-bottom: 1.6rem; }
+.lead-form-head strong {
+  display: block;
+  color: var(--ink);
+  font-size: 1.32rem;
+  font-weight: 800;
+  letter-spacing: -.025em;
+  line-height: 1.15;
+}
+
+.lead-trust {
+  margin: 1.1rem 0 0;
+  color: var(--muted);
+  font-size: .8rem;
+  line-height: 1.5;
+}
+.lead-trust a { color: var(--aqua); text-decoration: underline; text-underline-offset: .2em; }
+.lead-status:empty { display: none; }
+
+/* ── La columna del formulario deja de flotar suelta ──────────────────────
+   Estaba a la derecha sin nada que la sujetara. Una línea vertical de un
+   píxel la separa del relato igual que en el modal: misma gramática en los
+   dos sitios, y el bloque se lee como una pieza, no como dos. */
+@media (min-width: 981px) {
+  #contacto > .lead-form {
+    padding: 4px 0 4px clamp(2rem, 4vw, 3.4rem);
+    border-left: 1px solid rgba(255, 255, 255, .08);
+  }
+}
+
+@media (max-width: 760px) {
+  #contacto > .lead-form { padding: 0; }
+  .lead-form-head { margin-bottom: 1.2rem; }
+  .lead-form-head strong { font-size: 1.18rem; }
+  .lead-form input[type="text"],
+  .lead-form input[type="tel"],
+  .lead-form select { min-height: 50px; }
+  .lead-form .primary-btn-full { min-height: 54px; margin-top: 1.2rem; }
+  /* La nota de datos NO se oculta en móvil: es información de privacidad. */
+  .lead-trust { display: block; font-size: .76rem; }
+}
+
+/* Los campos de #contacto llevaban un override con id (mayor especificidad)
+   que los devolvía al estilo de línea inferior. Se iguala el selector para
+   que la pieza sea la misma en la sección y en el modal. */
+#contacto > .lead-form input[type="text"],
+#contacto > .lead-form input[type="tel"],
+#contacto > .lead-form input[type="email"] {
+  height: auto;
+  min-height: 54px;
+  padding: 0 1rem;
+  border: 1px solid rgba(255, 255, 255, .09);
+  border-radius: 14px;
+  background: rgba(0, 0, 0, .34);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .045);
+}
+#contacto > .lead-form input:focus {
+  border-color: var(--aqua);
+  background: rgba(0, 0, 0, .46);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .05), 0 0 0 3px rgba(90, 240, 216, .18);
+}
+#contacto > .lead-form .field { margin-bottom: 0; }
+#contacto > .lead-form .lead-form-head { padding-bottom: 0; border-bottom: 0; }
+@media (max-width: 760px) {
+  #contacto > .lead-form input[type="text"],
+  #contacto > .lead-form input[type="tel"] { height: auto; min-height: 50px; }
+}
+
+/* Había dos separadores verticales en la misma sección: uno clavado al 50 %
+   del ancho (flotando en medio del hueco) y el del propio formulario. Se
+   queda el que toca la columna; el otro solo añadía ruido. */
+@media (min-width: 981px) { #contacto.cta-section::before { display: none; } }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 4 · Rendimiento: quitar coste, no quitar web.
+   Auditoría de capas caras sobre la página REAL (no sobre el CSS): se listan
+   los elementos visibles con blur, backdrop-filter, máscara o will-change y su
+   área en píxeles. Se retira lo que cuesta mucho y aporta poco; lo que aporta
+   se queda y se paga mejor.
+   ═════════════════════════════════════════════════════════════════════════════ */
+
+/* 1 · El velo del modal difuminaba TODA la ventana mientras estaba abierto.
+      Un backdrop-filter a pantalla completa es de lo más caro que hay, y la
+      tarjeta ya es opaca: no hace falta desenfocar lo de detrás, basta con
+      oscurecerlo más. */
+.demo-modal-backdrop {
+  backdrop-filter: none;
+  -webkit-backdrop-filter: none;
+  background: rgba(1, 5, 5, .93);
+}
+
+/* 2 · .cta-glow era una veladura diagonal al 2,5 % de opacidad… con blur(8px)
+      sobre 400.000 px². Ese es el bloque que brillaba de más en la sección de
+      demo. El fondo ambiental de la página ya da esa luz. */
+#contacto .cta-glow { display: none; }
+
+/* 3 · El vídeo del hero llevaba una máscara elíptica. Una máscara sobre un
+      elemento QUE SE ESTÁ REPRODUCIENDO obliga a rehacerla en cada fotograma
+      de vídeo, y aquí cubría 1,7 millones de píxeles. El plano es una cinta
+      azul sobre negro: sus bordes ya son negros, así que contra un fondo casi
+      negro el corte no se ve. Fuera la máscara, y la viñeta la sigue haciendo
+      .ambient-tint, que es estática. */
+.ambient-video {
+  mask-image: none;
+  -webkit-mask-image: none;
+}
+
+/* 4 · text-shadow + background-clip:text es justo la combinación que en WebKit
+      pinta el degradado SIN recortar y tapa el hero con un bloque blanco
+      (está documentado en landing.css). El halo se hace con el pseudo-elemento
+      de .hero-title-wrap, que no toca el recorte. */
+.hero h1 .shiny { text-shadow: none; }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 6 · El sistema operativo en móvil: pequeño y nítido, no encogido.
+   Estaba resuelto metiendo el layout de escritorio (1.120 px de ancho) dentro
+   del móvil con zoom entre 0,35 y 0,49. Eso cumple «que parezca el de
+   escritorio», pero deja el cuerpo de texto en 5-7 px y, entre 375 y 400 px de
+   ancho, no había regla de zoom: el panel se salía por la derecha y quedaba
+   cortado justo en los iPhone más comunes.
+   Aquí la ventana conserva su cara de escritorio —semáforo, barra de título,
+   pestañas, los tres pasos, el panel— pero se compone A TAMAÑO MÓVIL: nada se
+   escala, así que nada se ve borroso ni estirado, todo entra en pantalla y el
+   cuerpo más pequeño son 12 px.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  #proceso .os-window {
+    zoom: 1;
+    width: auto;
+    max-width: 100%;
+    border-radius: 16px;
+  }
+
+  /* Barra de título: la cara reconocible de la ventana, a escala real. */
+  #proceso .os-bar { min-height: 36px; padding: 0 11px; gap: 7px; }
+  #proceso .os-bar .traffic { width: 8px; height: 8px; }
+  #proceso .os-bar strong { font-size: .68rem; letter-spacing: -.01em; }
+  #proceso .os-live { font-size: .56rem; letter-spacing: .08em; }
+
+  /* Pestañas: dos filas de tres, con área de toque real. */
+  #proceso .os-tabs {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 5px;
+    padding: 9px 11px;
+  }
+  #proceso .os-tab {
+    min-height: 36px;
+    padding: 7px 6px;
+    font-size: .72rem;
+    line-height: 1.2;
+    white-space: normal;
+  }
+  #proceso .os-caption { padding: 8px 11px; font-size: .74rem; line-height: 1.45; }
+
+  #proceso .os-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 11px;
+  }
+
+  /* Los tres pasos, en fila vertical y COMPACTOS: una etiqueta, un titular y
+     una línea de texto. Antes eran tres columnas de 100 px (ilegibles) y
+     después tres tarjetas altas (el bloque se iba a 1.146 px). */
+  #proceso .os-pipeline {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+  }
+  #proceso .os-step {
+    min-height: 0;
+    padding: 10px 12px;
+    border-radius: 11px;
+  }
+  #proceso .os-step-label { font-size: .58rem; letter-spacing: .1em; margin-bottom: 3px; }
+  #proceso .os-step p { font-size: .78rem; line-height: 1.42; }
+
+  /* Panel: los dos KPI en fila y el medidor debajo, sin columna lateral. */
+  #proceso .os-panel {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 10px;
+    padding: 11px;
+    border-left: 0;
+    border-top: 1px solid rgba(255, 255, 255, .06);
+  }
+  #proceso .os-panel-label { max-width: none; font-size: .56rem; letter-spacing: .09em; }
+  #proceso .os-kpis { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  #proceso .os-kpi { padding: 9px 10px; }
+  #proceso .os-kpi strong { font-size: 1.35rem; }
+  #proceso .os-kpi small { font-size: .64rem; line-height: 1.3; }
+  #proceso .os-meter-top { font-size: .66rem; }
+  #proceso .os-note { font-size: .66rem; line-height: 1.4; }
+}
+
+/* La etiqueta del paso es una pastilla, no una barra: ocupaba todo el ancho
+   de la tarjeta y parecía un campo de formulario vacío. */
+@media (max-width: 760px) {
+  #proceso .os-step-label { display: inline-flex; width: fit-content; padding: 3px 8px; }
+}
+
+/* El bloque entero, más corto: el capítulo se lee de una pasada en vez de
+   pedir dos pantallas. Se recorta hueco muerto y relleno, no contenido. */
+@media (max-width: 760px) {
+  #proceso .section-copy { margin-bottom: 18px; }
+  #proceso .section-copy p { margin-top: 8px; }
+  #proceso .os-tabs { padding: 8px 10px; }
+  #proceso .os-body { gap: 9px; padding: 10px; }
+  #proceso .os-step { padding: 9px 11px; }
+  #proceso .os-step p { line-height: 1.38; }
+  #proceso .os-panel { gap: 9px; padding: 10px; }
+  #proceso .os-kpi { padding: 8px 9px; }
+  #proceso .os-kpi strong { font-size: 1.2rem; }
+}
+
+/* El panel se quedaba en dos columnas aunque su plantilla fuera de una: los
+   hijos seguían colocados a mano (.os-meter en grid-column 2), y eso crea una
+   segunda columna implícita que estrujaba los KPI hasta cortar «persona». */
+@media (max-width: 760px) {
+  #proceso .os-panel-label,
+  #proceso .os-kpis,
+  #proceso .os-meter,
+  #proceso .os-note { grid-column: auto; grid-row: auto; align-self: auto; }
+  #proceso .os-note { margin: 0; }
+}
+
+/* El hueco entre cabecera y ventana se contaba dos veces: margin-bottom de
+   .section-copy MÁS el row-gap de la sección. */
+@media (max-width: 760px) { #proceso .section-copy { margin-bottom: 0; } }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 7 · El inbox en móvil: compacto y legible, no una miniatura.
+   Mismo caso que el sistema operativo: había un cliente de correo de 1.120 px
+   metido en 358 con zoom 0,26-0,36. El resultado es una foto bonita de algo
+   ilegible (cuerpo a 4 px), no una demo de producto.
+   Aquí se compone a tamaño móvil y se conserva lo que hace reconocible al de
+   escritorio: la ventana, las CARPETAS (que pasan de columna lateral a fila de
+   pastillas), la lista y el correo abierto con su resumen y su respuesta.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  #inbox .mail-app {
+    zoom: 1;
+    width: auto;
+    max-width: 100%;
+    height: auto;
+    border-radius: 16px;
+    box-shadow: none;
+  }
+  #inbox .mail-titlebar { height: auto; min-height: 36px; padding: 0 11px; }
+  #inbox .mail-titlebar strong { font-size: .68rem; }
+
+  #inbox .mail-body {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    height: auto;
+    min-height: 0;
+  }
+
+  /* Las carpetas no desaparecen: dejan de ser columna y pasan a una fila que
+     se desliza. Es la información del panel lateral del escritorio, cabiendo
+     en 358 px. */
+  #inbox .mail-sidebar {
+    display: flex;
+    gap: 6px;
+    padding: 9px 11px;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+    overflow-x: auto;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior-x: contain;
+  }
+  #inbox .mail-sidebar::-webkit-scrollbar { display: none; }
+  #inbox .compose-btn,
+  #inbox .mail-labels { display: none; }
+  #inbox .mail-nav-list { display: flex; gap: 6px; }
+  #inbox .mail-nav {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    flex: 0 0 auto;
+    min-height: 30px;
+    padding: 5px 10px;
+    border: 1px solid rgba(255, 255, 255, .08);
+    border-radius: 999px;
+    background: rgba(255, 255, 255, .03);
+    font-size: .68rem;
+    white-space: nowrap;
+  }
+  #inbox .mail-nav.active { border-color: rgba(90, 240, 216, .42); background: rgba(90, 240, 216, .09); color: var(--ink); }
+  #inbox .mail-nav em { font-style: normal; color: var(--muted); font-size: .62rem; }
+
+  /* Lista: tres filas y media a la vista, con su desplazamiento. */
+  #inbox .message-list {
+    height: auto;
+    max-height: 214px;
+    padding: 6px;
+    overflow-y: auto;
+    border-right: 0;
+    border-bottom: 1px solid rgba(255, 255, 255, .06);
+    overscroll-behavior: contain;
+  }
+  #inbox .message-item { min-height: 0; padding: 9px 10px; gap: 1px; }
+  #inbox .message-item .mi-from { font-size: .78rem; }
+  #inbox .message-item .mi-sub { font-size: .76rem; }
+  #inbox .message-item .mi-prev { display: block; font-size: .7rem; }
+  #inbox .mi-time { font-size: .66rem; }
+
+  /* Correo abierto: alto acotado y con desplazamiento propio, para que el
+     bloque entero no se convierta en una torre. */
+  #inbox .reader { height: auto; overflow: visible; }
+  #inbox .reader-toolbar { min-height: 38px; padding: 5px 9px; gap: 5px; }
+  #inbox .reader-toolbar button { width: 30px; height: 30px; min-height: 30px; }
+  #inbox .reader-head { padding: 10px 11px; gap: 8px; }
+  #inbox .reader-head .avatar { width: 28px; height: 28px; font-size: .74rem; }
+  #inbox .reader-head strong { font-size: .8rem; }
+  #inbox .reader-head small, #inbox .reader-pill { font-size: .64rem; }
+  #inbox .reader-content {
+    height: auto;
+    max-height: 264px;
+    padding: 11px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    font-size: .8rem;
+  }
+  #inbox .reader-subject { font-size: .92rem; margin-bottom: 8px; }
+  #inbox .reader-body { margin-bottom: 8px; font-size: .8rem; line-height: 1.5; }
+  #inbox .summary-card, #inbox .draft-card { padding: 10px; margin-top: 9px; border-radius: 11px; }
+  #inbox .summary-card p, #inbox .draft-card p { font-size: .75rem; line-height: 1.45; }
+  #inbox .summary-label, #inbox .draft-label { font-size: .58rem; }
+  #inbox .reader-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 7px; margin-top: 10px; }
+  #inbox .reader-actions button { min-height: 38px; padding: 7px; font-size: .72rem; }
+
+  #inbox .section-copy { margin-bottom: 0; }
+}
+
+/* Remates del inbox móvil.
+   · La fila es un <button> con display:grid y Chrome mide en 0 sus filas
+     automáticas, así que el asunto y la vista previa desaparecían. Con un
+     min-height que dé para las tres líneas, el reparto las coloca.
+   · Las pastillas de carpeta necesitan ganar a las reglas del panel lateral,
+     que las hacía de ancho completo. */
+@media (max-width: 760px) {
+  #inbox .message-item { min-height: 62px; align-content: stretch; }
+  #inbox .mail-sidebar .mail-nav-list { display: flex; flex: 0 0 auto; gap: 6px; }
+  #inbox .mail-sidebar .mail-nav {
+    display: inline-flex;
+    width: auto;
+    flex: 0 0 auto;
+    justify-content: flex-start;
+  }
+}
+
+/* Tres líneas por fila sin que se corten los descendentes. */
+@media (max-width: 760px) { #inbox .message-item { min-height: 66px; } }
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 8 · Teléfono, conversación y tipos: composición editorial.
+   Escritorio en tres columnas, como se pidió: a la izquierda el texto, en el
+   centro el teléfono y A SU DERECHA los tipos de conversación, en lista
+   vertical (seis filas idénticas: la simetría sale de la rejilla, no de
+   afinar anchos a mano). El teléfono baja de 310 a 286 px.
+   En móvil se vuelve a una sola columna —título, teléfono, tipos—: la versión
+   de dos columnas dejaba el teléfono en 175 px con la cabecera del chat
+   solapada sobre los iconos de llamada.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (min-width: 981px) {
+  #flujo.story-section {
+    display: grid;
+    grid-template-columns: minmax(0, 35fr) minmax(0, 34fr) minmax(0, 31fr);
+    gap: clamp(2rem, 4vw, 4rem);
+    align-items: center;
+  }
+  /* .story-side deja de ser caja para que sus dos hijos se coloquen por
+     separado en la rejilla de la sección. */
+  #flujo .story-side { display: contents; }
+  /* Fila explicita en los tres: con colocacion automatica, al fijar la
+     columna 3 al selector el cursor ya habia pasado de largo y el telefono
+     caia a una segunda fila. */
+  #flujo .story-intro { grid-column: 1; grid-row: 1; max-width: 30rem; }
+  #flujo .story-intro h2 { font-size: clamp(2.7rem, 3.8vw, 4.1rem); }
+
+  #flujo .story-phone-pin {
+    grid-column: 2;
+    grid-row: 1;
+    position: relative;
+    top: auto;
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    justify-items: center;
+    align-content: center;
+    gap: 20px;
+    min-height: 0;
+    padding: 0;
+  }
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 286px; height: 586px; justify-self: center; }
+  #flujo .story-phone-pin::before { width: 520px; height: 460px; }
+  #flujo .story-context { max-width: 300px; padding: 0; }
+
+  /* Tipos de conversación: una fila por tipo, todas iguales. */
+  #flujo .story-chooser {
+    grid-column: 3;
+    grid-row: 1;
+    max-width: none;
+    margin: 0;
+    padding: 20px;
+    text-align: left;
+  }
+  #flujo .story-scene-buttons {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 7px;
+    width: auto;
+  }
+  #flujo .story-scene-buttons button {
+    display: grid;
+    grid-template-columns: 26px minmax(0, 1fr);
+    align-items: center;
+    justify-items: start;
+    gap: 10px;
+    min-height: 46px;
+    padding: 9px 12px;
+    border-radius: 12px;
+    text-align: left;
+    font-size: .92rem;
+  }
+  #flujo .story-avance { width: auto; margin-top: 14px; }
+  #flujo .story-chooser p { margin: 1rem 0 0; font-size: 1.02rem; }
+  #flujo .story-pause { margin-top: .8rem; }
+}
+
+@media (max-width: 980px) {
+  /* Tablet y móvil: una sola columna, con el teléfono debajo del titular. */
+  #flujo.story-section { display: flex; flex-direction: column; }
+  #flujo .story-side { display: contents; }
+  #flujo .story-intro { order: 1; }
+  #flujo .story-phone-pin {
+    order: 2;
+    position: static;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 18px;
+    min-height: 0;
+    margin-top: 26px;
+    padding: 0;
+  }
+  #flujo .story-chooser { order: 3; margin-top: 26px; width: 100%; }
+}
+
+@media (max-width: 760px) {
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: min(100%, 268px); height: 550px; }
+  #flujo .story-context { width: min(100%, 320px); }
+  /* Seis botones en 2 × 3: mismo ancho, misma altura, icono alineado. */
+  #flujo .story-scene-buttons {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+  }
+  #flujo .story-scene-buttons button {
+    display: grid;
+    grid-template-columns: 22px minmax(0, 1fr);
+    align-items: center;
+    gap: 8px;
+    min-height: 52px;
+    padding: 9px 10px;
+    text-align: left;
+    font-size: .82rem;
+    line-height: 1.25;
+  }
+  #flujo .story-chooser { padding: 16px 14px; }
+  #flujo .story-chooser p { font-size: 1rem; }
+}
+
+/* El resumen bajo el teléfono, como tira horizontal: tres datos en una línea
+   ocupan 60 px en vez de 200 y dejan las tres columnas equilibradas. */
+@media (min-width: 981px) {
+  #flujo .story-context { display: grid; gap: 10px; max-width: 320px; text-align: center; }
+  #flujo .story-context > p { justify-content: center; font-size: .6rem; }
+  #flujo .story-context > strong { font-size: .95rem; line-height: 1.35; }
+  #flujo .story-context dl { grid-auto-flow: column; grid-auto-columns: 1fr; gap: 6px; }
+  #flujo .story-context dl div { padding: 8px 6px; border-left: 0; border-top: 1px solid rgba(90, 240, 216, .28); background: linear-gradient(180deg, rgba(90, 240, 216, .05), transparent); }
+  #flujo .story-context dt { font-size: .54rem; }
+  #flujo .story-context dd { font-size: .72rem; }
+}
+
+/* ═════════════════════════════════════════════════════════════════════════════
+   FASE 9 · Pricing en móvil: más fino, no más pequeño de letra.
+   Se mantiene el carrusel (y los controles que ya lo hacen evidente), pero la
+   tarjeta pasa de 514 a ~450 px de alto quitando relleno, no información: el
+   precio sigue siendo lo más grande de la card, la lista de prestaciones sigue
+   entera y la tarifa de minuto adicional sigue ahí.
+   Y las tres tarjetas pasan a medir lo mismo: en un carrusel, tres alturas
+   distintas se leen como un fallo, no como jerarquía.
+   ═════════════════════════════════════════════════════════════════════════════ */
+@media (max-width: 760px) {
+  .planes {
+    /* Nada de align-items: stretch. Igualar alturas obliga a todas las
+       tarjetas a medir lo que la de ULTRA, cuya lista es la mas larga: la card
+       pasaba de 514 a 704 px, justo lo contrario de lo que se busca. */
+    align-items: start;
+    grid-auto-columns: 84%;
+    gap: 12px;
+    padding: 22px 16px 8px;
+  }
+  .plan, .plan--destacado {
+    display: flex;
+    flex-direction: column;
+    padding: 18px 16px 16px;
+    border-radius: 18px;
+  }
+
+  /* Cabecera: nombre y para quién, en dos líneas justas. */
+  .plan-cab, .plan--destacado .plan-cab { margin-bottom: 10px; padding-right: 66px; }
+  .plan-nombre { font-size: .88rem; letter-spacing: .1em; }
+  .plan-para { font-size: .86rem; line-height: 1.35; }
+
+  /* El precio manda: es lo único que crece. */
+  .plan .plan-precio { margin: 0 0 12px; }
+  .plan .plan-precio strong { font-size: 2.85rem; letter-spacing: -.045em; }
+  .plan-precio em { font-size: .86rem; }
+
+  .plan-datos { gap: 0 10px; margin: 0 0 12px; padding: 10px 0; }
+  .plan-datos span { font-size: .58rem; }
+  .plan-datos strong { font-size: .95rem; }
+  .plan-datos small { font-size: .72rem; line-height: 1.3; }
+
+  .plan-lista { gap: 7px; margin: 0 0 14px; }
+  .plan-lista li { padding-left: 1.35rem; font-size: .85rem; line-height: 1.38; }
+  .plan-lista li.plan-clave { font-size: .85rem; }
+
+  /* El botón se pega al fondo de la tarjeta: con alturas iguales, los tres
+     quedan alineados entre sí. */
+  .plan .plan-btn { margin-top: auto; min-height: 46px; padding: 11px; font-size: .95rem; }
+  .plan .plan-extra { margin-top: 8px; font-size: .76rem; }
+
+  /* Sello de PRO: presente, no gritando. */
+  .plan-pegatina { --sello-tam: 58px; top: -12px; right: -6px; }
+  .plan-pegatina-txt b { font-size: 10px; }
+  .plan--destacado { box-shadow: 0 10px 26px -18px rgba(255, 173, 112, .55); }
+
+  /* Los controles, pegados al carrusel que gobiernan. */
+  .planes-control, .planes-controles, .planes-nav { margin-top: 10px; }
+  .planes-nota { margin-top: 16px; font-size: .84rem; line-height: 1.55; }
+}
+
+@media (max-width: 360px) {
+  .planes { grid-auto-columns: 88%; }
+  .plan .plan-precio strong { font-size: 2.6rem; }
+  .plan-lista li { font-size: .82rem; }
+}
+
+/* ── FASE 10 · «Da igual qué programa uséis» ───────────────────────────────
+   La sección se quedó sin medida: al pasar a dos columnas perdió el ancho y
+   el margen que tenían sus piezas por separado, así que en escritorio el
+   titular empezaba en el píxel 0 y la cinta moría contra el borde derecho.
+   Se le da la misma medida que a las secciones vecinas. */
+.sistemas {
+  width: min(calc(100% - 2rem), 1130px);
+  margin-inline: auto;
+}
+/* Dentro de la sección, la cinta ocupa su columna entera: la medida ya la
+   pone la sección, y duplicarla la dejaba corta. */
+.marquesina { width: 100%; margin-inline: 0; }
+
+/* ── FASE 11 · Aire donde el capítulo lo pedía ─────────────────────────────
+   Las secciones ya respiran parecido entre sí (120 px en escritorio, 76-80 en
+   móvil). Lo que estaba apretado eran las costuras internas: la cabecera
+   pegada a su mockup. Se separan lo justo para que cada bloque se lea como un
+   capítulo, sin abrir huecos vacíos. */
+@media (max-width: 760px) {
+  :root { --pad-seccion: 80px; }
+  #proceso { row-gap: 40px; }
+  #inbox .section-copy { margin-bottom: 28px; }
+  #flujo .story-phone-pin { margin-top: 34px; }
+  #flujo .story-chooser { margin-top: 32px; }
+  #voz .voice-head { margin-bottom: 26px; }
+}
+@media (min-width: 761px) {
+  #inbox .section-copy { margin-bottom: clamp(2.4rem, 4vw, 3.4rem); }
+}
+
+/* Tablet (761-980): sin las reglas de móvil ni las de escritorio, el teléfono
+   se quedaba a tamaño completo y ocupaba media pantalla él solo. */
+@media (min-width: 761px) and (max-width: 980px) {
+  #flujo .story-phone, #flujo.demo-live .story-phone { width: 300px; height: 615px; }
+  #flujo .story-context { width: min(100%, 420px); }
+  #flujo .story-chooser { max-width: 560px; margin-inline: auto; }
+  #flujo .story-scene-buttons { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
