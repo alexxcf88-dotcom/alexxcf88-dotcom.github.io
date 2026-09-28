@@ -3288,3 +3288,83 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,184px)}
  #flujo .story-scene-buttons button{font-size:.54rem}
 }
+
+/* Mobile product widgets · tercera pasada. */
+@media(max-width:760px){
+ /* Cada decisión usa todo el ancho: tres bandas cortas en vez de tres torres. */
+ #proceso .os-pipeline{grid-template-columns:1fr;gap:6px}
+ #proceso .os-step{min-height:0;display:grid;grid-template-columns:minmax(84px,.42fr) minmax(0,1fr);align-items:center;gap:9px;padding:8px 9px}
+ #proceso .os-step-label{display:grid;align-content:center;gap:3px;font-size:.52rem;line-height:1.15}
+ #proceso .os-step p{margin:0;font-size:.66rem;line-height:1.32}
+
+ /* Bandeja de escritorio remaquetada, no ampliada: carpetas, lista y lector
+    conviven en tres columnas dentro del ancho real del teléfono. */
+ #inbox .mail-app{width:min(100%,350px);height:360px;overflow:hidden}
+ #inbox .mail-titlebar{min-height:30px;height:30px;padding-inline:8px}
+ #inbox .mail-titlebar strong{font-size:.55rem}
+ #inbox .mail-body{display:grid;grid-template-columns:70px 105px minmax(0,1fr);height:330px;min-height:330px;overflow:hidden}
+ #inbox .mail-sidebar{display:block;overflow:hidden;padding:7px 5px;border:0;border-right:1px solid rgba(255,255,255,.06)}
+ #inbox .compose-btn{display:flex;width:100%;min-height:26px;margin-bottom:7px;padding:4px;border-radius:7px;font-size:.45rem;line-height:1.1}
+ #inbox .mail-nav-list{display:grid;gap:2px}
+ #inbox .mail-sidebar .mail-nav{display:flex;width:100%;min-height:24px;padding:3px 4px;gap:2px;border:0;border-radius:6px;font-size:.48rem;justify-content:flex-start}
+ #inbox .mail-nav em{margin-left:auto;font-size:.42rem}
+ #inbox .mail-labels{display:none}
+ #inbox .message-list{height:330px;max-height:none;padding:4px;overflow-y:auto;border-right:1px solid rgba(255,255,255,.06);border-bottom:0}
+ #inbox .message-item{min-height:62px;padding:6px 5px;gap:1px}
+ #inbox .message-item .mi-from{font-size:.61rem}
+ #inbox .message-item .mi-sub{font-size:.56rem;line-height:1.18}
+ #inbox .message-item .mi-prev{font-size:.5rem;line-height:1.18}
+ #inbox .mi-time{font-size:.43rem}
+ #inbox .reader{height:330px;overflow:hidden}
+ #inbox .reader-toolbar{min-height:28px;height:28px;padding:2px 5px}
+ #inbox .reader-toolbar button{width:23px;height:23px;min-height:23px}
+ #inbox .reader-head{padding:6px;gap:4px}
+ #inbox .reader-head .avatar{width:22px;height:22px;font-size:.55rem}
+ #inbox .reader-head strong{font-size:.62rem}
+ #inbox .reader-head small,#inbox .reader-pill{font-size:.45rem}
+ #inbox .reader-content{height:252px;max-height:none;padding:7px;overflow-y:auto;font-size:.58rem}
+ #inbox .reader-subject{font-size:.72rem;margin-bottom:5px}
+ #inbox .reader-body{font-size:.58rem;line-height:1.38;margin-bottom:5px}
+ #inbox .summary-card,#inbox .draft-card{padding:6px;margin-top:5px;border-radius:7px}
+ #inbox .summary-card p,#inbox .draft-card p{font-size:.52rem;line-height:1.35}
+ #inbox .summary-label,#inbox .draft-label{font-size:.42rem}
+ #inbox .reader-actions{grid-template-columns:1fr;gap:4px;margin-top:6px}
+ #inbox .reader-actions button{min-height:26px;padding:4px;font-size:.5rem}
+
+ /* Cabecera del teléfono más discreta y conversación con más aire. */
+ #flujo .wa-statusbar{font-size:.52rem}
+ #flujo .wa-header{min-height:43px;padding-inline:7px;gap:4px}
+ #flujo .wa-avatar{width:25px;height:25px;font-size:.55rem}
+ #flujo .wa-contact strong{font-size:.62rem}
+ #flujo .wa-contact small{font-size:.48rem}
+ #flujo .wa-brand .brand-sep{display:none}
+ #flujo .wa-brand img{display:block;width:54px;height:auto}
+ #flujo .wa-ic{transform:scale(.72)}
+ #story-phone-chat{gap:8px;padding:10px 8px}
+ #story-phone-chat .bubble{width:fit-content;max-width:94%;padding:8px 9px;font-size:.68rem;line-height:1.38}
+ #story-phone-chat .bubble.ai{margin-right:auto}
+ #story-phone-chat .bubble.patient{margin-left:auto}
+ #story-phone-chat .wa-system{width:92%;margin-inline:auto;padding:7px;font-size:.54rem}
+
+ /* El fallback queda completamente visible debajo del visor: incluso si el
+    canvas tarda o WebGL se reinicia, nunca aparece un hueco vacío. */
+ #voz .voice-robot.is-live .voice-3d-fallback{opacity:.32}
+
+ /* Cierre comercial aún más contenido. */
+ #contacto.cta-section{padding:56px 20px 50px;gap:22px}
+ #contacto .cta-copy h2{font-size:clamp(2rem,9.8vw,2.7rem);margin:.55rem 0 .85rem}
+ #contacto .cta-copy>p:not(.eyebrow){font-size:.79rem;line-height:1.45}
+ #contacto .cta-points{gap:5px;margin-top:12px}
+ #contacto .cta-points{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+ #contacto .cta-points li{padding:6px 5px;font-size:.56rem;line-height:1.25;text-align:center}
+ #contacto .cta-signal{display:none}
+ #contacto>.lead-form{padding:13px 14px;border-radius:17px}
+ #contacto>.lead-form .lead-form-head{margin-bottom:9px}
+ #contacto>.lead-form .lead-form-head strong{font-size:.92rem}
+ #contacto>.lead-form .field{margin-bottom:7px}
+ #contacto>.lead-form .field label{margin-bottom:3px;font-size:.63rem}
+ #contacto>.lead-form input[type="text"],#contacto>.lead-form input[type="tel"]{height:41px;min-height:41px;border-radius:10px}
+ #contacto>.lead-form .consent{margin-top:8px;font-size:.7rem}
+ #contacto>.lead-form .primary-btn-full{min-height:44px;margin-top:9px}
+ #contacto .lead-trust{display:none}
+}

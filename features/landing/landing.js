@@ -2315,7 +2315,7 @@ function mountCal(destino) {
     if (!entradas.some((e) => e.isIntersecting)) return;
     cerca.disconnect();
     pedirRuntime();
-  }, { rootMargin: vigilar ? '700px 0px' : '1400px 0px' });
+  }, { rootMargin: vigilar ? '2400px 0px' : '1800px 0px' });
   cerca.observe(fig);
   // Etapa 2: escena.
   const encima = new IntersectionObserver((entradas) => {
@@ -2326,8 +2326,15 @@ function mountCal(destino) {
     montarVisor();
     // En tactil se espera a tenerla casi encima: si no llegas a Voz, no se
     // descarga la escena.
-  }, { rootMargin: vigilar ? '700px 0px' : '700px 0px' });
+  }, { rootMargin: vigilar ? '1800px 0px' : '1000px 0px' });
   encima.observe(fig);
+
+  /* En dispositivos capaces la voz no debe depender de la velocidad con que
+     alguien recorra la página: se prepara en segundo plano tras el arranque. */
+  window.setTimeout(() => {
+    pedirRuntime();
+    montarVisor();
+  }, 2500);
 })();
 
 /* Anclas que caen donde deben.
