@@ -3535,49 +3535,6 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #proceso .section-copy,#inbox .section-copy,#flujo .story-intro,#voz .voice-head,#precio .pricing-head{width:100%;max-width:34ch;margin:0 0 20px;text-align:left}
  #proceso .section-copy h2,#inbox .section-copy h2,#flujo .story-intro h2,#voz .voice-head h2,#precio .pricing-head h2,#faq .section-copy h2{font-size:clamp(1.75rem,8vw,2.12rem);line-height:1.04}
 
- /* Sistema: tabs desplazables, decisiones anchas y texto de 12 px. */
- #proceso{display:block}
- #proceso .os-window{width:100%;max-width:390px;margin:0 auto;border-radius:16px}
- #proceso .os-bar{min-height:36px;padding-inline:10px}
- #proceso .os-tabs{display:flex;gap:6px;padding:8px 9px;overflow-x:auto;scrollbar-width:none;scroll-snap-type:x proximity}
- #proceso .os-tabs::-webkit-scrollbar{display:none}
- #proceso .os-tab{flex:0 0 auto;min-width:92px;min-height:36px;padding:7px 11px;font-size:.7rem;scroll-snap-align:start}
- #proceso .os-caption{padding:8px 11px;font-size:.72rem;line-height:1.4}
- #proceso .os-body{display:grid;grid-template-columns:1fr;gap:8px;padding:10px}
- #proceso .os-pipeline{display:grid;grid-template-columns:1fr;gap:7px}
- #proceso .os-step{display:grid;grid-template-columns:96px minmax(0,1fr);min-height:0;align-items:center;gap:10px;padding:10px 11px}
- #proceso .os-step-label{font-size:.59rem;line-height:1.2}
- #proceso .os-step p{font-size:.75rem;line-height:1.4}
- #proceso .os-panel{display:grid;grid-template-columns:1fr;gap:8px;padding:10px}
- #proceso .os-panel-label,#proceso .os-kpis,#proceso .os-meter,#proceso .os-note{grid-column:auto}
- #proceso .os-kpi small,#proceso .os-meter-top,#proceso .os-note{font-size:.66rem}
-
- /* Inbox: carpetas → lista → mensaje. Cada parte ocupa todo el ancho. */
- #inbox .mail-app{position:relative;width:100%;max-width:390px;height:auto;margin:0 auto;overflow:hidden;border-radius:16px}
- #inbox .mail-titlebar{height:34px;min-height:34px;padding-inline:10px}
- #inbox .mail-titlebar strong{font-size:.66rem}
- #inbox .mail-body{display:grid;grid-template-columns:1fr;grid-template-rows:auto 205px 360px;height:auto;min-height:0}
- #inbox .mail-sidebar{grid-column:1;grid-row:1;display:flex;padding:7px 9px;overflow-x:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.06)}
- #inbox .mail-sidebar .mail-nav{min-height:32px;padding:6px 10px;font-size:.68rem}
- #inbox .mail-nav em{font-size:.58rem}
- #inbox .message-list{grid-column:1;grid-row:2;height:205px;max-height:205px;padding:6px;overflow-y:auto;border-right:0;border-bottom:1px solid rgba(255,255,255,.06)}
- #inbox .message-item{min-height:64px;padding:8px 9px}
- #inbox .message-item .mi-from{font-size:.78rem}
- #inbox .message-item .mi-sub{font-size:.73rem}
- #inbox .message-item .mi-prev{font-size:.67rem}
- #inbox .mi-time{font-size:.58rem}
- #inbox .reader{grid-column:1;grid-row:3;height:360px;overflow:hidden}
- #inbox .reader-toolbar{height:36px;min-height:36px;padding:4px 8px}
- #inbox .reader-head{padding:8px 10px}
- #inbox .reader-head .avatar{width:28px;height:28px;font-size:.68rem}
- #inbox .reader-head strong{font-size:.78rem}
- #inbox .reader-head small,#inbox .reader-pill{font-size:.58rem}
- #inbox .reader-content{height:278px;max-height:278px;padding:10px 11px 50px;overflow-y:auto;font-size:.74rem}
- #inbox .reader-subject{font-size:.94rem}
- #inbox .reader-body{font-size:.74rem;line-height:1.48}
- #inbox .summary-card p,#inbox .draft-card p{font-size:.68rem}
- #inbox .reader::after{content:"DESLIZA EL MENSAJE  ↓";right:10px;bottom:9px;font-size:.52rem}
-
  /* Conversación: teléfono protagonista; elección debajo, nunca a su lado. */
  #flujo.story-section{display:flex;flex-direction:column;padding-inline:16px}
  #flujo .story-side{display:contents}
@@ -3592,6 +3549,18 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #flujo .story-chooser p{text-align:center;font-size:.7rem}
  #flujo .story-pause{width:100%;min-height:34px;font-size:.62rem}
 
+ /* Barra superior proporcionada y siempre contenida dentro del teléfono. */
+ #flujo .wa-statusbar{width:100%;height:26px;padding:0 13px 4px;font-size:.6rem;line-height:1;align-items:flex-end;box-sizing:border-box}
+ #flujo .wa-clock{display:block;flex:0 0 auto}
+ #flujo .wa-sys{display:flex;flex:0 0 auto;align-items:center;gap:4px;transform:none}
+ #flujo .wa-net{width:12px;height:8px}
+ #flujo .wa-wifi{width:12px;height:9px}
+ #flujo .wa-batt{width:16px;height:8px;border-radius:2px}
+ #flujo .wa-batt::after{right:-2px;top:2px;width:1px;height:4px}
+
+ /* El carrusel ya tiene flechas y puntos: no necesita una máscara negra lateral. */
+ #precio .pricing-shell::after{display:none}
+
  /* Voz: dos piezas consecutivas, sin huecos reservados por escritorio. */
  #voz .voice-stage{display:grid;grid-template-columns:1fr;gap:12px}
  #voz .voice-robot{width:100%;max-width:390px;height:230px;min-height:230px;margin:0 auto}
@@ -3605,3 +3574,6 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #flujo .story-phone,#flujo.demo-live .story-phone{width:min(78vw,248px)}
  #flujo .story-scene-buttons button{font-size:.64rem;padding-inline:6px}
 }
+
+/* Solo los minutos están confirmados como criterio cuantitativo de cada plan. */
+#precio .plan-datos{grid-template-columns:minmax(0,1fr)}
