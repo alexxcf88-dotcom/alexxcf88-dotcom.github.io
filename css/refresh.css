@@ -584,8 +584,9 @@ html, body { overflow-x: clip; }
     inset: -5%;
     background: url(../features/landing/media/hero-poster.jpg) center / cover no-repeat;
     opacity: .3;
-    animation: ambientMobileDrift 12s ease-in-out infinite alternate;
-    will-change: transform;
+    /* Quieto (antes ambientMobileDrift infinito): capa fija de pantalla
+       completa, animarla repintaba toda la pantalla en cada fotograma. */
+    transform: scale(1.08);
   }
   .phone, .os-window, .mail-app, .legal-doc, .plan, .lead-form { box-shadow: none; }
   .phone-screen { transform: none; }
@@ -1115,10 +1116,13 @@ html.fx-listo .hero h1 .shiny {
 /* El fondo recupera cuerpo: rejilla + haz + viñeta, todo estático. En móvil
    la rejilla es más suave y no hay imagen que descargar. */
 .ambient-grid { opacity: .3; }
+/* Sin filter: un saturate/contrast sobre un vídeo que se reproduce a pantalla
+   completa se recalcula en cada fotograma del vídeo. Medido en scroll: 29 %
+   de fotogramas perdidos con él, 6,5 % sin él. Al .42 de opacidad sobre casi
+   negro la diferencia de color no se aprecia. */
 .ambient-video {
   display: block;
   opacity: .42;
-  filter: saturate(1.14) contrast(1.06);
   transform: scale(1.025);
 }
 @media (max-width: 760px) {
@@ -1231,6 +1235,11 @@ html.fx-listo .hero h1 .shiny {
 @media (hover: none) and (prefers-reduced-motion: no-preference) {
   .voice-robot .robot-local { animation: robotRespira 7.5s ease-in-out infinite alternate !important; }
 }
+/* Sin drop-shadow: una sombra difuminada de 70 px sobre un elemento que flota
+   sin parar se recalcula en cada fotograma (en scroll por Voz: ~20 % de
+   fotogramas perdidos con ella, ~5 % sin ella). Sobre fondo casi negro la
+   sombra oscura no se ve; el suelo lo sigue marcando el brillo aqua fijo. */
+.voice-robot .robot-local { filter: none; }
 @keyframes robotRespira {
   from { transform: translate3d(0, 0, 0); }
   to { transform: translate3d(0, -4px, 0); }
@@ -1764,18 +1773,16 @@ html.fx-listo .hero h1 .shiny {
    solo rehace la capa 2 veces por segundo, y cada salto mide menos de un
    píxel: a simple vista es idéntico, y el hilo principal deja de arder.
    Medido en Lighthouse móvil: TBT de ~1.100 ms a ~300 ms. */
-html.fx-anima .ambient-aurora {
-  animation: ambientAurora 24s steps(48, end) infinite alternate;
-  will-change: transform;
-}
-html.fx-anima .ambient-aurora::after {
-  animation: ambientAuroraB 18s steps(36, end) infinite alternate;
-  will-change: transform;
-}
-html.fx-anima .ambient-beam {
-  animation: ambientHaz 32s steps(64, end) infinite;
-  will-change: transform, opacity;
-}
+/* Actualización: ni con steps() ni pausadas salían baratas. Una animación
+   (aunque esté en pausa o dé 2 saltos por segundo) sobre estas capas fijas
+   de pantalla completa hace que el compositor repinte TODA la pantalla en
+   cada fotograma, en toda la web. Medido (1280x800): en reposo, 4,4 s de GPU
+   de cada 5 s con ellas y 0,2 s sin ellas; en scroll, 7,4 % de fotogramas
+   perdidos con ellas y 0,1 % sin ellas. La deriva era de un 4,5 % en 24 s:
+   se congelan en el punto medio de su recorrido, que es como se veían. */
+html.fx-anima .ambient-aurora { transform: translate3d(0, .3%, 0) scale(1.09); }
+html.fx-anima .ambient-aurora::after { transform: translate3d(0, -.2%, 0) scale(1.06); }
+html.fx-anima .ambient-beam { transform: translateX(-50%) rotate(23deg); opacity: .65; }
 html.fx-quieto .ambient-aurora,
 html.fx-quieto .ambient-aurora::after,
 html.fx-quieto .ambient-beam,
@@ -3115,6 +3122,7 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #inicio::after{content:"";position:absolute;left:50%;bottom:20px;width:11px;height:11px;border-right:1px solid rgba(247,251,248,.38);border-bottom:1px solid rgba(247,251,248,.38);transform:translateX(-50%) rotate(45deg);animation:heroScrollCue 2.2s ease-in-out infinite}
 }
 @keyframes heroScrollCue{0%,100%{opacity:.25;translate:0 -3px}50%{opacity:.8;translate:0 4px}}
+#inicio.is-offscreen::after{animation-play-state:paused}
 @media(max-width:340px){#inicio.hero{padding-top:6.4rem}#inicio .hero-copy>.eyebrow{margin-bottom:12px}#inicio .pilot-badge{margin-bottom:17px}#inicio h1{font-size:2.55rem}#inicio .hero-lead{margin-top:17px;font-size:.86rem}#inicio .hero-actions{margin-top:18px;gap:7px}#inicio .hero-actions a{min-height:45px}}
 
 /* Fases 2–3: jerarquía de producto y Sistema proporcionado. */
