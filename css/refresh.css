@@ -3546,7 +3546,7 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 
  /* Sistema móvil nativo: sin zoom y con controles desplazables legibles. */
  #proceso{display:block}
- #proceso .os-window{width:100%;max-width:430px;margin-inline:auto;zoom:1;border-radius:18px}
+ #proceso .os-window{width:calc(100% - 16px);max-width:414px;margin-inline:auto;zoom:1;border-radius:18px}
  #proceso .os-bar{min-height:40px;padding:8px 12px}
  #proceso .os-bar strong{font-size:.75rem}
  #proceso .os-tabs{display:flex;grid-template-columns:none;gap:7px;padding:9px;overflow-x:auto;scroll-snap-type:x proximity;scrollbar-width:none}
@@ -3568,7 +3568,7 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #inbox .section-copy .eyebrow{justify-content:center}
  #inbox .section-copy h2{max-width:90vw;margin-inline:auto;font-size:clamp(38px,10vw,48px);line-height:1}
  #inbox .section-copy>p:last-child{max-width:90%;margin:20px auto 0;font-size:clamp(17px,4.5vw,19px);line-height:1.5}
- #inbox .mail-app{position:relative;width:100%;max-width:456px;height:auto;margin:0 auto;zoom:1;overflow:hidden;border-radius:20px}
+ #inbox .mail-app{position:relative;width:calc(100% - 8px);max-width:432px;height:auto;margin:0 auto;zoom:1;overflow:hidden;border-radius:20px}
  #inbox .mail-titlebar{height:auto;min-height:44px;padding:9px 12px}
  #inbox .mail-titlebar strong{font-size:.78rem}
  #inbox .mail-body{display:grid;grid-template-columns:minmax(0,1fr);grid-template-rows:auto auto auto;height:auto;min-height:0}
@@ -3609,7 +3609,7 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #flujo .story-side{display:contents}
  #flujo .story-intro{order:1}
  #flujo .story-phone-pin{order:2;width:100%;margin:0;padding:0;display:flex;justify-content:center}
- #flujo .story-phone,#flujo.demo-live .story-phone{width:min(82vw,310px);height:auto;aspect-ratio:258/529;margin:0 auto;border-radius:46px;padding:7px}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(78vw,294px);height:auto;aspect-ratio:258/529;margin:0 auto;border-radius:46px;padding:7px}
  #flujo .story-phone .phone-screen{border-radius:39px}
  #flujo .story-chooser{order:3;align-self:auto;width:100%;max-width:390px;margin:18px auto 0;padding:10px;border-radius:15px;background:rgba(255,255,255,.018)}
  #flujo .story-scene-buttons{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px}
@@ -3634,15 +3634,15 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 
  /* Voz: dos piezas consecutivas, sin huecos reservados por escritorio. */
  #voz .voice-stage{display:grid;grid-template-columns:1fr;gap:12px}
- #voz .voice-robot{width:100%;max-width:390px;height:230px;min-height:230px;margin:0 auto}
- #voz .voice-transcript{width:100%;min-height:0;margin:0}
+ #voz .voice-robot{width:calc(100% - 12px);max-width:374px;height:220px;min-height:220px;margin:0 auto}
+ #voz .voice-transcript{width:calc(100% - 8px);max-width:414px;min-height:0;margin:0 auto}
  #voz .voice-chat-wrap{min-height:250px}
 }
 
 @media(max-width:340px){
  .site-nav .brand-wordmark{width:96px}
  .site-nav .nav-cta{padding-inline:8px;font-size:.65rem}
- #flujo .story-phone,#flujo.demo-live .story-phone{width:min(86vw,276px)}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(82vw,262px)}
  #flujo .story-scene-buttons button{font-size:.64rem;padding-inline:6px}
 }
 
