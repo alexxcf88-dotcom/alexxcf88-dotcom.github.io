@@ -3724,3 +3724,14 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 #flujo .story-scene-buttons button[aria-pressed="true"] span{
   color:#fff;
 }
+#flujo .story-scene-buttons button[aria-pressed="true"]:hover{
+  color:#fff;
+  border-color:rgba(90,240,216,.42);
+  background:linear-gradient(110deg,rgba(90,240,216,.17),rgba(90,240,216,.065));
+  box-shadow:inset 2px 0 rgba(90,240,216,.75);
+}
+#flujo .story-scene-buttons button[aria-pressed="true"]:hover i{
+  color:#fff;
+  border-color:rgba(90,240,216,.4);
+  background:rgba(90,240,216,.16);
+}
