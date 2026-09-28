@@ -3703,3 +3703,9 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
   .marquesina .marquesina-pista{flex-wrap:wrap;justify-content:center;padding-right:0}
   .marquesina .marquesina-pista[aria-hidden="true"]{display:none}
 }
+
+/* El teléfono recupera algo de presencia en escritorio sin alterar móvil. */
+@media(min-width:981px){
+  #flujo .story-phone-pin{min-height:720px}
+  #flujo .story-phone,#flujo.demo-live .story-phone{width:330px;height:676px}
+}
