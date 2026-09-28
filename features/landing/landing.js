@@ -37,8 +37,15 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
     video.play().catch(() => {});
     video.classList.add('is-live');
   };
-  if ('requestIdleCallback' in window) requestIdleCallback(montar, { timeout: 1500 });
-  else window.setTimeout(montar, 600);
+  const arrancar = () => {
+    if ('requestIdleCallback' in window) requestIdleCallback(montar, { timeout: 1500 });
+    else window.setTimeout(montar, 600);
+  };
+  // Con la intro delante, el vídeo espera a que termine su salida: decodificarlo
+  // durante el fundido era lo que daba el tirón al entrar.
+  if (document.documentElement.classList.contains('preloader-active')) {
+    window.addEventListener('aitomat:ready', () => window.setTimeout(arrancar, 900), { once: true });
+  } else arrancar();
 
   // Solo se reproduce mientras el hero esta a la vista.
   const hero = document.getElementById('inicio');
