@@ -12,13 +12,10 @@
   }
 
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  let repeated = false;
-  try { repeated = sessionStorage.getItem('aitomat-preloader-seen') === '1'; } catch (_) {}
-
   const connection = navigator.connection || {};
   const constrained = connection.saveData === true || /(^|-)(2g|slow-2g)$/.test(connection.effectiveType || '');
   const mobile = window.matchMedia('(max-width: 760px)').matches;
-  const duration = reduced ? 0 : (repeated ? 260 : (constrained ? 620 : 980));
+  const duration = reduced ? 0 : Math.max(900, 3900 - performance.now());
   const mark = loader.querySelector('.preloader-mark');
   mark.style.setProperty('--loader-duration', duration + 'ms');
 
@@ -72,28 +69,28 @@
 
   const visualReady = Promise.race([
     Promise.allSettled(visualAssets),
-    timeout(repeated ? 520 : 1650)
+    timeout(constrained ? 1200 : 1650)
   ]);
   const realReady = Promise.all([criticalStyles, visualReady, appReady]);
 
-  Promise.all([animationDone, realReady]).then(() => {
+  const fiveSecondMark = reduced ? Promise.resolve() : timeout(Math.max(0, 4600 - performance.now()));
+  Promise.all([animationDone, realReady, fiveSecondMark]).then(() => {
     loader.classList.add('is-holding');
-    return timeout(reduced ? 40 : (repeated ? 50 : 260));
+    return timeout(reduced ? 80 : 50);
   }).then(() => {
     loader.classList.add('is-leaving');
     root.classList.remove('preloader-active');
     root.classList.add('preloader-done');
-    try { sessionStorage.setItem('aitomat-preloader-seen', '1'); } catch (_) {}
     window.dispatchEvent(new CustomEvent('aitomat:ready'));
-    window.setTimeout(() => loader.remove(), reduced ? 180 : 380);
   });
 
   /* Freno absoluto: ningún recurso visual puede retener la navegación. */
+  const hardDelay = reduced ? 2200 : Math.max(0, 5200 - performance.now());
   window.setTimeout(() => {
     if (!loader.isConnected || loader.classList.contains('is-leaving')) return;
     loader.classList.add('is-holding', 'is-leaving');
     root.classList.remove('preloader-active');
     root.classList.add('preloader-done');
-    window.setTimeout(() => loader.remove(), 380);
-  }, repeated ? 1500 : 4500);
+    window.dispatchEvent(new CustomEvent('aitomat:ready'));
+  }, hardDelay);
 })();
