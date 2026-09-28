@@ -1,20 +1,22 @@
 {
   "name": "AItomat",
   "short_name": "AItomat",
+  "description": "Recepcionista IA y automatización de recepción para clínicas dentales.",
   "lang": "es",
   "start_url": "/",
+  "scope": "/",
   "display": "browser",
   "background_color": "#050706",
   "theme_color": "#050706",
   "icons": [
     {
-      "src": "/brand/icono/icono-aitomat-256.png",
-      "sizes": "256x256",
+      "src": "/assets/brand/icon-192.png",
+      "sizes": "192x192",
       "type": "image/png",
       "purpose": "any"
     },
     {
-      "src": "/brand/icono/icono-aitomat-512.png",
+      "src": "/assets/brand/icon-512.png",
       "sizes": "512x512",
       "type": "image/png",
       "purpose": "any"
