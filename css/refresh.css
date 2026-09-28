@@ -3418,3 +3418,42 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #flujo .story-scene-buttons button{font-size:.61rem;padding-inline:5px}
  #inbox .mail-body{grid-template-columns:108px minmax(0,1fr)}
 }
+
+/* Escala y señales de interacción. */
+@media(max-width:760px){
+ /* Inbox vuelve a ser una pieza protagonista y avisa de su scroll interno. */
+ #inbox .mail-app{position:relative;width:min(calc(100% + 16px),382px);height:500px;margin-left:max(-8px,calc((100% - 382px)/2));overflow:hidden}
+ #inbox .mail-body{grid-template-columns:135px minmax(0,1fr);grid-template-rows:44px 426px;height:470px;min-height:470px}
+ #inbox .mail-sidebar{padding:6px 8px}
+ #inbox .message-list{height:426px;padding:6px}
+ #inbox .message-item{min-height:76px;padding:8px 7px}
+ #inbox .message-item .mi-from{font-size:.73rem}
+ #inbox .message-item .mi-sub{font-size:.68rem}
+ #inbox .message-item .mi-prev{font-size:.61rem}
+ #inbox .reader{position:relative;height:426px}
+ #inbox .reader-content{height:345px;padding:10px 11px 52px;font-size:.7rem}
+ #inbox .reader-subject{font-size:.88rem}
+ #inbox .reader-body{font-size:.7rem}
+ #inbox .summary-card p,#inbox .draft-card p{font-size:.64rem}
+ #inbox .reader::after{content:"DESLIZA PARA LEER  ↓";position:absolute;right:9px;bottom:8px;z-index:12;padding:5px 8px;border:1px solid rgba(90,240,216,.34);border-radius:999px;background:rgba(4,14,12,.94);box-shadow:0 -14px 28px rgba(4,10,9,.9);color:var(--aqua);font-size:.48rem;font-weight:900;letter-spacing:.08em;pointer-events:none}
+
+ /* Más superficie para producto: teléfono grande y acciones todavía amplias. */
+ #flujo.story-section{grid-template-columns:minmax(0,1.18fr) minmax(125px,.82fr);padding-inline:8px}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,225px)}
+
+ /* El CTA de voz acompaña al robot en vez de dominar la transcripción. */
+ #voz .voice-live-cta{padding:10px}
+ #voz .voice-talk-btn{width:min(100%,245px);min-height:44px;padding:7px 12px;gap:8px;border-radius:13px}
+ #voz .voice-talk-btn .vt-ic{width:30px;height:30px}
+ #voz .voice-talk-btn .vt-ic svg{width:16px;height:16px}
+ #voz .voice-talk-btn .vt-copy strong{font-size:.78rem}
+ #voz .voice-talk-btn .vt-copy small{font-size:.58rem}
+ #voz .voice-note{font-size:.56rem}
+}
+
+@media(max-width:340px){
+ #inbox .mail-app{width:calc(100% + 16px)}
+ #inbox .mail-body{grid-template-columns:122px minmax(0,1fr)}
+ #flujo.story-section{grid-template-columns:minmax(0,1.12fr) minmax(122px,.88fr)}
+ #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,180px)}
+}
