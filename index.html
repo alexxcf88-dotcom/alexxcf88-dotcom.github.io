@@ -4,6 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
+  <link rel="preload" href="features/landing/media/hero-poster-mobile.jpg" as="image" media="(max-width: 760px)" fetchpriority="high">
   <title>AItomat | Recepcionista IA para clínicas dentales</title>
   <meta name="description" content="AItomat automatiza la recepción de clínicas dentales: atiende llamadas, gestiona WhatsApp e inbox, coordina la agenda y prepara cada caso para el equipo.">
   <meta name="theme-color" content="#050706">
@@ -30,7 +32,7 @@
   <link rel="icon" type="image/svg+xml" href="/brand/icono/icono-aitomat.svg">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png">
   <link rel="manifest" href="site.webmanifest">
-  <link rel="stylesheet" href="features/landing/landing.css?v=20260928-mobile-proportions">
+  <link id="landing-styles" rel="preload" as="style" href="features/landing/landing.css?v=20260928-mobile-proportions" onload="this.onload=null;this.rel='stylesheet'">
   <!-- Datos estructurados (SEO/GEO): ayudan a Google y a los motores de IA a
        entender qué es AItomat, su web y sus preguntas frecuentes. Texto extraído
        del propio contenido de la página; no se inventan datos. -->
@@ -139,10 +141,49 @@
     }
   ]
 }</script>
-  <link rel="stylesheet" href="css/fonts.css?v=20260928-mobile-proportions">
-  <link rel="stylesheet" href="css/refresh.css?v=20260928-brand-avatar">
+  <link id="font-styles" rel="preload" as="style" href="css/fonts.css?v=20260928-mobile-proportions" onload="this.onload=null;this.rel='stylesheet'">
+  <link id="refresh-styles" rel="preload" as="style" href="css/refresh.css?v=20260928-brand-avatar" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><style>.smart-preloader{display:none!important}</style><link rel="stylesheet" href="features/landing/landing.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/fonts.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/refresh.css?v=20260928-brand-avatar"></noscript>
+  <script>document.documentElement.classList.add('preloader-active');</script>
+  <style>
+    .smart-preloader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#050706;overflow:hidden;opacity:1;visibility:visible;transition:opacity .32s ease,visibility 0s linear .32s}
+    .smart-preloader::before{content:"";position:absolute;width:min(86vw,780px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(90,240,216,.075),rgba(90,240,216,0) 68%);filter:blur(18px);transform:translate3d(8%,-8%,0)}
+    .preloader-mark{--loader-duration:1100ms;position:relative;width:clamp(250px,56vw,590px);aspect-ratio:5.66/1;color:#f7fbf8;isolation:isolate}
+    .preloader-initial,.preloader-final{position:absolute;inset:0;display:flex;align-items:center;justify-content:center}
+    .preloader-initial{gap:.2em;font:900 clamp(43px,9.2vw,104px)/1 Archivo,system-ui,sans-serif;letter-spacing:-.075em;white-space:nowrap}
+    .preloader-initial .loader-ai{color:#5af0d8}.preloader-initial .loader-tomat{color:#f7fbf8}
+    .preloader-final{opacity:0;transform:scale(.985)}
+    .preloader-final img{display:block;width:100%;height:auto}
+    .preloader-dot{position:absolute;z-index:3;left:29.8%;top:50%;width:clamp(7px,1.35vw,14px);aspect-ratio:1;border-radius:50%;background:#5af0d8;box-shadow:0 0 0 1px rgba(5,7,6,.7),0 0 16px rgba(90,240,216,.38);transform:translate(-50%,-50%)}
+    .preloader-bars{position:absolute;z-index:4;left:12.3%;top:35%;width:7.8%;height:32%;display:grid;grid-template-rows:repeat(6,1fr);gap:5%;opacity:0;pointer-events:none}
+    .preloader-bars i{border-radius:999px;background:#5af0d8;opacity:.18;transform:scaleX(.35);transform-origin:left center}
+    .smart-preloader.is-running .preloader-dot{animation:loaderDot var(--loader-duration) cubic-bezier(.72,.02,.2,1) both}
+    .smart-preloader.is-running .preloader-initial{animation:loaderInitial var(--loader-duration) ease both}
+    .smart-preloader.is-running .preloader-final{animation:loaderFinal var(--loader-duration) cubic-bezier(.2,.8,.2,1) both}
+    .smart-preloader.is-running .preloader-bars{animation:loaderBarsWrap var(--loader-duration) linear both}
+    .smart-preloader.is-running .preloader-bars i{animation:loaderBar var(--loader-duration) cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*24ms)}
+    .smart-preloader.is-holding .preloader-final{opacity:1;transform:none;filter:drop-shadow(0 0 12px rgba(90,240,216,.1))}
+    .smart-preloader.is-holding .preloader-initial,.smart-preloader.is-holding .preloader-dot,.smart-preloader.is-holding .preloader-bars{opacity:0}
+    .smart-preloader.is-leaving{opacity:0;pointer-events:none}.smart-preloader.is-leaving .preloader-mark{transform:translate3d(0,-8px,0) scale(.985);transition:transform .32s cubic-bezier(.2,.8,.2,1)}
+    .preloader-active body{overflow:hidden}
+    @keyframes loaderDot{0%,12%{left:29.8%;top:50%;transform:translate(-50%,-50%) scale(.72)}55%{left:47.2%;top:50%;transform:translate(-50%,-50%) scale(.86)}68%{left:47.2%;top:50%;transform:translate(-50%,-50%) scale(1.18);box-shadow:0 0 0 1px rgba(5,7,6,.8),0 0 28px rgba(90,240,216,.7)}100%{left:47.2%;top:50%;transform:translate(-50%,-50%) scale(.1);opacity:0}}
+    @keyframes loaderInitial{0%,47%{opacity:1;transform:none}67%,100%{opacity:0;transform:scale(.992)}}
+    @keyframes loaderFinal{0%,49%{opacity:0;transform:scale(.985) rotate(-.3deg)}68%{opacity:1;transform:scale(1.008) rotate(.18deg);filter:drop-shadow(0 0 20px rgba(90,240,216,.2))}82%,100%{opacity:1;transform:none;filter:drop-shadow(0 0 8px rgba(90,240,216,.08))}}
+    @keyframes loaderBarsWrap{0%,56%{opacity:0}62%,88%{opacity:1}100%{opacity:0}}
+    @keyframes loaderBar{0%,55%{opacity:.15;transform:scaleX(.35)}66%,85%{opacity:1;transform:scaleX(1)}100%{opacity:.2;transform:scaleX(1)}}
+    @media(max-width:480px){.preloader-mark{width:min(82vw,350px)}.preloader-initial{font-size:clamp(42px,14vw,62px)}.preloader-dot{width:9px}}
+    @media(prefers-reduced-motion:reduce){.preloader-initial,.preloader-dot,.preloader-bars{display:none}.preloader-final{opacity:1;transform:none}.smart-preloader.is-running .preloader-final{animation:none}.smart-preloader{transition-duration:.16s}.smart-preloader.is-leaving .preloader-mark{transform:none;transition:none}}
+  </style>
 </head>
 <body>
+  <div class="smart-preloader" id="smart-preloader" aria-hidden="true">
+    <div class="preloader-mark">
+      <div class="preloader-initial"><span class="loader-ai">AI</span><span class="loader-tomat">tomat</span></div>
+      <span class="preloader-dot" aria-hidden="true"></span>
+      <span class="preloader-bars" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i></span>
+      <div class="preloader-final"><img src="brand/logo/logo-aitomat.svg" alt="" width="4574" height="808"></div>
+    </div>
+  </div>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
@@ -855,7 +896,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/landing.js?v=20260928-mobile-round3"></script>
+  <script defer src="features/landing/preloader.js?v=20260928-smart-preloader"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
