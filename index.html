@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="features/landing/landing.js?v=20260928-mobile-round3" as="script" fetchpriority="low">
   <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
   <link rel="preload" href="features/landing/media/hero-poster-mobile.jpg" as="image" media="(max-width: 760px)" fetchpriority="high">
   <title>AItomat | Recepcionista IA para clínicas dentales</title>
@@ -146,54 +147,76 @@
   <noscript><style>.smart-preloader{display:none!important}</style><link rel="stylesheet" href="features/landing/landing.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/fonts.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/refresh.css?v=20260928-brand-avatar"></noscript>
   <script>document.documentElement.classList.add('preloader-active');</script>
   <style>
-    .smart-preloader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#050706;overflow:hidden;opacity:1;visibility:visible;transition:opacity .28s ease .18s,visibility 0s linear .46s}
-    .smart-preloader::before{content:"";position:absolute;width:min(86vw,780px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(90,240,216,.075),rgba(90,240,216,0) 68%);filter:blur(18px);transform:translate3d(8%,-8%,0)}
-    .preloader-mark{--loader-duration:3900ms;position:relative;width:clamp(270px,58vw,620px);aspect-ratio:5.66/1;isolation:isolate}
-    .preloader-final{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:.78;transform:scale(.992);filter:saturate(.86) brightness(.92)}
-    .preloader-final img{display:block;width:100%;height:auto}
-    .preloader-dot{position:absolute;z-index:8;left:27.65%;top:50%;width:clamp(7px,1.15vw,12px);aspect-ratio:1;border-radius:50%;background:#fff;box-shadow:0 0 0 2px #050706,0 0 15px rgba(255,255,255,.42);transform:translate(-50%,-50%)}
-    .preloader-sync{position:absolute;z-index:7;left:27.65%;top:50%;width:5.8%;height:1px;transform:translate(-50%,-50%);opacity:0;background:linear-gradient(90deg,transparent,rgba(255,255,255,.62) 30%,transparent 30% 70%,rgba(255,255,255,.62) 70%,transparent)}
-    .preloader-lock{position:absolute;z-index:6;left:45.45%;top:50%;width:14.5%;aspect-ratio:1;border-radius:50%;background:#050706;transform:translate(-50%,-50%) scale(1.03)}
-    .preloader-lock::before{content:"";position:absolute;inset:0;border-radius:50%;background:repeating-conic-gradient(from -14deg,#fff 0 20deg,transparent 20deg 30deg);-webkit-mask:radial-gradient(circle,transparent 0 21%,#000 22% 48%,transparent 49%);mask:radial-gradient(circle,transparent 0 21%,#000 22% 48%,transparent 49%);opacity:0;transform:rotate(-12deg) scale(.58)}
-    .preloader-lock::after{content:"";position:absolute;left:50%;top:50%;width:19.4%;aspect-ratio:1;border-radius:50%;background:#fff;transform:translate(-50%,-50%) scale(.35);opacity:0}
-    .preloader-lock i{position:absolute;z-index:2;left:10%;bottom:5%;width:34%;height:34%;background:#050706;clip-path:polygon(0 0,100% 100%,0 100%);opacity:0}
-    .preloader-bars{position:absolute;z-index:7;left:19.2%;top:7.5%;width:7.9%;height:85%;display:grid;grid-template-rows:repeat(6,1fr);gap:4.4%;opacity:0;pointer-events:none}
-    .preloader-bars i{border-radius:999px;background:#5af0d8;opacity:.94;transform:scaleX(var(--base,.55));transform-origin:left center}
-    .preloader-bars i:nth-child(1){--base:.38;--peak:.68}.preloader-bars i:nth-child(2){--base:.52;--peak:.86}.preloader-bars i:nth-child(3){--base:.7;--peak:1}.preloader-bars i:nth-child(4){--base:.9;--peak:.76}.preloader-bars i:nth-child(5){--base:.66;--peak:.94}.preloader-bars i:nth-child(6){--base:.82;--peak:.72}
-    .smart-preloader.is-running .preloader-dot{animation:loaderDot var(--loader-duration) cubic-bezier(.72,.02,.2,1) both}
-    .smart-preloader.is-running .preloader-sync{animation:loaderSync var(--loader-duration) cubic-bezier(.2,.8,.2,1) both}
-    .smart-preloader.is-running .preloader-final{animation:loaderFinal var(--loader-duration) cubic-bezier(.2,.8,.2,1) both}
-    .smart-preloader.is-running .preloader-lock{animation:loaderLock var(--loader-duration) cubic-bezier(.2,.8,.2,1) both}
-    .smart-preloader.is-running .preloader-lock::before{animation:loaderRadials var(--loader-duration) cubic-bezier(.2,.8,.2,1) both}
-    .smart-preloader.is-running .preloader-lock::after{animation:loaderCore var(--loader-duration) cubic-bezier(.2,.8,.2,1) both}
-    .smart-preloader.is-running .preloader-lock i{animation:loaderGap var(--loader-duration) linear both}
-    .smart-preloader.is-running .preloader-bars{animation:loaderBarsWrap var(--loader-duration) linear both}
-    .smart-preloader.is-running .preloader-bars i{animation:loaderBar var(--loader-duration) cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(var(--i)*38ms)}
-    .smart-preloader.is-holding .preloader-final{opacity:1;transform:none;filter:drop-shadow(0 0 12px rgba(90,240,216,.1))}
-    .smart-preloader.is-holding .preloader-dot,.smart-preloader.is-holding .preloader-sync,.smart-preloader.is-holding .preloader-lock,.smart-preloader.is-holding .preloader-bars{opacity:0}
-    .smart-preloader.is-leaving{opacity:0;pointer-events:none}.smart-preloader.is-leaving .preloader-mark{opacity:0;transform:translate3d(0,-5px,0) scale(.988);transition:opacity .16s ease,transform .22s cubic-bezier(.2,.8,.2,1)}
+    /* Intro de marca. Cada pieza es el trazado real de brand/logo/logo-aitomat.svg
+       (mismo path, mismo degradado) en su propia capa HTML: solo se animan
+       transform y opacity, que corren en el compositor aunque el hilo principal
+       esté ocupado. Arranca con el primer pintado, sin esperar a ningún JS.
+       A (0–0,95 s)   «A i · tomat»: letras abiertas, punto blanco entre la i y la t.
+       B (0,95–1,85)  unión: el punto entra en la «o» mientras la palabra se cierra.
+       C (1,9–3,0)    la «o» recarga sus 11 radios y la «i» hace de ecualizador.
+       Al acabar, preloader.js cede el sitio al propio logo-aitomat.svg (.is-final). */
+    .smart-preloader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;background:#050706;overflow:hidden;opacity:1;transition:opacity .3s cubic-bezier(.4,0,.2,1)}
+    .smart-preloader::before{content:"";position:absolute;width:min(86vw,780px);aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(90,240,216,.06),rgba(90,240,216,.02) 42%,rgba(90,240,216,0) 70%)}
+    .preloader-mark{--u:1ms;position:relative;width:clamp(270px,56vw,620px);aspect-ratio:4574/808;animation:plIn .32s cubic-bezier(.2,.8,.2,1) both}
+    .pl-defs{position:absolute;width:0;height:0;overflow:hidden}
+    .pl-group{position:absolute;inset:0;display:block;pointer-events:none}
+    .pl-part{position:absolute;display:block}
+    .pl-part svg{display:block;width:100%;height:100%;overflow:visible}
+    .pl-logo{position:absolute;inset:0;display:block;width:100%;height:100%;opacity:0}
+    .preloader-mark.is-final .pl-logo{opacity:1}.preloader-mark.is-final .pl-group{visibility:hidden}
+    .pl-bar-5,.pl-bar-6{opacity:.26}
+    .pl-ray-gap{opacity:.3}
+    .pl-g-a{animation:plJoin-a 3s linear both}
+    .pl-g-i{animation:plJoin-i 3s linear both}
+    .pl-g-tomat{animation:plJoin-tomat 3s linear both}
+    .pl-g-dot{animation:plJoin-dot 3s linear both}
+    .pl-ray-0{animation:plRay0 3s linear both}.pl-ray-1{animation:plRay1 3s linear both}.pl-ray-2{animation:plRay2 3s linear both}.pl-ray-3{animation:plRay3 3s linear both}.pl-ray-4{animation:plRay4 3s linear both}.pl-ray-5{animation:plRay5 3s linear both}.pl-ray-6{animation:plRay6 3s linear both}.pl-ray-7{animation:plRay7 3s linear both}.pl-ray-8{animation:plRay8 3s linear both}.pl-ray-9{animation:plRay9 3s linear both}.pl-ray-10{animation:plRay10 3s linear both}
+    .pl-bar-3{animation:plBar3 3s linear both}.pl-bar-4{animation:plBar4 3s linear both}.pl-bar-5{animation:plBar5 3s linear both}.pl-bar-6{animation:plBar6 3s linear both}
+    .smart-preloader.is-leaving{opacity:0;pointer-events:none}
+    .smart-preloader.is-leaving .preloader-mark{transform:translate3d(0,-4px,0) scale(.99);transition:transform .3s cubic-bezier(.4,0,.2,1)}
     .preloader-active body{overflow:hidden}
-    @keyframes loaderDot{0%,22%{left:27.65%;opacity:1;transform:translate(-50%,-50%) scale(.88)}10%,18%{transform:translate(-50%,-50%) scale(1.08)}24%{left:27.85%}45%{left:45.45%;opacity:1;transform:translate(-50%,-50%) scale(.92);box-shadow:0 0 0 2px #050706,0 0 15px rgba(255,255,255,.42)}51%{left:45.45%;transform:translate(-50%,-50%) scale(1.22);box-shadow:0 0 0 2px #050706,0 0 28px rgba(255,255,255,.68)}58%,100%{left:45.45%;opacity:0;transform:translate(-50%,-50%) scale(.12)}}
-    @keyframes loaderSync{0%,5%{opacity:0;transform:translate(-50%,-50%) scaleX(.3)}10%,19%{opacity:1;transform:translate(-50%,-50%) scaleX(1)}24%,100%{opacity:0;transform:translate(-50%,-50%) scaleX(.22)}}
-    @keyframes loaderLock{0%,39%{opacity:1;transform:translate(-50%,-50%) scale(1.03)}70%{opacity:1;transform:translate(-50%,-50%) scale(1.03)}78%,100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
-    @keyframes loaderRadials{0%,43%{opacity:0;transform:rotate(-18deg) scale(.54)}50%{opacity:.28}58%{opacity:.64;transform:rotate(-7deg) scale(.88)}69%,76%{opacity:1;transform:rotate(0) scale(1)}82%,100%{opacity:0;transform:rotate(0) scale(1)}}
-    @keyframes loaderCore{0%,47%{opacity:0;transform:translate(-50%,-50%) scale(.25)}59%,76%{opacity:1;transform:translate(-50%,-50%) scale(1)}82%,100%{opacity:0;transform:translate(-50%,-50%) scale(1)}}
-    @keyframes loaderGap{0%,49%{opacity:0}58%,76%{opacity:1}82%,100%{opacity:0}}
-    @keyframes loaderFinal{0%,18%{opacity:.78;transform:scale(.992);filter:saturate(.86) brightness(.92)}28%,66%{opacity:.86;transform:scale(.996);filter:saturate(.94) brightness(.97)}76%,100%{opacity:1;transform:none;filter:drop-shadow(0 0 8px rgba(90,240,216,.08))}}
-    @keyframes loaderBarsWrap{0%,52%{opacity:0}57%,75%{opacity:1}82%,100%{opacity:0}}
-    @keyframes loaderBar{0%,53%{transform:scaleX(var(--base))}60%{transform:scaleX(var(--peak))}66%{transform:scaleX(calc(var(--base) + .12))}72%{transform:scaleX(var(--peak))}79%,100%{transform:scaleX(1)}}
-    @media(max-width:480px){.preloader-mark{width:min(86vw,370px)}.preloader-dot{width:9px}}
-    @media(prefers-reduced-motion:reduce){.preloader-sync,.preloader-bars{display:none}.preloader-dot{left:27.65%;animation:reducedDot .75s ease both!important}.preloader-lock{animation:reducedLock .75s ease both!important}.preloader-lock::before,.preloader-lock::after{animation:none!important}.preloader-final{opacity:1;transform:none;filter:none}.smart-preloader.is-running .preloader-final{animation:none}.smart-preloader{transition-duration:.2s}.smart-preloader.is-leaving .preloader-mark{transform:none;transition:none}@keyframes reducedDot{0%,35%{left:27.65%;opacity:1}75%{left:45.45%;opacity:1}100%{left:45.45%;opacity:0}}@keyframes reducedLock{0%,70%{opacity:1}100%{opacity:0}}}
+    /* Mientras la intro está delante, la home no gasta: sus animaciones CSS esperan. */
+    .preloader-active body>:not(.smart-preloader),.preloader-active body>:not(.smart-preloader) *{animation-play-state:paused!important}
+    @keyframes plIn{from{opacity:0}to{opacity:1}}
+    @keyframes plJoin-a{0%,31.667%{transform:translate3d(-3.7167%,0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}61.667%,100%{transform:none}}
+    @keyframes plJoin-i{0%,31.667%{transform:translate3d(-1.7490%,0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}61.667%,100%{transform:none}}
+    @keyframes plJoin-tomat{0%,31.667%{transform:translate3d(3.2794%,0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}61.667%,100%{transform:none}}
+    @keyframes plJoin-dot{0%,31.667%{transform:translate3d(-16.6157%,0,0);animation-timing-function:cubic-bezier(.5,0,.15,1)}61.667%,100%{transform:none}}
+    @keyframes plRay0{0%,63.333%{opacity:1}67.333%,68.667%{opacity:.2}75.333%,100%{opacity:1}}
+    @keyframes plRay1{0%,63.333%{opacity:1}67.333%,70.267%{opacity:.2}76.933%,100%{opacity:1}}
+    @keyframes plRay2{0%,63.333%{opacity:1}67.333%,71.867%{opacity:.2}78.533%,100%{opacity:1}}
+    @keyframes plRay3{0%,63.333%{opacity:1}67.333%,73.467%{opacity:.2}80.133%,100%{opacity:1}}
+    @keyframes plRay4{0%,63.333%{opacity:1}67.333%,75.067%{opacity:.2}81.733%,100%{opacity:1}}
+    @keyframes plRay5{0%,63.333%{opacity:1}67.333%,76.667%{opacity:.2}83.333%,100%{opacity:1}}
+    @keyframes plRay6{0%,63.333%{opacity:1}67.333%,78.267%{opacity:.2}84.933%,100%{opacity:1}}
+    @keyframes plRay7{0%,63.333%{opacity:1}67.333%,79.867%{opacity:.2}86.533%,100%{opacity:1}}
+    @keyframes plRay8{0%,63.333%{opacity:1}67.333%,81.467%{opacity:.2}88.133%,100%{opacity:1}}
+    @keyframes plRay9{0%,63.333%{opacity:1}67.333%,83.067%{opacity:.2}89.733%,100%{opacity:1}}
+    @keyframes plRay10{0%,63.333%{opacity:1}67.333%,84.667%{opacity:.2}91.333%,100%{opacity:1}}
+    @keyframes plBar3{0%{opacity:1}76.667%{opacity:1}78.333%{opacity:0.26}80.667%{opacity:0.26}82.333%{opacity:1}100%{opacity:1}}
+    @keyframes plBar4{0%{opacity:1}76.667%{opacity:1}78.333%{opacity:0.26}80.667%{opacity:0.26}82.333%{opacity:1}84.667%{opacity:1}86.333%{opacity:0.26}88.667%{opacity:0.26}90.333%{opacity:1}100%{opacity:1}}
+    @keyframes plBar5{0%{opacity:0.26}80.667%{opacity:0.26}82.333%{opacity:1}84.667%{opacity:1}86.333%{opacity:0.26}88.667%{opacity:0.26}90.333%{opacity:1}93.333%{opacity:1}95.000%{opacity:0.26}100%{opacity:0.26}}
+    @keyframes plBar6{0%{opacity:0.26}88.667%{opacity:0.26}90.333%{opacity:1}93.333%{opacity:1}95.000%{opacity:0.26}100%{opacity:0.26}}
+    @media(max-width:480px){.preloader-mark{width:min(84vw,400px)}}
+    @media(prefers-reduced-motion:reduce){
+      /* Misma narrativa sin desplazamientos: «A i · tomat» se funde en «AItomat». */
+      .smart-preloader .preloader-mark{animation:plRmFade calc(var(--u)*900) ease both!important}
+      .smart-preloader .pl-ray,.smart-preloader .pl-bar{animation:none!important}
+      .smart-preloader.is-leaving .preloader-mark{transform:none}
+      @keyframes plRmFade{0%,40%{opacity:1}50%,56%{opacity:0}82%,100%{opacity:1}}
+      .smart-preloader .pl-g-a{animation:plRm-a calc(var(--u)*900) linear both!important}@keyframes plRm-a{0%,52%{transform:translate3d(-3.7167%,0,0)}52.1%,100%{transform:none}}.smart-preloader .pl-g-i{animation:plRm-i calc(var(--u)*900) linear both!important}@keyframes plRm-i{0%,52%{transform:translate3d(-1.7490%,0,0)}52.1%,100%{transform:none}}.smart-preloader .pl-g-tomat{animation:plRm-tomat calc(var(--u)*900) linear both!important}@keyframes plRm-tomat{0%,52%{transform:translate3d(3.2794%,0,0)}52.1%,100%{transform:none}}.smart-preloader .pl-g-dot{animation:plRm-dot calc(var(--u)*900) linear both!important}@keyframes plRm-dot{0%,52%{transform:translate3d(-16.6157%,0,0)}52.1%,100%{transform:none}}
+    }
   </style>
 </head>
 <body>
   <div class="smart-preloader" id="smart-preloader" aria-hidden="true">
-    <div class="preloader-mark">
-      <span class="preloader-dot" aria-hidden="true"></span>
-      <span class="preloader-sync" aria-hidden="true"></span>
-      <span class="preloader-lock" aria-hidden="true"><i></i></span>
-      <span class="preloader-bars" aria-hidden="true"><i style="--i:0"></i><i style="--i:1"></i><i style="--i:2"></i><i style="--i:3"></i><i style="--i:4"></i><i style="--i:5"></i></span>
-      <div class="preloader-final"><img src="brand/logo/logo-aitomat.svg" alt="" width="4574" height="808"></div>
+    <div class="preloader-mark" aria-hidden="true">
+      <img class="pl-logo" src="brand/logo/logo-aitomat.svg" alt="" width="4574" height="808" decoding="async">
+      <svg class="pl-defs" width="0" height="0" focusable="false"><linearGradient id="pl-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5af0d8"/><stop offset="1" stop-color="#35c9f0"/></linearGradient></svg>
+      <span class="pl-group pl-g-a"><span class="pl-part " style="left:1.6003%;top:4.3614%;width:16.9436%;height:87.1287%"><svg viewBox="62.0 52.0 775.0 704.0"><path fill="url(#pl-grad)" transform="translate(60.0 748.0) scale(1 -1)" d="M10 0 261 688H518L769 0H535L506 97H265L236 0ZM311 251H461L428 361Q424 373 419.0 390.0Q414 407 409.0 426.0Q404 445 399.0 463.5Q394 482 390 496H382Q378 478 371.5 455.0Q365 432 358.0 407.5Q351 383 344 361Z"/></svg></span></span>
+      <span class="pl-group pl-g-i"><span class="pl-part pl-bar pl-bar-6" style="left:19.0468%;top:4.3614%;width:8.2554%;height:12.5371%"><svg viewBox="860.0 52.0 377.6 101.3"><rect fill="url(#pl-grad)" x="868" y="60.0" width="361.6" height="85.3" rx="25.6"/></svg></span><span class="pl-part pl-bar pl-bar-5" style="left:19.0468%;top:19.2748%;width:8.2554%;height:12.5371%"><svg viewBox="860.0 172.5 377.6 101.3"><rect fill="url(#pl-grad)" x="868" y="180.5" width="361.6" height="85.3" rx="25.6"/></svg></span><span class="pl-part pl-bar pl-bar-4" style="left:19.0468%;top:34.2005%;width:8.2554%;height:12.5371%"><svg viewBox="860.0 293.1 377.6 101.3"><rect fill="url(#pl-grad)" x="868" y="301.1" width="361.6" height="85.3" rx="25.6"/></svg></span><span class="pl-part pl-bar pl-bar-3" style="left:19.0468%;top:49.1139%;width:8.2554%;height:12.5371%"><svg viewBox="860.0 413.6 377.6 101.3"><rect fill="url(#pl-grad)" x="868" y="421.6" width="361.6" height="85.3" rx="25.6"/></svg></span><span class="pl-part pl-bar pl-bar-2" style="left:19.0468%;top:64.0396%;width:8.2554%;height:12.5371%"><svg viewBox="860.0 534.2 377.6 101.3"><rect fill="url(#pl-grad)" x="868" y="542.2" width="361.6" height="85.3" rx="25.6"/></svg></span><span class="pl-part pl-bar pl-bar-1" style="left:19.0468%;top:78.9530%;width:8.2554%;height:12.5371%"><svg viewBox="860.0 654.7 377.6 101.3"><rect fill="url(#pl-grad)" x="868" y="662.7" width="361.6" height="85.3" rx="25.6"/></svg></span></span>
+      <span class="pl-group pl-g-tomat"><span class="pl-part " style="left:28.8981%;top:4.3614%;width:8.7669%;height:88.6139%"><svg viewBox="1310.6 52.0 401.0 716.0"><path fill="#fff" transform="translate(1291.6 748.0) scale(1 -1)" d="M284 -12Q230 -12 188.5 0.5Q147 13 124.0 44.0Q101 75 101 129V393H27V528H109L152 688H300V528H412V393H300V192Q300 158 311.0 140.5Q322 123 356 123H412V6Q396 1 372.5 -3.5Q349 -8 325.5 -10.0Q302 -12 284 -12Z"/></svg></span><span class="pl-part pl-ray-gap" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2072.2 781.5A297.5 297.5 0 0 1 1935.9 750.0L2010.5 601.0A130.9 130.9 0 0 0 2070.5 614.9Z"/></svg></span><span class="pl-part pl-ray pl-ray-0" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M1923.1 743.2A297.5 297.5 0 0 1 1820.8 647.8L1959.8 556.1A130.9 130.9 0 0 0 2004.9 598.0Z"/></svg></span><span class="pl-part pl-ray pl-ray-1" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M1813.0 635.4A297.5 297.5 0 0 1 1772.1 501.6L1938.5 491.8A130.9 130.9 0 0 0 1956.4 550.6Z"/></svg></span><span class="pl-part pl-ray pl-ray-2" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M1771.6 487.1A297.5 297.5 0 0 1 1803.1 350.8L1952.1 425.4A130.9 130.9 0 0 0 1938.2 485.4Z"/></svg></span><span class="pl-part pl-ray pl-ray-3" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M1809.9 338.0A297.5 297.5 0 0 1 1905.4 235.6L1997.1 374.7A130.9 130.9 0 0 0 1955.1 419.7Z"/></svg></span><span class="pl-part pl-ray pl-ray-4" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M1917.7 227.9A297.5 297.5 0 0 1 2051.5 187.0L2061.4 353.3A130.9 130.9 0 0 0 2002.5 371.3Z"/></svg></span><span class="pl-part pl-ray pl-ray-5" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2066.0 186.5A297.5 297.5 0 0 1 2202.3 218.0L2127.7 367.0A130.9 130.9 0 0 0 2067.7 353.1Z"/></svg></span><span class="pl-part pl-ray pl-ray-6" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2215.2 224.8A297.5 297.5 0 0 1 2317.5 320.2L2178.4 411.9A130.9 130.9 0 0 0 2133.4 370.0Z"/></svg></span><span class="pl-part pl-ray pl-ray-7" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2325.2 332.6A297.5 297.5 0 0 1 2366.1 466.4L2199.8 476.2A130.9 130.9 0 0 0 2181.8 417.4Z"/></svg></span><span class="pl-part pl-ray pl-ray-8" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2366.6 480.9A297.5 297.5 0 0 1 2335.1 617.2L2186.2 542.6A130.9 130.9 0 0 0 2200.0 482.6Z"/></svg></span><span class="pl-part pl-ray pl-ray-9" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2328.3 630.0A297.5 297.5 0 0 1 2232.9 732.4L2141.2 593.3A130.9 130.9 0 0 0 2183.2 548.3Z"/></svg></span><span class="pl-part pl-ray pl-ray-10" style="left:38.8019%;top:20.0173%;width:13.3581%;height:75.6188%"><svg viewBox="1763.6 178.5 611.0 611.0"><path fill="#fff" d="M2220.6 740.1A297.5 297.5 0 0 1 2086.8 781.0L2076.9 614.7A130.9 130.9 0 0 0 2135.8 596.7Z"/></svg></span><span class="pl-part " style="left:53.9091%;top:22.6782%;width:19.6108%;height:68.8119%"><svg viewBox="2454.6 200.0 897.0 556.0"><path fill="#fff" transform="translate(2402.6 748.0) scale(1 -1)" d="M60 0V528H223L236 449H243Q262 479 290.0 499.5Q318 520 351.5 530.0Q385 540 420 540Q481 540 521.0 516.5Q561 493 580 449H587Q606 479 633.5 499.5Q661 520 694.0 530.0Q727 540 761 540Q822 540 862.0 516.5Q902 493 921.5 449.0Q941 405 941 342V0H742V318Q742 335 738.0 348.5Q734 362 726.0 372.0Q718 382 706.0 387.5Q694 393 679 393Q655 393 637.0 381.5Q619 370 609.5 351.5Q600 333 600 310V0H401V318Q401 335 397.0 348.5Q393 362 385.0 372.0Q377 382 365.0 387.5Q353 393 338 393Q314 393 296.5 381.5Q279 370 269.0 351.5Q259 333 259 310V0Z"/></svg></span><span class="pl-part " style="left:75.1159%;top:22.6782%;width:14.1670%;height:70.2970%"><svg viewBox="3424.6 200.0 648.0 568.0"><path fill="#fff" transform="translate(3402.6 748.0) scale(1 -1)" d="M216 -12Q175 -12 141.0 -4.5Q107 3 82.0 20.5Q57 38 43.5 66.5Q30 95 30 136Q30 195 54.5 232.0Q79 269 126.0 289.0Q173 309 240.5 316.5Q308 324 395 324V350Q395 372 384.5 385.5Q374 399 357.0 406.0Q340 413 318 413Q301 413 283.0 409.0Q265 405 253.5 395.0Q242 385 242 367V363H46Q45 367 45.0 370.0Q45 373 45 377Q45 426 76.5 462.5Q108 499 169.5 519.5Q231 540 321 540Q394 540 456.0 524.0Q518 508 556.0 470.5Q594 433 594 368V162Q594 146 602.0 134.5Q610 123 626 123H662V8Q650 1 622.5 -5.5Q595 -12 558 -12Q518 -12 488.0 -4.0Q458 4 439.5 19.0Q421 34 414 54H407Q386 35 358.5 20.0Q331 5 296.0 -3.5Q261 -12 216 -12ZM297 112Q316 112 333.5 117.5Q351 123 365.0 132.5Q379 142 387.0 155.5Q395 169 395 185V230Q336 230 299.5 221.0Q263 212 246.0 197.0Q229 182 229 162Q229 142 239.0 131.0Q249 120 264.5 116.0Q280 112 297 112Z"/></svg></span><span class="pl-part " style="left:89.6327%;top:4.3614%;width:8.7669%;height:88.6139%"><svg viewBox="4088.6 52.0 401.0 716.0"><path fill="#fff" transform="translate(4069.6 748.0) scale(1 -1)" d="M284 -12Q230 -12 188.5 0.5Q147 13 124.0 44.0Q101 75 101 129V393H27V528H109L152 688H300V528H412V393H300V192Q300 158 311.0 140.5Q322 123 356 123H412V6Q396 1 372.5 -3.5Q349 -8 325.5 -10.0Q302 -12 284 -12Z"/></svg></span></span>
+      <span class="pl-group pl-g-dot"><span class="pl-part pl-dot" style="left:43.6970%;top:47.7277%;width:3.5680%;height:20.1980%"><svg viewBox="1987.5 402.4 163.2 163.2"><circle class="preloader-dot" cx="2069.1" cy="484.0" r="57.6" fill="#fff" stroke="#050706" stroke-width="32" paint-order="stroke"/></svg></span></span>
     </div>
   </div>
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
@@ -908,7 +931,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/preloader.js?v=20260928-smart-preloader-v6"></script>
+  <script defer src="features/landing/preloader.js?v=20260929-logo-intro-v8"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
