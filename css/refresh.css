@@ -3495,3 +3495,23 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
  #flujo .story-phone,#flujo.demo-live .story-phone{width:min(100%,200px)}
  #flujo .story-scene-buttons button{font-size:.53rem}
 }
+
+/* El wordmark del teléfono también necesita medida fuera del breakpoint móvil.
+   Sin ella el SVG conservaba su ancho intrínseco en escritorio. */
+#flujo .wa-brand img{display:block;width:64px;max-width:100%;height:auto;object-fit:contain}
+
+@media(max-width:760px){
+ /* El selector acompaña al centro del teléfono y no queda colgado arriba. */
+ #flujo .story-chooser{align-self:center}
+ #flujo .story-scene-buttons button{justify-content:center}
+
+ /* Proporciones tipográficas normales: nada de condensar o estirar texto. */
+ #inbox .mail-app,#inbox .mail-app *{font-stretch:normal}
+ #inbox .mail-titlebar strong,#inbox .mail-nav,#inbox .message-item,#inbox .reader{letter-spacing:normal}
+ #inbox .mail-body{grid-template-columns:145px minmax(0,1fr)}
+ #inbox .message-item .mi-from,#inbox .message-item .mi-sub,#inbox .message-item .mi-prev{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+}
+
+@media(max-width:340px){
+ #inbox .mail-body{grid-template-columns:126px minmax(0,1fr)}
+}
