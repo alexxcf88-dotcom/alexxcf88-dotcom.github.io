@@ -3116,56 +3116,21 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 @keyframes heroScrollCue{0%,100%{opacity:.25;translate:0 -3px}50%{opacity:.8;translate:0 4px}}
 @media(max-width:340px){#inicio.hero{padding-top:6.4rem}#inicio .hero-copy>.eyebrow{margin-bottom:12px}#inicio .pilot-badge{margin-bottom:17px}#inicio h1{font-size:2.55rem}#inicio .hero-lead{margin-top:17px;font-size:.86rem}#inicio .hero-actions{margin-top:18px;gap:7px}#inicio .hero-actions a{min-height:45px}}
 
-/* Fases 2–3: jerarquía de producto y Sistema protagonista. */
+/* Fases 2–3: jerarquía de producto y Sistema proporcionado. */
 @media(max-width:760px){
  #proceso .section-copy h2,#inbox .section-copy h2,#flujo .story-intro h2,#voz .voice-head h2,#precio .pricing-head h2{font-size:clamp(1.95rem,8.2vw,2.35rem);line-height:1.02;letter-spacing:-.04em}
  #proceso .section-copy>p:last-child,#inbox .section-copy>p:last-child,#flujo .story-intro>p:last-child,#voz .voice-sub,#precio .pricing-lead{font-size:.88rem;line-height:1.5}
  #proceso{row-gap:22px}
  #proceso .section-copy{text-align:left;max-width:34ch;margin-inline:0}
  #proceso .section-copy .eyebrow{justify-content:flex-start}
- #proceso .os-window{width:calc(100% + 16px);max-width:none;margin-left:-8px;border-radius:18px;box-shadow:0 22px 60px rgba(0,0,0,.28)}
- #proceso .os-bar{min-height:40px;padding-inline:13px}
- #proceso .os-bar strong{font-size:.73rem}
- #proceso .os-live{font-size:.61rem}
- #proceso .os-tabs{gap:6px;padding:10px 12px}
- #proceso .os-tab{min-height:39px;font-size:.77rem;font-weight:800}
- #proceso .os-caption{padding:9px 13px;font-size:.79rem}
- #proceso .os-body{padding:12px;gap:10px}
- #proceso .os-step{padding:10px 12px}
- #proceso .os-step-label{font-size:.63rem}
- #proceso .os-step p{font-size:.84rem;line-height:1.38}
- #proceso .os-panel{padding:11px 12px}
- #proceso .os-panel-label{font-size:.61rem}
- #proceso .os-kpi strong{font-size:1.32rem}
- #proceso .os-kpi small{font-size:.69rem}
- #proceso .os-meter-top,#proceso .os-note{font-size:.71rem}
+ #proceso .os-window{width:min(100%,350px);margin-inline:auto;box-shadow:0 18px 48px rgba(0,0,0,.24)}
 }
 
-/* Fase 4: Inbox protagonista, manteniendo navegación + lista + lectura. */
+/* Fase 4: Inbox completo y contenido dentro del viewport móvil. */
 @media(max-width:760px){
  #inbox .section-copy{max-width:34ch;margin:0 0 22px;text-align:left}
  #inbox .section-copy .eyebrow{justify-content:flex-start}
- #inbox .mail-app{width:calc(100% + 16px);max-width:none;margin-left:-8px;border-radius:18px;box-shadow:0 22px 60px rgba(0,0,0,.24)}
- #inbox .mail-titlebar{min-height:40px;padding-inline:13px}
- #inbox .mail-titlebar strong{font-size:.74rem}
- #inbox .mail-sidebar{padding:10px 12px;gap:7px}
- #inbox .mail-nav{min-height:34px;padding:6px 11px;font-size:.73rem}
- #inbox .mail-nav em{font-size:.67rem}
- #inbox .message-list{max-height:224px;padding:7px}
- #inbox .message-item{min-height:68px;padding:10px 11px}
- #inbox .message-item .mi-from{font-size:.84rem}
- #inbox .message-item .mi-sub{font-size:.8rem}
- #inbox .message-item .mi-prev{font-size:.74rem}
- #inbox .mi-time{font-size:.69rem}
- #inbox .reader-toolbar{min-height:40px}
- #inbox .reader-head{padding:11px 13px}
- #inbox .reader-head strong{font-size:.86rem}
- #inbox .reader-head small,#inbox .reader-pill{font-size:.68rem}
- #inbox .reader-content{max-height:278px;padding:13px;font-size:.84rem}
- #inbox .reader-subject{font-size:1rem}
- #inbox .reader-body{font-size:.84rem}
- #inbox .summary-card p,#inbox .draft-card p{font-size:.79rem}
- #inbox .summary-label,#inbox .draft-label{font-size:.62rem}
+ #inbox .mail-app{width:min(100%,350px);margin-inline:auto;box-shadow:0 18px 48px rgba(0,0,0,.2)}
 }
 
 /* Fase 5: conversación y selector como un único producto móvil. */
