@@ -3648,3 +3648,58 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
 
 /* Solo los minutos están confirmados como criterio cuantitativo de cada plan. */
 #precio .plan-datos{grid-template-columns:minmax(0,1fr)}
+
+/* Integraciones · una sola cinta continua. Las dos listas viajan como un
+   bloque y el -50% coincide exactamente con el inicio de la copia. */
+#programas.sistemas{
+  display:block;
+  width:100%;
+  max-width:none;
+  margin-inline:0;
+  content-visibility:visible;
+  contain-intrinsic-size:none;
+}
+.sistemas-copy,.sistemas-nota{
+  width:min(calc(100% - 2rem),1130px);
+  margin-inline:auto;
+}
+.sistemas-copy{margin-bottom:clamp(1.5rem,3vw,2.2rem)}
+.sistemas-nota{margin-top:clamp(1.2rem,2.4vw,1.8rem)}
+.marquesina{
+  display:block;
+  width:100%;
+  margin:0;
+  overflow:hidden;
+  contain:layout paint;
+}
+.marquesina-flujo{
+  display:flex;
+  width:max-content;
+  transform:translate3d(0,0,0);
+  animation:integracionesContinuas 32s linear infinite;
+  will-change:transform;
+  backface-visibility:hidden;
+}
+.marquesina .marquesina-pista{
+  flex:0 0 auto;
+  min-width:100vw;
+  box-sizing:content-box;
+  justify-content:space-around;
+  gap:40px;
+  margin:0;
+  padding:0 40px 0 0;
+  animation:none!important;
+}
+@keyframes integracionesContinuas{
+  to{transform:translate3d(-50%,0,0)}
+}
+@media(max-width:760px){
+  .sistemas-copy,.sistemas-nota{width:calc(100% - 32px)}
+  .marquesina-flujo{animation-duration:24s}
+  .marquesina .marquesina-pista{gap:28px;padding-right:28px}
+}
+@media(prefers-reduced-motion:reduce){
+  .marquesina-flujo{width:100%;animation:none;justify-content:center}
+  .marquesina .marquesina-pista{flex-wrap:wrap;justify-content:center;padding-right:0}
+  .marquesina .marquesina-pista[aria-hidden="true"]{display:none}
+}
