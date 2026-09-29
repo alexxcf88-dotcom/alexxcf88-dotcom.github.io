@@ -3744,3 +3744,7 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
   border-color:rgba(90,240,216,.4);
   background:rgba(90,240,216,.16);
 }
+
+/* HERO v2: su CSS va inline en index.html (<style id="hero-critical">) para
+   que el hero no dependa de esta hoja asíncrona (sin ella, la mano salía a
+   1040 px y saltaba al llegar la hoja: CLS ~1). */

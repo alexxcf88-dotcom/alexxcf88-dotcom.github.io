@@ -5,6 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20260929-intro-v9" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/media/hero/mano.webp" as="image" media="(min-width: 761px)">
+  <link rel="preload" href="features/landing/media/hero/mano-movil.webp" as="image" media="(max-width: 760px)">
   <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
   <link rel="preload" href="features/landing/media/hero-poster-mobile.jpg" as="image" media="(max-width: 760px)" fetchpriority="high">
   <title>AItomat | Recepcionista IA para clínicas dentales</title>
@@ -143,8 +145,8 @@
   ]
 }</script>
   <link id="font-styles" rel="preload" as="style" href="css/fonts.css?v=20260928-mobile-proportions" onload="this.onload=null;this.rel='stylesheet'">
-  <link id="refresh-styles" rel="preload" as="style" href="css/refresh.css?v=20260929-perf-fondo" onload="this.onload=null;this.rel='stylesheet'">
-  <noscript><style>.smart-preloader{display:none!important}</style><link rel="stylesheet" href="features/landing/landing.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/fonts.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/refresh.css?v=20260929-perf-fondo"></noscript>
+  <link id="refresh-styles" rel="preload" as="style" href="css/refresh.css?v=20260929-hero-mano-2" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript><style>.smart-preloader{display:none!important}</style><link rel="stylesheet" href="features/landing/landing.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/fonts.css?v=20260928-mobile-proportions"><link rel="stylesheet" href="css/refresh.css?v=20260929-hero-mano-2"></noscript>
   <script>document.documentElement.classList.add('preloader-active');</script>
   <style>
     /* Intro de marca. Cada pieza es el trazado real de brand/logo/logo-aitomat.svg
@@ -217,6 +219,210 @@
       .smart-preloader .pl-g-a{animation:plRm-a calc(var(--u)*900) linear both!important}@keyframes plRm-a{0%,52%{transform:translate3d(calc(var(--mw) * -0.04373),0,0)}52.1%,100%{transform:none}}.smart-preloader .pl-g-i{animation:plRm-i calc(var(--u)*900) linear both!important}@keyframes plRm-i{0%,52%{transform:translate3d(calc(var(--mw) * -0.02405),0,0)}52.1%,100%{transform:none}}.smart-preloader .pl-g-tomat{animation:plRm-tomat calc(var(--u)*900) linear both!important}@keyframes plRm-tomat{0%,52%{transform:translate3d(calc(var(--mw) * 0.04154),0,0)}52.1%,100%{transform:none}}.smart-preloader .pl-g-dot{animation:plRm-dot calc(var(--u)*900) linear both!important}@keyframes plRm-dot{0%,52%{transform:translate3d(calc(var(--mw) * -0.16506),0,0)}52.1%,100%{transform:none}}
     }
   </style>
+  <style id="hero-critical">
+/* ═════════════════════════════════════════════════════════════════════════════
+   HERO v2 · La mano que pone la recepción en marcha.
+   Una escena-card: copy a la izquierda, mano robótica a la derecha (en móvil,
+   composición propia: titular, mano, texto, CTA). La mano es un render 3D
+   propio horneado en imágenes (features/landing/media/hero/): el fotograma
+   final como <img> (ligero, nítido, fallback universal) y una tira de 28
+   fotogramas para la apertura, que solo se pide si el dispositivo lo aguanta
+   (hero.js). En la palma, la «o» de AItomat se enciende al abrirse.
+   Solo se anima transform/opacity y, durante 1,25 s, la tira por pasos.
+   ═════════════════════════════════════════════════════════════════════════════ */
+#inicio.hero.hx {
+  min-height: 0;
+  display: block;
+  padding: clamp(96px, 12vh, 118px) 0 clamp(28px, 5vh, 48px);
+  text-align: left;
+}
+#inicio.hx::after { display: none; }
+.hx-stage {
+  position: relative;
+  width: min(1240px, calc(100% - 48px));
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, .82fr);
+  grid-template-rows: 1fr auto;
+  column-gap: clamp(16px, 3vw, 48px);
+  min-height: min(680px, calc(100svh - 150px));
+  padding: clamp(40px, 5vw, 76px) clamp(28px, 5vw, 76px) 0;
+  border: 1px solid rgba(255, 255, 255, .075);
+  border-radius: 32px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(52% 64% at 76% 44%, rgba(90, 240, 216, .11), rgba(90, 240, 216, 0) 70%),
+    radial-gradient(40% 50% at 8% 100%, rgba(255, 173, 112, .045), rgba(255, 173, 112, 0) 70%),
+    linear-gradient(160deg, rgba(255, 255, 255, .045), rgba(255, 255, 255, .012) 55%, rgba(255, 255, 255, .02)),
+    rgba(4, 8, 9, .72);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .07), 0 50px 120px -50px rgba(0, 0, 0, .9);
+}
+/* Rejilla técnica muy tenue, solo en la mitad visual (estática). */
+.hx-stage::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, .045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, .045) 1px, transparent 1px);
+  background-size: 44px 44px;
+  -webkit-mask-image: radial-gradient(46% 58% at 76% 46%, #000, transparent 72%);
+  mask-image: radial-gradient(46% 58% at 76% 46%, #000, transparent 72%);
+}
+.hx-copy { align-self: center; padding-bottom: clamp(28px, 4vw, 48px); position: relative; z-index: 2; }
+#inicio.hx .hx-eyebrow { justify-content: flex-start; margin: 0 0 18px; max-width: none; font-size: .74rem; text-align: left; }
+#inicio.hx .hx-badge { display: inline-flex; width: fit-content; max-width: 100%; margin: 0 0 22px; padding: 7px 13px; font-size: .7rem; }
+#inicio.hx .hx-eyebrow { color: var(--aqua); }
+#inicio.hx .hx-title {
+  margin: 0;
+  max-width: 13ch;
+  font-size: clamp(2.8rem, 4.7vw, 4.6rem);
+  line-height: .98;
+  letter-spacing: -.048em;
+  text-align: left;
+  text-wrap: balance;
+}
+.hx-lead { max-width: 43ch; margin: 24px 0 0; color: var(--muted); font-size: clamp(1rem, 1.15vw, 1.13rem); line-height: 1.62; }
+.hx-actions { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 32px; }
+.hx-actions a { min-height: 52px; padding-inline: 26px; }
+
+/* La mano */
+.hx-visual {
+  position: relative;
+  z-index: 1;
+  align-self: end;
+  justify-self: center;
+  width: min(118%, 640px);
+  aspect-ratio: 1;
+  margin: -40px -4% -10px 0;
+}
+.hx-halo {
+  position: absolute;
+  inset: 6% 8% 14%;
+  border-radius: 50%;
+  background: radial-gradient(circle at 50% 46%, rgba(90, 240, 216, .26), rgba(90, 240, 216, .07) 42%, rgba(90, 240, 216, 0) 70%);
+  opacity: .75;
+}
+.hx-orbit {
+  position: absolute;
+  inset: 13% 15% 21%;
+  border-radius: 50%;
+  border: 1px solid rgba(90, 240, 216, .16);
+}
+.hx-orbit-2 { inset: 2% 4% 10%; border-color: rgba(255, 255, 255, .06); border-style: dashed; }
+.hx-float { position: absolute; inset: 0; display: block; }
+.hx-float picture, .hx-hand { display: block; width: 100%; height: 100%; }
+.hx-hand { object-fit: contain; }
+.hx-seq {
+  position: absolute;
+  inset: 0;
+  opacity: 0;
+  background-repeat: no-repeat;
+  background-size: 2800% 100%;
+  background-position: 0 0;
+}
+/* Estados (los pone hero.js). Sin JS, la mano abierta queda quieta y visible. */
+.hx-visual.is-armed .hx-hand { opacity: 0; }
+.hx-visual.is-armed .hx-seq { opacity: 1; }
+.hx-visual.is-playing .hx-seq { animation: hxSeq 1.25s steps(28, jump-none) forwards; }
+.hx-visual.is-playing .hx-halo { animation: hxHalo 1.6s cubic-bezier(.2, .8, .2, 1) both; }
+.hx-visual.is-playing .hx-float { animation: hxRise .5s cubic-bezier(.2, .8, .2, 1) both; }
+.hx-visual.is-entering .hx-float { animation: hxEnter .9s cubic-bezier(.2, .8, .2, 1) .28s both; }
+.hx-visual.is-entering .hx-halo { animation: hxHalo 1.4s cubic-bezier(.2, .8, .2, 1) .28s both; }
+/* Una respiración (sube y vuelve, ~7 s) y quieta. Infinita costaba ~2,3 s de
+   GPU cada 5 s: obliga a recomponer las capas fijas del fondo bajo la mano. */
+.hx-visual.is-idle .hx-float { animation: hxFloat 3.5s ease-in-out 2 alternate; }
+@media (hover: none) { .hx-visual.is-idle .hx-float { animation: none; } }
+#inicio.is-offscreen .hx-visual .hx-float { animation: none; }
+@keyframes hxSeq { from { background-position: 0 0; } to { background-position: 100% 0; } }
+@keyframes hxRise { from { opacity: 0; } to { opacity: 1; } }
+@keyframes hxEnter { from { opacity: 0; transform: translate3d(0, 36px, 0) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes hxHalo { 0% { opacity: 0; transform: scale(.86); } 70% { opacity: 1; } 100% { opacity: .75; transform: none; } }
+@keyframes hxFloat { from { transform: translate3d(0, 0, 0); } to { transform: translate3d(0, -9px, 0); } }
+
+/* Lo que pone en marcha */
+.hx-proof {
+  grid-column: 1 / -1;
+  position: relative;
+  z-index: 2;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 26px;
+  margin: 0 calc(clamp(28px, 5vw, 76px) * -1);
+  padding: 18px clamp(28px, 5vw, 76px) 20px;
+  list-style: none;
+  border-top: 1px solid rgba(255, 255, 255, .07);
+  background: linear-gradient(180deg, rgba(4, 8, 9, .35), rgba(4, 8, 9, .7));
+}
+.hx-proof li {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: rgba(247, 251, 248, .74);
+  font-size: .78rem;
+  font-weight: 600;
+  letter-spacing: .06em;
+  text-transform: uppercase;
+}
+.hx-proof li::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--aqua);
+  box-shadow: 0 0 0 3px rgba(90, 240, 216, .14);
+}
+
+/* Tablet: una columna, mano a la derecha del título ya no cabe. */
+@media (max-width: 960px) {
+  .hx-stage { grid-template-columns: 1fr; grid-template-rows: none; text-align: center; min-height: 0; padding-top: 48px; }
+  .hx-copy { display: contents; }
+  .hx-stage > *, .hx-copy > * { grid-column: 1; }
+  #inicio.hx .hx-eyebrow { order: 1; justify-content: center; margin-inline: auto; text-align: center; }
+  #inicio.hx .hx-badge { order: 2; justify-self: center; }
+  #inicio.hx .hx-title { order: 3; margin-inline: auto; text-align: center; max-width: 12ch; font-size: clamp(2.6rem, 8.4vw, 4.4rem); }
+  .hx-visual { order: 4; width: min(72vw, 460px); margin: 8px auto -10px; align-self: auto; justify-self: center; }
+  .hx-lead { order: 5; margin: 0 auto; max-width: 40ch; }
+  .hx-actions { order: 6; justify-content: center; margin: 26px 0 30px; }
+  .hx-proof { order: 7; justify-content: center; }
+}
+
+/* Móvil: composición propia, no la de escritorio encogida. */
+@media (max-width: 760px) {
+  #inicio.hero.hx { width: 100%; max-width: none; min-height: 0; display: block; padding: 86px 0 22px; }
+  .hx-stage { width: calc(100% - 20px); padding: 28px 16px 0; border-radius: 26px; }
+  .hx-stage::before { background-size: 32px 32px; -webkit-mask-image: radial-gradient(60% 34% at 50% 50%, #000, transparent 72%); mask-image: radial-gradient(60% 34% at 50% 50%, #000, transparent 72%); }
+  #inicio.hx .hx-eyebrow { max-width: 30ch; margin-bottom: 14px; font-size: .64rem; line-height: 1.45; }
+  #inicio.hx .hx-badge { margin: 0 0 18px; padding: 7px 12px; font-size: .66rem; }
+  #inicio.hx .hx-title { max-width: 10.5ch; font-size: clamp(2.2rem, 11.4vw, 3.25rem); line-height: .95; letter-spacing: -.05em; }
+  .hx-visual { width: min(80vw, 340px); margin: 2px auto -14px; }
+  .hx-lead { max-width: 30ch; font-size: .97rem; line-height: 1.55; }
+  .hx-actions { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; margin: 22px 0 24px; }
+  .hx-actions a { width: 100%; min-height: 52px; }
+  .hx-proof { gap: 8px 14px; margin-inline: -16px; padding: 15px 14px 17px; }
+  .hx-proof li { font-size: .64rem; gap: 7px; letter-spacing: .05em; }
+  .hx-proof li::before { width: 5px; height: 5px; box-shadow: 0 0 0 2px rgba(90, 240, 216, .14); }
+}
+@media (max-width: 760px) and (max-height: 700px) {
+  #inicio.hero.hx { padding-top: 78px; }
+  .hx-stage { padding-top: 20px; }
+  #inicio.hx .hx-badge { margin-bottom: 12px; }
+  .hx-visual { width: min(58vw, 240px); margin-bottom: -12px; }
+  .hx-actions { margin-top: 16px; }
+}
+@media (max-width: 340px) {
+  #inicio.hx .hx-title { font-size: 2.05rem; }
+  .hx-stage { padding-inline: 13px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hx-visual .hx-float, .hx-visual .hx-halo, .hx-visual .hx-seq { animation: none !important; }
+  .hx-visual .hx-seq { display: none; }
+  .hx-visual .hx-hand { opacity: 1 !important; }
+}
+  </style>
 </head>
 <body>
   <div class="smart-preloader" id="smart-preloader" aria-hidden="true">
@@ -232,16 +438,9 @@
   <a class="skip-link" href="#proceso">Saltar al contenido</a>
 
   <div class="ambient" aria-hidden="true">
-    <!-- Fondo vivo del hero. Vídeo autoalojado (nada de CloudFront ajeno: sería
-         un tercero más viendo la IP de cada visita, fuera de la lista de
-         proveedores que publicamos). Dos cortes: 1280p para escritorio y uno de
-         640×360 y 80 KB para móvil. Ninguno se pide con la página: los carga JS
-         cuando el hilo queda libre y se pausan al salir el hero de pantalla.
-         Mientras tanto —y siempre que el dispositivo no dé para vídeo— mandan
-         las capas CSS (aurora, haz y rejilla), que se mueven en el compositor. -->
-    <video class="ambient-video" id="bg-video" loop muted playsinline preload="none"
-      data-src="features/landing/media/hero.mp4"
-      data-src-movil="features/landing/media/hero-mobile.mp4"></video>
+    <!-- Fondo del hero: capas CSS estáticas (aurora, haz, rejilla). El vídeo
+         que hubo aquí se retiró: la pieza visual del hero es ahora la mano
+         (features/landing/media/hero/), más ligera y con carga condicionada. -->
     <div class="ambient-poster"></div>
     <div class="ambient-aurora"></div>
     <div class="ambient-grid"></div>
@@ -268,19 +467,34 @@
   </nav>
 
   <main>
-    <section id="inicio" class="hero" data-spotlight>
+    <section id="inicio" class="hero hx" data-spotlight>
       <div class="hero-spotlight" aria-hidden="true"></div>
-      <div class="hero-copy">
-        <p class="eyebrow"><span></span> Automatizaci&oacute;n de recepci&oacute;n para cl&iacute;nicas dentales</p>
-        <a class="pilot-badge" href="#precio"><span>Primer mes gratis</span><span aria-hidden="true">↗</span></a>
-        <div class="hero-title-wrap">
-          <h1><span class="hero-desktop-title">La recepci&oacute;n de tu cl&iacute;nica, <span class="shiny">automatizada.</span></span><span class="hero-mobile-title">La recepci&oacute;n<br>de tu cl&iacute;nica,<br><span class="shiny">automatizada.</span></span></h1>
+      <div class="hx-stage">
+        <div class="hx-copy">
+          <p class="eyebrow hx-eyebrow"><span></span> Recepci&oacute;n automatizada para cl&iacute;nicas dentales</p>
+          <a class="pilot-badge hx-badge" href="#precio"><span>Primer mes gratis</span><span aria-hidden="true">↗</span></a>
+          <h1 class="hx-title">La recepci&oacute;n de tu&nbsp;cl&iacute;nica, <span class="shiny">automatizada.</span></h1>
+          <p class="hx-lead">Atiende llamadas y WhatsApp, organiza la agenda, recuerda citas y recupera pacientes sin cargar m&aacute;s a&nbsp;recepci&oacute;n.</p>
+          <div class="hx-actions">
+            <a class="primary-btn" href="#contacto" data-demo-open>Pedir demo</a>
+            <a class="secondary-btn" href="#proceso">Ver c&oacute;mo funciona</a>
+          </div>
         </div>
-        <p class="hero-lead"><span class="hero-lead-desktop"><span class="b-ai">AI</span>tomat es la recepcionista con IA que atiende el tel&eacute;fono y el <strong>WhatsApp</strong> de la cl&iacute;nica, gestiona la agenda, recuerda las citas, recupera a los pacientes que no vuelven y lo deja todo en un panel. Lo que no debe automatizarse, pasa a tu equipo.</span><span class="hero-lead-mobile"><span class="b-ai">AI</span>tomat atiende llamadas y WhatsApp, gestiona la agenda y automatiza tu recepci&oacute;n.</span></p>
-        <div class="hero-actions">
-          <a class="primary-btn" href="#contacto" data-demo-open>Solicitar mi mes de prueba</a>
-          <a class="secondary-btn" href="#voz">Escuchar al asistente</a>
+        <div class="hx-visual" id="hx-visual" aria-hidden="true">
+          <span class="hx-halo"></span>
+          <span class="hx-orbit"></span>
+          <span class="hx-orbit hx-orbit-2"></span>
+          <span class="hx-float">
+            <picture>
+              <source media="(max-width: 760px)" srcset="features/landing/media/hero/mano-movil.webp">
+              <img class="hx-hand" src="features/landing/media/hero/mano.webp" alt="" width="1040" height="1040" fetchpriority="high" decoding="async">
+            </picture>
+            <span class="hx-seq"></span>
+          </span>
         </div>
+        <ul class="hx-proof" aria-label="Lo que AItomat pone en marcha">
+          <li>Llamadas</li><li>WhatsApp</li><li>Agenda</li><li>Recordatorios</li><li>Pacientes dormidos</li><li>Inbox</li>
+        </ul>
       </div>
     </section>
 
@@ -941,7 +1155,8 @@
     </div>
   </div>
 
-  <script defer src="features/landing/preloader.js?v=20260929-logo-intro-v9"></script>
+  <script defer src="features/landing/hero.js?v=20260929-hero-mano-2"></script>
+  <script defer src="features/landing/preloader.js?v=20260929-logo-intro-v10"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
