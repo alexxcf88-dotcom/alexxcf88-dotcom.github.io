@@ -186,12 +186,9 @@
     }, Math.max(flight, 800));
   };
 
-  /* El estado final es el archivo del logo, no las capas: se cambia solo si ya
-     está decodificado (si no, las capas son idénticas y se quedan). */
-  const logo = loader.querySelector('.pl-logo');
-  const logoReady = logo && logo.decode ? logo.decode().then(() => true, () => false) : Promise.resolve(false);
-  introDone.then(() => Promise.race([logoReady, timeout(0).then(() => false)]))
-    .then((ok) => { if (ok && mark) mark.classList.add('is-final'); });
+  /* Sin relevo a <img> al final: las capas usan el mismo viewBox que
+     logo-aitomat.svg, y cambiar de una a otra movía los bordes un subpíxel
+     (se veía como un pequeño salto del logo). */
 
   criticalStyles.then(warmSpline);
 

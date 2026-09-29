@@ -65,12 +65,12 @@
   requestAnimationFrame(() => requestAnimationFrame(() => body.classList.add('nav-anim')));
 
   /* 4 · El punto blanco de la «o». Dónde cae el centro del dial en el vídeo
-     (fracción del ancho/alto del fotograma, medida en el render) y cómo lo
+     (fracción del ancho/alto del fotograma, medida en el píxel del render) y cómo lo
      coloca object-fit: cover con su object-position. */
   const eye = document.getElementById('ix-eye');
   const DIAL = mobile
-    ? { ar: [9, 16], pos: [0.5, 0.4], x: 0.498, y: 0.4288, core: 0.01814, hub: 0.04354 }
-    : { ar: [16, 9], pos: [0.58, 0.5], x: 0.5706, y: 0.3809, core: 0.013526, hub: 0.0324 };
+    ? { ar: [9, 16], pos: [0.5, 0.4], x: 0.4962, y: 0.4067, core: 0.0272, hub: 0.06529 }
+    : { ar: [16, 9], pos: [0.58, 0.5], x: 0.5702, y: 0.3300, core: 0.01406, hub: 0.03368 };
   let cx = 0, cy = 0, viaje = 0;
   const colocar = () => {
     if (!eye) return;
@@ -80,7 +80,8 @@
     cx = (W - rw) * DIAL.pos[0] + DIAL.x * rw;
     cy = (H - rh) * DIAL.pos[1] + DIAL.y * rh;
     const er = DIAL.core * rw;
-    viaje = Math.max(0, DIAL.hub * rw - er * 1.25);
+    // Recorrido corto: el punto mira hacia el cursor sin salir del centro del buje.
+    viaje = Math.max(0, (DIAL.hub * rw - er * 1.4) * 0.5);
     eye.style.setProperty('--ex', cx.toFixed(1) + 'px');
     eye.style.setProperty('--ey', cy.toFixed(1) + 'px');
     eye.style.setProperty('--er', er.toFixed(1) + 'px');
