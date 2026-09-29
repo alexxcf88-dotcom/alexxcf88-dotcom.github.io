@@ -72,8 +72,8 @@
   const visualAssets = [imageReady(mobile
     ? '/features/landing/media/hero-poster-mobile.jpg'
     : '/features/landing/media/hero-poster.jpg'), imageReady(mobile
-    ? '/features/landing/media/hero/mano-movil.webp'
-    : '/features/landing/media/hero/mano.webp')];
+    ? '/features/landing/media/hero/mano-v2-movil.webp'
+    : '/features/landing/media/hero/mano-v2.webp')];
   if (document.fonts && document.fonts.load) visualAssets.push(document.fonts.load('900 1em Archivo').catch(() => {}));
   const visualReady = Promise.race([
     Promise.allSettled(visualAssets),
@@ -85,7 +85,10 @@
      entrar y congelaba la web ~0,4 s. Mismos requisitos que initVoiceSpline
      (landing.js), que reutiliza window.__splineRuntime. */
   const warmSpline = () => {
-    if (reduced || constrained || window.__splineRuntime || !document.getElementById('voice-3d')) return;
+    // Solo escritorio: en móvil, 2,2 MB durante la intro compiten con lo crítico
+    // en redes lentas; allí Spline conserva su carga perezosa de landing.js.
+    if (reduced || constrained || mobile || window.matchMedia('(hover: none)').matches) return;
+    if (window.__splineRuntime || !document.getElementById('voice-3d')) return;
     const cores = navigator.hardwareConcurrency || 0;
     const memory = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
     if ((cores && cores < 4) || (memory !== null && memory < 3)) return;
