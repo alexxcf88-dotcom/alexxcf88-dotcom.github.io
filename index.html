@@ -154,9 +154,12 @@
        (mismo path, mismo degradado) en su propia capa HTML: solo se animan
        transform y opacity, que corren en el compositor aunque el hilo principal
        esté ocupado. Arranca con el primer pintado, sin esperar a ningún JS.
-       A (0–0,95 s)   «A i · tomat»: letras abiertas, punto blanco entre la i y la t.
-       B (0,95–1,85)  unión: el punto entra en la «o» mientras la palabra se cierra.
-       C (1,9–3,0)    la «o» recarga sus 11 radios y la «i» hace de ecualizador.
+       Los 11 radios de la «o» son la barra de carga: preloader.js los enciende
+       según terminan de llegar los recursos reales (estilos, fuentes, escena,
+       landing.js), con un ritmo mínimo para que se lea como un barrido.
+       A (0–1,25 s)   «A i · tomat»: letras abiertas, punto blanco entre la i y la t.
+       B (1,25–2,55)  unión: el punto entra en la «o» mientras la palabra se cierra.
+       C (3,5–4,4)    con la carga completa, la «i» hace de ecualizador y se asienta.
        Al acabar, preloader.js cede el sitio al propio logo-aitomat.svg (.is-final)
        y el logo vuela hasta el del nav mientras el fondo se desvanece. */
     .smart-preloader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:hidden}
@@ -169,16 +172,19 @@
     .pl-part svg{display:block;width:100%;height:100%;overflow:visible}
     .pl-logo{position:absolute;inset:0;display:block;width:100%;height:100%;opacity:0}
     .preloader-mark.is-final .pl-logo{opacity:1}.preloader-mark.is-final .pl-group{visibility:hidden}
-    .pl-dot{animation:plDotSize 3s linear both}
-    .pl-dot-glow{border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.34),rgba(255,255,255,.1) 38%,rgba(255,255,255,0) 70%);animation:plDotGlow 3s linear both}
+    .pl-dot{animation:plDotSize 4.4s linear both}
+    .pl-dot-glow{border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.34),rgba(255,255,255,.1) 38%,rgba(255,255,255,0) 70%);animation:plDotGlow 4.4s linear both}
     .pl-bar-5,.pl-bar-6{opacity:.26}
     .pl-ray-gap{opacity:.3}
-    .pl-g-a{animation:plJoin-a 3s linear both}
-    .pl-g-i{animation:plJoin-i 3s linear both}
-    .pl-g-tomat{animation:plJoin-tomat 3s linear both}
-    .pl-g-dot{animation:plJoin-dot 3s linear both}
-    .pl-ray-0{animation:plRay0 3s linear both}.pl-ray-1{animation:plRay1 3s linear both}.pl-ray-2{animation:plRay2 3s linear both}.pl-ray-3{animation:plRay3 3s linear both}.pl-ray-4{animation:plRay4 3s linear both}.pl-ray-5{animation:plRay5 3s linear both}.pl-ray-6{animation:plRay6 3s linear both}.pl-ray-7{animation:plRay7 3s linear both}.pl-ray-8{animation:plRay8 3s linear both}.pl-ray-9{animation:plRay9 3s linear both}.pl-ray-10{animation:plRay10 3s linear both}
-    .pl-bar-3{animation:plBar3 3s linear both}.pl-bar-4{animation:plBar4 3s linear both}.pl-bar-5{animation:plBar5 3s linear both}.pl-bar-6{animation:plBar6 3s linear both}
+    .pl-ray{opacity:.12;transition:opacity .5s cubic-bezier(.2,.8,.2,1)}
+    .pl-ray.is-on{opacity:1}
+    .pl-ray.is-next{animation:plScan 1s ease-in-out infinite alternate}
+    @keyframes plScan{from{opacity:.12}to{opacity:.5}}
+    .pl-g-a{animation:plJoin-a 4.4s linear both}
+    .pl-g-i{animation:plJoin-i 4.4s linear both}
+    .pl-g-tomat{animation:plJoin-tomat 4.4s linear both}
+    .pl-g-dot{animation:plJoin-dot 4.4s linear both}
+    .pl-bar-3{animation:plBar3 4.4s linear both}.pl-bar-4{animation:plBar4 4.4s linear both}.pl-bar-5{animation:plBar5 4.4s linear both}.pl-bar-6{animation:plBar6 4.4s linear both}
     /* Salida: el fondo se desvanece y el logo vuela a su sitio en el nav (--fx/--fy/--fs los calcula preloader.js). */
     .smart-preloader.is-leaving{pointer-events:none}
     .smart-preloader.is-leaving::after,.smart-preloader.is-leaving::before{opacity:0}
@@ -188,27 +194,16 @@
     /* Mientras la intro está delante, la home no gasta: sus animaciones CSS esperan. */
     .preloader-active body>:not(.smart-preloader),.preloader-active body>:not(.smart-preloader) *{animation-play-state:paused!important}
     @keyframes plIn{from{opacity:0}to{opacity:1}}
-    @keyframes plJoin-a{0%,31.667%{transform:translate3d(calc(var(--mw) * -0.04373),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}61.667%,100%{transform:none}}
-    @keyframes plJoin-i{0%,31.667%{transform:translate3d(calc(var(--mw) * -0.02405),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}61.667%,100%{transform:none}}
-    @keyframes plJoin-tomat{0%,31.667%{transform:translate3d(calc(var(--mw) * 0.04154),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}61.667%,100%{transform:none}}
-    @keyframes plJoin-dot{0%,31.667%{transform:translate3d(calc(var(--mw) * -0.16506),0,0);animation-timing-function:cubic-bezier(.5,0,.15,1)}61.667%,100%{transform:none}}
-    @keyframes plDotSize{0%{transform:scale(1.05)}10.000%,31.667%{transform:scale(1.75);animation-timing-function:cubic-bezier(.5,0,.15,1)}61.667%,100%{transform:none}}
-    @keyframes plDotGlow{0%{opacity:0;transform:scale(.6)}11.667%,31.667%{opacity:1;transform:none;animation-timing-function:cubic-bezier(.5,0,.15,1)}56.667%,100%{opacity:0;transform:scale(.45)}}
-    @keyframes plRay0{0%,63.333%{opacity:1}67.333%,68.667%{opacity:.2}75.333%,100%{opacity:1}}
-    @keyframes plRay1{0%,63.333%{opacity:1}67.333%,70.267%{opacity:.2}76.933%,100%{opacity:1}}
-    @keyframes plRay2{0%,63.333%{opacity:1}67.333%,71.867%{opacity:.2}78.533%,100%{opacity:1}}
-    @keyframes plRay3{0%,63.333%{opacity:1}67.333%,73.467%{opacity:.2}80.133%,100%{opacity:1}}
-    @keyframes plRay4{0%,63.333%{opacity:1}67.333%,75.067%{opacity:.2}81.733%,100%{opacity:1}}
-    @keyframes plRay5{0%,63.333%{opacity:1}67.333%,76.667%{opacity:.2}83.333%,100%{opacity:1}}
-    @keyframes plRay6{0%,63.333%{opacity:1}67.333%,78.267%{opacity:.2}84.933%,100%{opacity:1}}
-    @keyframes plRay7{0%,63.333%{opacity:1}67.333%,79.867%{opacity:.2}86.533%,100%{opacity:1}}
-    @keyframes plRay8{0%,63.333%{opacity:1}67.333%,81.467%{opacity:.2}88.133%,100%{opacity:1}}
-    @keyframes plRay9{0%,63.333%{opacity:1}67.333%,83.067%{opacity:.2}89.733%,100%{opacity:1}}
-    @keyframes plRay10{0%,63.333%{opacity:1}67.333%,84.667%{opacity:.2}91.333%,100%{opacity:1}}
-    @keyframes plBar3{0%{opacity:1}76.667%{opacity:1}78.333%{opacity:0.26}80.667%{opacity:0.26}82.333%{opacity:1}100%{opacity:1}}
-    @keyframes plBar4{0%{opacity:1}76.667%{opacity:1}78.333%{opacity:0.26}80.667%{opacity:0.26}82.333%{opacity:1}84.667%{opacity:1}86.333%{opacity:0.26}88.667%{opacity:0.26}90.333%{opacity:1}100%{opacity:1}}
-    @keyframes plBar5{0%{opacity:0.26}80.667%{opacity:0.26}82.333%{opacity:1}84.667%{opacity:1}86.333%{opacity:0.26}88.667%{opacity:0.26}90.333%{opacity:1}93.333%{opacity:1}95.000%{opacity:0.26}100%{opacity:0.26}}
-    @keyframes plBar6{0%{opacity:0.26}88.667%{opacity:0.26}90.333%{opacity:1}93.333%{opacity:1}95.000%{opacity:0.26}100%{opacity:0.26}}
+    @keyframes plJoin-a{0%,28.409%{transform:translate3d(calc(var(--mw) * -0.04373),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}57.955%,100%{transform:none}}
+    @keyframes plJoin-i{0%,28.409%{transform:translate3d(calc(var(--mw) * -0.02405),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}57.955%,100%{transform:none}}
+    @keyframes plJoin-tomat{0%,28.409%{transform:translate3d(calc(var(--mw) * 0.04154),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}57.955%,100%{transform:none}}
+    @keyframes plJoin-dot{0%,28.409%{transform:translate3d(calc(var(--mw) * -0.16506),0,0);animation-timing-function:cubic-bezier(.5,0,.15,1)}57.955%,100%{transform:none}}
+    @keyframes plDotSize{0%{transform:scale(1.05)}6.818%,28.409%{transform:scale(1.75);animation-timing-function:cubic-bezier(.5,0,.15,1)}57.955%,100%{transform:none}}
+    @keyframes plDotGlow{0%{opacity:0;transform:scale(.6)}7.955%,28.409%{opacity:1;transform:none;animation-timing-function:cubic-bezier(.5,0,.15,1)}54.545%,100%{opacity:0;transform:scale(.45)}}
+    @keyframes plBar3{0%{opacity:1}79.545%{opacity:1}80.682%{opacity:0.26}82.727%{opacity:0.26}83.864%{opacity:1}100%{opacity:1}}
+    @keyframes plBar4{0%{opacity:1}79.545%{opacity:1}80.682%{opacity:0.26}82.727%{opacity:0.26}83.864%{opacity:1}85.909%{opacity:1}87.045%{opacity:0.26}89.091%{opacity:0.26}90.227%{opacity:1}100%{opacity:1}}
+    @keyframes plBar5{0%{opacity:0.26}82.727%{opacity:0.26}83.864%{opacity:1}85.909%{opacity:1}87.045%{opacity:0.26}89.091%{opacity:0.26}90.227%{opacity:1}93.182%{opacity:1}94.318%{opacity:0.26}100%{opacity:0.26}}
+    @keyframes plBar6{0%{opacity:0.26}89.091%{opacity:0.26}90.227%{opacity:1}93.182%{opacity:1}94.318%{opacity:0.26}100%{opacity:0.26}}
     @media(max-width:480px){.preloader-mark{--mw:min(84vw,400px)}}
     @media(prefers-reduced-motion:reduce){
       /* Misma narrativa sin desplazamientos: «A i · tomat» se funde en «AItomat». */
@@ -242,6 +237,14 @@
     .ix-poster,.ix-poster img,.ix-video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:58% 50%}
     .ix-video{opacity:0;transition:opacity 1s ease}
     .ix-video.is-on{opacity:1}
+    /* El punto blanco de la «o» no está en el vídeo: lo pinta la web encima, en el
+       centro exacto del dial (hero.js calcula dónde cae con object-fit), y se
+       desplaza dentro del buje hacia el puntero. Es un elemento pequeño que solo
+       mueve transform: no toca la capa de vídeo. */
+    .ix-eye{position:absolute;left:var(--ex,57%);top:var(--ey,38%);width:0;height:0;z-index:1;opacity:0;transition:opacity .8s ease}
+    .ix-eye.is-ready{opacity:1}
+    .ix-eye i{position:absolute;left:0;top:0;width:calc(var(--er,20px)*2);height:calc(var(--er,20px)*2);margin:calc(var(--er,20px)*-1) 0 0 calc(var(--er,20px)*-1);border-radius:50%;background:radial-gradient(circle,#fff 0 58%,rgba(235,255,250,.9) 70%,rgba(160,250,235,0) 100%);box-shadow:0 0 calc(var(--er,20px)*1.2) rgba(255,255,255,.55),0 0 calc(var(--er,20px)*3.4) rgba(90,240,216,.4);transform:translate3d(var(--dx,0px),var(--dy,0px),0);transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+    .ix-eye i::before{content:"";position:absolute;left:50%;top:50%;width:calc(var(--er,20px)*14);height:calc(var(--er,20px)*14);margin:calc(var(--er,20px)*-7) 0 0 calc(var(--er,20px)*-7);border-radius:50%;background:radial-gradient(circle,rgba(200,255,245,.16),rgba(90,240,216,.06) 35%,rgba(90,240,216,0) 65%);pointer-events:none}
     /* Una sola capa estática: lectura del texto abajo a la izquierda y fundido con Sistema. */
     .ix-shade{position:absolute;inset:0;background:radial-gradient(62% 58% at 0% 100%,rgba(2,5,6,.9),rgba(2,5,6,.55) 45%,rgba(2,5,6,0) 75%),linear-gradient(180deg,rgba(5,7,6,0) 72%,#050706 100%)}
 
@@ -379,6 +382,7 @@
         </picture>
         <video class="ix-video" id="ix-video" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1"></video>
         <span class="ix-shade"></span>
+        <span class="ix-eye" id="ix-eye"><i></i></span>
       </div>
       <div class="ix-copy">
         <p class="ix-eyebrow">Recepci&oacute;n automatizada para cl&iacute;nicas dentales <span aria-hidden="true">&middot;</span> <a class="ix-promo" href="#precio">Primer mes gratis</a></p>
@@ -1051,8 +1055,8 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20260929-campo-3"></script>
-  <script defer src="features/landing/preloader.js?v=20260929-campo"></script>
+  <script defer src="features/landing/hero.js?v=20260929-ojo"></script>
+  <script defer src="features/landing/preloader.js?v=20260929-carga"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

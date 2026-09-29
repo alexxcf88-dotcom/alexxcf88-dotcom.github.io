@@ -54,8 +54,8 @@
 
   /* Fin real de la intro: todas sus animaciones finitas. Si el navegador no
      expone getAnimations, un reloj equivalente. */
-  const introFallback = reduced ? 1100 : 3300;
-  const introDone = (mark && mark.getAnimations)
+  const introFallback = reduced ? 1100 : 4700;
+  const cssDone = (mark && mark.getAnimations)
     ? Promise.race([
         Promise.all(mark.getAnimations({ subtree: true })
           .filter((a) => a.effect && a.effect.getComputedTiming().endTime !== Infinity)
@@ -75,6 +75,52 @@
     ? '/features/landing/media/hero/campo-movil.webp'
     : '/features/landing/media/hero/campo.webp')];
   if (document.fonts && document.fonts.load) visualAssets.push(document.fonts.load('900 1em Archivo').catch(() => {}));
+  /* Barra de carga: los 11 radios de la «o». Cada recurso que llega suma; un
+     radio más solo cada 250 ms como mucho, para que se lea como un barrido y
+     no como un parpadeo. El radio siguiente «busca» (pulso) mientras espera. */
+  const t0 = performance.now();
+  const rays = mark ? Array.from(mark.querySelectorAll('.pl-ray')) : [];
+  const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);
+  const tareas = [
+    styleReady('landing-styles'), styleReady('font-styles'), styleReady('refresh-styles'),
+    ...visualAssets,
+    new Promise((resolve) => {                 // landing.js, precargado en <head>
+      if (!('PerformanceObserver' in window)) return resolve();
+      const po = new PerformanceObserver((l) => {
+        if (l.getEntries().some((e) => /landing\.js/.test(e.name))) { po.disconnect(); resolve(); }
+      });
+      try { po.observe({ type: 'resource', buffered: true }); } catch (e) { resolve(); }
+    })
+  ];
+  const escena = document.getElementById('ix-video');
+  if (escena && escena.currentSrc !== undefined && escena.getAttribute('src')) {
+    tareas.push(new Promise((resolve) => {   // el vídeo de la portada, listo para reproducirse
+      if (escena.readyState >= 3) return resolve();
+      escena.addEventListener('canplay', resolve, { once: true });
+      escena.addEventListener('error', resolve, { once: true });
+    }));
+  }
+  let hechas = 0;
+  tareas.forEach((t) => cap(t, 5000).then(() => { hechas += 1; }));
+  let encendidos = 0;
+  let raysResolve;
+  const raysDone = new Promise((r) => { raysResolve = r; });
+  const pintarRadios = (n) => {
+    rays.forEach((ray, i) => {
+      ray.classList.toggle('is-on', i < n);
+      ray.classList.toggle('is-next', i === n);
+    });
+  };
+  const avanzar = () => {
+    const ritmo = reduced ? rays.length : Math.floor((performance.now() - t0 - 150) / 250);
+    const meta = Math.min(ritmo, Math.floor(hechas / tareas.length * rays.length));
+    if (meta > encendidos) { encendidos = meta; pintarRadios(encendidos); }
+    if (encendidos >= rays.length) { raysResolve(); return; }
+    window.setTimeout(avanzar, 80);
+  };
+  if (rays.length) { pintarRadios(0); avanzar(); } else raysResolve();
+  const introDone = Promise.all([cssDone, raysDone]);
+
   const visualReady = Promise.race([
     Promise.allSettled(visualAssets),
     timeout(constrained ? 1200 : 1650)
@@ -113,6 +159,8 @@
   const leave = () => {
     if (left) return;
     left = true;
+    pintarRadios(rays.length); // si salta el freno absoluto, la «o» se completa
+    raysResolve();
     /* El logo vuela hasta el del nav (mismo archivo, mismo tamaño al llegar)
        mientras el fondo se desvanece; al aterrizar, el del nav toma el relevo. */
     const target = !reduced && document.querySelector('.site-nav .brand-wordmark');
@@ -157,5 +205,5 @@
     if (left) return;
     runLanding();
     leave();
-  }, reduced ? 2200 : Math.max(3800, 5200 - performance.now()));
+  }, reduced ? 2600 : Math.max(5200, 6500 - performance.now()));
 })();

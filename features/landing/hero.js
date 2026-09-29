@@ -12,8 +12,10 @@
       portada queda menos de un 6 % (justo cuando vuelve el fondo fijo).
       Sin vídeo con reduced motion, ahorro de datos, red lenta o equipos
       modestos: queda la imagen.
-   Nada de parallax ni luces de cursor: mover la capa de vídeo era lo que
-   tiraba los FPS (medido: 51 → 59 fps al moverse el ratón sin ello). */
+   4) El punto blanco de la «o» se pinta encima del vídeo y mira hacia el
+      puntero dentro del buje (escritorio con ratón).
+   La capa de vídeo nunca se mueve: eso era lo que tiraba los FPS (medido:
+   51 → 59 fps al moverse el ratón sin ello). */
 (function initImmersiveHero() {
   const hero = document.getElementById('inicio');
   const video = document.getElementById('ix-video');
@@ -61,6 +63,49 @@
     }, { threshold: [0, 0.06, 0.1] }).observe(hero);
   }
   requestAnimationFrame(() => requestAnimationFrame(() => body.classList.add('nav-anim')));
+
+  /* 4 · El punto blanco de la «o». Dónde cae el centro del dial en el vídeo
+     (fracción del ancho/alto del fotograma, medida en el render) y cómo lo
+     coloca object-fit: cover con su object-position. */
+  const eye = document.getElementById('ix-eye');
+  const DIAL = mobile
+    ? { ar: [9, 16], pos: [0.5, 0.4], x: 0.498, y: 0.4288, core: 0.01814, hub: 0.04354 }
+    : { ar: [16, 9], pos: [0.58, 0.5], x: 0.5706, y: 0.3809, core: 0.013526, hub: 0.0324 };
+  let cx = 0, cy = 0, viaje = 0;
+  const colocar = () => {
+    if (!eye) return;
+    const W = hero.clientWidth, H = hero.clientHeight;
+    const s = Math.max(W / DIAL.ar[0], H / DIAL.ar[1]);
+    const rw = DIAL.ar[0] * s, rh = DIAL.ar[1] * s;
+    cx = (W - rw) * DIAL.pos[0] + DIAL.x * rw;
+    cy = (H - rh) * DIAL.pos[1] + DIAL.y * rh;
+    const er = DIAL.core * rw;
+    viaje = Math.max(0, DIAL.hub * rw - er * 1.25);
+    eye.style.setProperty('--ex', cx.toFixed(1) + 'px');
+    eye.style.setProperty('--ey', cy.toFixed(1) + 'px');
+    eye.style.setProperty('--er', er.toFixed(1) + 'px');
+    eye.classList.add('is-ready');
+  };
+  colocar();
+  window.addEventListener('resize', colocar, { passive: true });
+  if (eye && !reduced && !mobile && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let frame = 0, px = 0, py = 0;
+    hero.addEventListener('pointermove', (ev) => {
+      const r = hero.getBoundingClientRect();
+      px = ev.clientX - r.left; py = ev.clientY - r.top;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const vx = px - cx, vy = py - cy, d = Math.hypot(vx, vy) || 1;
+        const k = viaje * Math.min(1, d / 320) / d;
+        eye.style.setProperty('--dx', (vx * k).toFixed(1) + 'px');
+        eye.style.setProperty('--dy', (vy * k).toFixed(1) + 'px');
+      });
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+      eye.style.setProperty('--dx', '0px'); eye.style.setProperty('--dy', '0px');
+    });
+  }
   if (reduced || !video) return;
 
   /* 3 · Vídeo de la escena */
