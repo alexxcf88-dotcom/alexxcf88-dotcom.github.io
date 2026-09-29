@@ -1,27 +1,26 @@
 'use strict';
 
-/* Portada inmersiva (#inicio.ix).
+/* Portada inmersiva (#inicio.ix): FONDO → NÚCLEO → COPY.
    1) Navegación en dos estados: body[data-nav-mode="hero"|"compact"]. Lo
       decide un IntersectionObserver sobre un centinela del hero, nunca un
       scroll handler; CSS hace la transición (es el mismo <nav> que cambia).
-   2) Apertura de la mano: tira de fotogramas en rejilla (render 3D propio)
-      que se descarga durante la intro y se reproduce por pasos al aparecer la
-      web; después cede el sitio a la imagen fija nítida. Sin tira en reduced
-      motion, red lenta o equipos modestos: entrada suave con la imagen fija.
-   3) Señales de producto que aparecen al abrirse la mano, y «vuelta a la
-      portada» (brillo de la palma y señales de nuevo) al subir desde Sistema.
-   4) Escritorio con puntero fino: parallax de unos px (mano y aurora), solo
-      mientras el puntero se mueve sobre la portada. */
+   2) Escena: vídeo en bucle (render propio del núcleo AItomat). Debajo está
+      su primer fotograma como imagen, así que el vídeo aparece encima sin
+      salto. Se descarga durante la intro, arranca al entrar la web y se pausa
+      cuando la portada sale de pantalla. Sin vídeo con reduced motion, ahorro
+      de datos, red lenta o equipos modestos: queda la imagen.
+   3) Escritorio con puntero fino: parallax de la escena y luz que sigue al
+      puntero (solo mientras el puntero se mueve sobre la portada).
+   4) «Vuelta a la portada» al subir desde Sistema: señales de nuevo. */
 (function initImmersiveHero() {
   const hero = document.getElementById('inicio');
-  const hand = document.getElementById('hx-visual');
-  const seq = hand && hand.querySelector('.hx-seq');
-  if (!hero || !hand || !seq) return;
+  const video = document.getElementById('ix-video');
+  if (!hero) return;
 
   const root = document.documentElement;
   const body = document.body;
   const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const stacked = window.matchMedia('(max-width: 900px)').matches;
+  const mobile = window.matchMedia('(max-width: 760px)').matches;
 
   const alEntrar = (fn) => {
     if (root.classList.contains('preloader-active')) window.addEventListener('aitomat:ready', fn, { once: true });
@@ -33,12 +32,8 @@
   let modo = 'hero';
   let yaSalio = false;
   const volverAPortada = () => {
-    if (reduced) return;
-    hero.classList.remove('ix-return', 'ix-on');
-    void hero.offsetWidth; // reinicia las animaciones de vuelta
-    hero.classList.add('ix-return');
-    window.setTimeout(() => hero.classList.add('ix-on'), 180);
-    window.setTimeout(() => hero.classList.remove('ix-return'), 1900);
+    hero.classList.remove('ix-on');
+    window.setTimeout(() => hero.classList.add('ix-on'), 160);
   };
   if (sentinel && 'IntersectionObserver' in window) {
     new IntersectionObserver(([e]) => {
@@ -47,17 +42,25 @@
       modo = nuevo;
       body.dataset.navMode = nuevo;
       if (nuevo === 'compact') yaSalio = true;
-      else if (yaSalio) volverAPortada();
+      else if (yaSalio && !reduced) volverAPortada();
     }).observe(sentinel);
   }
-  // Transiciones de la nav solo tras el primer estado real (sin animar al cargar).
+  // La escena solo lleva la animación ligada al scroll cuando se sale de arriba del todo.
+  const top = document.getElementById('ix-sentinel-top');
+  if (top && 'IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      hero.classList.toggle('ix-scrolled', !e.isIntersecting && e.boundingClientRect.top < 0);
+    }).observe(top);
+  }
   requestAnimationFrame(() => requestAnimationFrame(() => body.classList.add('nav-anim')));
 
-  const senales = (demora) => window.setTimeout(() => hero.classList.add('ix-on'), demora);
-  if (reduced) { hero.classList.add('ix-on'); return; }
+  alEntrar(() => {
+    window.setTimeout(() => hero.classList.add('ix-on', 'ix-live'), reduced ? 0 : 600);
+  });
+  if (reduced) return;
 
-  /* 4 · Parallax de puntero (escritorio) */
-  if (!stacked && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  /* 3 · Parallax y luz de puntero (escritorio) */
+  if (!mobile && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
     let frame = 0, x = 0, y = 0;
     hero.addEventListener('pointermove', (ev) => {
       x = ev.clientX / window.innerWidth * 2 - 1;
@@ -71,47 +74,36 @@
     }, { passive: true });
   }
 
-  /* 2 · Apertura de la mano */
+  /* 2 · Vídeo de la escena */
+  if (!video) return;
   const red = navigator.connection || {};
-  const redJusta = red.saveData === true || /(^|-)(2g|slow-2g|3g)$/.test(red.effectiveType || '');
+  const redJusta = red.saveData === true || /(^|-)(2g|slow-2g)$/.test(red.effectiveType || '');
   const nucleos = navigator.hardwareConcurrency || 0;
   const memoria = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
   const modesto = (nucleos && nucleos < 4) || (memoria !== null && memoria < 2);
-  const DEMORA = 280; // con el fondo de la intro ya fundiéndose
-  const reposo = () => { if (!stacked) hand.classList.add('is-idle'); };
-  const entrarSinTira = () => {
-    hand.classList.add('is-entering');
-    senales(DEMORA + 700);
-    window.setTimeout(reposo, DEMORA + 1000);
+  if (redJusta || modesto) return;
+
+  const base = '/features/landing/media/hero/nucleo' + (mobile ? '-movil' : '');
+  // H.264 es universal y aquí pesa menos que VP9; el WebM solo para navegadores
+  // sin H.264 (algunos Chromium de Linux, Electron).
+  const h264 = video.canPlayType('video/mp4; codecs="avc1.640028"');
+  video.src = base + (h264 ? '.mp4' : '.webm');
+  video.preload = 'auto';
+  video.load(); // se descarga durante la intro
+
+  let visible = true;
+  let entrado = false;
+  const intentar = () => {
+    if (!entrado || !visible) return;
+    const p = video.play();
+    if (p && p.catch) p.catch(() => {}); // autoplay bloqueado: se queda la imagen
   };
-  if (redJusta || modesto) { alEntrar(entrarSinTira); return; }
-
-  /* La tira se descarga durante la intro. La mano fija sigue pintada debajo
-     de la intro (es el LCP); solo al empezar la salida, aún tapada, se cambia
-     a la tira. Si no ha llegado para entonces, entrada suave con la fija. */
-  const src = stacked
-    ? '/features/landing/media/hero/mano-v2-apertura-movil.webp'
-    : '/features/landing/media/hero/mano-v2-apertura.webp';
-  let lista = false;
-  const tira = new Image();
-  tira.decoding = 'async';
-  if ('fetchPriority' in tira) tira.fetchPriority = 'low';
-  tira.src = src;
-  (tira.decode ? tira.decode() : new Promise((ok, ko) => { tira.onload = ok; tira.onerror = ko; }))
-    .then(() => { seq.style.backgroundImage = `url("${src}")`; lista = true; }, () => {});
-
-  alEntrar(() => {
-    if (!lista) { entrarSinTira(); return; }
-    hand.classList.add('is-armed');
-    const fin = (e) => {
-      if (!/^ixSeq/.test(e.animationName)) return;
-      seq.removeEventListener('animationend', fin);
-      hand.classList.remove('is-armed', 'is-playing');
-      seq.style.backgroundImage = ''; // libera la tira decodificada
-      reposo();
-    };
-    seq.addEventListener('animationend', fin);
-    window.setTimeout(() => hand.classList.add('is-playing'), DEMORA);
-    senales(DEMORA + 950);
-  });
+  video.addEventListener('playing', () => video.classList.add('is-on'), { once: true });
+  alEntrar(() => { entrado = true; intentar(); });
+  if ('IntersectionObserver' in window) {
+    new IntersectionObserver(([e]) => {
+      visible = e.isIntersecting;
+      if (visible) intentar(); else video.pause();
+    }, { threshold: 0.02 }).observe(hero);
+  }
 })();

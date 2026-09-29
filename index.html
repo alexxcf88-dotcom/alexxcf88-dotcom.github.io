@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20260929-intro-v9" as="script" fetchpriority="low">
-  <link rel="preload" href="features/landing/media/hero/mano-v2.webp" as="image" media="(min-width: 761px)">
-  <link rel="preload" href="features/landing/media/hero/mano-v2-movil.webp" as="image" media="(max-width: 760px)">
+  <link rel="preload" href="features/landing/media/hero/nucleo.webp" as="image" media="(min-width: 761px)">
+  <link rel="preload" href="features/landing/media/hero/nucleo-movil.webp" as="image" media="(max-width: 760px)">
   <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
   <link rel="preload" href="features/landing/media/hero-poster-mobile.jpg" as="image" media="(max-width: 760px)" fetchpriority="high">
   <title>AItomat | Recepcionista IA para clínicas dentales</title>
@@ -227,94 +227,66 @@
     html:not(.css-ready) body>:not(.smart-preloader){visibility:hidden;animation:cssReadyFailsafe 0s 6s forwards}
     @keyframes cssReadyFailsafe{to{visibility:visible}}
     /* ═══════════════════════════════════════════════════════════════════════
-       PORTADA INMERSIVA · el primer viewport entero es la escena.
-       Capas: negro profundo → rejilla → aurora y haz (quietos; en escritorio
-       siguen al puntero unos px) → mano → copy → señales UI. La navegación es
-       parte de la escena en la portada (data-nav-mode="hero") y se compacta en
-       píldora al entrar en Sistema (data-nav-mode="compact"): mismo elemento,
-       transición CSS; el cambio lo decide un IntersectionObserver (hero.js).
-       Al bajar, la mano se retira y el fondo se apaga con animaciones ligadas
-       al scroll (compositor, sin JS por fotograma); al subir, se deshace solo.
+       PORTADA INMERSIVA · orden visual: FONDO → NÚCLEO → COPY.
+       La escena (fondo + núcleo AItomat: la «o» del logo convertida en objeto,
+       12 palas, una apagada, núcleo blanco) es un render propio en bucle de
+       8 s sin costura: vídeo H.264/VP9 a pantalla completa, sin alfa (fondo y
+       objeto comparten luz porque salen del mismo render). Primero se pinta su
+       primer fotograma como imagen (LCP y fallback); el vídeo arranca encima
+       sin salto. Encima: luz que sigue al puntero y parallax (escritorio), y
+       al bajar la cámara «entra» en el núcleo (animación ligada al scroll).
        ═══════════════════════════════════════════════════════════════════════ */
-    #inicio.hero.ix{--ix-e:cubic-bezier(.2,.8,.2,1);--hh:min(90svh,960px);--hw:calc(var(--hh)*.8);--hx:calc(66% - var(--hw)/2);--pad:clamp(24px,6.4vw,112px);position:relative;display:block;width:100%;max-width:none;height:max(100svh,660px);min-height:0;margin:0;padding:0;overflow:hidden;isolation:isolate;text-align:left;background:none}
+    #inicio.hero.ix{--ix-e:cubic-bezier(.2,.8,.2,1);--pad:clamp(24px,6.4vw,112px);position:relative;display:block;width:100%;max-width:none;height:max(100svh,620px);min-height:0;margin:0;padding:0;overflow:hidden;isolation:isolate;text-align:left;background:#03090b}
     #inicio.ix::after{display:none}
-    .ix-bg{position:absolute;inset:0;z-index:-1;pointer-events:none}
-    .ix-bg::before{content:"";position:absolute;inset:0;background:radial-gradient(60% 70% at 64% 62%,rgba(90,240,216,.085),rgba(90,240,216,0) 62%),linear-gradient(180deg,#020405 0%,#030607 76%,rgba(3,6,7,0) 100%)}
-    .ix-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);background-size:72px 72px;background-position:50% 100%;-webkit-mask-image:radial-gradient(52% 62% at 63% 60%,#000,transparent 74%);mask-image:radial-gradient(52% 62% at 63% 60%,#000,transparent 74%)}
-    .ix-aurora{position:absolute;left:28%;top:-8%;width:78vw;height:92%;background:radial-gradient(38% 42% at 58% 58%,rgba(90,240,216,.16),rgba(90,240,216,0) 70%),radial-gradient(30% 36% at 78% 30%,rgba(53,201,240,.11),rgba(53,201,240,0) 70%),radial-gradient(26% 30% at 30% 78%,rgba(255,173,112,.045),rgba(255,173,112,0) 70%);transform:translate3d(calc(var(--px,0)*18px),calc(var(--py,0)*12px),0);transition:transform 1.2s var(--ix-e)}
-    .ix-beam{position:absolute;left:calc(var(--hx) + var(--hw)*.18);top:-30%;width:calc(var(--hw)*.8);height:120%;background:linear-gradient(180deg,rgba(90,240,216,.075),rgba(90,240,216,0) 70%);-webkit-mask-image:linear-gradient(90deg,transparent,#000 35%,#000 65%,transparent);mask-image:linear-gradient(90deg,transparent,#000 35%,#000 65%,transparent);transform:skewX(-8deg)}
+    .ix-stage{position:absolute;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+    .ix-scene{position:absolute;inset:-3%;transform:translate3d(calc(var(--px,0)*-14px),calc(var(--py,0)*-9px),0);transition:transform 1.4s var(--ix-e)}
+    /* Sin scale fijo sobre el vídeo: obligaba a remuestrearlo en cada fotograma. */
+    .ix-poster,.ix-poster img,.ix-video{position:absolute;inset:0;display:block;width:100%;height:100%;object-fit:cover;object-position:62% 50%}
+    .ix-video{opacity:0;transition:opacity .9s ease}
+    .ix-video.is-on{opacity:1}
+    /* Luz que sigue al puntero: añade volumen sin tocar el vídeo */
+    .ix-light{position:absolute;left:0;top:0;width:70vmax;height:70vmax;margin:-35vmax 0 0 -35vmax;border-radius:50%;background:radial-gradient(circle,rgba(90,240,216,.075),rgba(90,240,216,0) 60%);transform:translate3d(calc(50vw + var(--px,0)*38vw),calc(50vh + var(--py,0)*34vh),0);transition:transform 1.6s var(--ix-e);opacity:0}
+    #inicio.ix-live .ix-light{opacity:1;transition:transform 1.6s var(--ix-e),opacity 1.2s ease}
+    /* Sombra editorial: da contraste al copy sin apagar la escena */
+    .ix-shade{position:absolute;inset:0;background:linear-gradient(90deg,rgba(2,5,6,.78) 0%,rgba(2,5,6,.45) 34%,rgba(2,5,6,0) 60%),linear-gradient(0deg,rgba(2,5,6,.75) 0%,rgba(2,5,6,0) 36%)}
+    /* Continuidad con Sistema: la escena se funde con el fondo de la página, sin corte. */
+    #inicio.ix::before{content:"";position:absolute;left:0;right:0;bottom:0;height:22svh;z-index:2;pointer-events:none;background:linear-gradient(180deg,rgba(5,7,6,0),#050706)}
 
-    /* Mano */
-    .ix-hand{position:absolute;z-index:1;left:var(--hx);bottom:0;width:var(--hw);height:var(--hh);pointer-events:none}
-    .ix-hand-par{position:absolute;inset:0;display:block;transform:translate3d(calc(var(--px,0)*-16px),calc(var(--py,0)*-10px),0);transition:transform .9s var(--ix-e)}
-    .ix-palm-glow{position:absolute;left:31%;top:44%;width:44%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,rgba(90,240,216,.34),rgba(90,240,216,.08) 42%,rgba(90,240,216,0) 70%);opacity:0;z-index:2}
-    .ix-hand .hx-float{position:absolute;inset:0;display:block}
-    .ix-hand picture,.ix-hand .hx-hand{display:block;width:100%;height:100%}
-    .ix-hand .hx-hand{object-fit:contain;object-position:50% 100%}
-    .ix-hand .hx-seq{position:absolute;inset:0;opacity:0;background-repeat:no-repeat;background-size:600% 600%;background-position:0 0}
-    .ix-hand.is-armed .hx-hand{opacity:0}
-    .ix-hand.is-armed .hx-seq{opacity:1}
-    .ix-hand.is-playing .hx-seq{animation:ixSeqD 1.5s steps(1,end) forwards}
-    .ix-hand.is-playing .hx-float{animation:ixRise .35s var(--ix-e) both}
-    .ix-hand.is-playing .ix-palm-glow,.ix-hand.is-entering .ix-palm-glow{animation:ixGlow 2.4s var(--ix-e) .95s both}
-    .ix-hand.is-entering .hx-float{animation:ixEnter 1s var(--ix-e) .28s both}
-    .ix-hand.is-idle .hx-float{animation:ixBreath 3.5s ease-in-out 2 alternate}
-    #inicio.ix-return .ix-palm-glow{animation:ixGlow 1.8s var(--ix-e) both}
-    #inicio.is-offscreen .ix-hand .hx-float{animation:none}
-    @keyframes ixSeqD{0.000%{background-position:0.000% 0.000%}2.857%{background-position:20.000% 0.000%}5.714%{background-position:40.000% 0.000%}8.571%{background-position:60.000% 0.000%}11.429%{background-position:80.000% 0.000%}14.286%{background-position:100.000% 0.000%}17.143%{background-position:0.000% 20.000%}20.000%{background-position:20.000% 20.000%}22.857%{background-position:40.000% 20.000%}25.714%{background-position:60.000% 20.000%}28.571%{background-position:80.000% 20.000%}31.429%{background-position:100.000% 20.000%}34.286%{background-position:0.000% 40.000%}37.143%{background-position:20.000% 40.000%}40.000%{background-position:40.000% 40.000%}42.857%{background-position:60.000% 40.000%}45.714%{background-position:80.000% 40.000%}48.571%{background-position:100.000% 40.000%}51.429%{background-position:0.000% 60.000%}54.286%{background-position:20.000% 60.000%}57.143%{background-position:40.000% 60.000%}60.000%{background-position:60.000% 60.000%}62.857%{background-position:80.000% 60.000%}65.714%{background-position:100.000% 60.000%}68.571%{background-position:0.000% 80.000%}71.429%{background-position:20.000% 80.000%}74.286%{background-position:40.000% 80.000%}77.143%{background-position:60.000% 80.000%}80.000%{background-position:80.000% 80.000%}82.857%{background-position:100.000% 80.000%}85.714%{background-position:0.000% 100.000%}88.571%{background-position:20.000% 100.000%}91.429%{background-position:40.000% 100.000%}94.286%{background-position:60.000% 100.000%}97.143%{background-position:80.000% 100.000%}100.000%{background-position:100.000% 100.000%}}
-    @keyframes ixSeqM{0.000%{background-position:0.000% 0.000%}3.448%{background-position:20.000% 0.000%}6.897%{background-position:40.000% 0.000%}10.345%{background-position:60.000% 0.000%}13.793%{background-position:80.000% 0.000%}17.241%{background-position:100.000% 0.000%}20.690%{background-position:0.000% 25.000%}24.138%{background-position:20.000% 25.000%}27.586%{background-position:40.000% 25.000%}31.034%{background-position:60.000% 25.000%}34.483%{background-position:80.000% 25.000%}37.931%{background-position:100.000% 25.000%}41.379%{background-position:0.000% 50.000%}44.828%{background-position:20.000% 50.000%}48.276%{background-position:40.000% 50.000%}51.724%{background-position:60.000% 50.000%}55.172%{background-position:80.000% 50.000%}58.621%{background-position:100.000% 50.000%}62.069%{background-position:0.000% 75.000%}65.517%{background-position:20.000% 75.000%}68.966%{background-position:40.000% 75.000%}72.414%{background-position:60.000% 75.000%}75.862%{background-position:80.000% 75.000%}79.310%{background-position:100.000% 75.000%}82.759%{background-position:0.000% 100.000%}86.207%{background-position:20.000% 100.000%}89.655%{background-position:40.000% 100.000%}93.103%{background-position:60.000% 100.000%}96.552%{background-position:80.000% 100.000%}100.000%{background-position:100.000% 100.000%}}
-    @keyframes ixRise{from{opacity:0}to{opacity:1}}
-    @keyframes ixEnter{from{opacity:0;transform:translate3d(0,8%,0)}to{opacity:1;transform:none}}
-    @keyframes ixGlow{0%{opacity:0;transform:scale(.7)}45%{opacity:1;transform:scale(1.05)}100%{opacity:.55;transform:none}}
-    @keyframes ixBreath{from{transform:none}to{transform:translate3d(0,-10px,0)}}
-
-    /* Copy */
-    .ix-copy{position:absolute;z-index:3;left:var(--pad);top:clamp(128px,22svh,250px);width:min(64vw,980px)}
-    .ix-top{display:flex;align-items:center;flex-wrap:wrap;gap:12px 18px;margin:0 0 clamp(18px,2.6svh,28px)}
-    #inicio.ix .ix-eyebrow{margin:0;color:var(--aqua);font-size:.72rem;letter-spacing:.2em;justify-content:flex-start;text-align:left;max-width:none}
-    .ix-sticker{display:inline-flex;gap:.3em;align-items:center;padding:6px 11px;border-radius:8px;background:var(--orange);color:var(--orange-ink,#1e1007);font-size:.66rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;transform:rotate(-4deg);box-shadow:0 8px 24px rgba(255,173,112,.18)}
+    /* Copy: tercer plano, editorial abajo a la izquierda */
+    .ix-copy{position:absolute;z-index:3;left:var(--pad);bottom:clamp(92px,15svh,150px);width:min(46vw,640px)}
+    .ix-top{display:flex;align-items:center;flex-wrap:wrap;gap:10px 16px;margin:0 0 16px}
+    #inicio.ix .ix-eyebrow{margin:0;color:var(--aqua);font-size:.68rem;letter-spacing:.2em;justify-content:flex-start;text-align:left;max-width:none}
+    .ix-sticker{display:inline-flex;gap:.3em;align-items:center;padding:5px 10px;border-radius:7px;background:var(--orange);color:var(--orange-ink,#1e1007);font-size:.62rem;font-weight:900;letter-spacing:.1em;text-transform:uppercase;transform:rotate(-4deg);box-shadow:0 8px 24px rgba(255,173,112,.16)}
     .ix-sticker:hover{transform:rotate(-2deg) translateY(-1px)}
-    #inicio.ix .ix-title{margin:0;max-width:none;font-size:clamp(3.4rem,7vw,8.6rem);line-height:.92;letter-spacing:-.058em;font-weight:900;text-align:left;text-wrap:initial;text-shadow:0 2px 40px rgba(3,5,6,.55)}
-    #inicio.ix .ix-title .ix-l{display:block;white-space:nowrap;font-family:Archivo,system-ui,sans-serif;font-style:normal;font-weight:900;color:#f7fbf8;letter-spacing:inherit;line-height:inherit}
-    #inicio.ix .ix-title .shiny{font-weight:400;font-style:normal;letter-spacing:-.045em}
-    .ix-lead{max-width:37ch;margin:clamp(22px,3.4svh,34px) 0 0;color:var(--muted);font-size:clamp(1rem,1.1vw,1.1rem);line-height:1.6}
-    .ix-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 28px;margin-top:clamp(22px,3.4svh,34px)}
-    .ix-actions .primary-btn{min-height:52px;padding-inline:28px;white-space:nowrap}
-    .ix-link{white-space:nowrap}
-    .ix-link{display:inline-flex;gap:.5em;align-items:center;color:var(--ink,#f7fbf8);font-size:.92rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:3px}
+    #inicio.ix .ix-title{margin:0;max-width:none;font-size:clamp(2.2rem,3.9vw,4.3rem);line-height:1.02;letter-spacing:-.045em;text-align:left;text-wrap:initial;text-shadow:0 2px 30px rgba(2,5,6,.6)}
+    #inicio.ix .ix-title .ix-l{display:block;font-family:Archivo,system-ui,sans-serif;font-style:normal;font-weight:700;color:#f7fbf8;letter-spacing:inherit;line-height:inherit}
+    #inicio.ix .ix-title .shiny{font-weight:400;font-style:normal;letter-spacing:-.04em}
+    .ix-lead{max-width:40ch;margin:18px 0 0;color:rgba(247,251,248,.7);font-size:clamp(.95rem,1.02vw,1.04rem);line-height:1.6}
+    .ix-actions{display:flex;align-items:center;flex-wrap:wrap;gap:12px 26px;margin-top:26px}
+    .ix-actions .primary-btn{min-height:50px;padding-inline:26px;white-space:nowrap}
+    .ix-link{display:inline-flex;gap:.5em;align-items:center;white-space:nowrap;color:#f7fbf8;font-size:.9rem;font-weight:700;border-bottom:1px solid rgba(255,255,255,.22);padding-bottom:3px}
     .ix-link:hover{border-color:var(--aqua)}
-
-    /* Señales de producto alrededor de la mano */
-    .ix-signals{position:absolute;inset:0;z-index:2;margin:0;padding:0;list-style:none;pointer-events:none}
-    .ix-sig{position:absolute;display:grid;grid-template-columns:auto 1fr;column-gap:9px;align-items:center;padding:8px 13px 8px 11px;border:1px solid rgba(255,255,255,.08);border-radius:12px;background:rgba(6,11,12,.62);box-shadow:0 12px 30px rgba(0,0,0,.35);opacity:0;transform:translate3d(0,10px,0);transition:opacity .6s var(--ix-e),transform .6s var(--ix-e)}
-    .ix-sig i{grid-row:span 2;width:7px;height:7px;border-radius:50%;background:var(--aqua);box-shadow:0 0 0 3px rgba(90,240,216,.14),0 0 12px rgba(90,240,216,.5)}
-    .ix-sig b{color:#f7fbf8;font-size:.64rem;font-weight:800;letter-spacing:.14em;text-transform:uppercase}
-    .ix-sig small{color:rgba(247,251,248,.58);font-size:.7rem}
-    .ix-sig-voz{left:calc(var(--hx) + var(--hw)*.8);top:calc(100% - var(--hh)*.84)}
-    .ix-sig-agenda{left:calc(var(--hx) + var(--hw)*.9);top:calc(100% - var(--hh)*.52)}
-    .ix-sig-inbox{left:calc(var(--hx) + var(--hw)*.78);top:calc(100% - var(--hh)*.24)}
-    .ix-sig-wa{left:calc(var(--hx) - var(--hw)*.02);top:calc(100% - var(--hh)*.2)}
-    #inicio.ix-on .ix-sig{opacity:1;transform:none}
-    #inicio.ix-on .ix-sig-voz{transition-delay:0s}#inicio.ix-on .ix-sig-agenda{transition-delay:.12s}#inicio.ix-on .ix-sig-inbox{transition-delay:.24s}#inicio.ix-on .ix-sig-wa{transition-delay:.36s}
-
-    /* Indicador de scroll */
-    .ix-scroll{position:absolute;z-index:3;left:var(--pad);bottom:clamp(20px,3.4svh,34px);display:inline-flex;align-items:center;gap:12px;color:rgba(247,251,248,.5);font-size:.62rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
-    .ix-scroll i{position:relative;width:1px;height:34px;background:rgba(255,255,255,.14);overflow:hidden}
-    .ix-scroll i::after{content:"";position:absolute;left:0;top:0;width:1px;height:12px;background:var(--aqua);transform:translateY(34px);animation:ixCue 2.4s var(--ix-e) 1.2s 3}
-    /* 3 pasadas y quieta: en bucle, esta línea de 12 px obligaba a recomponer la escena entera 60 veces por segundo (~1,3 s de GPU cada 5 s). */
-    @keyframes ixCue{from{transform:translateY(-12px)}to{transform:translateY(34px)}}
+    /* Señales de producto: una línea discreta, abajo a la derecha */
+    .ix-tags{position:absolute;z-index:3;right:var(--pad);bottom:clamp(30px,5svh,48px);display:flex;flex-wrap:wrap;justify-content:flex-end;gap:8px 20px;margin:0;padding:0;list-style:none;opacity:0;transform:translate3d(0,8px,0);transition:opacity .8s var(--ix-e) .2s,transform .8s var(--ix-e) .2s}
+    .ix-tags li{display:inline-flex;align-items:center;gap:8px;color:rgba(247,251,248,.62);font-size:.62rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}
+    .ix-tags li::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--aqua);box-shadow:0 0 10px rgba(90,240,216,.7)}
+    #inicio.ix-on .ix-tags{opacity:1;transform:none}
+    .ix-scroll{position:absolute;z-index:3;left:var(--pad);bottom:clamp(26px,4.4svh,44px);display:inline-flex;align-items:center;gap:12px;color:rgba(247,251,248,.5);font-size:.6rem;font-weight:800;letter-spacing:.2em;text-transform:uppercase}
+    .ix-scroll i{position:relative;width:34px;height:1px;background:rgba(255,255,255,.16);overflow:hidden}
+    .ix-scroll i::after{content:"";position:absolute;left:0;top:0;width:12px;height:1px;background:var(--aqua);transform:translateX(34px);animation:ixCue 2.4s var(--ix-e) 1.2s 3}
+    @keyframes ixCue{from{transform:translateX(-12px)}to{transform:translateX(34px)}}
     .ix-sentinel{position:absolute;left:0;top:34svh;width:1px;height:1px;pointer-events:none}
-    /* Al pasar a Sistema: un fundido puntual (no ligado al scroll: en capas de pantalla completa eso costaba ~0,9 s de GPU cada 5 s en reposo). */
-    .ix-bg,.ix-scroll{transition:opacity .7s var(--ix-e)}
-    body[data-nav-mode="compact"] .ix-bg{opacity:.35}
-    body[data-nav-mode="compact"] .ix-scroll,body[data-nav-mode="compact"] #inicio .ix-sig{opacity:0;transition-delay:0s}
+    .ix-sentinel-top{top:3svh}
+    .ix-scroll,.ix-tags{transition:opacity .7s var(--ix-e),transform .8s var(--ix-e)}
+    body[data-nav-mode="compact"] .ix-scroll,body[data-nav-mode="compact"] #inicio .ix-tags{opacity:0}
 
-    /* Portada → Sistema: la escena se retira ligada al scroll y vuelve al subir. */
+    /* Al bajar, la cámara entra en el núcleo; al subir, sale (compositor, sin JS). */
     @supports (animation-timeline: scroll()){
-      .ix-hand{animation:ixOutHand linear both;animation-timeline:scroll(root);animation-range:0 100svh}
-      .ix-copy{animation:ixOutCopy linear both;animation-timeline:scroll(root);animation-range:0 80svh}
-      @keyframes ixOutHand{to{transform:translate3d(0,-7svh,0) scale(.9);opacity:.18}}
-      @keyframes ixOutCopy{to{transform:translate3d(0,-9svh,0);opacity:0}}
+      /* Solo activas al empezar a bajar (.ix-scrolled): arriba, quieta, la escena no paga la animación. */
+      #inicio.ix-scrolled .ix-stage{animation:ixDive linear both;animation-timeline:scroll(root);animation-range:0 100svh}
+      #inicio.ix-scrolled .ix-copy{animation:ixOutCopy linear both;animation-timeline:scroll(root);animation-range:0 70svh}
+      @keyframes ixDive{to{transform:scale(1.22) translate3d(0,-4svh,0);opacity:.35}}
+      @keyframes ixOutCopy{to{transform:translate3d(0,-8svh,0);opacity:0}}
     }
 
     /* Navegación: la misma pieza en dos estados */
@@ -340,56 +312,38 @@
       body[data-nav-mode="hero"] .site-nav .nav-toggle{background:rgba(255,255,255,.04)}
     }
 
-    /* Tablet y móvil: composición propia en columna, la mano entre titular y copy. */
-    @media (max-width:900px){
-      #inicio.hero.ix{--hh:560px;height:100svh;min-height:560px;display:grid;place-items:stretch;justify-items:stretch;align-items:stretch;grid-template-rows:auto auto minmax(0,1fr) auto auto auto;grid-template-columns:100%;padding:clamp(84px,11svh,112px) 0 clamp(14px,2.4svh,24px)}
-      .ix-copy{display:contents}
-      .ix-top{grid-row:1;padding:0 20px;margin-bottom:14px;gap:10px 14px}
-      #inicio.ix .ix-eyebrow{font-size:.6rem;letter-spacing:.11em}
-      #inicio.ix .ix-title{grid-row:2;padding:0 18px;font-size:clamp(2.3rem,12vw,5.4rem);line-height:.92}
-      .ix-hand{grid-row:3;grid-column:1;position:relative;left:auto;bottom:auto;justify-self:center;align-self:stretch;height:auto;width:auto;max-height:var(--hh);aspect-ratio:4/5;min-height:0;margin-top:-1svh}
-      .ix-lead{grid-row:4;margin:6px 20px 0;max-width:34ch;font-size:.95rem;line-height:1.5}
-      .ix-actions{grid-row:5;margin:18px 20px 0;gap:12px 22px}
-      .ix-scroll{grid-row:6;position:relative;left:auto;bottom:auto;justify-self:center;margin-top:18px}
-      .ix-sig{padding:6px 10px 6px 8px;column-gap:7px}
-      .ix-sig b{font-size:.56rem}.ix-sig small{font-size:.62rem}
-      .ix-sig-agenda,.ix-sig-inbox{display:none}
-      .ix-signals{grid-row:3;grid-column:1;position:relative;inset:auto;z-index:2;width:100%;height:100%}
-      .ix-sig{white-space:nowrap}
-      .ix-sig-voz{left:auto;right:12px;top:14%}
-      .ix-sig-wa{left:12px;top:auto;bottom:16%}
-      .ix-grid{-webkit-mask-image:radial-gradient(70% 40% at 50% 52%,#000,transparent 74%);mask-image:radial-gradient(70% 40% at 50% 52%,#000,transparent 74%)}
-      .ix-aurora{left:-20%;top:12%;width:140vw;height:70%}
-      .ix-beam{left:25%;width:50%}
-      .ix-hand.is-playing .hx-seq{animation-name:ixSeqM;animation-duration:1.35s}
-      .ix-hand .hx-seq{background-size:600% 500%}
+    /* Móvil: la escena manda (núcleo arriba, en el tercio alto) y el copy vive sobre el suelo oscuro. */
+    @media (max-width:760px){
+      #inicio.hero.ix{height:100svh;min-height:560px}
+      .ix-shade{background:linear-gradient(0deg,rgba(2,5,6,.92) 0%,rgba(2,5,6,.7) 30%,rgba(2,5,6,0) 56%)}
+      .ix-copy{left:20px;right:20px;bottom:clamp(54px,8svh,76px);width:auto}
+      .ix-scene{inset:-3%}
+      .ix-poster,.ix-poster img,.ix-video{object-position:50% 12%}
+      .ix-top{margin-bottom:12px;gap:8px 12px}
+      #inicio.ix .ix-eyebrow{font-size:.58rem;letter-spacing:.12em}
+      #inicio.ix .ix-title{font-size:clamp(1.75rem,8.2vw,2.5rem);line-height:1.04}
+      .ix-lead{margin-top:12px;font-size:.88rem;line-height:1.5;max-width:36ch}
+      .ix-actions{display:grid;grid-template-columns:auto 1fr;gap:10px 18px;margin-top:18px}
+      .ix-actions .primary-btn{min-height:48px;padding-inline:22px}
+      .ix-tags{display:none}
+      .ix-scroll{left:20px;transform:none;bottom:clamp(16px,2.6svh,26px)}
+      .ix-scroll span{white-space:nowrap}
+      .ix-light{display:none}
       .ix-sentinel{top:30svh}
     }
-    @media (max-width:760px){
-      .ix-actions{display:grid;grid-template-columns:1fr auto;align-items:center}
-      .ix-actions .primary-btn{min-height:50px;padding-inline:22px}
+    @media (max-width:760px) and (max-height:680px){
+      .ix-lead{display:none}
+      .ix-copy{bottom:50px}
+      .ix-poster,.ix-poster img,.ix-video{object-position:50% 0%}
     }
     @media (max-width:360px){
-      .ix-actions{grid-template-columns:1fr;justify-items:center;gap:12px}
-      .ix-actions .primary-btn{width:100%}
-      .ix-lead{font-size:.86rem}
-    }
-    @media (max-width:900px) and (max-height:700px){
-      #inicio.hero.ix{padding-top:80px}
-    }
-    @media (max-width:900px) and (max-height:640px){
-      .ix-lead,.ix-signals{display:none}
-      .ix-top{margin-bottom:10px}
-      .ix-actions{margin-top:12px}
-      .ix-lead{font-size:.88rem}
-      .ix-scroll{display:none}
+      .ix-actions{grid-template-columns:1fr;justify-items:start}
     }
     @media (prefers-reduced-motion:reduce){
-      .ix-hand,.ix-copy,.ix-hand .hx-float,.ix-palm-glow,.ix-scroll i::after{animation:none!important}
-      .ix-hand .hx-seq{display:none}
-      .ix-hand .hx-hand{opacity:1!important}
-      .ix-sig{opacity:1;transform:none;transition:none}
-      .ix-palm-glow{opacity:.5}
+      .ix-stage,.ix-copy,.ix-scroll i::after{animation:none!important}
+      .ix-video{display:none}
+      .ix-scene,.ix-light{transition:none;transform:none}
+      .ix-tags{opacity:1;transform:none;transition:none}
       body.nav-anim .site-nav,body.nav-anim .site-nav *{transition:none!important}
     }
   </style>
@@ -438,43 +392,35 @@
 
   <main>
     <section id="inicio" class="hero ix" data-spotlight>
-      <div class="ix-bg" aria-hidden="true">
-        <span class="ix-grid"></span>
-        <span class="ix-aurora"></span>
-        <span class="ix-beam"></span>
-      </div>
-      <div class="ix-hand" id="hx-visual" aria-hidden="true">
-        <span class="ix-hand-par">
-          <span class="ix-palm-glow"></span>
-          <span class="hx-float">
-            <picture>
-              <source media="(max-width: 760px)" srcset="features/landing/media/hero/mano-v2-movil.webp">
-              <img class="hx-hand" src="features/landing/media/hero/mano-v2.webp" alt="" width="1040" height="1300" decoding="async">
-            </picture>
-            <span class="hx-seq"></span>
-          </span>
-        </span>
+      <div class="ix-stage" id="ix-stage" aria-hidden="true">
+        <div class="ix-scene">
+          <picture class="ix-poster">
+            <source media="(max-width: 760px)" srcset="features/landing/media/hero/nucleo-movil.webp">
+            <img src="features/landing/media/hero/nucleo.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async">
+          </picture>
+          <video class="ix-video" id="ix-video" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1"></video>
+        </div>
+        <span class="ix-light"></span>
+        <span class="ix-shade"></span>
       </div>
       <div class="ix-copy">
         <div class="ix-top">
           <p class="eyebrow ix-eyebrow"><span></span> Recepci&oacute;n automatizada para cl&iacute;nicas dentales</p>
           <a class="ix-sticker" href="#precio"><span>Primer mes</span> <span>gratis</span></a>
         </div>
-        <h1 class="ix-title"><span class="ix-l">La recepci&oacute;n</span> <span class="ix-l">de tu cl&iacute;nica,</span> <span class="ix-l"><span class="shiny">automatizada.</span></span></h1>
+        <h1 class="ix-title"><span class="ix-l">La recepci&oacute;n de tu cl&iacute;nica,</span> <span class="ix-l"><span class="shiny">automatizada.</span></span></h1>
         <p class="ix-lead">Llamadas, WhatsApp, agenda y pacientes: <span class="b-ai">AI</span>tomat mantiene la recepci&oacute;n en marcha incluso cuando tu equipo no puede atender.</p>
         <div class="ix-actions">
           <a class="primary-btn" href="#contacto" data-demo-open>Pedir demo</a>
           <a class="ix-link" href="#proceso">Ver c&oacute;mo funciona <span aria-hidden="true">↘</span></a>
         </div>
       </div>
-      <ul class="ix-signals" aria-label="Lo que AItomat pone en marcha">
-        <li class="ix-sig ix-sig-voz"><i></i><b>Voz 24/7</b><small>Llamada atendida</small></li>
-        <li class="ix-sig ix-sig-wa"><i></i><b>WhatsApp</b><small>Cita confirmada</small></li>
-        <li class="ix-sig ix-sig-agenda"><i></i><b>Agenda</b><small>Hueco a las 17:30</small></li>
-        <li class="ix-sig ix-sig-inbox"><i></i><b>Inbox</b><small>Todo respondido</small></li>
+      <ul class="ix-tags" aria-label="Lo que AItomat pone en marcha">
+        <li>Voz 24/7</li><li>WhatsApp</li><li>Agenda</li><li>Recordatorios</li><li>Inbox</li>
       </ul>
       <a class="ix-scroll" href="#proceso" aria-label="Bajar al sistema operativo"><span>Sistema operativo</span><i></i></a>
       <span class="ix-sentinel" id="ix-sentinel" aria-hidden="true"></span>
+      <span class="ix-sentinel ix-sentinel-top" id="ix-sentinel-top" aria-hidden="true"></span>
     </section>
 
     <section id="proceso" class="discovery-section system-minimal">
@@ -1134,8 +1080,8 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20260929-portada-ix"></script>
-  <script defer src="features/landing/preloader.js?v=20260929-portada-ix"></script>
+  <script defer src="features/landing/hero.js?v=20260929-nucleo"></script>
+  <script defer src="features/landing/preloader.js?v=20260929-nucleo"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
