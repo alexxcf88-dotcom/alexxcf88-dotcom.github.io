@@ -72,8 +72,8 @@
   const visualAssets = [imageReady(mobile
     ? '/features/landing/media/hero-poster-mobile.jpg'
     : '/features/landing/media/hero-poster.jpg'), imageReady(mobile
-    ? '/features/landing/media/hero/nucleo-movil.webp'
-    : '/features/landing/media/hero/nucleo.webp')];
+    ? '/features/landing/media/hero/campo-movil.webp'
+    : '/features/landing/media/hero/campo.webp')];
   if (document.fonts && document.fonts.load) visualAssets.push(document.fonts.load('900 1em Archivo').catch(() => {}));
   const visualReady = Promise.race([
     Promise.allSettled(visualAssets),
