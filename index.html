@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20260929-intro-v9" as="script" fetchpriority="low">
-  <link rel="preload" href="features/landing/media/hero/campo.webp" as="image" media="(min-width: 761px)">
-  <link rel="preload" href="features/landing/media/hero/campo-movil.webp" as="image" media="(max-width: 760px)">
+  <link rel="preload" href="features/landing/media/hero/olas.webp" as="image" media="(min-width: 761px)">
+  <link rel="preload" href="features/landing/media/hero/olas-movil.webp" as="image" media="(max-width: 760px)">
   <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
   <link rel="preload" href="features/landing/media/hero-poster-mobile.jpg" as="image" media="(max-width: 760px)" fetchpriority="high">
   <title>AItomat | Recepcionista IA para clínicas dentales</title>
@@ -254,9 +254,10 @@
     .ix-eyebrow span{margin:0 .5em;color:rgba(247,251,248,.35)}
     .ix-promo{color:var(--orange);border-bottom:1px solid rgba(255,173,112,.45);white-space:nowrap}
     .ix-promo:hover{border-color:var(--orange)}
-    #inicio.ix .ix-title{margin:0;max-width:17ch;font-family:Archivo,system-ui,sans-serif;font-size:clamp(2.05rem,3.05vw,3.3rem);font-weight:600;line-height:1.06;letter-spacing:-.035em;color:#f7fbf8;text-align:left;text-wrap:balance;text-shadow:none}
+    /* Mismo tamaño y tipografía que los títulos de las demás secciones (h2) */
+    #inicio.ix .ix-title{margin:0;max-width:none;font-family:Archivo,system-ui,sans-serif;font-size:clamp(2.4rem,6vw,5rem);font-weight:900;line-height:.9;letter-spacing:-.058em;color:#f7fbf8;text-align:left;text-wrap:balance;text-shadow:none}
     #inicio.ix .ix-title{text-shadow:0 2px 24px rgba(2,5,6,.85)}
-    #inicio.ix .ix-title .shiny{text-shadow:none;font-family:inherit;font-style:normal;font-weight:400;letter-spacing:inherit;animation-iteration-count:2!important}
+    #inicio.ix .ix-title .shiny{text-shadow:none;font-family:inherit;font-style:normal;font-weight:inherit;letter-spacing:inherit;animation-iteration-count:2!important}
     .ix-lead{max-width:36ch;margin:14px 0 0;color:rgba(247,251,248,.82);font-size:1.06rem;line-height:1.55;text-shadow:0 1px 14px rgba(2,5,6,.9)}
     .ix-actions{display:flex;align-items:center;flex-wrap:wrap;gap:10px 26px;margin-top:26px}
     .ix-actions .primary-btn{min-height:50px;padding:0 26px;font-size:.95rem;white-space:nowrap}
@@ -322,7 +323,7 @@
       .ix-eyebrow{font-size:.64rem;letter-spacing:.13em;margin-bottom:12px}
       .ix-eyebrow span{display:none}
       .ix-promo{display:table;margin-top:4px}
-      #inicio.ix .ix-title{font-size:clamp(1.7rem,7.8vw,2.4rem);max-width:15ch}
+      #inicio.ix .ix-title{font-size:clamp(1.75rem,8vw,2.12rem);line-height:1.04;letter-spacing:-.04em}
       .ix-lead{font-size:.95rem;margin-top:10px}
       .ix-actions{margin-top:16px;gap:10px 20px}
       .ix-sentinel{top:30svh}
@@ -382,8 +383,8 @@
     <section id="inicio" class="hero ix" data-spotlight>
       <div class="ix-stage" id="ix-stage" aria-hidden="true">
         <picture class="ix-poster">
-          <source media="(max-width: 760px)" srcset="features/landing/media/hero/campo-movil.webp">
-          <img src="features/landing/media/hero/campo.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async">
+          <source media="(max-width: 760px)" srcset="features/landing/media/hero/olas-movil.webp">
+          <img src="features/landing/media/hero/olas.webp" alt="" width="1600" height="900" fetchpriority="high" decoding="async">
         </picture>
         <video class="ix-video" id="ix-video" muted loop playsinline preload="none" disablepictureinpicture tabindex="-1"></video>
         <span class="ix-shade"></span>
@@ -1061,8 +1062,8 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20260929-ojo"></script>
-  <script defer src="features/landing/preloader.js?v=20260929-carga"></script>
+  <script defer src="features/landing/hero.js?v=20261003-olas"></script>
+  <script defer src="features/landing/preloader.js?v=20261003-olas"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>

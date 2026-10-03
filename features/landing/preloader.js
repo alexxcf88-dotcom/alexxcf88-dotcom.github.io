@@ -72,8 +72,8 @@
   const visualAssets = [imageReady(mobile
     ? '/features/landing/media/hero-poster-mobile.jpg'
     : '/features/landing/media/hero-poster.jpg'), imageReady(mobile
-    ? '/features/landing/media/hero/campo-movil.webp'
-    : '/features/landing/media/hero/campo.webp')];
+    ? '/features/landing/media/hero/olas-movil.webp'
+    : '/features/landing/media/hero/olas.webp')];
   if (document.fonts && document.fonts.load) visualAssets.push(document.fonts.load('900 1em Archivo').catch(() => {}));
   /* Barra de carga: los 11 radios de la «o». Cada recurso que llega suma; un
      radio más solo cada 250 ms como mucho, para que se lea como un barrido y

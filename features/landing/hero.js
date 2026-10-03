@@ -117,7 +117,7 @@
   const modesto = (nucleos && nucleos < 4) || (memoria !== null && memoria < 2);
   if (redJusta || modesto) return;
 
-  const base = '/features/landing/media/hero/campo' + (mobile ? '-movil' : '');
+  const base = '/features/landing/media/hero/olas' + (mobile ? '-movil' : '');
   // H.264 es universal y aquí pesa menos; WebM solo para navegadores sin H.264.
   const h264 = video.canPlayType('video/mp4; codecs="avc1.640028"');
   video.src = base + (h264 ? '.mp4' : '.webm');
