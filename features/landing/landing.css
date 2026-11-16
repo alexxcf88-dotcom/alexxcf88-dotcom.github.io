@@ -223,8 +223,8 @@ main,
   padding: 0 0.1em;
   vertical-align: 0.12em;
 }
-/* Wordmark fuera del .brand (cabeceras, OS, inbox): AI aqua + punto + tomat */
-.b-ai { color: var(--aqua); font-weight: 900; }
+/* Marca en texto (cabeceras, OS, inbox): «ditb» + «o» aqua; hereda peso y fuente. */
+.b-ai { color: var(--aqua); }
 .b-dot {
   color: var(--aqua);
   font-weight: 900;
@@ -1518,7 +1518,7 @@ h3 {
 }
 .os-bar .os-brand img {
   display: block;
-  width: 66px;
+  width: 40px;
   height: auto;
 }
 .os-live {
@@ -2570,7 +2570,7 @@ h3 {
 }
 .mail-titlebar .mail-brand img {
   display: block;
-  width: 72px;
+  width: 43px;
   height: auto;
 }
 .brand-ai { color: var(--aqua); }
@@ -5205,7 +5205,7 @@ body.demo-open { overflow: hidden; }
   /* El hero se ajusta a su contenido en vez de forzar pantalla completa */
   .hero { min-height: auto; padding: 6.2rem 0 2.8rem; }
 
-  /* — AItomat OS (núcleo de decisión) — */
+  /* — ditbo OS (núcleo de decisión) — */
   .os-window { border-radius: 18px; }
   .os-bar { padding: 0.55rem 0.75rem; }
   .os-bar strong { font-size: 0.68rem; }
@@ -5371,8 +5371,7 @@ body.demo-open { overflow: hidden; }
   #flujo.demo-live .story-phone { transition: none; }
 }
 
-/* Wordmark correcto en la cabecera del móvil: "AI" aqua + separador + "tomat"
-   blanco (patrón del nav). En texto plano la I de Archivo se lee como l. */
+/* Wordmark en la cabecera del móvil (patrón del nav). */
 .wa-contact .wa-brand {
   display: inline-flex;
   align-items: baseline;

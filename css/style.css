@@ -1,5 +1,5 @@
 /* ============================================================
-   AItomat — Stylesheet
+   ditbo — Stylesheet
    SaaS B2B · asistentes de IA para clínicas dentales
    Display: Clash Display · Texto: Inter
    Base #03070d · Acento aqua #5af0d8 (<5% de superficie)
@@ -171,12 +171,9 @@ img { max-width: 100%; display: block; }
   white-space: nowrap;
 }
 
-/* Marca "AItomat": se compone con una tipografía SERIF (DM Serif
-   Display), cuya "I" mayúscula lleva remates arriba y abajo y es por
-   tanto inconfundible con una "l/L". Además se separa visualmente:
-   "AI" (aqua) · separador fino · "tomat" (blanco). Imposible leer
-   la marca de forma incorrecta. Vale para el logo (.nav-logo) y para el nombre en
-   línea dentro de textos (.brand). */
+/* Reglas heredadas del wordmark tipográfico anterior (.ai/.logo-i/.logo-sep).
+   La marca actual es «ditbo»: en el nav va el SVG (brand/logo/logo-ditbo.svg) y
+   en texto corrido «ditb» + «o» aqua con .b-ai (ver web/CLAUDE.md §2). */
 .nav-logo, .brand { font-family: var(--font-brand); font-weight: 400; }
 .nav-logo .ai,
 .brand .ai {
@@ -188,7 +185,7 @@ img { max-width: 100%; display: block; }
 .brand .logo-i { font: inherit; } /* "I" serif real, con travesaños */
 .nav-logo .logo-rest { font-family: var(--font-brand); color: var(--white); }
 .brand .logo-rest    { font-family: var(--font-brand); color: inherit; }
-/* Separador fino entre "AI" y "tomat" */
+/* Separador fino (wordmark anterior) */
 .nav-logo .logo-sep,
 .brand .logo-sep {
   display: inline-block;
@@ -200,7 +197,7 @@ img { max-width: 100%; display: block; }
   border-radius: 1px;
 }
 .brand { white-space: nowrap; }
-/* Mini-logo del panel (decorativo): "AI" en aqua, misma serif */
+/* Mini-logo del panel (decorativo) */
 .dash-ai { font-family: var(--font-brand); color: var(--accent); }
 
 .nav-links { display: flex; gap: 2.5rem; }
@@ -1710,7 +1707,7 @@ img { max-width: 100%; display: block; }
 .js .anim-card { opacity: 0; will-change: transform, opacity; }
 
 /* ============================================================
-   v10 - AItomat como marca de recepcion dental real
+   v10 - ditbo como marca de recepcion dental real
    Copy mas operativo, hero mas comercial, panel demo mas SaaS.
    ============================================================ */
 

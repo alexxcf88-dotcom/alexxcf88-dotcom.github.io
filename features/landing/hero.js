@@ -27,7 +27,7 @@
   const mobile = window.matchMedia('(max-width: 760px)').matches;
 
   const alEntrar = (fn) => {
-    if (root.classList.contains('preloader-active')) window.addEventListener('aitomat:ready', fn, { once: true });
+    if (root.classList.contains('preloader-active')) window.addEventListener('ditbo:ready', fn, { once: true });
     else fn();
   };
 

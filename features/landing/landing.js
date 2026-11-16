@@ -44,7 +44,7 @@ const lightweightMotion = reduceMotion || touchDevice || mobileViewport || lowEn
   // Con la intro delante, el vídeo espera a que termine su salida: decodificarlo
   // durante el fundido era lo que daba el tirón al entrar.
   if (document.documentElement.classList.contains('preloader-active')) {
-    window.addEventListener('aitomat:ready', () => window.setTimeout(arrancar, 900), { once: true });
+    window.addEventListener('ditbo:ready', () => window.setTimeout(arrancar, 900), { once: true });
   } else arrancar();
 
   // Solo se reproduce mientras el hero esta a la vista.
@@ -217,9 +217,9 @@ let vozPararGuion = null;
 // La define el guion de voz: arranca el bucle (se retoma al colgar).
 let vozArrancarGuion = null;
 
-// Base de la API del backend: mismo origen en local, api.aitomat.es en produccion.
-const DEMO_API_BASE = window.AITOMAT_API
-  || (['localhost', '127.0.0.1'].includes(location.hostname) ? '' : 'https://api.aitomat.es');
+// Base de la API del backend: mismo origen en local, api.ditbo.es en produccion.
+const DEMO_API_BASE = window.DITBO_API
+  || (['localhost', '127.0.0.1'].includes(location.hostname) ? '' : 'https://api.ditbo.es');
 
 // Modo presentacion (solo Alex): si la URL trae ?demo_key=XXXX, se guarda y se
 // borra de la barra al instante; a partir de ahi se adjunta a las llamadas de la
@@ -228,7 +228,7 @@ const DEMO_API_BASE = window.AITOMAT_API
 // solo se reenvia la que el propio Alex mete en la URL, asi el repo publico no
 // filtra ningun secreto. Va como query param (no cabecera) para no disparar el
 // preflight CORS (allow_headers solo permite content-type).
-const DEMO_KEY_STORE = 'aitomat-demo-key';
+const DEMO_KEY_STORE = 'ditbo-demo-key';
 (function capturarDemoKey() {
   try {
     const p = new URLSearchParams(location.search);
@@ -344,7 +344,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
     llamadas: {
       kicker: 'Llamadas perdidas',
       title: 'Recupera oportunidades aunque nadie coja el tel\u00e9fono.',
-      copy: 'Cuando entra una llamada perdida, AItomat prepara respuesta, prioridad y seguimiento para que no quede en el aire.',
+      copy: 'Cuando entra una llamada perdida, ditbo prepara respuesta, prioridad y seguimiento para que no quede en el aire.',
       lines: ['68%', '76%', '48%'],
       detected: 'Llamada perdida sin seguimiento',
       decision: 'Priorizar por horario y motivo probable',
@@ -693,7 +693,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       subject: 'Dolor de muela desde anoche',
       preview: 'Dolor fuerte, pide cita para hoy.',
       meta: 'Mensaje \u00b7 8:12 \u00b7 prioridad alta',
-      summary: 'Dolor agudo. AItomat pregunta por síntomas, marca prioridad alta y prepara el caso para recepción.',
+      summary: 'Dolor agudo. ditbo pregunta por síntomas, marca prioridad alta y prepara el caso para recepción.',
       body: ['Llevo desde anoche con un dolor de muela fuerte, casi no he dormido.', '\u00bfTen\u00e9is alg\u00fan hueco para hoy? Es bastante urgente.'],
       draft: 'Lo siento, Carlos. Para ayudarte bien: \u00bfhay inflamaci\u00f3n, fiebre o dolor al morder? Aviso a recepci\u00f3n para que te llamen cuanto antes.',
       cta: 'Pasar a recepci\u00f3n',
@@ -703,7 +703,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       subject: 'Limpieza esta semana',
       preview: 'Prefiere por la tarde, tel\u00e9fono confirmado.',
       meta: 'Mensaje \u00b7 9:41',
-      summary: 'Paciente interesada en limpieza. AItomat confirma motivo, datos y preferencia antes de proponer huecos.',
+      summary: 'Paciente interesada en limpieza. ditbo confirma motivo, datos y preferencia antes de proponer huecos.',
       body: ['Hola, necesito una limpieza esta semana.', 'Si puede ser por la tarde, mejor. Gracias.'],
       draft: 'Hola Laura, perfecto. \u00bfSer\u00eda una limpieza normal y sigues usando este tel\u00e9fono? Si es as\u00ed, te paso dos huecos de tarde.',
       cta: 'Preguntar y preparar cita',
@@ -713,7 +713,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       subject: 'Primera visita para mi hijo',
       preview: 'Ni\u00f1o de 7 a\u00f1os, revisi\u00f3n general.',
       meta: 'Mensaje \u00b7 9:08',
-      summary: 'Primera visita infantil. AItomat pide datos b\u00e1sicos y ofrece pasar el caso a odontopediatr\u00eda.',
+      summary: 'Primera visita infantil. ditbo pide datos b\u00e1sicos y ofrece pasar el caso a odontopediatr\u00eda.',
       body: ['Buenos d\u00edas, quer\u00eda pedir cita para mi hijo de 7 a\u00f1os.', 'Es la primera vez que viene a la cl\u00ednica.'],
       draft: 'Encantados de recibirle. Para orientarle bien: \u00bfla visita es revisi\u00f3n general o hay alguna molestia? Despu\u00e9s le paso opciones con odontopediatr\u00eda.',
       cta: 'Pedir datos',
@@ -723,7 +723,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       subject: 'Mover la cita del jueves',
       preview: 'No puede asistir, pide el viernes.',
       meta: 'Mensaje \u00b7 ayer 19:02',
-      summary: 'La paciente pide cambio. AItomat pregunta disponibilidad y deja el nuevo hueco preparado para confirmar.',
+      summary: 'La paciente pide cambio. ditbo pregunta disponibilidad y deja el nuevo hueco preparado para confirmar.',
       body: ['No voy a poder ir el jueves al final.', '\u00bfMe lo pod\u00e9is cambiar al viernes?'],
       draft: 'Sin problema, Marta. El viernes veo disponibilidad a las 12:00. \u00bfTe encaja ese horario para dejar el cambio preparado?',
       cta: 'Preparar cambio',
@@ -733,7 +733,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       subject: 'Dudas con el presupuesto de ortodoncia',
       preview: 'Pregunta por financiaci\u00f3n y plazos.',
       meta: 'Mensaje \u00b7 ayer 17:40',
-      summary: 'Consulta sobre el presupuesto de ortodoncia. AItomat responde dudas frecuentes y ofrece llamada con coordinadora.',
+      summary: 'Consulta sobre el presupuesto de ortodoncia. ditbo responde dudas frecuentes y ofrece llamada con coordinadora.',
       body: ['Me pasasteis el presupuesto de ortodoncia la semana pasada.', '\u00bfHay opci\u00f3n de pagarlo a plazos?'],
       draft: 'Hola Javier, s\u00ed: financiamos la ortodoncia hasta en 12 meses sin intereses. \u00bfTe llamo ma\u00f1ana para verlo contigo?',
       cta: 'Enviar respuesta',
@@ -743,7 +743,7 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
       subject: 'Confirmaci\u00f3n cita 10:15',
       preview: 'Sin confirmar, 1 ausencia previa.',
       meta: 'Recordatorio \u00b7 lunes',
-      summary: 'Cita sin confirmar con riesgo de ausencia. AItomat pide confirmaci\u00f3n o reprogramaci\u00f3n antes de tocar la agenda.',
+      summary: 'Cita sin confirmar con riesgo de ausencia. ditbo pide confirmaci\u00f3n o reprogramaci\u00f3n antes de tocar la agenda.',
       body: ['Recordatorio enviado para la cita de ma\u00f1ana a las 10:15.', 'Paciente con una ausencia previa. A la espera de confirmaci\u00f3n.'],
       draft: 'Hola Ana, te recordamos tu cita ma\u00f1ana a las 10:15. Responde S\u00cd para confirmar o NO para reprogramarla.',
       cta: 'Reenviar recordatorio',
@@ -760,9 +760,9 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
     },
   ];
 
-  // "AItomat" en texto plano se lee "Altomat"; resaltamos el "AI" para que la I se vea.
+  // La marca en texto: «ditb» + «o» en aqua, igual que el logo (la «o» es el dial).
   function brandify(str) {
-    return String(str).replace(/AItomat/g, '<span class="b-ai">AI</span>tomat');
+    return String(str).replace(/ditbo/g, 'ditb<span class="b-ai">o</span>');
   }
 
   function render(index) {
@@ -994,7 +994,7 @@ function mountCal(destino) {
     if (window.location.protocol === 'file:') return 'http://127.0.0.1:8001/api/lead';
     if (isLocalhost) return '/api/lead';
     // Producción (dominio / GitHub Pages): backend propio.
-    return 'https://api.aitomat.es/api/lead';
+    return 'https://api.ditbo.es/api/lead';
   }
 
   form.addEventListener('submit', async (event) => {
@@ -1009,7 +1009,7 @@ function mountCal(destino) {
       whatsapp: String(data.get('whatsapp') || '').trim(),
       web: honeypot,                 // honeypot para el backend
       _gotcha: honeypot,             // alias de honeypot por compatibilidad
-      _subject: 'Nuevo lead AItomat',
+      _subject: 'Nuevo lead ditbo',
       consent: data.get('consent') === 'on',
     };
 
@@ -1395,12 +1395,12 @@ function mountCal(destino) {
   // Identificador de sesión (el backend limita mensajes por sesión).
   let sessionId = '';
   try {
-    sessionId = sessionStorage.getItem('aitomat-demo-session') || '';
+    sessionId = sessionStorage.getItem('ditbo-demo-session') || '';
     if (!sessionId) {
       sessionId = crypto.randomUUID
         ? crypto.randomUUID()
         : `s-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-      sessionStorage.setItem('aitomat-demo-session', sessionId);
+      sessionStorage.setItem('ditbo-demo-session', sessionId);
     }
   } catch (err) {
     sessionId = `s-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
@@ -1488,7 +1488,7 @@ function mountCal(destino) {
     const id = crypto.randomUUID
       ? crypto.randomUUID()
       : `s-${Date.now()}-${Math.random().toString(36).slice(2, 10)}`;
-    try { sessionStorage.setItem('aitomat-demo-session', id); } catch (err) { /* privado */ }
+    try { sessionStorage.setItem('ditbo-demo-session', id); } catch (err) { /* privado */ }
     return id;
   }
 
@@ -1792,7 +1792,7 @@ function mountCal(destino) {
       // ── Selector de micrófono (persistido en localStorage) ────────────────
       const micSelect = document.getElementById('voice-mic');
       const micLabel = document.getElementById('voice-mic-label');
-      const MIC_KEY = 'aitomat-voz-mic';
+      const MIC_KEY = 'ditbo-voz-mic';
 
       function aplicarMicro(deviceId, etiqueta) {
         esperarDaily().then((daily) => {

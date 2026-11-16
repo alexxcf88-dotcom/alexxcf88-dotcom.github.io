@@ -8,10 +8,9 @@
 */
 
 /* ── Marca dentro de texto corrido ─────────────────────────────────────────
-   "AItomat" en texto plano se lee "Altomat": en Inter la I mayúscula es un palo
-   idéntico a la ele (web/CLAUDE.md §2). Se compone con el mismo .b-ai que usan
-   la cabecera y la landing (brandify, landing.js); aquí solo hace falta evitar
-   que el nombre se parta al final de una línea.
+   «ditbo» se compone como el logo: «ditb» + la «o» en aqua (.b-ai), igual que
+   en la landing (brandify, landing.js; web/CLAUDE.md §2). Aquí solo hace falta
+   evitar que el nombre se parta al final de una línea.
    El aqua no se confunde con un enlace porque en esta plantilla los enlaces van
    siempre subrayados. */
 .marca { white-space: nowrap; }

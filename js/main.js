@@ -1,5 +1,5 @@
 /* ============================================================
-   AItomat — main.js
+   ditbo — main.js
    Lenis (scroll suave) + GSAP/ScrollTrigger/SplitText
    + WebGL hero (simplex liquid shader) + cursor custom
    + chat WhatsApp + botones magnéticos + contadores
@@ -280,7 +280,7 @@ if (!REDUCED && typeof Lenis !== 'undefined') {
     }
     loop();
   } catch (err) {
-    console.warn('[AItomat] WebGL falló, usando gradiente CSS.', err);
+    console.warn('[ditbo] WebGL falló, usando gradiente CSS.', err);
     useFallback();
   }
 })();
@@ -519,7 +519,7 @@ if (document.fonts && document.fonts.ready) {
       setStatus('Recibido. Contactaremos contigo para preparar la demo.', 'ok');
       form.reset();
     } catch (err) {
-      setStatus('No se pudo enviar. Inténtalo de nuevo o escríbenos a hola@aitomat.es.', 'err');
+      setStatus('No se pudo enviar. Inténtalo de nuevo o escríbenos a hola@ditbo.es.', 'err');
     } finally {
       btn.disabled = false;
       if (label) label.textContent = labelText;
@@ -746,7 +746,7 @@ if (document.fonts && document.fonts.ready) {
   });
 })();
 
-/* Spotlight suave del centro operativo AItomat */
+/* Spotlight suave del centro operativo ditbo */
 (function initOpsSpotlight() {
   const stage = document.querySelector('.motion-ops-stage');
   if (!stage || TOUCH || REDUCED) return;

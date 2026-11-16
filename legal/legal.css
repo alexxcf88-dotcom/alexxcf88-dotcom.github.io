@@ -62,9 +62,6 @@ a { color: inherit; }
 
 .b-ai {
   color: var(--aqua);
-  font-family: Archivo, system-ui, sans-serif;
-  font-weight: 900;
-  letter-spacing: -0.06em;
 }
 
 .legal-links {
@@ -242,7 +239,7 @@ th {
   h1 { font-size: clamp(2.6rem, 16vw, 4.2rem); }
 }
 
-/* El nombre no se parte al final de una linea. El 'AI' lo pinta .b-ai. */
+/* El nombre no se parte al final de una linea. La «o» aqua la pinta .b-ai. */
 .marca { white-space: nowrap; }
 
 /* ── Movil: menos relleno anidado y enlaces pulsables ────────────────────────

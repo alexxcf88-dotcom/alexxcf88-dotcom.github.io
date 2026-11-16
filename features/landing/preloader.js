@@ -54,7 +54,7 @@
 
   /* Fin real de la intro: todas sus animaciones finitas. Si el navegador no
      expone getAnimations, un reloj equivalente. */
-  const introFallback = reduced ? 1100 : 4700;
+  const introFallback = reduced ? 1100 : 3300;
   const cssDone = (mark && mark.getAnimations)
     ? Promise.race([
         Promise.all(mark.getAnimations({ subtree: true })
@@ -178,7 +178,7 @@
     loader.classList.add('is-leaving');
     root.classList.remove('preloader-active');
     root.classList.add('preloader-done');
-    window.dispatchEvent(new CustomEvent('aitomat:ready'));
+    window.dispatchEvent(new CustomEvent('ditbo:ready'));
     /* Fuera del DOM al acabar: libera sus capas del compositor. */
     window.setTimeout(() => {
       root.classList.remove('preloader-flying');
@@ -187,7 +187,7 @@
   };
 
   /* Sin relevo a <img> al final: las capas usan el mismo viewBox que
-     logo-aitomat.svg, y cambiar de una a otra movía los bordes un subpíxel
+     logo-ditbo.svg, y cambiar de una a otra movía los bordes un subpíxel
      (se veía como un pequeño salto del logo). */
 
   criticalStyles.then(warmSpline);
