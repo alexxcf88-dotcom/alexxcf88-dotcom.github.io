@@ -72,13 +72,20 @@
     ? { ar: [9, 16], pos: [0.5, 0.4], x: 0.4962, y: 0.4067, core: 0.0272, hub: 0.06529 }
     : { ar: [16, 9], pos: [0.58, 0.5], x: 0.5702, y: 0.3300, core: 0.01406, hub: 0.03368 };
   let cx = 0, cy = 0, viaje = 0;
+  // El vídeo ocupa un encuadre centrado (--ix-z, escena alejada): se mide su
+  // caja real para que el punto caiga en el centro del dial.
+  const encuadre = hero.querySelector('.ix-poster') || hero;
   const colocar = () => {
     if (!eye) return;
-    const W = hero.clientWidth, H = hero.clientHeight;
+    const caja = encuadre.getBoundingClientRect();
+    const base = hero.getBoundingClientRect();
+    const W = caja.width || hero.clientWidth, H = caja.height || hero.clientHeight;
+    const ox = caja.width ? caja.left - base.left : 0;
+    const oy = caja.height ? caja.top - base.top : 0;
     const s = Math.max(W / DIAL.ar[0], H / DIAL.ar[1]);
     const rw = DIAL.ar[0] * s, rh = DIAL.ar[1] * s;
-    cx = (W - rw) * DIAL.pos[0] + DIAL.x * rw;
-    cy = (H - rh) * DIAL.pos[1] + DIAL.y * rh;
+    cx = ox + (W - rw) * DIAL.pos[0] + DIAL.x * rw;
+    cy = oy + (H - rh) * DIAL.pos[1] + DIAL.y * rh;
     const er = DIAL.core * rw;
     // Recorrido corto: el punto mira hacia el cursor sin salir del centro del buje.
     viaje = Math.max(0, (DIAL.hub * rw - er * 1.4) * 0.5);
@@ -117,7 +124,7 @@
   const modesto = (nucleos && nucleos < 4) || (memoria !== null && memoria < 2);
   if (redJusta || modesto) return;
 
-  const base = '/features/landing/media/hero/olas' + (mobile ? '-movil' : '');
+  const base = '/features/landing/media/hero/olas-hd' + (mobile ? '-movil' : '');
   // H.264 es universal y aquí pesa menos; WebM solo para navegadores sin H.264.
   const h264 = video.canPlayType('video/mp4; codecs="avc1.640028"');
   video.src = base + (h264 ? '.mp4' : '.webm');
