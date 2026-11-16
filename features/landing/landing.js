@@ -2180,6 +2180,7 @@ function mountCal(destino) {
   let runtimePedido = false;
   let visorMontado = false;
   let visor = null;
+  let vistaVisor = null;
 
   function prepararRuntime() {
     if (window.customElements && customElements.get('spline-viewer')) return Promise.resolve();
@@ -2211,6 +2212,7 @@ function mountCal(destino) {
      ve que el telefono no sostiene el render. */
   function rendirse() {
     fig.classList.remove('is-live', 'is-spline-mounted');
+    if (vistaVisor) { vistaVisor.disconnect(); vistaVisor = null; }
     if (visor && visor.parentNode) visor.parentNode.removeChild(visor);
     visor = null;
   }
@@ -2296,6 +2298,32 @@ function mountCal(destino) {
       visor.addEventListener('rendered', revelar);
       fig.appendChild(visor);
 
+      /* Fuera de pantalla el robot NO dibuja. El runtime renderiza en bucle
+         aunque la sección esté lejos (y con events-target=global redibuja con
+         cada movimiento del ratón): montado durante la portada la hundía a
+         2-8 fps. Se pausa con stop() y se reanuda con play() del propio
+         runtime en cuanto Voz vuelve a estar cerca. */
+      let enVista = false;
+      function sincronizarRender() {
+        const app = visor && visor._spline;
+        if (!app || typeof app.stop !== 'function' || typeof app.play !== 'function') return;
+        if (enVista) { if (app.isStopped) app.play(); }
+        else if (!app.isStopped) app.stop();
+      }
+      if ('IntersectionObserver' in window) {
+        vistaVisor = new IntersectionObserver((entradas) => {
+          enVista = entradas.some((e) => e.isIntersecting);
+          sincronizarRender();
+        }, { rootMargin: '150px 0px' });
+        vistaVisor.observe(fig);
+      } else {
+        enVista = true;
+      }
+      // Al terminar la carga el runtime arranca su bucle en un setTimeout(0):
+      // se re-aplica el estado justo después para que no quede corriendo.
+      visor.addEventListener('load-complete', () => window.setTimeout(sincronizarRender, 120));
+      visor.addEventListener('rendered', () => window.setTimeout(sincronizarRender, 120));
+
       // Red de seguridad: si los eventos no llegan pero el canvas lleva 5 s
       // presente, ya ha pintado. Y si a los ~24 s no hay nada, se rinde.
       let vueltas = 0;
@@ -2336,12 +2364,12 @@ function mountCal(destino) {
   }, { rootMargin: vigilar ? '1800px 0px' : '1000px 0px' });
   encima.observe(fig);
 
-  /* En dispositivos capaces la voz no debe depender de la velocidad con que
-     alguien recorra la página: se prepara en segundo plano tras el arranque. */
-  window.setTimeout(() => {
-    pedirRuntime();
-    montarVisor();
-  }, 2500);
+  /* Antes se montaba la escena a los 2,5 s pasara lo que pasara: preparar
+     3,7 MB de escena (texturas, shaders) mientras se veía la portada la
+     dejaba a pocos fps. Ahora, tras el arranque, solo se adelanta el runtime
+     (JS, sin WebGL); la escena se monta al acercarse a Voz (observador
+     «encima», 1000 px antes de llegar). */
+  window.setTimeout(pedirRuntime, 2500);
 })();
 
 /* Anclas que caen donde deben.

@@ -11,7 +11,7 @@
 (function initSmartPreloader() {
   const root = document.documentElement;
   const loader = document.getElementById('smart-preloader');
-  const LANDING_JS = '/features/landing/landing.js?v=20260929-intro-v9';
+  const LANDING_JS = '/features/landing/landing.js?v=20261116-ditbo';
 
   const timeout = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   let landing;
