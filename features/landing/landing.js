@@ -217,9 +217,9 @@ let vozPararGuion = null;
 // La define el guion de voz: arranca el bucle (se retoma al colgar).
 let vozArrancarGuion = null;
 
-// Base de la API del backend: mismo origen en local, api.ditbo.es en produccion.
+// Base de la API del backend: mismo origen en local, api.aitomat.es en produccion.
 const DEMO_API_BASE = window.DITBO_API
-  || (['localhost', '127.0.0.1'].includes(location.hostname) ? '' : 'https://api.ditbo.es');
+  || (['localhost', '127.0.0.1'].includes(location.hostname) ? '' : 'https://api.aitomat.es');
 
 // Modo presentacion (solo Alex): si la URL trae ?demo_key=XXXX, se guarda y se
 // borra de la barra al instante; a partir de ahi se adjunta a las llamadas de la
@@ -994,7 +994,7 @@ function mountCal(destino) {
     if (window.location.protocol === 'file:') return 'http://127.0.0.1:8001/api/lead';
     if (isLocalhost) return '/api/lead';
     // Producción (dominio / GitHub Pages): backend propio.
-    return 'https://api.ditbo.es/api/lead';
+    return 'https://api.aitomat.es/api/lead';
   }
 
   form.addEventListener('submit', async (event) => {

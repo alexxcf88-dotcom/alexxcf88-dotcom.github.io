@@ -519,7 +519,7 @@ if (document.fonts && document.fonts.ready) {
       setStatus('Recibido. Contactaremos contigo para preparar la demo.', 'ok');
       form.reset();
     } catch (err) {
-      setStatus('No se pudo enviar. Inténtalo de nuevo o escríbenos a hola@ditbo.es.', 'err');
+      setStatus('No se pudo enviar. Inténtalo de nuevo o escríbenos a hola@aitomat.es.', 'err');
     } finally {
       btn.disabled = false;
       if (label) label.textContent = labelText;
