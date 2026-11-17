@@ -2213,6 +2213,14 @@ function mountCal(destino) {
   function rendirse() {
     fig.classList.remove('is-live', 'is-spline-mounted');
     if (vistaVisor) { vistaVisor.disconnect(); vistaVisor = null; }
+    /* Quitar el nodo no basta: el runtime sigue dibujando en su bucle y
+       retiene el contexto WebGL, y la web seguía a ~10 fps sin robot. Se para,
+       se libera y se suelta el contexto antes de sacarlo del DOM. */
+    try {
+      const app = visor && visor._spline;
+      if (app && typeof app.stop === 'function') app.stop();
+      if (app && typeof app.dispose === 'function') app.dispose();
+    } catch (e) { /* el runtime ya estaba roto: basta con sacarlo */ }
     if (visor && visor.parentNode) visor.parentNode.removeChild(visor);
     visor = null;
   }
@@ -2231,7 +2239,11 @@ function mountCal(destino) {
       previo = ahora;
       if (ahora < fin) { requestAnimationFrame(tic); return; }
       parado = true;
-      if (muestras.length < 20) return;
+      /* Pestaña oculta o sin frames: no hay medida, no se decide nada. */
+      if (document.hidden || muestras.length < 3) return;
+      /* Menos de 20 frames en 2,6 s son menos de ~8 fps: antes este caso, el
+         peor, se daba por inconcluso y el robot se quedaba hundiendo la web. */
+      if (muestras.length < 20) { rendirse(); return; }
       const ordenadas = muestras.slice(8).sort((a, b) => a - b);
       const mediana = ordenadas[Math.floor(ordenadas.length / 2)];
       const parones = ordenadas.filter((d) => d > 120).length;
@@ -2290,7 +2302,7 @@ function mountCal(destino) {
           window.setTimeout(() => {
             if (!visor) return;
             fig.classList.add('is-live');
-            if (vigilar) vigilarFluidez();
+            sincronizarRender();
           }, 180);
         }));
       }
@@ -2304,10 +2316,17 @@ function mountCal(destino) {
          2-8 fps. Se pausa con stop() y se reanuda con play() del propio
          runtime en cuanto Voz vuelve a estar cerca. */
       let enVista = false;
+      let vigilado = false;
       function sincronizarRender() {
         const app = visor && visor._spline;
         if (!app || typeof app.stop !== 'function' || typeof app.play !== 'function') return;
-        if (enVista) { if (app.isStopped) app.play(); }
+        if (enVista) {
+          if (app.isStopped) app.play();
+          /* El vigilante mide la primera vez que el robot está en pantalla y
+             dibujando, en cualquier dispositivo: un portátil sin GPU dedicada
+             tampoco sostiene la escena y antes no tenía red de seguridad. */
+          if (!vigilado && fig.classList.contains('is-live')) { vigilado = true; vigilarFluidez(); }
+        }
         else if (!app.isStopped) app.stop();
       }
       if ('IntersectionObserver' in window) {
