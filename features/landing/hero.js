@@ -12,8 +12,8 @@
       portada queda menos de un 6 % (justo cuando vuelve el fondo fijo).
       Sin vídeo con reduced motion, ahorro de datos, red lenta o equipos
       modestos: queda la imagen.
-   4) El punto blanco de la «o» se pinta encima del vídeo, fijo en el centro
-      del dial.
+   4) El punto blanco de la «o» se pinta encima del vídeo y mira hacia el
+      puntero dentro del buje (escritorio con ratón).
    La capa de vídeo nunca se mueve: eso era lo que tiraba los FPS (medido:
    51 → 59 fps al moverse el ratón sin ello). */
 (function initImmersiveHero() {
@@ -71,7 +71,7 @@
   const DIAL = mobile
     ? { ar: [9, 16], pos: [0.5, 0.4], x: 0.4962, y: 0.4067, core: 0.0272, hub: 0.06529 }
     : { ar: [16, 9], pos: [0.58, 0.5], x: 0.5702, y: 0.3300, core: 0.01406, hub: 0.03368 };
-  let cx = 0, cy = 0;
+  let cx = 0, cy = 0, viaje = 0;
   // El vídeo ocupa un encuadre centrado (--ix-z, escena alejada): se mide su
   // caja real para que el punto caiga en el centro del dial.
   const encuadre = hero.querySelector('.ix-poster') || hero;
@@ -87,6 +87,8 @@
     cx = ox + (W - rw) * DIAL.pos[0] + DIAL.x * rw;
     cy = oy + (H - rh) * DIAL.pos[1] + DIAL.y * rh;
     const er = DIAL.core * rw;
+    // Recorrido corto: el punto mira hacia el cursor sin salir del centro del buje.
+    viaje = Math.max(0, (DIAL.hub * rw - er * 1.4) * 0.5);
     eye.style.setProperty('--ex', cx.toFixed(1) + 'px');
     eye.style.setProperty('--ey', cy.toFixed(1) + 'px');
     eye.style.setProperty('--er', er.toFixed(1) + 'px');
@@ -94,7 +96,24 @@
   };
   colocar();
   window.addEventListener('resize', colocar, { passive: true });
-  // El punto queda fijo en el centro del dial: ya no sigue al puntero.
+  if (eye && !reduced && !mobile && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+    let frame = 0, px = 0, py = 0;
+    hero.addEventListener('pointermove', (ev) => {
+      const r = hero.getBoundingClientRect();
+      px = ev.clientX - r.left; py = ev.clientY - r.top;
+      if (frame) return;
+      frame = requestAnimationFrame(() => {
+        frame = 0;
+        const vx = px - cx, vy = py - cy, d = Math.hypot(vx, vy) || 1;
+        const k = viaje * Math.min(1, d / 320) / d;
+        eye.style.setProperty('--dx', (vx * k).toFixed(1) + 'px');
+        eye.style.setProperty('--dy', (vy * k).toFixed(1) + 'px');
+      });
+    }, { passive: true });
+    hero.addEventListener('pointerleave', () => {
+      eye.style.setProperty('--dx', '0px'); eye.style.setProperty('--dy', '0px');
+    });
+  }
   if (reduced || !video) return;
 
   /* 3 · Vídeo de la escena */
