@@ -2257,7 +2257,11 @@ function mountCal(destino) {
     visorMontado = true;
     pedirRuntime();
     prepararRuntime().then(() => {
-      visor = document.createElement('spline-viewer');
+      /* Si la intro ya montó el visor (preloader.js), se adopta tal cual:
+         escena descargada, preparada y parada, lista para play(). */
+      const adoptado = window.__splineVisor && window.__splineVisor.parentNode === fig;
+      visor = adoptado ? window.__splineVisor : document.createElement('spline-viewer');
+      if (!adoptado) {
       visor.setAttribute('url', escena);
       // eager: con "auto" el runtime se niega a cargar la escena mientras el
       // elemento esta fuera del viewport, y la intro se reproduciria al llegar.
@@ -2268,6 +2272,7 @@ function mountCal(destino) {
       // canvas. En tactil no hay puntero que seguir, asi que no se pone.
       if (window.matchMedia('(pointer: fine)').matches) {
         visor.setAttribute('events-target', 'global');
+      }
       }
       fig.classList.add('is-spline-mounted');
 
@@ -2308,7 +2313,9 @@ function mountCal(destino) {
       }
       visor.addEventListener('load-complete', revelar);
       visor.addEventListener('rendered', revelar);
-      fig.appendChild(visor);
+      if (!adoptado) fig.appendChild(visor);
+      // Adoptado y ya cargado: sus eventos pasaron antes de escucharlos.
+      else if (window.__splineCargado) window.setTimeout(revelar, 0);
 
       /* Fuera de pantalla el robot NO dibuja. El runtime renderiza en bucle
          aunque la sección esté lejos (y con events-target=global redibuja con
@@ -2332,6 +2339,7 @@ function mountCal(destino) {
       if ('IntersectionObserver' in window) {
         vistaVisor = new IntersectionObserver((entradas) => {
           enVista = entradas.some((e) => e.isIntersecting);
+          window.__splineEnVista = enVista;
           sincronizarRender();
         }, { rootMargin: '150px 0px' });
         vistaVisor.observe(fig);
@@ -2364,6 +2372,8 @@ function mountCal(destino) {
   }
 
   if (!('IntersectionObserver' in window)) { montarVisor(); return; }
+  // La intro ya lo montó: se adopta ahora (pausa/reanudación por visibilidad).
+  if (window.__splineVisor) { montarVisor(); return; }
   // Etapa 1: runtime.
   const cerca = new IntersectionObserver((entradas) => {
     if (!entradas.some((e) => e.isIntersecting)) return;

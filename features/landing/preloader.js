@@ -11,9 +11,10 @@
 (function initSmartPreloader() {
   const root = document.documentElement;
   const loader = document.getElementById('smart-preloader');
-  const LANDING_JS = '/features/landing/landing.js?v=20261117-fps';
+  const LANDING_JS = '/features/landing/landing.js?v=20261117-intro';
 
   const timeout = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
+  const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);
   let landing;
   const runLanding = () => landing || (landing = new Promise((resolve) => {
     const script = document.createElement('script');
@@ -75,51 +76,11 @@
     ? '/features/landing/media/hero/olas-hd-movil.webp'
     : '/features/landing/media/hero/olas-hd.webp')];
   if (document.fonts && document.fonts.load) visualAssets.push(document.fonts.load('900 1em Archivo').catch(() => {}));
-  /* Barra de carga: los 11 radios de la «o». Cada recurso que llega suma; un
-     radio más solo cada 250 ms como mucho, para que se lea como un barrido y
-     no como un parpadeo. El radio siguiente «busca» (pulso) mientras espera. */
-  const t0 = performance.now();
-  const rays = mark ? Array.from(mark.querySelectorAll('.pl-ray')) : [];
-  const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);
-  const tareas = [
-    styleReady('landing-styles'), styleReady('font-styles'), styleReady('refresh-styles'),
-    ...visualAssets,
-    new Promise((resolve) => {                 // landing.js, precargado en <head>
-      if (!('PerformanceObserver' in window)) return resolve();
-      const po = new PerformanceObserver((l) => {
-        if (l.getEntries().some((e) => /landing\.js/.test(e.name))) { po.disconnect(); resolve(); }
-      });
-      try { po.observe({ type: 'resource', buffered: true }); } catch (e) { resolve(); }
-    })
-  ];
-  const escena = document.getElementById('ix-video');
-  if (escena && escena.currentSrc !== undefined && escena.getAttribute('src')) {
-    tareas.push(new Promise((resolve) => {   // el vídeo de la portada, listo para reproducirse
-      if (escena.readyState >= 3) return resolve();
-      escena.addEventListener('canplay', resolve, { once: true });
-      escena.addEventListener('error', resolve, { once: true });
-    }));
-  }
-  let hechas = 0;
-  tareas.forEach((t) => cap(t, 5000).then(() => { hechas += 1; }));
-  let encendidos = 0;
-  let raysResolve;
-  const raysDone = new Promise((r) => { raysResolve = r; });
-  const pintarRadios = (n) => {
-    rays.forEach((ray, i) => {
-      ray.classList.toggle('is-on', i < n);
-      ray.classList.toggle('is-next', i === n);
-    });
-  };
-  const avanzar = () => {
-    const ritmo = reduced ? rays.length : Math.floor((performance.now() - t0 - 150) / 250);
-    const meta = Math.min(ritmo, Math.floor(hechas / tareas.length * rays.length));
-    if (meta > encendidos) { encendidos = meta; pintarRadios(encendidos); }
-    if (encendidos >= rays.length) { raysResolve(); return; }
-    window.setTimeout(avanzar, 80);
-  };
-  if (rays.length) { pintarRadios(0); avanzar(); } else raysResolve();
-  const introDone = Promise.all([cssDone, raysDone]);
+  /* Los 11 segmentos de la «o» se encienden por CSS, en barrido continuo
+     (ver la intro en index.html): antes los pintaba este script según
+     llegaban los recursos y, con el hilo ocupado, la «o» iba a saltos y casi
+     no se veía completa. Ahora el fin de la intro son sus animaciones. */
+  const introDone = cssDone;
 
   const visualReady = Promise.race([
     Promise.allSettled(visualAssets),
@@ -153,14 +114,41 @@
       document.head.appendChild(script);
     });
     window.__splineRuntime.catch(() => {});
+    /* Y la escena: se monta aquí, detrás del logo, para que al bajar a Voz no
+       haya que descargar ni preparar nada. En cuanto pinta se PARA (landing.js
+       la reanuda al llegar a la sección con play()). landing.js adopta este
+       mismo visor (window.__splineVisor) en vez de crear otro. */
+    window.__splineLista = window.__splineRuntime.then(() => new Promise((resolve) => {
+      const fig = document.getElementById('voice-3d');
+      const url = fig && fig.getAttribute('data-scene');
+      if (!fig || !url || window.__splineVisor) return resolve();
+      const visor = document.createElement('spline-viewer');
+      visor.setAttribute('url', url);
+      visor.setAttribute('loading', 'eager');
+      visor.setAttribute('loading-anim-type', 'none');
+      if (window.matchMedia('(pointer: fine)').matches) visor.setAttribute('events-target', 'global');
+      const listo = () => {
+        if (window.__splineCargado) return;
+        window.__splineCargado = true;
+        // El runtime arranca su bucle en un setTimeout(0): se para justo después.
+        window.setTimeout(() => {
+          const app = visor._spline;
+          if (app && typeof app.stop === 'function' && !window.__splineEnVista) app.stop();
+          resolve();
+        }, 120);
+      };
+      visor.addEventListener('load-complete', listo, { once: true });
+      visor.addEventListener('rendered', listo, { once: true });
+      fig.classList.add('is-spline-mounted');
+      window.__splineVisor = visor;
+      fig.appendChild(visor);
+    })).catch(() => {});
   };
 
   let left = false;
   const leave = () => {
     if (left) return;
     left = true;
-    pintarRadios(rays.length); // si salta el freno absoluto, la «o» se completa
-    raysResolve();
     /* El logo vuela hasta el del nav (mismo archivo, mismo tamaño al llegar)
        mientras el fondo se desvanece; al aterrizar, el del nav toma el relevo. */
     const target = !reduced && document.querySelector('.site-nav .brand-wordmark');
@@ -192,9 +180,15 @@
 
   criticalStyles.then(warmSpline);
 
+  /* El robot 3D cuenta como parte de la carga, pero nunca retiene la intro
+     más de ~4,8 s desde que empezó la página. */
+  const robotListo = () => (window.__splineLista
+    ? cap(window.__splineLista, Math.max(0, 4800 - performance.now()))
+    : Promise.resolve());
+
   Promise.all([introDone, criticalStyles])
-    .then(() => Promise.all([runLanding(), visualReady]))
-    .then(() => timeout(reduced ? 60 : 160))
+    .then(() => Promise.all([runLanding(), visualReady, robotListo()]))
+    .then(() => timeout(reduced ? 60 : 380)) // el logo completo, con su punto, se sostiene un instante
     .then(leave);
 
   /* Freno absoluto: ningún recurso puede retener la navegación. */

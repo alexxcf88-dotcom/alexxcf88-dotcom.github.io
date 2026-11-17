@@ -4,7 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="features/landing/landing.js?v=20261117-fps" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/landing.js?v=20261117-intro" as="script" fetchpriority="low">
   <link rel="preload" href="features/landing/media/hero/olas-hd.webp" as="image" media="(min-width: 761px)">
   <link rel="preload" href="features/landing/media/hero/olas-hd-movil.webp" as="image" media="(max-width: 760px)">
   <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
@@ -187,11 +187,10 @@
        (mismo path, mismo degradado, mismo viewBox) en su propia capa HTML: solo
        se animan transform y opacity, que corren en el compositor aunque el hilo
        principal esté ocupado. Arranca con el primer pintado, sin esperar a JS.
-       Los 11 segmentos de la «o» son la barra de carga: preloader.js los enciende
-       según terminan de llegar los recursos reales (estilos, fuentes, escena,
-       landing.js), con un ritmo mínimo para que se lea como un barrido.
-       A (0–0,9 s)  palabra con el medidor y el dial cargando, sin punto.
-       B (0,9–2,1)  el punto blanco aparece en el centro del dial con un rebote.
+       Los 11 segmentos de la «o» se encienden en barrido continuo por CSS
+       (0,35–2,25 s): así no se paran aunque el hilo principal esté cargando el
+       robot 3D. Con el dial completo, el punto blanco entra sin rebote
+       (2,25–2,7 s) y el logo entero se sostiene antes de volar al nav.
        Al salir, el logo (las mismas capas: sin relevo a <img>) vuela hasta el del
        nav mientras el fondo se desvanece. Generado por scripts/marca/intro_index.py. */
     .smart-preloader{position:fixed;inset:0;z-index:10000;display:grid;place-items:center;overflow:hidden}
@@ -209,10 +208,18 @@
     .pl-dot-ring{position:absolute;inset:0;border-radius:50%;background:#050706;animation:plDotStroke 3.0s linear both}
     .pl-dot-core{position:absolute;border-radius:50%;background:#fff}
     .pl-ray-gap{opacity:.26}
-    .pl-ray{opacity:.12;transition:opacity .5s cubic-bezier(.2,.8,.2,1)}
-    .pl-ray.is-on{opacity:1}
-    .pl-ray.is-next{animation:plScan 1s ease-in-out infinite alternate}
-    @keyframes plScan{from{opacity:.12}to{opacity:.5}}
+    .pl-ray{opacity:.12;animation:plRay 0.3s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(0.35s + var(--i) * 0.16s)}
+    .pl-ray-0{--i:0}
+    .pl-ray-1{--i:1}
+    .pl-ray-2{--i:2}
+    .pl-ray-3{--i:3}
+    .pl-ray-4{--i:4}
+    .pl-ray-5{--i:5}
+    .pl-ray-6{--i:6}
+    .pl-ray-7{--i:7}
+    .pl-ray-8{--i:8}
+    .pl-ray-9{--i:9}
+    .pl-ray-10{--i:10}
     .pl-g-word{animation:plJoin-word 3.0s linear both}
     .pl-g-o{animation:plJoin-o 3.0s linear both}
     /* Salida: el fondo se desvanece y el logo vuela a su sitio en el nav (--fx/--fy/--fs los calcula preloader.js). */
@@ -226,14 +233,15 @@
     @keyframes plIn{from{opacity:0}to{opacity:1}}
     @keyframes plJoin-word{0%,30%{transform:translate3d(calc(var(--mw) * 0.00000),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}70%,100%{transform:none}}
     @keyframes plJoin-o{0%,30%{transform:translate3d(calc(var(--mw) * 0.03000),0,0);animation-timing-function:cubic-bezier(.65,0,.35,1)}70%,100%{transform:none}}
-    @keyframes plDotSize{0%,30%{transform:scale(0)}50.0%{transform:scale(1.35);animation-timing-function:cubic-bezier(.4,0,.2,1)}70%,100%{transform:none}}
-    @keyframes plDotStroke{0%,70%{opacity:1}82%,100%{opacity:0}}
-    @keyframes plDotGlow{0%,30%{opacity:0;transform:scale(.6)}50.0%{opacity:1;transform:none}86%,100%{opacity:0;transform:scale(.45)}}
+    @keyframes plRay{from{opacity:.12}to{opacity:1}}
+    @keyframes plDotSize{0%,75.0%{opacity:0;transform:scale(.35);animation-timing-function:cubic-bezier(.16,1,.3,1)}90.0%,100%{opacity:1;transform:none}}
+    @keyframes plDotStroke{0%,90.0%{opacity:1}100%{opacity:0}}
+    @keyframes plDotGlow{0%,75.0%{opacity:0;transform:scale(.6)}82.5%{opacity:1;transform:none}100%{opacity:0;transform:scale(.85)}}
     @media(max-width:480px){.preloader-mark{--mw:min(84vw,400px)}}
     @media(prefers-reduced-motion:reduce){
       /* Misma narrativa sin desplazamientos: el punto de la «i» aparece en la «o». */
       .smart-preloader .preloader-mark{animation:plRmFade calc(var(--u)*900) ease both!important}
-      .smart-preloader .pl-ray{animation:none!important}
+      .smart-preloader .pl-ray{animation:none!important;opacity:1}
       .smart-preloader.is-leaving .preloader-mark{transform:none;opacity:0}
       .smart-preloader .pl-dot-wrap,.smart-preloader .pl-dot-ring,.smart-preloader .pl-dot-glow{animation:none!important}
       @keyframes plRmFade{0%,40%{opacity:1}50%,56%{opacity:0}82%,100%{opacity:1}}
@@ -1099,7 +1107,7 @@
   </div>
 
   <script defer src="features/landing/hero.js?v=20261117-fijo"></script>
-  <script defer src="features/landing/preloader.js?v=20261117-fps"></script>
+  <script defer src="features/landing/preloader.js?v=20261117-intro"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
