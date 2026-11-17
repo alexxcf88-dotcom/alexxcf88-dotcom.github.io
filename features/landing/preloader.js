@@ -11,7 +11,7 @@
 (function initSmartPreloader() {
   const root = document.documentElement;
   const loader = document.getElementById('smart-preloader');
-  const LANDING_JS = '/features/landing/landing.js?v=20261117-intro';
+  const LANDING_JS = '/features/landing/landing.js?v=20261117-robot';
 
   const timeout = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);
@@ -130,12 +130,17 @@
       const listo = () => {
         if (window.__splineCargado) return;
         window.__splineCargado = true;
-        // El runtime arranca su bucle en un setTimeout(0): se para justo después.
-        window.setTimeout(() => {
+        resolve();
+        /* Mientras el logo tapa la pantalla, el robot SIGUE animándose: así
+           termina de colocarse y, al llegar a Voz, ya está ahí en reposo y no
+           «arrancando». Se para al salir la intro (si sale antes de cargar,
+           enseguida); landing.js lo reanuda antes de que la sección se vea. */
+        const parar = () => window.setTimeout(() => {
           const app = visor._spline;
           if (app && typeof app.stop === 'function' && !window.__splineEnVista) app.stop();
-          resolve();
         }, 120);
+        if (root.classList.contains('preloader-active')) window.addEventListener('ditbo:ready', parar, { once: true });
+        else parar();
       };
       visor.addEventListener('load-complete', listo, { once: true });
       visor.addEventListener('rendered', listo, { once: true });

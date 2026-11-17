@@ -2247,7 +2247,10 @@ function mountCal(destino) {
       const ordenadas = muestras.slice(8).sort((a, b) => a - b);
       const mediana = ordenadas[Math.floor(ordenadas.length / 2)];
       const parones = ordenadas.filter((d) => d > 120).length;
-      if (mediana > 30 || parones > 3) rendirse();
+      /* En escritorio el robot se queda salvo que vaya de verdad mal (lo de
+         arriba, <8 fps); un tirón suelto no basta para quitarlo. */
+      if (vigilar && (mediana > 30 || parones > 3)) rendirse();
+      else if (!vigilar && mediana > 66) rendirse();
     }
     requestAnimationFrame(tic);
   }
@@ -2341,7 +2344,7 @@ function mountCal(destino) {
           enVista = entradas.some((e) => e.isIntersecting);
           window.__splineEnVista = enVista;
           sincronizarRender();
-        }, { rootMargin: '150px 0px' });
+        }, { rootMargin: '450px 0px' }); // ya en marcha antes de verse
         vistaVisor.observe(fig);
       } else {
         enVista = true;
