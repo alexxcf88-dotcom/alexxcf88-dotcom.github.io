@@ -11,7 +11,7 @@
 (function initSmartPreloader() {
   const root = document.documentElement;
   const loader = document.getElementById('smart-preloader');
-  const LANDING_JS = '/features/landing/landing.js?v=20261117-robot';
+  const LANDING_JS = '/features/landing/landing.js?v=20261117-movil';
 
   const timeout = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);
@@ -92,9 +92,11 @@
      entrar y congelaba la web ~0,4 s. Mismos requisitos que initVoiceSpline
      (landing.js), que reutiliza window.__splineRuntime. */
   const warmSpline = () => {
-    // Solo escritorio: en móvil, 2,2 MB durante la intro compiten con lo crítico
-    // en redes lentas; allí Spline conserva su carga perezosa de landing.js.
-    if (reduced || constrained || mobile || window.matchMedia('(hover: none)').matches) return;
+    /* También en móvil: el robot tiene que estar ya ahí al llegar a Voz. Se
+       salta con ahorro de datos o red 2g (constrained) y en equipos cortos
+       (abajo); en móvil, el vigilante de landing.js lo cambia por el robot de
+       CSS si el teléfono no lo mueve con soltura. */
+    if (reduced || constrained) return;
     if (window.__splineRuntime || !document.getElementById('voice-3d')) return;
     const cores = navigator.hardwareConcurrency || 0;
     const memory = typeof navigator.deviceMemory === 'number' ? navigator.deviceMemory : null;
