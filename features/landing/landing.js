@@ -2361,7 +2361,7 @@ function mountCal(destino) {
     montarVisor();
     // En tactil se espera a tenerla casi encima: si no llegas a Voz, no se
     // descarga la escena.
-  }, { rootMargin: vigilar ? '1800px 0px' : '1000px 0px' });
+  }, { rootMargin: vigilar ? '1800px 0px' : '2500px 0px' });
   encima.observe(fig);
 
   /* Antes se montaba la escena a los 2,5 s pasara lo que pasara: preparar
@@ -2370,6 +2370,17 @@ function mountCal(destino) {
      (JS, sin WebGL); la escena se monta al acercarse a Voz (observador
      «encima», 1000 px antes de llegar). */
   window.setTimeout(pedirRuntime, 2500);
+
+  /* Para que el robot esté listo al llegar a Voz sin esperar la descarga:
+     tras la intro, con el hilo libre, se baja la escena (1,3 MB) a la caché
+     HTTP. Solo red, sin WebGL: no toca la fluidez de la portada. El visor la
+     pide luego con la misma URL y la sirve la caché. */
+  // Solo escritorio: en móvil no se gastan datos si no se llega a Voz.
+  if (!vigilar) window.setTimeout(() => enReposo(() => {
+    try {
+      fetch(escena, { priority: 'low', credentials: 'same-origin' }).catch(() => {});
+    } catch (e) { /* navegador sin fetch con priority: da igual */ }
+  }, 4000), 3000);
 })();
 
 /* Anclas que caen donde deben.
