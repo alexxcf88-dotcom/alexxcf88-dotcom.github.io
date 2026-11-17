@@ -241,12 +241,11 @@
     .ix-video{opacity:0;transition:opacity 1s ease}
     .ix-video.is-on{opacity:1}
     /* El punto blanco de la «o» no está en el vídeo: lo pinta la web encima, en el
-       centro exacto del dial (hero.js calcula dónde cae con object-fit), y se
-       desplaza dentro del buje hacia el puntero. Es un elemento pequeño que solo
-       mueve transform: no toca la capa de vídeo. */
+       centro exacto del dial (hero.js calcula dónde cae con object-fit). Fijo: no
+       sigue al puntero. No toca la capa de vídeo. */
     .ix-eye{position:absolute;left:var(--ex,57%);top:var(--ey,38%);width:0;height:0;z-index:1;opacity:0;transition:opacity .8s ease}
     .ix-eye.is-ready{opacity:1}
-    .ix-eye i{position:absolute;left:0;top:0;width:calc(var(--er,20px)*2);height:calc(var(--er,20px)*2);margin:calc(var(--er,20px)*-1) 0 0 calc(var(--er,20px)*-1);border-radius:50%;background:radial-gradient(circle,#fff 0 58%,rgba(235,255,250,.9) 70%,rgba(160,250,235,0) 100%);box-shadow:0 0 calc(var(--er,20px)*1.2) rgba(255,255,255,.55),0 0 calc(var(--er,20px)*3.4) rgba(90,240,216,.4);transform:translate3d(var(--dx,0px),var(--dy,0px),0);transition:transform 1.1s cubic-bezier(.2,.8,.2,1)}
+    .ix-eye i{position:absolute;left:0;top:0;width:calc(var(--er,20px)*2);height:calc(var(--er,20px)*2);margin:calc(var(--er,20px)*-1) 0 0 calc(var(--er,20px)*-1);border-radius:50%;background:radial-gradient(circle,#fff 0 58%,rgba(235,255,250,.9) 70%,rgba(160,250,235,0) 100%);box-shadow:0 0 calc(var(--er,20px)*1.2) rgba(255,255,255,.55),0 0 calc(var(--er,20px)*3.4) rgba(90,240,216,.4)}
     .ix-eye i::before{content:"";position:absolute;left:50%;top:50%;width:calc(var(--er,20px)*14);height:calc(var(--er,20px)*14);margin:calc(var(--er,20px)*-7) 0 0 calc(var(--er,20px)*-7);border-radius:50%;background:radial-gradient(circle,rgba(200,255,245,.16),rgba(90,240,216,.06) 35%,rgba(90,240,216,0) 65%);pointer-events:none}
     /* Una sola capa estática: lectura del texto abajo a la izquierda y fundido con Sistema. */
     .ix-shade{position:absolute;inset:0;background:radial-gradient(70% 66% at 0% 100%,rgba(2,5,6,.94),rgba(2,5,6,.72) 42%,rgba(2,5,6,0) 78%),linear-gradient(180deg,rgba(5,7,6,0) 58%,rgba(5,7,6,.55) 80%,#050706 100%)}
@@ -1066,7 +1065,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261116-hd"></script>
+  <script defer src="features/landing/hero.js?v=20261117-fijo"></script>
   <script defer src="features/landing/preloader.js?v=20261117-intro"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
