@@ -3749,31 +3749,12 @@ html.fx-quieto .hero h1 .shiny{animation-play-state:paused!important}
    que el hero no dependa de esta hoja asíncrona (sin ella, la mano salía a
    1040 px y saltaba al llegar la hoja: CLS ~1). */
 
-/* v9 · #flujo: la tarjeta «Conversación en curso» se destaca como resumen del
-   flujo (Entrada → Contexto → Salida). Solo escritorio, donde se muestra. */
+/* v9 · #flujo: la etiqueta naranja «Conversación en curso» quedaba bajo la
+   sombra del móvil (z 8) y se veía apagada. Solo se ilumina la etiqueta. */
 @media (min-width: 981px) {
-  #flujo .story-context {
-    position: relative; z-index: 9; isolation: isolate; /* por encima de la sombra del móvil (z 8) */ gap: 16px; max-width: 430px; width: 100%;
-    padding: 22px 22px 20px; border-radius: 18px;
-    border: 1px solid rgba(90, 240, 216, .22);
-    background: linear-gradient(180deg, rgba(90, 240, 216, .07), rgba(255, 255, 255, .02) 70%);
-    box-shadow: 0 0 0 1px rgba(255, 255, 255, .03) inset, 0 24px 70px -30px rgba(90, 240, 216, .35);
+  #flujo .story-context > p {
+    position: relative; z-index: 9;
+    color: var(--orange);
+    text-shadow: 0 0 12px rgba(255, 173, 112, .55), 0 0 2px rgba(255, 173, 112, .4);
   }
-  #flujo .story-context > p { color: var(--aqua); font-size: .7rem; letter-spacing: .16em; }
-  #flujo .story-context > p span { animation: ctx-pulse 2.4s ease-out infinite; }
-  #flujo .story-context > strong { color: #fff; font-size: 1.32rem; line-height: 1.25; letter-spacing: -.01em; text-wrap: balance; }
-  #flujo .story-context dl { gap: 14px; }
-  #flujo .story-context dl div {
-    position: relative; padding: 11px 8px 10px; border-radius: 11px; border-top: 0;
-    border: 1px solid rgba(90, 240, 216, .2); background: rgba(90, 240, 216, .06);
-  }
-  #flujo .story-context dl div:not(:last-child)::after {
-    content: "→"; position: absolute; right: -12px; top: 50%; transform: translateY(-50%);
-    color: var(--aqua); font-size: .75rem; line-height: 1; opacity: .8;
-  }
-  #flujo .story-context dl div:last-child { border-color: rgba(90, 240, 216, .45); background: rgba(90, 240, 216, .11); }
-  #flujo .story-context dt { color: rgba(90, 240, 216, .75); font-size: .58rem; }
-  #flujo .story-context dd { font-size: .86rem; white-space: nowrap; }
 }
-@keyframes ctx-pulse { 0% { box-shadow: 0 0 0 0 rgba(90, 240, 216, .55); } 70%, 100% { box-shadow: 0 0 0 8px rgba(90, 240, 216, 0); } }
-@media (prefers-reduced-motion: reduce) { #flujo .story-context > p span { animation: none; } }
