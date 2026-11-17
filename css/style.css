@@ -173,7 +173,7 @@ img { max-width: 100%; display: block; }
 
 /* Reglas heredadas del wordmark tipográfico anterior (.ai/.logo-i/.logo-sep).
    La marca actual es «ditbo»: en el nav va el SVG (brand/logo/logo-ditbo.svg) y
-   en texto corrido «ditb» + «o» aqua con .b-ai (ver web/CLAUDE.md §2). */
+   en texto corrido la «i» y la «o» en aqua con .b-ai (ver web/CLAUDE.md §2). */
 .nav-logo, .brand { font-family: var(--font-brand); font-weight: 400; }
 .nav-logo .ai,
 .brand .ai {

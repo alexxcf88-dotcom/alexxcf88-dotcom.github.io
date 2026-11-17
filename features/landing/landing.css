@@ -223,7 +223,7 @@ main,
   padding: 0 0.1em;
   vertical-align: 0.12em;
 }
-/* Marca en texto (cabeceras, OS, inbox): «ditb» + «o» aqua; hereda peso y fuente. */
+/* Marca en texto (cabeceras, OS, inbox): «i» y «o» en aqua; hereda peso y fuente. */
 .b-ai { color: var(--aqua); }
 .b-dot {
   color: var(--aqua);

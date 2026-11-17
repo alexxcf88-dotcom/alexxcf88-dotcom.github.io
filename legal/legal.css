@@ -239,7 +239,7 @@ th {
   h1 { font-size: clamp(2.6rem, 16vw, 4.2rem); }
 }
 
-/* El nombre no se parte al final de una linea. La «o» aqua la pinta .b-ai. */
+/* El nombre no se parte al final de una linea. La «i» y la «o» aqua las pinta .b-ai. */
 .marca { white-space: nowrap; }
 
 /* ── Movil: menos relleno anidado y enlaces pulsables ────────────────────────

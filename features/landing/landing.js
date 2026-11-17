@@ -760,9 +760,9 @@ function renderPhone(chatEl, statusEl, scenario, instant = false) {
     },
   ];
 
-  // La marca en texto: «ditb» + «o» en aqua, igual que el logo (la «o» es el dial).
+  // La marca en texto: «i» y «o» en aqua, igual que el logo (medidor y dial).
   function brandify(str) {
-    return String(str).replace(/ditbo/g, 'ditb<span class="b-ai">o</span>');
+    return String(str).replace(/ditbo/g, 'd<span class="b-ai">i</span>tb<span class="b-ai">o</span>');
   }
 
   function render(index) {
