@@ -156,6 +156,9 @@
      mira de frente, enciende el piloto en rojo y los ojos laten con la voz. */
   window.addEventListener('ditbo:voz', (ev) => {
     const d = ev.detail || {};
+    if (d.tipo === 'boton' && estado) {
+      estado.textContent = d.colgando ? 'en llamada contigo · pulsa Colgar para terminar' : (d.ocupado ? 'conectando…' : 'esperando tu respuesta');
+    }
     if (d.tipo === 'boton') {
       tv.classList.toggle('is-call', !!d.colgando);
       hero.classList.toggle('is-call', !!d.colgando);
@@ -171,16 +174,39 @@
   /* 5 · La frase de la izquierda se escribe sola, con cursor de bloque. El
      texto completo está en el HTML (lo lee Google y el lector de pantalla). */
   const say = document.getElementById('ix-say');
+  const estado = document.getElementById('ix-speaker-state');
+  // Al acabar el saludo, Cristina queda a la espera y se señala cómo contestarle.
+  const terminado = () => {
+    if (estado) estado.textContent = 'esperando tu respuesta';
+    const chip = document.getElementById('ix-chip-voz');
+    if (chip) chip.classList.add('is-ready');
+  };
+  if (say && reduced) terminado();
   if (say && !reduced) {
+    // El texto entero ocupa su sitio desde el principio (sin saltos de
+    // maquetación): lo escrito se ve, el resto es transparente y el cursor va
+    // entre medias.
     const completo = say.textContent;
-    say.setAttribute('aria-label', completo);
+    const h1 = say.parentElement;
+    const caret = h1.querySelector('.ix-caret');
+    h1.setAttribute('aria-label', completo);
+    const resto = document.createElement('span');
+    resto.className = 'ix-say-rest';
+    resto.setAttribute('aria-hidden', 'true');
+    say.setAttribute('aria-hidden', 'true');
     say.textContent = '';
+    resto.textContent = completo;
+    if (caret) h1.insertBefore(caret, null);
+    h1.append(resto);
+    if (caret) h1.insertBefore(caret, resto);
     alEntrar(() => {
       let i = 0;
       const escribir = () => {
         i += 1;
         say.textContent = completo.slice(0, i);
+        resto.textContent = completo.slice(i);
         if (i < completo.length) setTimeout(escribir, /[.?¿,]/.test(completo[i - 1]) ? 260 : 38 + Math.random() * 40);
+        else terminado();
       };
       setTimeout(() => { parlotear(completo.length * 62 + 700); escribir(); }, 450);
     });

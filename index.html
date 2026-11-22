@@ -400,7 +400,7 @@
 
     /* La foto: cubre la portada anclada arriba a la derecha (la figura nunca se corta) */
     .ix-photo{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-    .ix-photo-in{position:absolute;top:clamp(96px,13svh,130px);right:0;height:max(74%,480px);aspect-ratio:1671/941;-webkit-mask-image:linear-gradient(180deg,#000 78%,transparent 99%);mask-image:linear-gradient(180deg,#000 78%,transparent 99%)}
+    .ix-photo-in{position:absolute;bottom:0;right:0;height:max(81%,520px);aspect-ratio:1671/941}
     .ix-photo picture,.ix-photo img{position:absolute;inset:0;display:block;width:100%;height:100%}
     .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#b9a9a5 0%,rgba(185,169,165,.85) 12%,rgba(185,169,165,0) 40%),linear-gradient(180deg,#b9a9a5,rgba(185,169,165,0) 12%)}
 
@@ -433,7 +433,8 @@
     #inicio.ix .ix-promo{color:#8f3c05;border-color:rgba(143,60,5,.45)}
     .ix-intro{max-width:44ch;margin:0 0 18px;color:var(--ink-2);font-size:.98rem;line-height:1.55}
     #inicio.hero.ix h1.ix-say{display:block;width:auto;max-width:none;word-spacing:normal;text-align:left;background:none;-webkit-text-fill-color:#0b1211;animation:none;opacity:1;transform:none}
-    #inicio.hero.ix h1.ix-say,#inicio.ix .ix-say{margin:0;color:#0b1211;font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,2.9vw,2.7rem);font-weight:600;line-height:1.12;letter-spacing:-.03em;text-shadow:none;text-wrap:pretty}
+    #inicio.hero.ix h1.ix-say,#inicio.ix .ix-say{margin:0;color:#0b1211;font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.5rem,2.35vw,2.25rem);font-weight:600;line-height:1.14;letter-spacing:-.03em;text-shadow:none;text-wrap:pretty}
+    .ix-say-rest{color:transparent;-webkit-text-fill-color:transparent}
     .ix-caret{display:inline-block;width:.5em;height:.95em;margin-left:.12em;vertical-align:-.1em;background:#0b1211;animation:ixCaret 1s steps(1) infinite}
     @keyframes ixCaret{50%{opacity:0}}
     .ix-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
@@ -469,7 +470,7 @@
 
     /* Escritorio: el texto centrado a la izquierda y la tarjeta debajo, sin pisarse */
     @media (min-width:761px){
-      #inicio.ix .ix-copy{top:clamp(120px,22svh,220px);transform:none}
+      #inicio.ix .ix-copy{top:clamp(108px,17svh,190px);transform:none}
       .ix-call{width:min(360px,30vw)}
     }
     @media (min-width:761px) and (max-height:820px){
@@ -502,6 +503,18 @@
       .ix-call{opacity:1}
       .tv-eyes.is-blink{animation:none}
     }
+    /* Cristina habla nada más entrar: quién habla y en qué estado, siempre visible */
+    .ix-speaker{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;width:max-content;max-width:100%;margin:0 0 16px;padding:7px 14px 7px 10px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid rgba(11,18,17,.1);color:var(--ink-2);font-size:.8rem;line-height:1.3;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .ix-speaker b{color:#0b1211}
+    .ix-speaker-dot{width:8px;height:8px;border-radius:50%;background:#0fa396;box-shadow:0 0 0 0 rgba(15,163,150,.5);animation:ixLive 1.4s ease-out infinite}
+    @keyframes ixLive{to{box-shadow:0 0 0 8px rgba(15,163,150,0)}}
+    .ix-speaker-state{color:#0b7d70;font-weight:600}
+    #inicio.ix .ix-copy .ix-intro{margin:16px 0 0}
+    .ix-mic{display:inline-grid;place-items:center;width:22px;height:22px;margin:0 8px 0 -6px;border-radius:50%;background:linear-gradient(135deg,#5af0d8,#35c9f0);color:#041210}
+    .ix-mic svg{width:13px;height:13px}
+    .ix-chip-voz.is-ready{border-color:#0b7d70;animation:ixChipPulse 2.2s ease-out 3}
+    @keyframes ixChipPulse{0%{box-shadow:0 0 0 0 rgba(15,163,150,.45)}100%{box-shadow:0 0 0 14px rgba(15,163,150,0)}}
+    @media (prefers-reduced-motion:reduce){.ix-speaker-dot,.ix-chip-voz.is-ready{animation:none}}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -606,11 +619,12 @@
       </div>
       <div class="ix-copy">
         <p class="ix-eyebrow">ditbo<sup>&reg;</sup> <span aria-hidden="true">&middot;</span> Recepci&oacute;n automatizada para cl&iacute;nicas dentales <span aria-hidden="true">&middot;</span> <a class="ix-promo" href="#precio">Primer mes gratis</a></p>
-        <p class="ix-intro">Soy la recepci&oacute;n de tu cl&iacute;nica dental. Contesto las llamadas y los WhatsApp, miro la agenda y dejo cada caso listo para tu equipo.</p>
-        <h1 class="ix-say"><span class="ix-say-text" id="ix-say">Ya estoy aqu&iacute;. &iquest;En qu&eacute; te ayudo?</span><i class="ix-caret" aria-hidden="true"></i></h1>
+        <p class="ix-speaker" id="ix-speaker"><span class="ix-speaker-dot" aria-hidden="true"></span><b>Cristina</b> &middot; asistente virtual con IA <span class="ix-speaker-state" id="ix-speaker-state">est&aacute; hablando&hellip;</span></p>
+        <h1 class="ix-say"><span class="ix-say-text" id="ix-say">Hola, soy Cristina, la asistente virtual de tu cl&iacute;nica dental. &iquest;En qu&eacute; puedo ayudarte?</span><i class="ix-caret" aria-hidden="true"></i></h1>
+        <p class="ix-intro">Contesto las llamadas y los WhatsApp, miro la agenda y dejo cada caso listo para tu equipo.</p>
         <div class="ix-chips">
           <a class="ix-chip ix-chip-main" href="#contacto" data-demo-open>Pedir demo</a>
-          <a class="ix-chip" href="#voz-demo" id="ix-chip-voz">Hablar conmigo</a>
+          <a class="ix-chip ix-chip-voz" href="#voz-demo" id="ix-chip-voz"><span class="ix-mic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="2.5" width="6" height="11.5" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3.5"/></svg></span>Responder hablando</a>
           <a class="ix-chip" href="#precio">Ver precios</a>
           <a class="ix-chip" href="#proceso">C&oacute;mo funciona</a>
         </div>
