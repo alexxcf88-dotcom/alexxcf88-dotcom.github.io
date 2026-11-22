@@ -1650,6 +1650,9 @@ function mountCal(destino) {
   if (!cta || !btn || !chatEl) return;
 
   const setStatus = (t) => { if (statusEl) statusEl.textContent = t; };
+  // La portada (hero.js) tiene su propio botón y subtítulos: se entera de todo
+  // por este evento, sin acoplarse a los nodos de la sección Voz.
+  const avisar = (detalle) => window.dispatchEvent(new CustomEvent('ditbo:voz', { detail: detalle }));
 
   fetch(conClave(`${DEMO_API_BASE}/demo/voz-config`))
     .then((res) => (res.ok ? res.json() : null))
@@ -1663,6 +1666,8 @@ function mountCal(destino) {
       // con-cta reserva hueco abajo para que el botón no tape la última burbuja.
       cta.hidden = false;
       chatEl.classList.add('con-cta');
+      window.ditboVoz = { disponible: true };
+      avisar({ tipo: 'disponible' });
       // El aviso de entorno de pruebas de la voz es la nota persistente bajo el
       // CTA (.voice-note en el HTML): no se pinta en el transcript porque el
       // guion lo borraría al repintar.
@@ -1709,6 +1714,7 @@ function mountCal(destino) {
         if (btnTitle) btnTitle.textContent = titulo;
         if (btnSub) btnSub.textContent = sub;
         btn.classList.toggle('colgando', !!colgando);
+        avisar({ tipo: 'boton', titulo, sub, colgando: !!colgando, ocupado: btn.disabled });
       }
 
       // Transcript de la llamada REAL: mismas burbujas que el guion (variante
@@ -1717,6 +1723,7 @@ function mountCal(destino) {
       // solo se abre burbuja nueva al cambiar de rol.
       let burbujaAbierta = null; // {rol, body}
       function lineaLlamada(rol, texto) {
+        avisar({ tipo: 'linea', rol, texto });
         if (burbujaAbierta && burbujaAbierta.rol === rol) {
           burbujaAbierta.body.textContent += ' ' + texto;
           chatEl.scrollTop = chatEl.scrollHeight;
@@ -1973,6 +1980,7 @@ function mountCal(destino) {
         // siempre 0 = la media WebRTC no llega (red/antivirus).
         let ultimoNivelLog = 0;
         vapi.on('volume-level', (nivel) => {
+          avisar({ tipo: 'nivel', nivel });
           const ahora = Date.now();
           if (ahora - ultimoNivelLog > 1000) {
             ultimoNivelLog = ahora;

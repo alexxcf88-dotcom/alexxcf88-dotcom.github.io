@@ -11,7 +11,7 @@
 (function initSmartPreloader() {
   const root = document.documentElement;
   const loader = document.getElementById('smart-preloader');
-  const LANDING_JS = '/features/landing/landing.js?v=20261117-movil';
+  const LANDING_JS = '/features/landing/landing.js?v=20261122-pantalla';
 
   const timeout = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);
