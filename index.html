@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20261122-pantalla" as="script" fetchpriority="low">
-  <link rel="preload" href="features/landing/media/hero/persona.webp" as="image" media="(min-width: 1281px)" fetchpriority="high">
-  <link rel="preload" href="features/landing/media/hero/persona-1200.webp" as="image" media="(max-width: 1280px)" fetchpriority="high">
+  <link rel="preload" href="features/landing/media/hero/cristina.webp" as="image" media="(min-width: 1281px)" fetchpriority="high">
+  <link rel="preload" href="features/landing/media/hero/cristina-1200.webp" as="image" media="(max-width: 1280px)" fetchpriority="high">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -384,7 +384,7 @@
   <style id="hero-tv">
     /* ═══════════════════════════════════════════════════════════════════════
        PORTADA v4 · LA PANTALLA QUE MIRA.
-       Foto a sangre (fondo gris cálido, figura con cabeza de televisor a la
+       Foto a sangre (fondo gris cálido, figura (Cristina, en traje) con cabeza de televisor a la
        derecha) y, sobre su pantalla, la cara de ditbo: ojo izquierdo la «i»
        (barras de nivel), ojo derecho la «o» (dial con su punto). Miran al
        puntero, pestañean y, en la llamada real, la «i» sube con la voz.
@@ -392,9 +392,9 @@
        tarjeta de llamada en vivo (antes, sección Voz). hero.js escribe
        --lx/--ly (mirada, -1…1) y --vol (voz, 0…1).
        La pantalla de la foto ocupa (en % de la foto 1671×941):
-       x 59,55 · y 9,03 · ancho 32,0 · alto 42,83.
+       x 61 · y 8 · ancho 29,3 · alto 41.
        ═══════════════════════════════════════════════════════════════════════ */
-    #inicio.hero.ix{--ink:#0b1211;--ink-2:rgba(11,18,17,.72);--teal:#0b7d70;--lx:0;--ly:0;--vol:0;background:#b9a9a5}
+    #inicio.hero.ix{--ink:#0b1211;--ink-2:rgba(11,18,17,.72);--teal:#0b7d70;--lx:0;--ly:0;--vol:0;background:#c3b6b1}
     #inicio.ix .ix-shade{display:none}
     .ix-stage::before{display:none}
 
@@ -402,10 +402,10 @@
     .ix-photo{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
     .ix-photo-in{position:absolute;bottom:0;right:0;height:max(81%,520px);aspect-ratio:1671/941}
     .ix-photo picture,.ix-photo img{position:absolute;inset:0;display:block;width:100%;height:100%}
-    .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#b9a9a5 0%,rgba(185,169,165,.85) 12%,rgba(185,169,165,0) 40%),linear-gradient(180deg,#b9a9a5,rgba(185,169,165,0) 12%)}
+    .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#c3b6b1 0%,rgba(195,182,177,.85) 12%,rgba(195,182,177,0) 40%),linear-gradient(180deg,#c3b6b1,rgba(195,182,177,0) 12%)}
 
     /* La pantalla de la foto y la cara de ditbo */
-    .tv{position:absolute;z-index:1;left:59.55%;top:9.03%;width:32%;height:42.83%;border-radius:7% / 9%;overflow:hidden}
+    .tv{position:absolute;z-index:1;left:61%;top:8%;width:29.3%;height:41%;border-radius:7% / 9%;overflow:hidden}
     .tv-defs{position:absolute;width:0;height:0;overflow:hidden}
     .tv-eyes{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:12%;translate:calc(var(--lx)*6%) calc(var(--ly)*6%);transform-origin:50% 50%;
       filter:blur(.4px) drop-shadow(-2px 0 0 rgba(255,90,120,.35)) drop-shadow(2px 0 0 rgba(70,150,255,.4)) drop-shadow(0 0 8px rgba(120,255,230,calc(.8 + var(--vol)*.2))) drop-shadow(0 0 26px rgba(90,240,216,calc(.6 + var(--vol)*.3))) drop-shadow(0 0 60px rgba(53,201,240,.45))}
@@ -480,7 +480,7 @@
     }
     @media (max-width:1100px) and (min-width:761px){
       #inicio.ix .ix-copy{width:min(46vw,460px)}
-      .ix-photo-in::after{background:linear-gradient(90deg,#b9a9a5,rgba(185,169,165,.6) 40%,rgba(185,169,165,0) 62%)}
+      .ix-photo-in::after{background:linear-gradient(90deg,#c3b6b1,rgba(195,182,177,.6) 40%,rgba(195,182,177,0) 62%)}
     }
 
     /* Móvil: foto recortada a la figura arriba, texto y tarjeta debajo */
@@ -488,7 +488,7 @@
       #inicio.hero.ix{display:flex;flex-direction:column;height:auto;min-height:100svh;padding-bottom:40px}
       .ix-photo{order:1;position:relative;inset:auto;flex:none;width:100%;aspect-ratio:1.15;margin-top:68px}
       .ix-photo-in{top:0;bottom:auto;right:2%;height:100%}
-      .ix-photo-in::after{background:linear-gradient(180deg,rgba(185,169,165,0) 72%,#b9a9a5 100%)}
+      .ix-photo-in::after{background:linear-gradient(180deg,rgba(195,182,177,0) 72%,#c3b6b1 100%)}
       #inicio.ix .ix-copy{order:2;position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;margin:-8px 20px 0}
       #inicio.ix .ix-eyebrow{font-size:.6rem;margin-bottom:14px}
       .ix-intro{font-size:.9rem;margin-bottom:12px}
@@ -591,8 +591,8 @@
       <div class="ix-photo" aria-hidden="true">
         <div class="ix-photo-in">
           <picture>
-            <source media="(max-width: 1280px)" srcset="features/landing/media/hero/persona-1200.webp">
-            <img src="features/landing/media/hero/persona.webp" alt="" width="1671" height="941" fetchpriority="high" decoding="async">
+            <source media="(max-width: 1280px)" srcset="features/landing/media/hero/cristina-1200.webp">
+            <img src="features/landing/media/hero/cristina.webp" alt="" width="1671" height="941" fetchpriority="high" decoding="async">
           </picture>
           <div class="tv" id="tv">
             <svg class="tv-defs" width="0" height="0" aria-hidden="true" focusable="false">
