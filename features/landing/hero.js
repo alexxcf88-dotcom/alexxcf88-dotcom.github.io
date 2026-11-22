@@ -154,9 +154,44 @@
   /* 4 · La llamada real (landing.js, Vapi) se lanza desde la tarjeta de la
      portada. La pantalla la escucha por el evento «ditbo:voz»: en llamada te
      mira de frente, enciende el piloto en rojo y los ojos laten con la voz. */
+  const mostrarVoz = () => { const c = document.getElementById('ix-chip-voz'); if (c) c.hidden = false; };
+  if (window.ditboVoz && window.ditboVoz.disponible) mostrarVoz();
+  // En llamada, la conversación se lee arriba: Cristina en el texto grande y
+  // lo que dice la persona, debajo. Al colgar vuelve el saludo.
+  const sayEl = document.getElementById('ix-say');
+  const introEl = document.getElementById('ix-intro');
+  const introOriginal = introEl ? introEl.textContent : '';
+  let ultimoRol = '', textoCristina = '', textoTu = '';
+  let saludoParado = false; // la llamada real corta el saludo escrito
   window.addEventListener('ditbo:voz', (ev) => {
     const d = ev.detail || {};
+    if (d.tipo === 'disponible') mostrarVoz();
+    if ((d.tipo === 'linea' || (d.tipo === 'boton' && (d.colgando || d.ocupado))) && !saludoParado) {
+      saludoParado = true;
+      const c = sayEl && sayEl.parentElement.querySelector('.ix-caret');
+      if (c) c.hidden = true;
+    }
+    if (d.tipo === 'linea' && sayEl) {
+      const rest = sayEl.parentElement.querySelector('.ix-say-rest');
+      if (rest) rest.textContent = '';
+      if (d.rol === 'paciente') {
+        textoTu = ultimoRol === 'paciente' ? textoTu + ' ' + d.texto : d.texto;
+        if (introEl) introEl.textContent = 'Tú: ' + textoTu.slice(-200);
+      } else {
+        textoCristina = ultimoRol === 'asistente' ? textoCristina + ' ' + d.texto : d.texto;
+        sayEl.textContent = textoCristina.slice(-160);
+        parlotear(1500);
+      }
+      ultimoRol = d.rol;
+    }
+    if (d.tipo === 'boton' && !d.colgando && !d.ocupado && ultimoRol) {
+      ultimoRol = ''; textoCristina = ''; textoTu = '';
+      if (introEl) introEl.textContent = introOriginal;
+      if (sayEl) sayEl.textContent = sayEl.parentElement.getAttribute('aria-label') || sayEl.textContent;
+    }
     if (d.tipo === 'boton' && estado) {
+      const t = document.getElementById('ix-chip-voz-txt');
+      if (t) t.textContent = d.colgando ? 'Colgar' : (d.ocupado ? 'Conectando…' : 'Responder hablando');
       estado.textContent = d.colgando ? 'en llamada contigo · pulsa Colgar para terminar' : (d.ocupado ? 'conectando…' : 'esperando tu respuesta');
     }
     if (d.tipo === 'boton') {
@@ -202,6 +237,7 @@
     alEntrar(() => {
       let i = 0;
       const escribir = () => {
+        if (saludoParado) return;
         i += 1;
         say.textContent = completo.slice(0, i);
         resto.textContent = completo.slice(i);
@@ -212,14 +248,14 @@
     });
   }
 
-  /* 6 · «Hablar conmigo»: si la llamada real está disponible, la lanza; si
-     no, el enlace baja a la tarjeta de la llamada. */
+  /* 6 · «Responder hablando»: solo aparece si la llamada real está
+     disponible, y la lanza. */
   const chipVoz = document.getElementById('ix-chip-voz');
   if (chipVoz) {
     chipVoz.addEventListener('click', (ev) => {
       const b = document.getElementById('voice-call-btn');
-      if (!(window.ditboVoz && window.ditboVoz.disponible) || !b || b.disabled) return;
       ev.preventDefault();
+      if (!b || b.disabled) return;
       b.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
       b.click();
     });
