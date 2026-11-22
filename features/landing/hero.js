@@ -54,23 +54,21 @@
   }
   requestAnimationFrame(() => requestAnimationFrame(() => body.classList.add('nav-anim')));
 
-  /* 3 · Cristina viva. Dos capas de la foto: el cuerpo y la cabeza (el
-     televisor). Un solo bucle rAF mientras la portada se ve:
-     · Cuerpo: respiración con ritmo que varía un poco y un balanceo lento e
+  /* 3 · Cristina viva: la foto entera, en una sola pieza. Un solo bucle rAF
+     mientras la portada se ve:
+     · Respiración con ritmo que varía un poco y un balanceo lento e
        irregular (suma de senos de periodos que no se repiten), como quien
        está de pie quieto.
-     · Cabeza: gira hacia el puntero (3D) con algo de retraso, como un
-       cuello, más sus propios micro-movimientos; en reposo echa vistazos.
+     · Todo el bloque se orienta en 3D hacia el puntero con algo de retraso;
+       en reposo echa vistazos.
      · Ojos: las pupilas siguen al puntero dentro de la pantalla.
      Todo es transform/opacity (compositor): no repinta la página. */
   const tv = document.getElementById('tv');
   const eyes = document.getElementById('tv-eyes');
   const fig = document.getElementById('ix-fig');
-  const head = document.getElementById('ix-head');
-  const neck = document.getElementById('ix-neck');
   if (!tv) return;
 
-  const rect = () => (head || tv).getBoundingClientRect();
+  const rect = () => tv.getBoundingClientRect();
   // Objetivo (t*) y valor actual (c*), en -1…1 respecto al centro de la cabeza.
   let tx = 0, ty = 0, cx = 0, cy = 0, ex = 0, ey = 0, ultimoGesto = 0;
   const mirarA = (x, y) => {
@@ -100,18 +98,16 @@
     const bx = 2.4 * Math.sin(t * 0.31) + 1.1 * Math.sin(t * 0.77 + 1.3) + 0.45 * Math.sin(t * 1.9 + 0.4);
     const by = -respira * 2.4 + 0.5 * Math.sin(t * 0.53 + 2.1);
     const br = 0.32 * Math.sin(t * 0.23 + 0.7) + 0.12 * Math.sin(t * 0.61);
-    if (fig) fig.style.transform = `translate3d(${bx.toFixed(2)}px,${by.toFixed(2)}px,0) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
-    // Cabeza: sigue al objetivo con retraso de cuello + micro-movimientos.
-    cx += (tx - cx) * Math.min(1, dt * 3.2);
-    cy += (ty - cy) * Math.min(1, dt * 3.2);
-    ex += (tx - ex) * Math.min(1, dt * 9); // los ojos llegan antes que la cabeza
+    // Todo el bloque (cuerpo, cuello, cables y televisor) es una sola pieza:
+    // respira, se balancea y se orienta en 3D hacia el puntero con algo de
+    // retraso. Así nada se separa ni se desconecta.
+    cx += (tx - cx) * Math.min(1, dt * 2.6);
+    cy += (ty - cy) * Math.min(1, dt * 2.6);
+    ex += (tx - ex) * Math.min(1, dt * 9); // los ojos llegan antes que el cuerpo
     ey += (ty - ey) * Math.min(1, dt * 9);
-    const hz = 0.9 * Math.sin(t * 0.41 + 2) + 0.35 * Math.sin(t * 1.13) + cx * 2.2;
-    const hy = cx * 24 + 1.6 * Math.sin(t * 0.29 + 4);
-    const hx = -cy * 10 + 0.8 * Math.sin(t * 0.37 + 1) + respira * 0.6;
-    if (head) head.style.transform = `translate3d(${(cx * 6).toFixed(2)}px,${(cy * 3 - respira * 0.8).toFixed(2)}px,0) rotateZ(${hz.toFixed(3)}deg) rotateY(${hy.toFixed(3)}deg) rotateX(${hx.toFixed(3)}deg)`;
-    // El cuello sigue a la cabeza con menos amplitud: gira desde la base.
-    if (neck) neck.style.transform = `translate3d(${(cx * 3.2).toFixed(2)}px,${(cy * 1.2).toFixed(2)}px,0) rotate(${(hz * 0.45).toFixed(3)}deg) scaleX(${(1 - Math.abs(cx) * 0.05).toFixed(4)})`;
+    const ry = cx * 6 + 0.6 * Math.sin(t * 0.29 + 4);
+    const rx = -cy * 3.5 + 0.4 * Math.sin(t * 0.37 + 1);
+    if (fig) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
     if (lx !== ojoX || ly !== ojoY) { ojoX = lx; ojoY = ly; tv.style.setProperty('--lx', lx); tv.style.setProperty('--ly', ly); }
