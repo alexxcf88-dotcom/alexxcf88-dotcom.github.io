@@ -400,7 +400,7 @@
 
     /* La foto: cubre la portada anclada arriba a la derecha (la figura nunca se corta) */
     .ix-photo{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
-    .ix-photo-in{position:absolute;bottom:0;right:0;height:max(88%,560px);aspect-ratio:1671/941}
+    .ix-photo-in{position:absolute;bottom:0;right:0;height:max(72%,480px);aspect-ratio:1671/941}
     .ix-photo picture,.ix-photo img{position:absolute;inset:0;display:block;width:100%;height:100%}
     .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#b9a9a5,rgba(185,169,165,0) 30%),linear-gradient(180deg,#b9a9a5,rgba(185,169,165,0) 6%)}
 
@@ -483,8 +483,8 @@
     /* Móvil: foto recortada a la figura arriba, texto y tarjeta debajo */
     @media (max-width:760px){
       #inicio.hero.ix{display:flex;flex-direction:column;height:auto;min-height:100svh;padding-bottom:40px}
-      .ix-photo{order:1;position:relative;inset:auto;flex:none;width:100%;aspect-ratio:.92;margin-top:68px}
-      .ix-photo-in{top:0;bottom:auto;right:-2%;height:100%}
+      .ix-photo{order:1;position:relative;inset:auto;flex:none;width:100%;aspect-ratio:1.15;margin-top:68px}
+      .ix-photo-in{top:0;bottom:auto;right:2%;height:100%}
       .ix-photo-in::after{background:linear-gradient(180deg,rgba(185,169,165,0) 72%,#b9a9a5 100%)}
       #inicio.ix .ix-copy{order:2;position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;margin:-8px 20px 0}
       #inicio.ix .ix-eyebrow{font-size:.6rem;margin-bottom:14px}
