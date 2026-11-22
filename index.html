@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <link rel="preload" href="features/landing/media/hero/cristina-cuerpo.webp" as="image" fetchpriority="high">
+  <link rel="preload" href="features/landing/media/hero/cristina-cabeza.webp" as="image" fetchpriority="high">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20261122-pantalla" as="script" fetchpriority="low">
-  <link rel="preload" href="features/landing/media/hero/cristina.webp" as="image" media="(min-width: 1281px)" fetchpriority="high">
-  <link rel="preload" href="features/landing/media/hero/cristina-1200.webp" as="image" media="(max-width: 1280px)" fetchpriority="high">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -401,14 +401,17 @@
     /* La foto: cubre la portada anclada arriba a la derecha (la figura nunca se corta) */
     .ix-photo{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
     .ix-photo-in{position:absolute;bottom:0;right:0;height:max(81%,520px);aspect-ratio:1671/941}
-    .ix-photo picture,.ix-photo img{position:absolute;inset:0;display:block;width:100%;height:100%}
-    .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#c3b6b1 0%,rgba(195,182,177,.85) 12%,rgba(195,182,177,0) 40%),linear-gradient(180deg,#c3b6b1,rgba(195,182,177,0) 12%)}
+    .ix-fig{position:absolute;inset:-1.5%;transform-origin:62% 100%;will-change:transform}
+    .ix-body{position:absolute;inset:0;display:block;width:100%;height:100%}
+    .ix-head{position:absolute;left:55.42%;top:1.7%;width:39.02%;height:57.17%;transform-origin:52% 100%;will-change:transform}
+    .ix-head>img{position:absolute;inset:0;display:block;width:100%;height:100%}
+    .ix-photo-in::after{content:"";position:absolute;inset:-5% -1px -1px -1px;background:linear-gradient(90deg,#c3b6b1 0%,rgba(195,182,177,.85) 12%,rgba(195,182,177,0) 40%),linear-gradient(180deg,#c3b6b1,rgba(195,182,177,0) 12%)}
 
     /* La pantalla de la foto y la cara de ditbo */
-    .tv{position:absolute;z-index:1;left:61%;top:8%;width:29.3%;height:41%;border-radius:7% / 9%;overflow:hidden}
+    .tv{position:absolute;z-index:1;left:14.31%;top:10.97%;width:75.09%;height:71.75%;border-radius:7% / 9%;overflow:hidden;--lx:0;--ly:0;--vol:0}
     .tv-defs{position:absolute;width:0;height:0;overflow:hidden}
     .tv-eyes{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:12%;translate:calc(var(--lx)*6%) calc(var(--ly)*6%);transform-origin:50% 50%;
-      filter:blur(.4px) drop-shadow(-2px 0 0 rgba(255,90,120,.35)) drop-shadow(2px 0 0 rgba(70,150,255,.4)) drop-shadow(0 0 8px rgba(120,255,230,calc(.8 + var(--vol)*.2))) drop-shadow(0 0 26px rgba(90,240,216,calc(.6 + var(--vol)*.3))) drop-shadow(0 0 60px rgba(53,201,240,.45))}
+      filter:drop-shadow(-2px 0 0 rgba(255,90,120,.35)) drop-shadow(2px 0 0 rgba(70,150,255,.4)) drop-shadow(0 0 10px rgba(110,250,225,calc(.85 + var(--vol)*.15))) drop-shadow(0 0 28px rgba(53,201,240,calc(.5 + var(--vol)*.3)))}
     .tv::before{content:"";position:absolute;inset:0;background:radial-gradient(55% 50% at 50% 50%,rgba(90,240,216,calc(.13 + var(--vol)*.12)),rgba(53,201,240,.04) 55%,rgba(0,0,0,0) 75%);pointer-events:none}
     .tv-eyes.is-blink{animation:tvBlink .2s ease-in-out}
     @keyframes tvBlink{0%,100%{transform:scaleY(1)}45%,55%{transform:scaleY(.06)}}
@@ -420,7 +423,7 @@
     .tv-o-dim{opacity:.26}
     .tv-pupil{position:absolute;left:50%;top:50%;width:18.6%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff 0 60%,rgba(220,255,250,.85) 75%,rgba(160,250,235,0) 100%);box-shadow:0 0 8px rgba(255,255,255,.8),0 0 22px rgba(90,240,216,.5);
       transform:translate(calc(-50% + var(--lx)*58%),calc(-50% + var(--ly)*58%))}
-    .tv-scan{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.04) 0 1px,rgba(0,0,0,0) 1px 3px);mix-blend-mode:screen;animation:tvFlicker 3.2s steps(2) infinite;pointer-events:none}
+    .tv-scan{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,rgba(0,0,0,0) 1px 3px);pointer-events:none}
     @keyframes tvFlicker{0%,100%{opacity:.9}50%{opacity:.65}}
     .tv-glare{position:absolute;inset:0;background:radial-gradient(80% 50% at 30% 8%,rgba(255,255,255,.07),rgba(255,255,255,0) 70%);pointer-events:none}
 
@@ -439,7 +442,7 @@
     .ix-caret{display:inline-block;width:.5em;height:.95em;margin-left:.12em;vertical-align:-.1em;background:#0b1211;animation:ixCaret 1s steps(1) infinite}
     @keyframes ixCaret{50%{opacity:0}}
     .ix-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-    .ix-chip{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(11,18,17,.12);background:rgba(255,255,255,.62);color:#0b1211;font-size:.86rem;font-weight:600;white-space:nowrap;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
+    .ix-chip{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(11,18,17,.12);background:rgba(255,255,255,.62);color:#0b1211;font-size:.86rem;font-weight:600;white-space:nowrap;transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
     .ix-chip:hover{background:#fff;color:var(--teal);transform:translateY(-1px)}
     .ix-chip-main{background:#0b1211;border-color:#0b1211;color:#f7fbf8}
     .ix-chip-main:hover{background:#13201e;color:#5af0d8}
@@ -505,10 +508,11 @@
       .tv-eyes.is-blink{animation:none}
     }
     /* Cristina habla nada más entrar: quién habla y en qué estado, siempre visible */
-    .ix-speaker{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;width:max-content;max-width:100%;margin:0 0 16px;padding:7px 14px 7px 10px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid rgba(11,18,17,.1);color:var(--ink-2);font-size:.8rem;line-height:1.3;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px)}
+    .ix-speaker{display:flex;align-items:center;flex-wrap:wrap;gap:6px 8px;width:max-content;max-width:100%;margin:0 0 16px;padding:7px 14px 7px 10px;border-radius:999px;background:rgba(255,255,255,.55);border:1px solid rgba(11,18,17,.1);color:var(--ink-2);font-size:.8rem;line-height:1.3}
     .ix-speaker b{color:#0b1211}
-    .ix-speaker-dot{width:8px;height:8px;border-radius:50%;background:#0fa396;box-shadow:0 0 0 0 rgba(15,163,150,.5);animation:ixLive 1.4s ease-out infinite}
-    @keyframes ixLive{to{box-shadow:0 0 0 8px rgba(15,163,150,0)}}
+    .ix-speaker-dot{position:relative;width:8px;height:8px;border-radius:50%;background:#0fa396}
+    .ix-speaker-dot::after{content:"";position:absolute;inset:0;border-radius:50%;background:#0fa396;animation:ixLive 1.4s ease-out infinite}
+    @keyframes ixLive{from{transform:scale(1);opacity:.6}to{transform:scale(2.6);opacity:0}}
     .ix-speaker-state{color:#0b7d70;font-weight:600}
     #inicio.ix .ix-copy .ix-intro{margin:16px 0 0}
     .ix-mic{display:inline-grid;place-items:center;width:22px;height:22px;margin:0 8px 0 -6px;border-radius:50%;background:linear-gradient(135deg,#5af0d8,#35c9f0);color:#041210}
@@ -550,17 +554,11 @@
     @keyframes ixWave{50%{opacity:.25}}
 
     /* Que se note viva: respira y sigue un poco al puntero (solo transform) */
-    .ix-photo-in{translate:calc(var(--lx)*-7px) calc(var(--ly)*-4px);transition:translate .6s cubic-bezier(.2,.8,.2,1)}
-    .ix-photo picture{transform-origin:62% 100%;animation:ixBreath 5.2s ease-in-out infinite}
-    @keyframes ixBreath{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.008)}}
-    .tv{animation:ixBreathTv 5.2s ease-in-out infinite;transform-origin:62% 100%}
-    @keyframes ixBreathTv{0%,100%{transform:translateY(0) scale(1)}50%{transform:translateY(-2px) scale(1.008)}}
 
     /* Paso a lo oscuro: el velo cubre también la foto (antes quedaba debajo) */
     #inicio.ix .ix-stage{z-index:4}
-    #inicio.ix .ix-veil{animation:none!important;opacity:var(--veil,0);background:#050706}
-    #inicio.ix .ix-stage::after{content:"";position:absolute;left:0;right:0;bottom:-1px;height:55%;background:linear-gradient(180deg,rgba(5,7,6,0),rgba(5,7,6,.8) 62%,#050706 88%);opacity:var(--fade,0);pointer-events:none}
-    @media (prefers-reduced-motion:reduce){.ix-photo picture,.tv{animation:none}.ix-photo-in{transition:none}}
+    #inicio.ix .ix-veil{animation:none!important;opacity:0;background:#050706;will-change:opacity}
+    .ix-fade{position:absolute;left:0;right:0;bottom:-1px;height:55%;background:linear-gradient(180deg,rgba(5,7,6,0),rgba(5,7,6,.8) 62%,#050706 88%);opacity:0;pointer-events:none;will-change:opacity}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -607,7 +605,8 @@
     <section id="inicio" class="hero ix" data-spotlight>
       <div class="ix-stage" id="ix-stage" aria-hidden="true">
         <span class="ix-shade"></span>
-        <span class="ix-veil"></span>
+        <span class="ix-veil" id="ix-veil"></span>
+        <span class="ix-fade" id="ix-fade"></span>
       </div>
       <!-- Portada v4: foto (fondo claro, figura a la derecha) con la cara de
            ditbo en la pantalla: ojo izquierdo la «i» (barras de nivel), ojo
@@ -615,10 +614,10 @@
            en la llamada real, la «i» sube con la voz. Lo mueve hero.js. -->
       <div class="ix-photo" aria-hidden="true">
         <div class="ix-photo-in">
-          <picture>
-            <source media="(max-width: 1280px)" srcset="features/landing/media/hero/cristina-1200.webp">
-            <img src="features/landing/media/hero/cristina.webp" alt="" width="1671" height="941" fetchpriority="high" decoding="async">
-          </picture>
+          <div class="ix-fig" id="ix-fig">
+            <img class="ix-body" src="features/landing/media/hero/cristina-cuerpo.webp" alt="" width="1671" height="941" fetchpriority="high" decoding="async">
+            <div class="ix-head" id="ix-head">
+              <img src="features/landing/media/hero/cristina-cabeza.webp" alt="" width="652" height="538" fetchpriority="high" decoding="async">
           <div class="tv" id="tv">
             <svg class="tv-defs" width="0" height="0" aria-hidden="true" focusable="false">
           <defs>
@@ -632,6 +631,8 @@
             </div>
             <span class="tv-scan"></span>
             <span class="tv-glare"></span>
+          </div>
+            </div>
           </div>
         </div>
       </div>
@@ -1292,7 +1293,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261122-viva"></script>
+  <script defer src="features/landing/hero.js?v=20261122-capas"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

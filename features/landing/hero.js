@@ -54,43 +54,70 @@
   }
   requestAnimationFrame(() => requestAnimationFrame(() => body.classList.add('nav-anim')));
 
-  /* 3 · La pantalla que mira (portada v4).
-     La cabeza gira hacia el puntero y las pupilas (el punto de cada «o») lo
-     siguen; pestañea sola cada pocos segundos. Sin ratón (móvil) mira a donde
-     se toca y, en reposo, echa vistazos alrededor. Un solo bucle rAF que se
-     duerme cuando la cabeza ya llegó a su sitio o la portada no se ve. */
+  /* 3 · Cristina viva. Dos capas de la foto: el cuerpo y la cabeza (el
+     televisor). Un solo bucle rAF mientras la portada se ve:
+     · Cuerpo: respiración con ritmo que varía un poco y un balanceo lento e
+       irregular (suma de senos de periodos que no se repiten), como quien
+       está de pie quieto.
+     · Cabeza: gira hacia el puntero (3D) con algo de retraso, como un
+       cuello, más sus propios micro-movimientos; en reposo echa vistazos.
+     · Ojos: las pupilas siguen al puntero dentro de la pantalla.
+     Todo es transform/opacity (compositor): no repinta la página. */
   const tv = document.getElementById('tv');
   const eyes = document.getElementById('tv-eyes');
+  const fig = document.getElementById('ix-fig');
+  const head = document.getElementById('ix-head');
   if (!tv) return;
 
-  const rect = () => tv.getBoundingClientRect();
-  // Objetivo (t*) y valor actual (c*), en -1…1 respecto al centro de la pantalla.
-  let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, ultimoGesto = 0;
-  const MAX_Y = 18, MAX_X = 11; // grados de giro de la cabeza
-
-  const pintar = () => {
-    hero.style.setProperty('--ry', (cx * MAX_Y).toFixed(2) + 'deg');
-    hero.style.setProperty('--rx', (-cy * MAX_X).toFixed(2) + 'deg');
-    hero.style.setProperty('--lx', cx.toFixed(3));
-    hero.style.setProperty('--ly', cy.toFixed(3));
-  };
-  const paso = () => {
-    raf = 0;
-    cx += (tx - cx) * 0.12;
-    cy += (ty - cy) * 0.12;
-    pintar();
-    if (Math.abs(tx - cx) > 0.002 || Math.abs(ty - cy) > 0.002) raf = requestAnimationFrame(paso);
-  };
+  const rect = () => (head || tv).getBoundingClientRect();
+  // Objetivo (t*) y valor actual (c*), en -1…1 respecto al centro de la cabeza.
+  let tx = 0, ty = 0, cx = 0, cy = 0, ex = 0, ey = 0, ultimoGesto = 0;
   const mirarA = (x, y) => {
     const r = rect();
-    const ox = r.left + r.width / 2, oy = r.top + r.height / 2;
-    // Alcance: a media pantalla de distancia ya mira «del todo».
+    const ox = r.left + r.width / 2, oy = r.top + r.height * 0.45;
     const ax = Math.max(window.innerWidth * 0.5, 320), ay = Math.max(window.innerHeight * 0.5, 280);
     tx = Math.max(-1, Math.min(1, (x - ox) / ax));
     ty = Math.max(-1, Math.min(1, (y - oy) / ay));
-    if (!raf && enPortada) raf = requestAnimationFrame(paso);
   };
-  const alCentro = () => { tx = 0; ty = 0; if (!raf) raf = requestAnimationFrame(paso); };
+  const alCentro = () => { tx = 0; ty = 0; };
+
+  let fase = Math.random() * 10, respira = 0, ultimo = 0, bucle = 0, ojoX = '', ojoY = '', scrollHasta = 0;
+  // Mientras se hace scroll, el cuerpo se queda quieto (la portada se está
+  // oscureciendo y así el scroll va más fino); retoma al parar.
+  window.addEventListener('scroll', () => { scrollHasta = performance.now() + 180; }, { passive: true });
+  const vivir = (ahora) => {
+    bucle = 0;
+    if (!enPortada || document.hidden) return; // se reanuda al volver
+    if (ahora < scrollHasta) { ultimo = ahora; bucle = requestAnimationFrame(vivir); return; }
+    const dt = Math.min(0.05, ultimo ? (ahora - ultimo) / 1000 : 0.016);
+    ultimo = ahora;
+    const t = ahora / 1000;
+    // Respiración: ~15 por minuto, con un periodo que deriva despacio.
+    fase += dt * (2 * Math.PI) / (4.1 + 0.5 * Math.sin(t * 0.07));
+    respira = 0.5 - 0.5 * Math.cos(fase);
+    // Balanceo de cuerpo de pie (px de la foto y grados).
+    const bx = 2.4 * Math.sin(t * 0.31) + 1.1 * Math.sin(t * 0.77 + 1.3) + 0.45 * Math.sin(t * 1.9 + 0.4);
+    const by = -respira * 2.4 + 0.5 * Math.sin(t * 0.53 + 2.1);
+    const br = 0.32 * Math.sin(t * 0.23 + 0.7) + 0.12 * Math.sin(t * 0.61);
+    if (fig) fig.style.transform = `translate3d(${bx.toFixed(2)}px,${by.toFixed(2)}px,0) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
+    // Cabeza: sigue al objetivo con retraso de cuello + micro-movimientos.
+    cx += (tx - cx) * Math.min(1, dt * 3.2);
+    cy += (ty - cy) * Math.min(1, dt * 3.2);
+    ex += (tx - ex) * Math.min(1, dt * 9); // los ojos llegan antes que la cabeza
+    ey += (ty - ey) * Math.min(1, dt * 9);
+    const hz = 0.9 * Math.sin(t * 0.41 + 2) + 0.35 * Math.sin(t * 1.13) + cx * 2.2;
+    const hy = cx * 13 + 1.2 * Math.sin(t * 0.29 + 4);
+    const hx = -cy * 8 + 0.8 * Math.sin(t * 0.37 + 1) + respira * 0.6;
+    if (head) head.style.transform = `perspective(1600px) translate3d(${(cx * 5).toFixed(2)}px,${(cy * 3 - respira * 0.8).toFixed(2)}px,0) rotateZ(${hz.toFixed(3)}deg) rotateY(${hy.toFixed(3)}deg) rotateX(${hx.toFixed(3)}deg)`;
+    // Las pupilas solo se tocan si se han movido de verdad.
+    const lx = ex.toFixed(3), ly = ey.toFixed(3);
+    if (lx !== ojoX || ly !== ojoY) { ojoX = lx; ojoY = ly; tv.style.setProperty('--lx', lx); tv.style.setProperty('--ly', ly); }
+    bucle = requestAnimationFrame(vivir);
+  };
+  const despertar = () => { if (!bucle && !reduced) { ultimo = 0; bucle = requestAnimationFrame(vivir); } };
+  if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { if (e.isIntersecting) despertar(); }).observe(hero);
+  document.addEventListener('visibilitychange', () => { if (!document.hidden) despertar(); });
+  despertar();
 
   if (!reduced) {
     window.addEventListener('pointermove', (ev) => {
@@ -106,11 +133,10 @@
       const quieto = performance.now() - ultimoGesto > 3500;
       if (enPortada && quieto && !tv.classList.contains('is-call')) {
         const r = Math.random();
-        if (r < 0.35) { tx = 0; ty = 0; }
-        else { tx = (Math.random() * 2 - 1) * 0.8; ty = (Math.random() * 2 - 1) * 0.5; }
-        if (!raf) raf = requestAnimationFrame(paso);
+        if (r < 0.4) { tx = 0; ty = 0; }
+        else { tx = (Math.random() * 2 - 1) * 0.7; ty = (Math.random() * 2 - 1) * 0.4; }
       }
-      setTimeout(vistazo, 1800 + Math.random() * 2600);
+      setTimeout(vistazo, 1800 + Math.random() * 3200);
     };
     alEntrar(() => setTimeout(vistazo, 2500));
 
@@ -198,10 +224,10 @@
       tv.classList.toggle('is-call', !!d.colgando);
       hero.classList.toggle('is-call', !!d.colgando);
       if (d.colgando) alCentro();
-      else { hero.style.setProperty('--vol', '0'); nivel(4); }
+      else { tv.style.setProperty('--vol', '0'); nivel(4); }
     } else if (d.tipo === 'nivel') {
       const v = Math.min(1, Number(d.nivel || 0) * 2.2);
-      hero.style.setProperty('--vol', v.toFixed(3));
+      tv.style.setProperty('--vol', v.toFixed(3));
       if (!hablando) nivel(Math.max(1, Math.round(1 + v * 5)));
     }
   });
@@ -263,15 +289,17 @@
 
 
   /* 7 · Paso fluido a la parte oscura: un velo negro crece con el scroll y
-     cubre la portada entera (foto incluida). Por JS para que funcione en
-     todos los navegadores, no solo en los que tienen scroll-timeline. */
-  let velo = 0;
+     un fundido oscurece el borde de abajo. Se escribe la opacidad de dos
+     capas sueltas (sin variables heredadas, sin recalcular la portada). */
+  const veloEl = document.getElementById('ix-veil');
+  const fundido = document.getElementById('ix-fade');
+  let velo = 0, altoHero = hero.offsetHeight || window.innerHeight;
+  window.addEventListener('resize', () => { altoHero = hero.offsetHeight || window.innerHeight; }, { passive: true });
   const pintarVelo = () => {
     velo = 0;
-    const alto = hero.offsetHeight || window.innerHeight;
-    const t = Math.max(0, Math.min(1, window.scrollY / (alto * 0.9)));
-    hero.style.setProperty('--veil', (t * 0.9).toFixed(3));
-    hero.style.setProperty('--fade', Math.min(1, t * 6).toFixed(3));
+    const t = Math.max(0, Math.min(1, window.scrollY / (altoHero * 0.9)));
+    if (veloEl) veloEl.style.opacity = (t * 0.9).toFixed(3);
+    if (fundido) fundido.style.opacity = Math.min(1, t * 6).toFixed(3);
   };
   if (!reduced) window.addEventListener('scroll', () => { if (!velo) velo = requestAnimationFrame(pintarVelo); }, { passive: true });
 
