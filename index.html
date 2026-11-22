@@ -404,7 +404,19 @@
     .ix-fig{position:absolute;inset:-1.5%;transform-origin:62% 100%;will-change:transform}
     .ix-body{position:absolute;inset:0;display:block;width:100%;height:100%}
     .ix-head{position:absolute;left:55.42%;top:1.7%;width:39.02%;height:57.17%;transform-origin:52% 100%;will-change:transform}
-    .ix-head>img{position:absolute;inset:0;display:block;width:100%;height:100%}
+    /* La cabeza es una caja 3D: frontal (la foto), laterales y techo (de las
+       vistas del mismo televisor). Al girar hacia el puntero se ve la carcasa. */
+    .ix-fig{perspective:1500px;perspective-origin:76% 30%}
+    .ix-head{transform-style:preserve-3d}
+    .ix-front{position:absolute;inset:0;display:block;width:100%;height:100%}
+    .ix-side{position:absolute;top:.6%;height:98.8%;width:66%;display:block;filter:brightness(.8) contrast(1.04)}
+    .ix-side-l{left:.6%;transform-origin:0 50%;transform:rotateY(90deg)}
+    .ix-side-r{right:.6%;transform-origin:100% 50%;transform:rotateY(-90deg)}
+    .ix-top{position:absolute;left:1%;top:.8%;width:98%;aspect-ratio:98/66;display:block;transform-origin:50% 0;transform:rotateX(-90deg);filter:brightness(.92)}
+    .ix-head .tv{transform:translateZ(1px)}
+    /* El cuello acompaña a la cabeza (menos que ella), con el giro en la base */
+    .ix-neck{position:absolute;left:68.22%;top:57.92%;width:14.66%;height:11.37%;transform-origin:50% 100%;will-change:transform}
+    .ix-neck img{display:block;width:100%;height:100%}
     .ix-photo-in::after{content:"";position:absolute;inset:-5% -1px -1px -1px;background:linear-gradient(90deg,#c3b6b1 0%,rgba(195,182,177,.85) 12%,rgba(195,182,177,0) 40%),linear-gradient(180deg,#c3b6b1,rgba(195,182,177,0) 12%)}
 
     /* La pantalla de la foto y la cara de ditbo */
@@ -616,8 +628,12 @@
         <div class="ix-photo-in">
           <div class="ix-fig" id="ix-fig">
             <img class="ix-body" src="features/landing/media/hero/cristina-cuerpo.webp" alt="" width="1671" height="941" fetchpriority="high" decoding="async">
+            <div class="ix-neck" id="ix-neck"><img src="features/landing/media/hero/cristina-cuello.webp" alt="" width="245" height="107" decoding="async"></div>
             <div class="ix-head" id="ix-head">
-              <img src="features/landing/media/hero/cristina-cabeza.webp" alt="" width="652" height="538" fetchpriority="high" decoding="async">
+              <img class="ix-side ix-side-l" src="features/landing/media/hero/cristina-lado-izq.webp" alt="" width="203" height="231" decoding="async">
+              <img class="ix-side ix-side-r" src="features/landing/media/hero/cristina-lado-der.webp" alt="" width="204" height="231" decoding="async">
+              <img class="ix-top" src="features/landing/media/hero/cristina-arriba.webp" alt="" width="258" height="232" decoding="async">
+              <img class="ix-front" src="features/landing/media/hero/cristina-cabeza.webp" alt="" width="652" height="538" fetchpriority="high" decoding="async">
           <div class="tv" id="tv">
             <svg class="tv-defs" width="0" height="0" aria-hidden="true" focusable="false">
           <defs>
@@ -1293,7 +1309,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261122-capas"></script>
+  <script defer src="features/landing/hero.js?v=20261122-3d"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

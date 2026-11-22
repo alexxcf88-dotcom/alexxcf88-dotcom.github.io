@@ -67,6 +67,7 @@
   const eyes = document.getElementById('tv-eyes');
   const fig = document.getElementById('ix-fig');
   const head = document.getElementById('ix-head');
+  const neck = document.getElementById('ix-neck');
   if (!tv) return;
 
   const rect = () => (head || tv).getBoundingClientRect();
@@ -106,9 +107,11 @@
     ex += (tx - ex) * Math.min(1, dt * 9); // los ojos llegan antes que la cabeza
     ey += (ty - ey) * Math.min(1, dt * 9);
     const hz = 0.9 * Math.sin(t * 0.41 + 2) + 0.35 * Math.sin(t * 1.13) + cx * 2.2;
-    const hy = cx * 13 + 1.2 * Math.sin(t * 0.29 + 4);
-    const hx = -cy * 8 + 0.8 * Math.sin(t * 0.37 + 1) + respira * 0.6;
-    if (head) head.style.transform = `perspective(1600px) translate3d(${(cx * 5).toFixed(2)}px,${(cy * 3 - respira * 0.8).toFixed(2)}px,0) rotateZ(${hz.toFixed(3)}deg) rotateY(${hy.toFixed(3)}deg) rotateX(${hx.toFixed(3)}deg)`;
+    const hy = cx * 24 + 1.6 * Math.sin(t * 0.29 + 4);
+    const hx = -cy * 10 + 0.8 * Math.sin(t * 0.37 + 1) + respira * 0.6;
+    if (head) head.style.transform = `translate3d(${(cx * 6).toFixed(2)}px,${(cy * 3 - respira * 0.8).toFixed(2)}px,0) rotateZ(${hz.toFixed(3)}deg) rotateY(${hy.toFixed(3)}deg) rotateX(${hx.toFixed(3)}deg)`;
+    // El cuello sigue a la cabeza con menos amplitud: gira desde la base.
+    if (neck) neck.style.transform = `translate3d(${(cx * 3.2).toFixed(2)}px,${(cy * 1.2).toFixed(2)}px,0) rotate(${(hz * 0.45).toFixed(3)}deg) scaleX(${(1 - Math.abs(cx) * 0.05).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
     if (lx !== ojoX || ly !== ojoY) { ojoX = lx; ojoY = ly; tv.style.setProperty('--lx', lx); tv.style.setProperty('--ly', ly); }
