@@ -63,8 +63,7 @@
   const eyes = document.getElementById('tv-eyes');
   if (!tv) return;
 
-  // Con foto, se mira desde la pantalla de la foto; si no, desde la pantalla dibujada.
-  const rect = () => (hero.classList.contains('has-photo') ? document.getElementById('ix-photo-screen') : tv).getBoundingClientRect();
+  const rect = () => tv.getBoundingClientRect();
   // Objetivo (t*) y valor actual (c*), en -1…1 respecto al centro de la pantalla.
   let tx = 0, ty = 0, cx = 0, cy = 0, raf = 0, ultimoGesto = 0;
   const MAX_Y = 18, MAX_X = 11; // grados de giro de la cabeza
@@ -136,6 +135,22 @@
     }
   }
 
+  /* «i»: barras de nivel. En reposo, como en el logo (4 de 6); mientras
+     «habla» (la frase que se escribe o la voz de la llamada) suben y bajan. */
+  const barras = Array.from(tv.querySelectorAll('.tv-bar')).reverse(); // de abajo arriba
+  const nivel = (n) => barras.forEach((b, i) => { b.style.opacity = i < n ? '1' : '.26'; });
+  nivel(4);
+  let hablando = 0;
+  const parlotear = (ms) => {
+    if (reduced || !barras.length) return;
+    clearInterval(hablando);
+    const fin = performance.now() + ms;
+    hablando = setInterval(() => {
+      if (performance.now() > fin) { clearInterval(hablando); hablando = 0; nivel(4); return; }
+      nivel(2 + Math.floor(Math.random() * 5));
+    }, 110);
+  };
+
   /* 4 · La llamada real (landing.js, Vapi) se lanza desde la tarjeta de la
      portada. La pantalla la escucha por el evento «ditbo:voz»: en llamada te
      mira de frente, enciende el piloto en rojo y los ojos laten con la voz. */
@@ -145,9 +160,11 @@
       tv.classList.toggle('is-call', !!d.colgando);
       hero.classList.toggle('is-call', !!d.colgando);
       if (d.colgando) alCentro();
-      else hero.style.setProperty('--vol', '0');
+      else { hero.style.setProperty('--vol', '0'); nivel(4); }
     } else if (d.tipo === 'nivel') {
-      hero.style.setProperty('--vol', Math.min(1, Number(d.nivel || 0) * 2.2).toFixed(3));
+      const v = Math.min(1, Number(d.nivel || 0) * 2.2);
+      hero.style.setProperty('--vol', v.toFixed(3));
+      if (!hablando) nivel(Math.max(1, Math.round(1 + v * 5)));
     }
   });
 
@@ -165,7 +182,7 @@
         say.textContent = completo.slice(0, i);
         if (i < completo.length) setTimeout(escribir, /[.?¿,]/.test(completo[i - 1]) ? 260 : 38 + Math.random() * 40);
       };
-      setTimeout(escribir, 450);
+      setTimeout(() => { parlotear(completo.length * 62 + 700); escribir(); }, 450);
     });
   }
 
@@ -182,32 +199,5 @@
     });
   }
 
-  /* 7 · Foto real (opcional). Con data-photo en #inicio, la figura dibujada se
-     cambia por la foto y los ojos se colocan sobre la pantalla de la foto.
-     data-screen = «x y ancho alto» de la pantalla, en % de la foto. */
-  const foto = hero.dataset.photo;
-  if (foto && eyes) {
-    const [sx, sy, sw, sh] = (hero.dataset.screen || '30 20 40 34').split(/\s+/).map(Number);
-    const marco = document.createElement('div');
-    marco.className = 'ix-photo';
-    marco.setAttribute('aria-hidden', 'true');
-    const img = new Image();
-    img.alt = '';
-    img.decoding = 'async';
-    const pantalla = document.createElement('div');
-    pantalla.className = 'ix-photo-screen';
-    pantalla.id = 'ix-photo-screen';
-    pantalla.style.cssText = `left:${sx}%;top:${sy}%;width:${sw}%;height:${sh}%`;
-    marco.append(img, pantalla);
-    img.addEventListener('load', () => {
-      pantalla.appendChild(eyes);
-      hero.insertBefore(marco, tv);
-      const medir = () => pantalla.style.setProperty('--tw', pantalla.getBoundingClientRect().width * 1.2 + 'px');
-      hero.classList.add('has-photo');
-      medir();
-      window.addEventListener('resize', medir, { passive: true });
-    }, { once: true });
-    img.src = foto;
-  }
 })();
 

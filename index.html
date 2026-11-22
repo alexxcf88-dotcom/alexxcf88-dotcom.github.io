@@ -5,8 +5,8 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20261122-pantalla" as="script" fetchpriority="low">
-  <link rel="preload" href="features/landing/media/hero-poster.jpg" as="image" media="(min-width: 761px)" fetchpriority="high">
-  <link rel="preload" href="features/landing/media/hero-poster-mobile.jpg" as="image" media="(max-width: 760px)" fetchpriority="high">
+  <link rel="preload" href="features/landing/media/hero/persona.webp" as="image" media="(min-width: 1281px)" fetchpriority="high">
+  <link rel="preload" href="features/landing/media/hero/persona-1200.webp" as="image" media="(max-width: 1280px)" fetchpriority="high">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -383,165 +383,123 @@
   </style>
   <style id="hero-tv">
     /* ═══════════════════════════════════════════════════════════════════════
-       PORTADA v4 · LA PANTALLA QUE MIRA (fondo claro, editorial).
-       Texto a la izquierda; a la derecha un busto con cuello vuelto cuya
-       cabeza es una pantalla de tubo con dos «o» de ditbo por ojos. Mira al
-       puntero (la cabeza gira en 3D y las pupilas siguen), pestañea sola y, en
-       la llamada de prueba, reacciona a la voz. Encima del pecho flota la
-       tarjeta de llamada en vivo (antes la sección Voz). Solo CSS + hero.js:
-       sin vídeo, sin imágenes y sin WebGL. hero.js escribe --rx/--ry (giro de
-       la cabeza), --lx/--ly (pupilas, -1…1) y --vol (nivel de voz, 0…1).
+       PORTADA v4 · LA PANTALLA QUE MIRA.
+       Foto a sangre (fondo gris cálido, figura con cabeza de televisor a la
+       derecha) y, sobre su pantalla, la cara de ditbo: ojo izquierdo la «i»
+       (barras de nivel), ojo derecho la «o» (dial con su punto). Miran al
+       puntero, pestañean y, en la llamada real, la «i» sube con la voz.
+       Texto a la izquierda: el personaje habla. Abajo a la derecha, la
+       tarjeta de llamada en vivo (antes, sección Voz). hero.js escribe
+       --lx/--ly (mirada, -1…1) y --vol (voz, 0…1).
+       La pantalla de la foto ocupa (en % de la foto 1671×941):
+       x 59,55 · y 9,03 · ancho 32,0 · alto 42,83.
        ═══════════════════════════════════════════════════════════════════════ */
-    #inicio.hero.ix{--ink:#0b1211;--ink-2:rgba(11,18,17,.66);--teal:#0b8f80;
-      background:radial-gradient(58% 70% at 74% 38%,#ffffff 0%,#f3f4f1 45%,#e6e8e4 100%)}
+    #inicio.hero.ix{--ink:#0b1211;--ink-2:rgba(11,18,17,.72);--teal:#0b7d70;--lx:0;--ly:0;--vol:0;background:#b9a9a5}
     #inicio.ix .ix-shade{display:none}
     .ix-stage::before{display:none}
 
+    /* La foto: cubre la portada anclada arriba a la derecha (la figura nunca se corta) */
+    .ix-photo{position:absolute;inset:0;z-index:0;overflow:hidden;pointer-events:none}
+    .ix-photo-in{position:absolute;bottom:0;right:0;height:max(88%,560px);aspect-ratio:1671/941}
+    .ix-photo picture,.ix-photo img{position:absolute;inset:0;display:block;width:100%;height:100%}
+    .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#b9a9a5,rgba(185,169,165,0) 30%),linear-gradient(180deg,#b9a9a5,rgba(185,169,165,0) 6%)}
+
+    /* La pantalla de la foto y la cara de ditbo */
+    .tv{position:absolute;z-index:1;left:59.55%;top:9.03%;width:32%;height:42.83%;border-radius:7% / 9%;overflow:hidden}
+    .tv-defs{position:absolute;width:0;height:0;overflow:hidden}
+    .tv-eyes{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:15%;translate:calc(var(--lx)*7%) calc(var(--ly)*7%);transform-origin:50% 50%;
+      filter:blur(.4px) drop-shadow(-2px 0 0 rgba(255,90,120,.35)) drop-shadow(2px 0 0 rgba(70,150,255,.4)) drop-shadow(0 0 10px rgba(90,240,216,calc(.5 + var(--vol)*.4))) drop-shadow(0 0 30px rgba(53,201,240,.35))}
+    .tv-eyes.is-blink{animation:tvBlink .2s ease-in-out}
+    @keyframes tvBlink{0%,100%{transform:scaleY(1)}45%,55%{transform:scaleY(.06)}}
+    .tv-eye{position:relative;display:block}
+    .tv-eye svg{display:block;width:100%;height:100%;overflow:visible}
+    .tv-eye-o{width:26%;aspect-ratio:1}
+    .tv-eye-i{width:12%;aspect-ratio:320/765}
+    .tv-bar{transition:opacity .12s ease}
+    .tv-o-dim{opacity:.26}
+    .tv-pupil{position:absolute;left:50%;top:50%;width:18.6%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff 0 60%,rgba(220,255,250,.85) 75%,rgba(160,250,235,0) 100%);box-shadow:0 0 8px rgba(255,255,255,.8),0 0 22px rgba(90,240,216,.5);
+      transform:translate(calc(-50% + var(--lx)*58%),calc(-50% + var(--ly)*58%))}
+    .tv-scan{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.04) 0 1px,rgba(0,0,0,0) 1px 3px);mix-blend-mode:screen;animation:tvFlicker 3.2s steps(2) infinite;pointer-events:none}
+    @keyframes tvFlicker{0%,100%{opacity:.9}50%{opacity:.65}}
+    .tv-glare{position:absolute;inset:0;background:radial-gradient(80% 50% at 30% 8%,rgba(255,255,255,.07),rgba(255,255,255,0) 70%);pointer-events:none}
+
     /* Texto en tinta oscura */
-    #inicio.ix .ix-eyebrow{color:var(--ink-2)}
-    #inicio.ix .ix-eyebrow span{color:rgba(11,18,17,.3)}
-    #inicio.ix .ix-promo{color:#c95f12;border-color:rgba(201,95,18,.45)}
-    #inicio.ix .ix-title{color:var(--ink);text-shadow:none}
-    #inicio.ix .ix-title .shiny,html.fx-listo #inicio.ix .ix-title .shiny{color:transparent;background-image:linear-gradient(100deg,#0fa396 0%,#0a6fa8 30%,#12b5a5 60%,#0a6fa8 80%,#0fa396 100%);background-size:260% 100%;-webkit-background-clip:text;background-clip:text}
-    #inicio.ix .ix-lead{color:var(--ink-2);text-shadow:none}
-    #inicio.ix .ix-actions .primary-btn{background:var(--ink);color:#f7fbf8;box-shadow:0 10px 30px -12px rgba(11,18,17,.55);border:0}
-    #inicio.ix .ix-actions .primary-btn:hover{background:#13201e;color:#5af0d8}
-    #inicio.ix .ix-link{color:var(--ink);border-color:rgba(11,18,17,.25)}
-    #inicio.ix .ix-link:hover{border-color:var(--teal)}
-    #inicio.ix .ix-cue{background:rgba(11,18,17,.14)}
-    #inicio.ix .ix-cue i{background:var(--teal)}
+    #inicio.ix .ix-copy{z-index:2;top:50%;bottom:auto;transform:translateY(-42%);width:min(42vw,560px)}
+    #inicio.hero.ix h1.ix-say .ix-say-text{display:inline;font:inherit;color:inherit}
+    #inicio.ix .ix-eyebrow{margin-bottom:22px;color:var(--ink-2);font-size:.68rem;letter-spacing:.16em}
+    #inicio.ix .ix-eyebrow span{color:rgba(11,18,17,.35)}
+    #inicio.ix .ix-eyebrow sup{font-size:.6em;letter-spacing:0}
+    #inicio.ix .ix-promo{color:#8f3c05;border-color:rgba(143,60,5,.45)}
+    .ix-intro{max-width:44ch;margin:0 0 18px;color:var(--ink-2);font-size:.98rem;line-height:1.55}
+    #inicio.hero.ix h1.ix-say{display:block;width:auto;max-width:none;word-spacing:normal;text-align:left;background:none;-webkit-text-fill-color:#0b1211;animation:none;opacity:1;transform:none}
+    #inicio.hero.ix h1.ix-say,#inicio.ix .ix-say{margin:0;color:#0b1211;font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,2.9vw,2.7rem);font-weight:600;line-height:1.12;letter-spacing:-.03em;text-shadow:none;text-wrap:pretty}
+    .ix-caret{display:inline-block;width:.5em;height:.95em;margin-left:.12em;vertical-align:-.1em;background:#0b1211;animation:ixCaret 1s steps(1) infinite}
+    @keyframes ixCaret{50%{opacity:0}}
+    .ix-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
+    .ix-chip{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(11,18,17,.12);background:rgba(255,255,255,.62);color:#0b1211;font-size:.86rem;font-weight:600;white-space:nowrap;-webkit-backdrop-filter:blur(6px);backdrop-filter:blur(6px);transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
+    .ix-chip:hover{background:#fff;color:var(--teal);transform:translateY(-1px)}
+    .ix-chip-main{background:#0b1211;border-color:#0b1211;color:#f7fbf8}
+    .ix-chip-main:hover{background:#13201e;color:#5af0d8}
+    .ix-chip:focus-visible{outline:2px solid var(--teal);outline-offset:3px}
+    #inicio.ix .ix-cue{background:rgba(11,18,17,.18)}
+    #inicio.ix .ix-cue i{background:var(--ink)}
 
     /* Navegación sobre la portada clara: el mismo logo, invertido a tinta */
     body[data-nav-mode="hero"] .site-nav .brand-wordmark{filter:invert(1) hue-rotate(180deg) saturate(1.4)}
     .site-nav .brand-wordmark{transition:filter .45s ease}
-    body[data-nav-mode="hero"] .site-nav .nav-links a{color:rgba(11,18,17,.6)}
+    body[data-nav-mode="hero"] .site-nav .nav-links a{color:rgba(11,18,17,.66)}
     body[data-nav-mode="hero"] .site-nav .nav-links a:hover{color:#0b1211}
     body[data-nav-mode="hero"] .site-nav .nav-cta{color:#0b1211}
-    body[data-nav-mode="hero"] .site-nav::before{background:linear-gradient(90deg,rgba(11,18,17,0),rgba(11,18,17,.12) 20%,rgba(11,18,17,.12) 80%,rgba(11,18,17,0))}
-    body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-toggle{border-color:rgba(11,18,17,.18)}
+    body[data-nav-mode="hero"] .site-nav::before{background:linear-gradient(90deg,rgba(11,18,17,0),rgba(11,18,17,.14) 20%,rgba(11,18,17,.14) 80%,rgba(11,18,17,0))}
+    body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-toggle{border-color:rgba(11,18,17,.2)}
     body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-toggle-bar{background:#0b1211}
 
-    /* La figura */
-    .tv{--tw:clamp(220px,25vw,390px);--th:calc(var(--tw)*.84);--td:calc(var(--tw)*.36);--rx:0deg;--ry:0deg;--lx:0;--ly:0;--vol:0;
-      position:absolute;z-index:2;right:clamp(60px,12vw,230px);top:39%;width:var(--tw);height:var(--th);transform:translateY(-50%);perspective:calc(var(--tw)*4.2);opacity:0;animation:tvIn 1.1s cubic-bezier(.2,.8,.2,1) .15s forwards}
-    @keyframes tvIn{from{opacity:0;transform:translateY(-44%) scale(.96)}to{opacity:1;transform:translateY(-50%)}}
-    .tv-defs{position:absolute;width:0;height:0;overflow:hidden}
-    .tv-floor{display:none}
-    .tv-body{position:absolute;z-index:0;left:50%;top:calc(var(--th)*.8);width:calc(var(--tw)*1.9);height:auto;transform:translateX(-50%);overflow:visible;animation:tvBreath 6s ease-in-out infinite alternate}
-    @keyframes tvBreath{from{transform:translateX(-50%) scaleY(1)}to{transform:translateX(-50%) scaleY(1.012)}}
-    .tv-cables{position:absolute;z-index:1;left:-8%;top:calc(var(--th)*.9);width:116%;height:calc(var(--tw)*.95);overflow:visible;pointer-events:none;animation:tvSway 7s ease-in-out infinite alternate;transform-origin:50% 0}
-    .tv-cables path{fill:none;stroke:#1d2120;stroke-width:4;stroke-linecap:round;vector-effect:non-scaling-stroke}
-    .tv-cables .tv-cable-thin{stroke:#3a403e;stroke-width:2}
-    @keyframes tvSway{from{transform:rotate(-.8deg)}to{transform:rotate(.9deg)}}
-
-    /* La cabeza: una caja 3D (frontal, laterales, techo, suelo y culo del tubo) */
-    .tv-head{position:absolute;inset:0;z-index:2;transform-style:preserve-3d;transform:rotateX(var(--rx)) rotateY(var(--ry));will-change:transform;animation:tvFloat 6s ease-in-out infinite alternate}
-    @keyframes tvFloat{from{translate:0 -3px}to{translate:0 4px}}
-    .tv-face{position:absolute;display:block;backface-visibility:hidden}
-    .tv-front{inset:0;border-radius:9% / 10.5%;transform:translateZ(calc(var(--td)/2));
-      background:radial-gradient(120% 90% at 30% 10%,#f1f2ef 0%,#d6d9d3 38%,#b5bab3 78%,#a0a59e 100%);
-      box-shadow:inset 0 2px 0 rgba(255,255,255,.9),inset 0 -6px 14px rgba(60,66,60,.35),inset 6px 0 12px rgba(255,255,255,.25),inset -8px 0 16px rgba(70,76,70,.25),0 40px 70px -34px rgba(20,28,26,.55)}
-    .tv-top,.tv-bottom{left:4%;width:92%;height:var(--td);top:calc(50% - var(--td)/2)}
-    .tv-top{transform:rotateX(90deg) translateZ(calc(var(--th)/2 - 2px));background:linear-gradient(180deg,#7d837b,#c3c8c0);border-radius:10px}
-    .tv-bottom{transform:rotateX(-90deg) translateZ(calc(var(--th)/2 - 2px));background:linear-gradient(0deg,#3b403b,#6e746c);border-radius:10px}
-    .tv-left,.tv-right{top:5%;height:90%;width:var(--td);left:calc(50% - var(--td)/2)}
-    .tv-left{transform:rotateY(-90deg) translateZ(calc(var(--tw)/2 - 2px));background:linear-gradient(90deg,#4a504a,#868c84 85%,#979d95);border-radius:10px}
-    .tv-right{transform:rotateY(90deg) translateZ(calc(var(--tw)/2 - 2px));background:linear-gradient(270deg,#3f453f,#787e76 85%,#8a9088);border-radius:10px}
-    .tv-back{left:16%;top:14%;width:68%;height:72%;transform:translateZ(calc(var(--td)/-2));background:#4a504a;border-radius:18%}
-
-    /* Pantalla de tubo: cristal curvo, líneas de barrido y reflejo */
-    .tv-screen{position:absolute;left:8.5%;right:8.5%;top:8.5%;bottom:17%;border-radius:13% / 15%;overflow:hidden;
-      background:radial-gradient(90% 80% at 50% 45%,#0d1716 0%,#060b0b 60%,#020404 100%);
-      box-shadow:inset 0 0 0 3px #222826,inset 0 0 calc(var(--tw)*.09) rgba(0,0,0,.95),0 1px 0 rgba(255,255,255,.7),0 -2px 3px rgba(40,46,40,.5)}
-    .tv-scan{position:absolute;inset:0;background:repeating-linear-gradient(180deg,rgba(255,255,255,.035) 0 1px,rgba(0,0,0,0) 1px 3px);mix-blend-mode:screen;animation:tvFlicker 3.2s steps(2) infinite;pointer-events:none}
-    @keyframes tvFlicker{0%,100%{opacity:.9}50%{opacity:.7}}
-    .tv-glare{position:absolute;inset:0;background:radial-gradient(70% 45% at 28% 12%,rgba(255,255,255,.14),rgba(255,255,255,0) 70%),linear-gradient(180deg,rgba(255,255,255,0) 70%,rgba(90,240,216,.05));pointer-events:none}
-
-    /* Los ojos: la «o» de ditbo, con su punto blanco como pupila */
-    .tv-eyes{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:9%;transform-origin:50% 50%}
-    .tv-eyes.is-blink{animation:tvBlink .2s ease-in-out}
-    @keyframes tvBlink{0%,100%{transform:scaleY(1)}45%,55%{transform:scaleY(.06)}}
-    .tv-eye{position:relative;display:block;width:31%;aspect-ratio:1;transform:scale(calc(1 + var(--vol)*.14))}
-    .tv-eye svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(-1.5px 0 0 rgba(255,90,120,.35)) drop-shadow(1.5px 0 0 rgba(70,150,255,.4)) drop-shadow(0 0 calc(var(--tw)*.025) rgba(90,240,216,calc(.55 + var(--vol)*.4)))}
-    .tv-o-dim{opacity:.26}
-    .tv-pupil{position:absolute;left:50%;top:50%;width:18.6%;aspect-ratio:1;border-radius:50%;background:radial-gradient(circle,#fff 0 60%,rgba(220,255,250,.85) 75%,rgba(160,250,235,0) 100%);box-shadow:0 0 calc(var(--tw)*.03) rgba(255,255,255,.7),0 0 calc(var(--tw)*.07) rgba(90,240,216,.45);
-      transform:translate(calc(-50% + var(--lx)*58%),calc(-50% + var(--ly)*58%))}
-
-    /* Bisel inferior: piloto y rejilla */
-    .tv-led{position:absolute;right:11%;bottom:6.2%;width:calc(var(--tw)*.018);aspect-ratio:1;border-radius:50%;background:#16c9b0;box-shadow:0 0 8px #5af0d8,0 0 2px #fff;opacity:.9}
-    .tv.is-call .tv-led{background:#ff6b5e;box-shadow:0 0 10px #ff6b5e;animation:tvLed 1s ease-in-out infinite}
-    @keyframes tvLed{50%{opacity:.35}}
-    .tv-grille{position:absolute;left:11%;bottom:5.4%;width:16%;height:calc(var(--tw)*.03);background:repeating-linear-gradient(90deg,rgba(60,66,60,.55) 0 2px,rgba(0,0,0,0) 2px 6px);border-radius:2px}
-
-    /* Tarjeta de llamada en vivo, flotando sobre el pecho (antes: sección Voz) */
-    .ix-call{position:absolute;z-index:3;right:clamp(20px,4vw,72px);bottom:clamp(20px,4.5svh,48px);width:min(340px,30vw);opacity:0;animation:ixCallIn .9s cubic-bezier(.2,.8,.2,1) .6s forwards}
+    /* Tarjeta de llamada en vivo (antes: sección Voz) */
+    .ix-call{position:absolute;z-index:3;left:var(--pad);bottom:clamp(20px,4.5svh,44px);width:min(330px,26vw);opacity:0;animation:ixCallIn .9s cubic-bezier(.2,.8,.2,1) .6s forwards}
     @keyframes ixCallIn{from{opacity:0;translate:0 16px}to{opacity:1;translate:0 0}}
-    #inicio .ix-call .voice-transcript{margin:0;min-height:0;padding:14px;border-radius:20px;background:rgba(6,11,11,.9);border:1px solid rgba(255,255,255,.08);box-shadow:0 30px 70px -28px rgba(8,14,13,.7);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
+    #inicio .ix-call .voice-transcript{margin:0;min-height:0;padding:14px;border-radius:20px;background:rgba(8,12,12,.88);border:1px solid rgba(255,255,255,.1);box-shadow:0 30px 70px -28px rgba(8,14,13,.7);-webkit-backdrop-filter:blur(12px);backdrop-filter:blur(12px)}
     #inicio .ix-call .voice-chat-wrap{position:relative}
-    #inicio .ix-call .wa-chat{height:clamp(150px,22svh,220px);max-height:none;min-height:0;overflow:hidden auto;scrollbar-width:none}
+    #inicio .ix-call .wa-chat{height:clamp(110px,16svh,170px);max-height:none;min-height:0;overflow:hidden auto;scrollbar-width:none}
     #inicio .ix-call .wa-chat::-webkit-scrollbar{display:none}
     #inicio .ix-call .wa-chat.con-cta{padding-bottom:0}
     #inicio .ix-call .bubble{font-size:.8rem}
     #inicio .ix-call .voice-live-cta{position:static;margin-top:10px;padding:0;background:none}
     .ix-call-foot{margin:10px 4px 0;color:rgba(247,251,248,.5);font-size:.7rem;letter-spacing:.02em}
 
-    @media (max-width:1100px) and (min-width:761px),(max-height:760px) and (min-width:761px){
-      #inicio.ix .ix-copy{width:min(52vw,560px)}
-      .tv{--tw:clamp(200px,24vw,330px);top:33%}
-      .ix-call{width:min(290px,32vw)}
-      #inicio .ix-call .wa-chat{height:110px}
+    /* Escritorio: el texto centrado a la izquierda y la tarjeta debajo, sin pisarse */
+    @media (min-width:761px){
+      #inicio.ix .ix-copy{top:clamp(120px,22svh,220px);transform:none}
+      .ix-call{width:min(360px,30vw)}
     }
+    @media (min-width:761px) and (max-height:820px){
+      #inicio.ix .ix-intro{display:none}
+      #inicio .ix-call .wa-chat{height:96px}
+    }
+    @media (max-width:1100px) and (min-width:761px){
+      #inicio.ix .ix-copy{width:min(46vw,460px)}
+      .ix-photo-in::after{background:linear-gradient(90deg,#b9a9a5,rgba(185,169,165,.6) 40%,rgba(185,169,165,0) 62%)}
+    }
+
+    /* Móvil: foto recortada a la figura arriba, texto y tarjeta debajo */
     @media (max-width:760px){
-      #inicio.hero.ix{display:flex;flex-direction:column;height:auto;min-height:100svh;padding-bottom:48px;background:radial-gradient(90% 40% at 50% 22%,#ffffff 0%,#f3f4f1 50%,#e6e8e4 100%)}
-      .tv{--tw:min(52vw,230px);order:1;position:relative;right:auto;top:auto;flex:none;margin:calc(96px + 2svh) auto calc(var(--tw)*.62);transform:none;animation-name:tvInM}
-      @keyframes tvInM{from{opacity:0;transform:translateY(14px) scale(.96)}to{opacity:1;transform:none}}
-      .tv-body{width:calc(var(--tw)*2);-webkit-mask-image:linear-gradient(180deg,#000 55%,transparent 92%);mask-image:linear-gradient(180deg,#000 55%,transparent 92%)}
-      .tv-cables{height:calc(var(--tw)*.6)}
-      #inicio.ix .ix-copy{order:2;position:relative;left:auto;right:auto;bottom:auto;width:auto;margin:0 20px}
-      .ix-call{order:3;position:relative;right:auto;bottom:auto;width:auto;margin:28px 20px 0}
-      #inicio .ix-call .wa-chat{height:200px}
-      #inicio.ix .ix-cue{display:none}
-      #inicio.ix .ix-veil{display:none}
-    }
-    @media (prefers-reduced-motion:reduce){
-      .tv,.tv-head,.tv-body,.tv-cables,.tv-scan,.ix-call{animation:none!important}
-      .tv,.ix-call{opacity:1}
-      .tv-eyes.is-blink{animation:none}
-    }
-    /* Texto: el personaje te habla (intro pequeña, frase que se escribe, respuestas rápidas) */
-    #inicio.ix .ix-copy{top:50%;bottom:auto;transform:translateY(-38%);width:min(40vw,520px)}
-    #inicio.ix .ix-eyebrow{margin-bottom:22px;font-size:.68rem;letter-spacing:.16em}
-    #inicio.ix .ix-eyebrow sup{font-size:.6em;letter-spacing:0}
-    .ix-intro{max-width:44ch;margin:0 0 18px;color:rgba(11,18,17,.5);font-size:.98rem;line-height:1.55}
-    #inicio.hero.ix h1.ix-say{display:block;width:auto;max-width:none;word-spacing:normal;text-align:left;background:none;-webkit-text-fill-color:#0b1211;animation:none;opacity:1;transform:none}
-    #inicio.hero.ix h1.ix-say,#inicio.ix .ix-say{margin:0;color:#0b1211;font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.7rem,2.9vw,2.7rem);font-weight:600;line-height:1.12;letter-spacing:-.03em;text-shadow:none;text-wrap:pretty}
-    .ix-caret{display:inline-block;width:.5em;height:.95em;margin-left:.12em;vertical-align:-.1em;background:#0b1211;animation:ixCaret 1s steps(1) infinite}
-    @keyframes ixCaret{50%{opacity:0}}
-    .ix-chips{display:flex;flex-wrap:wrap;gap:10px;margin-top:28px}
-    .ix-chip{display:inline-flex;align-items:center;min-height:40px;padding:0 18px;border-radius:999px;border:1px solid rgba(11,18,17,.14);background:rgba(255,255,255,.7);color:#0b1211;font-size:.86rem;font-weight:600;white-space:nowrap;box-shadow:0 1px 2px rgba(11,18,17,.06);transition:background-color .2s ease,border-color .2s ease,color .2s ease,transform .2s ease}
-    .ix-chip:hover{border-color:#0b8f80;color:#0b8f80;transform:translateY(-1px)}
-    .ix-chip-main{background:#0b1211;border-color:#0b1211;color:#f7fbf8}
-    .ix-chip-main:hover{background:#13201e;color:#5af0d8;border-color:#13201e}
-    .ix-chip:focus-visible{outline:2px solid #0b8f80;outline-offset:3px}
-    @media (max-width:760px){
-      #inicio.ix .ix-copy{top:auto;transform:none;width:auto}
+      #inicio.hero.ix{display:flex;flex-direction:column;height:auto;min-height:100svh;padding-bottom:40px}
+      .ix-photo{order:1;position:relative;inset:auto;flex:none;width:100%;aspect-ratio:.92;margin-top:68px}
+      .ix-photo-in{top:0;bottom:auto;right:-2%;height:100%}
+      .ix-photo-in::after{background:linear-gradient(180deg,rgba(185,169,165,0) 72%,#b9a9a5 100%)}
+      #inicio.ix .ix-copy{order:2;position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;margin:-8px 20px 0}
       #inicio.ix .ix-eyebrow{font-size:.6rem;margin-bottom:14px}
       .ix-intro{font-size:.9rem;margin-bottom:12px}
       #inicio.hero.ix h1.ix-say{font-size:clamp(1.5rem,7vw,1.9rem);line-height:1.15}
       .ix-chips{margin-top:20px;gap:8px}
       .ix-chip{min-height:38px;padding:0 15px;font-size:.82rem}
+      .ix-call{order:3;position:relative;left:auto;bottom:auto;width:auto;margin:28px 20px 0}
+      #inicio .ix-call .wa-chat{height:180px}
+      #inicio.ix .ix-cue,#inicio.ix .ix-veil{display:none}
     }
-    @media (prefers-reduced-motion:reduce){.ix-caret{animation:none}}
-    /* Foto real (hero.js, paso 7): la figura ocupa la mitad derecha y sangra
-       por abajo; los ojos van encima de la pantalla de la foto. */
-    .ix-photo{position:absolute;z-index:1;right:0;bottom:0;height:100%;aspect-ratio:var(--photo-ar,1);max-width:62vw;pointer-events:none}
-    .ix-photo img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:50% 100%}
-    .ix-photo-screen{position:absolute;overflow:hidden;border-radius:10%}
-    .ix-photo-screen .tv-eyes{gap:14%}
-    .ix-photo-screen .tv-eye{width:28%}
-    #inicio.has-photo .tv{display:none}
-    @media (max-width:760px){
-      .ix-photo{order:1;position:relative;right:auto;bottom:auto;width:100%;max-width:none;height:auto;aspect-ratio:var(--photo-ar,1);margin-top:70px}
+    @media (prefers-reduced-motion:reduce){
+      .tv-scan,.ix-call,.ix-caret{animation:none!important}
+      .ix-call{opacity:1}
+      .tv-eyes.is-blink{animation:none}
     }
   </style>
 </head>
@@ -591,54 +549,31 @@
         <span class="ix-shade"></span>
         <span class="ix-veil"></span>
       </div>
-      <!-- Portada v4: una pantalla de tubo cuya cara son dos «o» de ditbo. Mira
-           al puntero, pestañea y, durante la llamada de prueba, reacciona a la
-           voz. Todo es HTML/CSS (sin imágenes ni 3D): lo mueve hero.js. -->
-      <div class="tv" id="tv">
-        <svg class="tv-defs" width="0" height="0" aria-hidden="true" focusable="false">
+      <!-- Portada v4: foto (fondo claro, figura a la derecha) con la cara de
+           ditbo en la pantalla: ojo izquierdo la «i» (barras de nivel), ojo
+           derecho la «o» (dial con su punto). Miran al puntero, pestañean y,
+           en la llamada real, la «i» sube con la voz. Lo mueve hero.js. -->
+      <div class="ix-photo" aria-hidden="true">
+        <div class="ix-photo-in">
+          <picture>
+            <source media="(max-width: 1280px)" srcset="features/landing/media/hero/persona-1200.webp">
+            <img src="features/landing/media/hero/persona.webp" alt="" width="1671" height="941" fetchpriority="high" decoding="async">
+          </picture>
+          <div class="tv" id="tv">
+            <svg class="tv-defs" width="0" height="0" aria-hidden="true" focusable="false">
           <defs>
             <linearGradient id="tv-grad" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5af0d8"/><stop offset="1" stop-color="#35c9f0"/></linearGradient>
             <symbol id="tv-o" viewBox="375.2 52.5 620 620"><g fill="url(#tv-grad)"><path class="tv-o-dim" d="M688.3 660.0A297.5 297.5 0 0 1 552.0 628.5L626.6 479.5A130.9 130.9 0 0 0 686.6 493.4Z"/><path d="M539.2 621.7A297.5 297.5 0 0 1 436.8 526.3L575.9 434.6A130.9 130.9 0 0 0 620.9 476.5Z"/><path d="M429.1 513.9A297.5 297.5 0 0 1 388.2 380.1L554.5 370.3A130.9 130.9 0 0 0 572.5 429.1Z"/><path d="M387.7 365.6A297.5 297.5 0 0 1 419.2 229.3L568.2 303.9A130.9 130.9 0 0 0 554.3 363.9Z"/><path d="M426.0 216.5A297.5 297.5 0 0 1 521.4 114.1L613.1 253.2A130.9 130.9 0 0 0 571.2 298.2Z"/><path d="M533.8 106.4A297.5 297.5 0 0 1 667.6 65.5L677.4 231.8A130.9 130.9 0 0 0 618.6 249.8Z"/><path d="M682.1 65.0A297.5 297.5 0 0 1 818.4 96.5L743.8 245.5A130.9 130.9 0 0 0 683.8 231.6Z"/><path d="M831.2 103.3A297.5 297.5 0 0 1 933.6 198.7L794.5 290.4A130.9 130.9 0 0 0 749.5 248.5Z"/><path d="M941.3 211.1A297.5 297.5 0 0 1 982.2 344.9L815.9 354.7A130.9 130.9 0 0 0 797.9 295.9Z"/><path d="M982.7 359.4A297.5 297.5 0 0 1 951.2 495.7L802.2 421.1A130.9 130.9 0 0 0 816.1 361.1Z"/><path d="M944.4 508.5A297.5 297.5 0 0 1 849.0 610.9L757.3 471.8A130.9 130.9 0 0 0 799.2 426.8Z"/><path d="M836.6 618.6A297.5 297.5 0 0 1 702.8 659.5L693.0 493.2A130.9 130.9 0 0 0 751.8 475.2Z"/></g></symbol>
           </defs>
         </svg>
-        <svg class="tv-body" viewBox="0 0 700 640" aria-hidden="true" focusable="false">
-          <defs>
-            <linearGradient id="tvb-sweater" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#dcd9de"/><stop offset=".7" stop-color="#bcb8c2"/><stop offset="1" stop-color="#aaa6b1"/></linearGradient>
-            <radialGradient id="tvb-light" cx=".42" cy=".25" r=".75"><stop offset="0" stop-color="#fff" stop-opacity=".55"/><stop offset="1" stop-color="#fff" stop-opacity="0"/></radialGradient>
-            <linearGradient id="tvb-collar" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#bdb9c2"/><stop offset=".45" stop-color="#e6e3e8"/><stop offset="1" stop-color="#b3afb9"/></linearGradient>
-            <pattern id="tvb-rib" width="9" height="20" patternUnits="userSpaceOnUse"><rect width="4" height="20" fill="#000" opacity=".07"/></pattern>
-          </defs>
-          <path d="M0 640V338C0 262 96 214 236 192C270 186 288 176 294 152H406C412 176 430 186 464 192C604 214 700 262 700 338V640Z" fill="url(#tvb-sweater)"/>
-          <path d="M0 640V338C0 262 96 214 236 192C270 186 288 176 294 152H406C412 176 430 186 464 192C604 214 700 262 700 338V640Z" fill="url(#tvb-light)"/>
-          <path d="M150 440C160 360 176 300 210 250M552 440C540 360 524 300 490 250" fill="none" stroke="#8e8996" stroke-opacity=".22" stroke-width="3"/>
-          <rect x="262" y="18" width="176" height="160" rx="38" fill="url(#tvb-collar)"/>
-          <rect x="262" y="18" width="176" height="160" rx="38" fill="url(#tvb-rib)"/>
-          <path d="M268 150C300 172 400 172 432 150" fill="none" stroke="#8e8996" stroke-opacity=".35" stroke-width="4"/>
-          <ellipse cx="350" cy="30" rx="120" ry="26" fill="#2a2d2b" opacity=".32"/>
-        </svg>
-        <svg class="tv-cables" viewBox="0 0 400 300" preserveAspectRatio="none" aria-hidden="true" focusable="false">
-          <path d="M64 0C40 50 18 110 38 170S96 248 72 300"/>
-          <path class="tv-cable-thin" d="M92 0C86 60 64 122 84 188S124 262 112 300"/>
-          <path d="M338 0C362 58 378 118 356 178S298 250 322 300"/>
-          <path class="tv-cable-thin" d="M312 0C318 52 340 112 328 172S288 242 298 300"/>
-        </svg>
-        <div class="tv-head" id="tv-head" aria-hidden="true">
-          <span class="tv-face tv-back"></span>
-          <span class="tv-face tv-top"></span>
-          <span class="tv-face tv-bottom"></span>
-          <span class="tv-face tv-left"></span>
-          <span class="tv-face tv-right"></span>
-          <div class="tv-face tv-front">
-            <div class="tv-screen">
-              <div class="tv-eyes" id="tv-eyes"><span class="tv-eye"><svg viewBox="0 0 100 100" focusable="false"><use href="#tv-o" width="100" height="100"/></svg><i class="tv-pupil"></i></span><span class="tv-eye"><svg viewBox="0 0 100 100" focusable="false"><use href="#tv-o" width="100" height="100"/></svg><i class="tv-pupil"></i></span></div>
-              <span class="tv-scan"></span>
-              <span class="tv-glare"></span>
+            <div class="tv-eyes" id="tv-eyes">
+              <span class="tv-eye tv-eye-i"><svg viewBox="-20 -20 320 765" focusable="false"><g fill="url(#tv-grad)"><rect class="tv-bar" x="0" y="0" width="280" height="91.3" rx="22"/><rect class="tv-bar" x="0" y="126.7" width="280" height="91.3" rx="22"/><rect class="tv-bar" x="0" y="253.5" width="280" height="91.3" rx="22"/><rect class="tv-bar" x="0" y="380.2" width="280" height="91.3" rx="22"/><rect class="tv-bar" x="0" y="507.0" width="280" height="91.3" rx="22"/><rect class="tv-bar" x="0" y="633.7" width="280" height="91.3" rx="22"/></g></svg></span>
+              <span class="tv-eye tv-eye-o"><svg viewBox="0 0 100 100" focusable="false"><use href="#tv-o" width="100" height="100"/></svg><i class="tv-pupil"></i></span>
             </div>
-            <span class="tv-led" id="tv-led"></span>
-            <span class="tv-grille"></span>
+            <span class="tv-scan"></span>
+            <span class="tv-glare"></span>
           </div>
         </div>
-        <span class="tv-floor" aria-hidden="true"></span>
       </div>
       <div class="ix-call" id="voz-demo">
         <div class="voice-transcript" aria-label="Transcripci&oacute;n en vivo de una llamada atendida por el agente de voz">
