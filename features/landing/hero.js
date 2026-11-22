@@ -261,5 +261,82 @@
     });
   }
 
+
+  /* 7 · Paso fluido a la parte oscura: un velo negro crece con el scroll y
+     cubre la portada entera (foto incluida). Por JS para que funcione en
+     todos los navegadores, no solo en los que tienen scroll-timeline. */
+  let velo = 0;
+  const pintarVelo = () => {
+    velo = 0;
+    const alto = hero.offsetHeight || window.innerHeight;
+    const t = Math.max(0, Math.min(1, window.scrollY / (alto * 0.9)));
+    hero.style.setProperty('--veil', (t * 0.9).toFixed(3));
+    hero.style.setProperty('--fade', Math.min(1, t * 6).toFixed(3));
+  };
+  if (!reduced) window.addEventListener('scroll', () => { if (!velo) velo = requestAnimationFrame(pintarVelo); }, { passive: true });
+
+  /* 8 · La voz de Cristina. Los navegadores no dejan sonar nada hasta que
+     la persona toca la página, así que el saludo suena con el primer toque o
+     tecla (en cualquier sitio), y el aviso lo deja claro desde el principio.
+     Usa la mejor voz española del sistema (en Edge, las neuronales de
+     Microsoft). Se puede silenciar y volver a oír. */
+  const sonido = document.getElementById('ix-sound');
+  const sonidoTxt = document.getElementById('ix-sound-txt');
+  const sintetizador = window.speechSynthesis;
+  if (sonido && sintetizador && 'SpeechSynthesisUtterance' in window && sayEl) {
+    const saludo = (sayEl.parentElement.getAttribute('aria-label') || sayEl.textContent).trim();
+    const elegirVoz = () => {
+      const voces = sintetizador.getVoices().filter((v) => /^es(-|_|$)/i.test(v.lang));
+      const puntos = (v) => (/es-ES/i.test(v.lang) ? 4 : 0)
+        + (/natural|neural|online/i.test(v.name) ? 4 : 0)
+        + (/elvira|arabella|ximena|helena|laura|lucia|monica|paulina|dalia|google español$/i.test(v.name) ? 2 : 0)
+        + (/pablo|jorge|alvaro|raul|diego/i.test(v.name) ? -3 : 0);
+      return voces.sort((a, b) => puntos(b) - puntos(a))[0] || null;
+    };
+    let hablandoVoz = false, yaSono = false;
+    const texto = (t) => { if (sonidoTxt) sonidoTxt.textContent = t; };
+    const callar = () => { sintetizador.cancel(); };
+    const decir = () => {
+      if (saludoParado) return; // ya hay una llamada real
+      callar();
+      const u = new SpeechSynthesisUtterance(saludo);
+      const voz = elegirVoz();
+      if (voz) u.voice = voz;
+      u.lang = (voz && voz.lang) || 'es-ES';
+      u.rate = 1;
+      u.onstart = () => {
+        hablandoVoz = true; yaSono = true;
+        sonido.classList.add('is-on');
+        texto('Cristina está hablando · pulsa para silenciar');
+        if (estado) estado.textContent = 'está hablando…';
+        parlotear(saludo.length * 70);
+      };
+      const fin = () => {
+        hablandoVoz = false;
+        sonido.classList.remove('is-on');
+        texto('Volver a oír a Cristina');
+        if (estado && !saludoParado) estado.textContent = 'esperando tu respuesta';
+        clearInterval(hablando); hablando = 0; nivel(4);
+      };
+      u.onend = fin;
+      u.onerror = fin;
+      sintetizador.speak(u);
+    };
+    sonido.hidden = false;
+    sonido.addEventListener('click', (ev) => {
+      ev.stopPropagation();
+      if (hablandoVoz) callar(); else decir();
+    });
+    // Primer toque o tecla en cualquier parte: suena el saludo (una vez).
+    const primerGesto = (ev) => {
+      if (sonido.contains(ev.target)) return;
+      ['pointerdown', 'keydown'].forEach((t) => window.removeEventListener(t, primerGesto, true));
+      if (!yaSono) decir();
+    };
+    ['pointerdown', 'keydown'].forEach((t) => window.addEventListener(t, primerGesto, true));
+    if (sintetizador.onvoiceschanged !== undefined) sintetizador.onvoiceschanged = () => {};
+    // Al empezar una llamada real, la voz del saludo se calla.
+    window.addEventListener('ditbo:voz', (ev) => { const d = ev.detail || {}; if (d.tipo === 'boton' && (d.colgando || d.ocupado)) { callar(); sonido.hidden = true; } else if (d.tipo === 'boton') sonido.hidden = false; });
+  }
 })();
 
