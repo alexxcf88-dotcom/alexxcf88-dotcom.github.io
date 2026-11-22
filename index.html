@@ -520,6 +520,22 @@
        Sigue en el DOM porque guarda el botón real de la llamada (landing.js). */
     #inicio .ix-call{display:none!important}
     .ix-chip-voz[hidden]{display:none}
+    /* Reparto del espacio en escritorio: texto centrado en vertical y, abajo,
+       una franja con lo esencial alineada con el texto. */
+    @media (min-width:761px){
+      #inicio.ix .ix-copy{top:calc(50% + 10px);transform:translateY(-58%);width:min(46vw,640px)}
+      #inicio.hero.ix h1.ix-say,#inicio.ix .ix-say{font-size:clamp(1.7rem,2.8vw,2.85rem)}
+      #inicio.ix .ix-copy .ix-intro{font-size:1.02rem}
+    }
+    .ix-facts{position:absolute;z-index:2;left:var(--pad);bottom:clamp(28px,6svh,64px);display:flex;gap:clamp(22px,3.4vw,56px);margin:0;padding:18px 0 0;list-style:none;border-top:1px solid rgba(11,18,17,.14);width:min(46vw,640px)}
+    .ix-facts li{display:grid;gap:4px;min-width:0}
+    .ix-facts b{color:#0b1211;font-family:Archivo,system-ui,sans-serif;font-size:clamp(1.1rem,1.6vw,1.5rem);font-weight:800;letter-spacing:-.02em;line-height:1}
+    .ix-facts span{color:var(--ink-2);font-size:.8rem;line-height:1.35}
+    @media (min-width:761px) and (max-height:700px){.ix-facts{display:none}}
+    @media (max-width:760px){
+      .ix-facts{order:3;position:relative;left:auto;bottom:auto;width:auto;margin:28px 20px 0;gap:14px;justify-content:space-between}
+      .ix-facts span{font-size:.72rem}
+    }
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -634,6 +650,11 @@
           <a class="ix-chip" href="#proceso">C&oacute;mo funciona</a>
         </div>
       </div>
+      <ul class="ix-facts" aria-label="Lo esencial">
+        <li><b>24/7</b><span>atiende llamadas y WhatsApp</span></li>
+        <li><b>200&ndash;1.200</b><span>minutos de voz al mes, seg&uacute;n plan</span></li>
+        <li><b>1.er mes</b><span>gratis, sin permanencia</span></li>
+      </ul>
       <span class="ix-cue" aria-hidden="true"><i></i></span>
       <span class="ix-sentinel" id="ix-sentinel" aria-hidden="true"></span>
       <span class="ix-sentinel ix-sentinel-top" id="ix-sentinel-top" aria-hidden="true"></span>
