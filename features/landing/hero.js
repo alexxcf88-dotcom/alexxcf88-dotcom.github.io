@@ -111,8 +111,12 @@
     const vivo = window.ditboVivo || (window.ditboVivo = {});
     vivo.cx = cx; vivo.cy = cy; vivo.ex = ex; vivo.ey = ey; vivo.respira = respira; vivo.bx = bx; vivo.br = br;
     if (fig && hero.classList.contains('has-3d')) {
-      // Con la cabeza 3D, el cuerpo solo respira y se balancea (la cabeza ya mira).
-      fig.style.transform = `translate3d(${bx.toFixed(2)}px,${by.toFixed(2)}px,0) rotate(${(br * 0.6).toFixed(3)}deg) scale(1,${(1 + respira * 0.004).toFixed(4)})`;
+      // Con la cabeza 3D, el cuerpo vive: respira (hombros que suben y pecho que
+      // se abre), se balancea de pie y acompaña un poco con el torso hacia
+      // donde mira. El giro sale de la base (abajo), como un cuerpo real.
+      const tx = bx * 2.2 + cx * 9, ty = by * 1.8 - respira * 3.5 + Math.abs(cx) * 2;
+      const rz = br * 1.6 + cx * 0.55;
+      fig.style.transform = `translate3d(${tx.toFixed(2)}px,${ty.toFixed(2)}px,0) rotate(${rz.toFixed(3)}deg) scale(${(1.03 + respira * 0.006).toFixed(4)},${(1.03 + respira * 0.011).toFixed(4)})`; // 1.03: margen para que al balancearse no asome el borde de la foto
     } else if (fig) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
@@ -387,7 +391,7 @@
       // El cuerpo sin televisor se descarga antes: el cambio de foto y el
       // primer fotograma 3D ocurren a la vez, sin parpadeo.
       const cuerpo = new Image();
-      cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=2';
+      cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=3';
       return Promise.all([import('/features/landing/cristina3d.js?v=11'), cuerpo.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
