@@ -15,7 +15,7 @@ import * as THREE from './vendor/three.module.min.js';
 const FW = 1671, FH = 941;
 const P = (x, y, z = 0) => new THREE.Vector3(x, -y, z);   // píxel de la foto → mundo
 // Televisor en la foto (recorte del frontal) y su fondo (de las vistas laterales).
-const TV = { x0: 926, x1: 1578, y0: 16, y1: 554, fondo: 473 };
+const TV = { x0: 958, x1: 1561, y0: 23, y1: 543, fondo: 460 };   // borde exterior del marco
 const PANTALLA = { x0: 1019.3, x1: 1508.9, y0: 75.3, y1: 461.1 };
 const PIVOTE = P(1252, 640, -170);        // base del cuello, bajo el televisor
 const GIRO_Y = THREE.MathUtils.degToRad(13);
@@ -28,11 +28,19 @@ export async function montar({ hero, lienzo, alListo }) {
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const escena = new THREE.Scene();
-  // Cámara casi ortográfica centrada en la foto: el plano z=0 coincide con ella.
-  const FOV = 8, DIST = (FH / 2) / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+  // Cámara frente al televisor (como en la foto) con el encuadre desplazado
+  // para que el plano z=0 coincida exactamente con la foto: en reposo no se
+  // ve ningún lateral y al girar aparece la carcasa.
+  const FOV = 10, DIST = (FH / 2) / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+  const OJO = { x: 1259, y: 283 };        // centro del televisor en la foto
   const camara = new THREE.PerspectiveCamera(FOV, FW / FH, DIST * 0.5, DIST * 1.6);
-  camara.position.set(FW / 2, -FH / 2, DIST);
-  camara.lookAt(FW / 2, -FH / 2, 0);
+  camara.position.set(OJO.x, -OJO.y, DIST);
+  camara.updateMatrixWorld();
+  {
+    const n = camara.near, k = n / DIST;
+    camara.projectionMatrix.makePerspective((0 - OJO.x) * k, (FW - OJO.x) * k, OJO.y * k, (OJO.y - FH) * k, n, camara.far);
+    camara.projectionMatrixInverse.copy(camara.projectionMatrix).invert();
+  }
 
   // Luz (solo para los cables): estudio suave desde arriba a la izquierda, como la foto.
   escena.add(new THREE.HemisphereLight(0xfff3ec, 0x51463f, 1.4));
@@ -40,10 +48,9 @@ export async function montar({ hero, lienzo, alListo }) {
   const borde = new THREE.DirectionalLight(0xffffff, 0.9); borde.position.set(900, 300, -600); escena.add(borde);
 
   const cargar = (url) => new Promise((ok, mal) => new THREE.TextureLoader().load(url, (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; ok(t); }, undefined, mal));
-  const base = '/features/landing/media/hero/';
-  const [tFrente, tIzq, tDer, tArriba] = await Promise.all(['cristina-cabeza.webp', 'cristina-lado-izq.webp', 'cristina-lado-der.webp', 'cristina-arriba.webp'].map((f) => cargar(base + f + '?v=1')));
+  const tFrente = await cargar('/features/landing/media/hero/cristina-cabeza.webp?v=2');
   const plano = (mat, ancho, alto) => new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto), mat);
-  const mat = (tex, color = 0xffffff) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.04, color, side: THREE.DoubleSide, toneMapped: false });
+  const mat = (tex, color = 0xffffff) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.04, color, toneMapped: false });
 
   // Grupo de la cabeza, con el origen en el pivote del cuello.
   const cabeza = new THREE.Group();
@@ -52,15 +59,39 @@ export async function montar({ hero, lienzo, alListo }) {
   const enCabeza = (o, v) => { o.position.copy(v).sub(PIVOTE); cabeza.add(o); return o; };
   const W = TV.x1 - TV.x0, H = TV.y1 - TV.y0, D = TV.fondo, cx = (TV.x0 + TV.x1) / 2, cyTV = (TV.y0 + TV.y1) / 2;
 
-  // Interior y tapa trasera (para que no se vea a través al girar).
-  const caja = new THREE.Mesh(new THREE.BoxGeometry(W * 0.86, H * 0.84, D * 0.92), new THREE.MeshBasicMaterial({ color: 0x5d5853, toneMapped: false }));
-  enCabeza(caja, P(cx, cyTV, -D * 0.5));
-  // Laterales: la vista de perfil del mismo televisor (con su forma recortada).
-  const latIzq = enCabeza(plano(mat(tDer, 0xc9c2bb), D, H * 0.96), P(TV.x0 + 6, cyTV + 6, -D / 2)); latIzq.rotation.y = -Math.PI / 2;
-  const latDer = enCabeza(plano(mat(tIzq, 0xbab3ac), D, H * 0.96), P(TV.x1 - 6, cyTV + 6, -D / 2)); latDer.rotation.y = Math.PI / 2;
-  // Techo y suelo.
-  const techo = enCabeza(plano(mat(tArriba, 0xcfc8c1), W * 0.98, D), P(cx, TV.y0 + 4, -D / 2)); techo.rotation.x = -Math.PI / 2;
-  const suelo = enCabeza(plano(new THREE.MeshBasicMaterial({ color: 0x3c3935, side: THREE.DoubleSide, toneMapped: false }), W * 0.9, D * 0.9), P(cx, TV.y1 - 6, -D * 0.48)); suelo.rotation.x = Math.PI / 2;
+  // Carcasa: una sola pieza extruida desde la silueta del frontal (bordes
+  // redondeados), más el culo del tubo detrás. Sin láminas sueltas: no hay
+  // huecos posibles entre frontal, laterales, techo y suelo.
+  const rect = (w, h, r) => {
+    const f = new THREE.Shape(), x = -w / 2, y = -h / 2;
+    f.moveTo(x + r, y); f.lineTo(x + w - r, y); f.quadraticCurveTo(x + w, y, x + w, y + r);
+    f.lineTo(x + w, y + h - r); f.quadraticCurveTo(x + w, y + h, x + w - r, y + h);
+    f.lineTo(x + r, y + h); f.quadraticCurveTo(x, y + h, x, y + h - r);
+    f.lineTo(x, y + r); f.quadraticCurveTo(x, y, x + r, y);
+    return f;
+  };
+  // Metal gastado: el mismo tono del marco de la foto, con algo de ruido.
+  const ruido = document.createElement('canvas'); ruido.width = ruido.height = 256;
+  { const c = ruido.getContext('2d'); c.fillStyle = '#8a7a72'; c.fillRect(0, 0, 256, 256);
+    for (let i = 0; i < 2600; i++) { const v = 110 + Math.random() * 60 | 0; c.fillStyle = `rgba(${v},${v - 10},${v - 14},${Math.random() * 0.35})`; c.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 2, 1 + Math.random() * 2); }
+    for (let i = 0; i < 70; i++) { c.fillStyle = `rgba(40,32,28,${0.2 + Math.random() * 0.3})`; c.fillRect(Math.random() * 256, Math.random() * 256, 1, 1 + Math.random() * 3); } }
+  const tRuido = new THREE.CanvasTexture(ruido); tRuido.colorSpace = THREE.SRGBColorSpace; tRuido.wrapS = tRuido.wrapT = THREE.RepeatWrapping; tRuido.repeat.set(0.006, 0.006);
+  const matCarcasa = new THREE.MeshStandardMaterial({ map: tRuido, color: 0xd8cdc6, roughness: 0.62, metalness: 0.15 });
+  const prof = D * 0.42;
+  const geoMarco = new THREE.ExtrudeGeometry(rect(W - 4, H - 4, 32), { depth: prof, bevelEnabled: true, bevelThickness: 5, bevelSize: 4, bevelSegments: 3, curveSegments: 8 });
+  geoMarco.translate(0, 0, -prof - 10); // el bisel (5) queda detrás del frontal de la foto
+  enCabeza(new THREE.Mesh(geoMarco, matCarcasa), P(cx, cyTV, 0));
+  const geoTubo = new THREE.ExtrudeGeometry(rect(W * 0.74, H * 0.76, 60), { depth: D - prof, bevelEnabled: true, bevelThickness: 18, bevelSize: 14, bevelSegments: 4, curveSegments: 10 });
+  geoTubo.translate(0, 0, -D);
+  enCabeza(new THREE.Mesh(geoTubo, matCarcasa), P(cx, cyTV - 6, 0));
+  // Rejilla de ventilación en los laterales (ranuras oscuras).
+  const matRanura = new THREE.MeshBasicMaterial({ color: 0x231f1c, toneMapped: false, side: THREE.DoubleSide });
+  for (const lado of [-1, 1]) for (let i = 0; i < 7; i++) {
+    const r = plano(matRanura, D * 0.2, 5);
+    r.rotation.y = Math.PI / 2;
+    enCabeza(r, P(cx + lado * (W / 2 - 3.2), 150 + i * 16, -prof * 0.55));
+  }
+
   // Frontal: la foto.
   const matFrente = mat(tFrente);
   enCabeza(plano(matFrente, W, H), P(cx, cyTV, 0.5));

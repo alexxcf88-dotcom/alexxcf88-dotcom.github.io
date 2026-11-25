@@ -387,8 +387,8 @@
       // El cuerpo sin televisor se descarga antes: el cambio de foto y el
       // primer fotograma 3D ocurren a la vez, sin parpadeo.
       const cuerpo = new Image();
-      cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=1';
-      return Promise.all([import('/features/landing/cristina3d.js?v=9'), cuerpo.decode()])
+      cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=2';
+      return Promise.all([import('/features/landing/cristina3d.js?v=11'), cuerpo.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
           if (img) img.src = cuerpo.src;
