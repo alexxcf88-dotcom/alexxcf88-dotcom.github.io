@@ -1,7 +1,8 @@
-/* Cristina en la portada, toda en 3D.
-   · Cuerpo (del cuello para abajo): el busto del modelo 3D de Cristina, con su
-     textura tal cual (material mate, sin brillos). Se descartan su televisor
-     y sus cables; el cuello se dobla con la cabeza. Respira.
+/* Cristina en la portada: cuerpo de la foto + cabeza de televisor en 3D.
+   · Cuerpo: la foto de Cristina (toda su calidad), sin el televisor ni los
+     cables originales. Respira (lo hace hero.js sobre #ix-fig, solo escala).
+   · Cuello: una pieza de la propia foto que se dobla con la cabeza (arriba
+     sigue el giro, abajo queda fijo en la camisa).
    · El televisor es una caja 3D hecha a medida: frontal con la textura de la
      propia foto, laterales y techo con las vistas reales del mismo televisor.
      Gira un poco hacia el puntero desde la base del cuello.
@@ -13,7 +14,6 @@
    · La pantalla lleva los ojos de ditbo («i» y «o» del logo).
    Coordenadas: 1 unidad = 1 píxel de la foto (1671×941); y hacia arriba. */
 import * as THREE from './vendor/three.module.min.js';
-import { GLTFLoader } from './vendor/GLTFLoader.js';
 
 const FW = 1671, FH = 941;
 const P = (x, y, z = 0) => new THREE.Vector3(x, -y, z);   // píxel de la foto → mundo
@@ -210,53 +210,26 @@ export async function montar({ hero, lienzo, alListo }) {
     return true;
   };
 
-  // Cuerpo: el busto del modelo 3D. Se lleva a coordenadas de la foto
-  // (escala por el ancho del televisor; el cuello del modelo queda bajo el
-  // televisor y su centro en el pivote) y se guarda la y original del modelo
-  // para decidir qué se dobla y qué se descarta.
-  const S = 2500, Y_TV = 0.672, Z_CUELLO = -0.04;  // escala del busto: misma complexión que la foto
-  const BASE_Y = -1000;                        // origen del grupo: por debajo del encuadre (respira desde abajo)
-  const cuerpo = new THREE.Group();
-  cuerpo.position.set(0, BASE_Y, 0);
-  escena.add(cuerpo);
-  const gltf = await new GLTFLoader().loadAsync('/features/landing/media/hero/cristina-cuerpo.glb?v=1');
-  const aMundo = new THREE.Matrix4().makeTranslation(1259, -543 - BASE_Y, -170)
-    .multiply(new THREE.Matrix4().makeScale(S, S, S))
-    .multiply(new THREE.Matrix4().makeTranslation(0, -Y_TV, -Z_CUELLO));
-  let pivCuerpo = null;
-  gltf.scene.updateMatrixWorld(true);
-  gltf.scene.traverse((o) => {
-    if (!o.isMesh) return;
-    const g = o.geometry.clone();
-    g.applyMatrix4(o.matrixWorld);
-    const pos = g.attributes.position, n = pos.count;
-    const mxy = new Float32Array(n * 2);
-    for (let i = 0; i < n; i++) { mxy[i * 2] = pos.getX(i); mxy[i * 2 + 1] = pos.getY(i); }
-    g.setAttribute('aMod', new THREE.BufferAttribute(mxy, 2));
-    g.applyMatrix4(aMundo);
-    const m = new THREE.MeshBasicMaterial({ map: o.material.map || null, color: 0xffffff });
-    pivCuerpo = doblar(m, PIVOTE.clone().sub(cuerpo.position),
-      'smoothstep(0.600, 0.672, aMod.y)',
-      '\nattribute vec2 aMod; varying vec2 vMod;',
-      'varying vec2 vMod;@@ if (vMod.y > 0.676 || (abs(vMod.x) > 0.07 && vMod.y > 0.668 - (abs(vMod.x) - 0.07) * 0.36)) discard;');
-    m.onBeforeCompile = ((orig) => (sh) => {
-      orig(sh);
-      sh.vertexShader = sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvMod = aMod;');
-      // Los cables que traía el modelo sobre los hombros se pintan del color
-      // del traje (con un leve sombreado del propio mapa): se leen como hombro.
-      sh.fragmentShader = sh.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
-        { float ax = abs(vMod.x);
-          float zona = smoothstep(0.078, 0.092, ax) * (1.0 - smoothstep(0.205, 0.225, ax)) * smoothstep(0.46, 0.49, vMod.y);
-          float l = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
-          vec3 traje = vec3(0.085, 0.078, 0.074) * (0.75 + 0.5 * clamp(l * 2.0, 0.0, 1.0));
-          diffuseColor.rgb = mix(diffuseColor.rgb, traje, zona);
-          // Más contraste, como la foto (la textura del modelo sale lavada).
-          diffuseColor.rgb = pow(diffuseColor.rgb, vec3(1.35)) * 1.08; }`);
-    })(m.onBeforeCompile);
-    const malla = new THREE.Mesh(g, m);
-    malla.frustumCulled = false;
-    cuerpo.add(malla);
-  });
+  // Cuello: pieza de la foto (con algo de pared alrededor, que al moverse no
+  // se nota) a la profundidad del cuello, con la perspectiva compensada para
+  // caer exacta sobre la foto en reposo. Se dobla en la tarjeta gráfica:
+  // arriba sigue la cabeza, abajo (camisa) se queda quieto.
+  const tCuello = await cargar('/features/landing/media/hero/cristina-cuello.webp?v=1');
+  const NX0 = 1100, NX1 = 1420, NY0 = 470, NY1 = 650, ZC = -170, KZ = (DIST - ZC) / DIST;
+  const geoCuello = new THREE.PlaneGeometry(1, 1, 8, 24);
+  {
+    const pos = geoCuello.attributes.position;
+    for (let i = 0; i < pos.count; i++) {
+      const u = pos.getX(i) + 0.5, v = 0.5 - pos.getY(i);
+      const px = NX0 + u * (NX1 - NX0), py = NY0 + v * (NY1 - NY0);
+      pos.setXYZ(i, OJO.x + (px - OJO.x) * KZ, -(OJO.y + (py - OJO.y) * KZ), ZC);
+    }
+  }
+  const matCuello = new THREE.MeshBasicMaterial({ map: tCuello, transparent: true, toneMapped: false, depthWrite: false });
+  doblar(matCuello, PIVOTE.clone(), '(1.0 - smoothstep(0.0, 1.0, clamp((' + NY0.toFixed(1) + ' + (1.0 - uv.y) * ' + (NY1 - NY0).toFixed(1) + ' - 520.0) / 105.0, 0.0, 1.0)))');
+  const cuello = new THREE.Mesh(geoCuello, matCuello);
+  cuello.frustumCulled = false;
+  escena.add(cuello);
 
   // Cables: 12 tubos (6 por lado). Salen de los conectores del lateral y de
   // debajo del televisor y acaban repartidos sobre la correa de cada hombro.
@@ -270,7 +243,7 @@ export async function montar({ hero, lienzo, alListo }) {
   const matCable = new THREE.MeshStandardMaterial({ color: 0x1a1715, roughness: 0.72, metalness: 0.0 });
   doblar(matCable, PIVOTE.clone(), 'pow(1.0 - uv.x, 1.6)');
   for (const c of conectores) {
-    const a = c.a.clone(), b = c.b.clone().setZ(110);   // sobre la superficie de los hombros del busto 3D
+    const a = c.a.clone(), b = c.b.clone();
     const curva = new THREE.CubicBezierCurve3(a,
       new THREE.Vector3(a.x + c.lado * 6, a.y - (c.lado ? 150 : 45), a.z + (c.lado ? 20 : 30)),
       new THREE.Vector3(b.x - c.lado * 10, b.y + 55, b.z + 10), b);
@@ -302,11 +275,7 @@ export async function montar({ hero, lienzo, alListo }) {
     matFrente.color.setScalar(sombra);
     cabeza.updateMatrix();
     uGiro.value.setFromMatrix4(cabeza.matrix);
-    // Respira: el busto crece un poco desde abajo y la cabeza sube con él.
-    const r = v.respira || 0, k = 1 + r * 0.006;
-    cuerpo.scale.set(1 + r * 0.003, k, 1 + r * 0.004);
-    cuerpo.rotation.z = THREE.MathUtils.degToRad((v.br || 0) * 0.25);
-    cabeza.position.y = PIVOTE.y + (PIVOTE.y - BASE_Y) * (k - 1);
+
     let parpado = 1;
     if (ojos && ojos.classList.contains('is-blink')) {
       const tr = getComputedStyle(ojos).transform;
