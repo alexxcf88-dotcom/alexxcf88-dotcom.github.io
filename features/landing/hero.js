@@ -107,10 +107,7 @@
     ey += (ty - ey) * Math.min(1, dt * 9);
     const ry = cx * 6 + 0.6 * Math.sin(t * 0.29 + 4);
     const rx = -cy * 3.5 + 0.4 * Math.sin(t * 0.37 + 1);
-    // Estado compartido con la Cristina 3D (cristina3d.js).
-    const vivo = window.ditboVivo || (window.ditboVivo = {});
-    vivo.cx = cx; vivo.cy = cy; vivo.ex = ex; vivo.ey = ey; vivo.respira = respira; vivo.bx = bx; vivo.br = br;
-    if (fig && !hero.classList.contains('has-3d')) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
+    if (fig) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
     if (lx !== ojoX || ly !== ojoY) { ojoX = lx; ojoY = ly; tv.style.setProperty('--lx', lx); tv.style.setProperty('--ly', ly); }
@@ -226,10 +223,9 @@
       tv.classList.toggle('is-call', !!d.colgando);
       hero.classList.toggle('is-call', !!d.colgando);
       if (d.colgando) alCentro();
-      else { tv.style.setProperty('--vol', '0'); nivel(4); if (window.ditboVivo) window.ditboVivo.vol = 0; }
+      else { tv.style.setProperty('--vol', '0'); nivel(4); }
     } else if (d.tipo === 'nivel') {
       const v = Math.min(1, Number(d.nivel || 0) * 2.2);
-      (window.ditboVivo || (window.ditboVivo = {})).vol = v;
       tv.style.setProperty('--vol', v.toFixed(3));
       if (!hablando) nivel(Math.max(1, Math.round(1 + v * 5)));
     }
@@ -368,22 +364,6 @@
     if (sintetizador.onvoiceschanged !== undefined) sintetizador.onvoiceschanged = () => {};
     // Al empezar una llamada real, la voz del saludo se calla.
     window.addEventListener('ditbo:voz', (ev) => { const d = ev.detail || {}; if (d.tipo === 'boton' && (d.colgando || d.ocupado)) { callar(); sonido.hidden = true; } else if (d.tipo === 'boton') sonido.hidden = false; });
-  }
-
-  /* 9 · Cristina en 3D. Se carga cuando la web ya ha entrado y el navegador
-     está libre; hasta entonces (y sin WebGL, con ahorro de datos o con
-     movimiento reducido) se queda la foto. Al estar lista, la foto se funde. */
-  const lienzo3d = document.getElementById('ix-3d');
-  const soportaGL = () => {
-    try { const c = document.createElement('canvas'); return !!(c.getContext('webgl2') || c.getContext('webgl')); } catch (e) { return false; }
-  };
-  const red3d = navigator.connection || {};
-  const sin3d = reduced || red3d.saveData === true || /(^|-)(2g|slow-2g)$/.test(red3d.effectiveType || '') || !soportaGL();
-  if (lienzo3d && !sin3d) {
-    const cargar3d = () => import('/features/landing/cristina3d.js?v=5')
-      .then((m) => m.montar({ hero, lienzo: lienzo3d, alListo: () => hero.classList.add('has-3d') }))
-      .catch((err) => console.warn('[portada] 3D no disponible, se queda la foto', err));
-    alEntrar(() => ('requestIdleCallback' in window ? requestIdleCallback(cargar3d, { timeout: 1500 }) : setTimeout(cargar3d, 300)));
   }
 })();
 
