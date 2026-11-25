@@ -1,109 +1,84 @@
-/* Cristina en 3D (portada). Modelo propio generado a partir de sus vistas
-   (frente, lados y espalda) y servido como glTF. Lo carga hero.js cuando la
-   web ya ha entrado; mientras tanto, y si no hay WebGL, se ve la foto.
-
-   · Cabeza: gira hacia el puntero desde la base del cuello. El giro no es un
-     corte: se reparte de forma suave entre el cuello y el televisor (peso por
-     altura en el propio shader), así cuello y cables siguen unidos.
-   · Cuerpo: respira y se balancea (los valores los calcula hero.js y los deja
-     en window.ditboVivo; aquí solo se aplican).
-   · Pantalla: una capa encendida sobre el cristal del televisor con la cara de
-     ditbo, la «i» (barras de nivel) y la «o» (dial con su punto). Lee el
-     estado de los ojos del DOM que ya mueve hero.js (pestañeo y barras).
-   Solo se dibuja mientras la portada está a la vista. */
+/* Cristina en la portada: cuerpo real (la foto) + cabeza de televisor en 3D.
+   · El cuerpo, el cuello y el traje son la foto (sin el televisor ni los
+     cables que colgaban sobre la pared): todo su realismo. Respira y se
+     balancea con el resto de la figura (lo hace hero.js sobre #ix-fig).
+   · El televisor es una caja 3D hecha a medida: frontal con la textura de la
+     propia foto, laterales y techo con las vistas reales del mismo televisor.
+     Gira un poco hacia el puntero desde la base del cuello.
+   · Los cables son tubos 3D que salen de los conectores del televisor y
+     acaban en las correas de los hombros (en la foto); se recalculan en cada
+     fotograma, así siempre están conectados.
+   · La pantalla lleva los ojos de ditbo («i» y «o» del logo).
+   Coordenadas: 1 unidad = 1 píxel de la foto (1671×941); y hacia arriba. */
 import * as THREE from './vendor/three.module.min.js';
-import { GLTFLoader } from './vendor/GLTFLoader.js';
 
-// Medidas del modelo (unidades del glTF, medidas sobre el propio modelo).
-const CUELLO_DESDE = 0.60;   // a partir de aquí el giro empieza a contar
-const CUELLO_HASTA = 0.70;   // desde aquí todo gira entero (el televisor)
-const PIVOTE = new THREE.Vector3(0, 0.615, -0.02);
-const PANTALLA = { x0: -0.137, x1: 0.133, y0: 0.73, y1: 0.97, z: 0.1045 };
-const GIRO_Y = THREE.MathUtils.degToRad(15);   // izquierda / derecha
-const GIRO_X = THREE.MathUtils.degToRad(7);   // arriba / abajo
+const FW = 1671, FH = 941;
+const P = (x, y, z = 0) => new THREE.Vector3(x, -y, z);   // píxel de la foto → mundo
+// Televisor en la foto (recorte del frontal) y su fondo (de las vistas laterales).
+const TV = { x0: 926, x1: 1578, y0: 16, y1: 554, fondo: 473 };
+const PANTALLA = { x0: 1019.3, x1: 1508.9, y0: 75.3, y1: 461.1 };
+const PIVOTE = P(1252, 640, -170);        // base del cuello, bajo el televisor
+const GIRO_Y = THREE.MathUtils.degToRad(13);
+const GIRO_X = THREE.MathUtils.degToRad(6);
+const RAD = 4.3;                           // grosor de los cables (px)
 
 export async function montar({ hero, lienzo, alListo }) {
   const renderer = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.75));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
-  renderer.toneMapping = THREE.ACESFilmicToneMapping;
-  renderer.toneMappingExposure = 1.08;
 
   const escena = new THREE.Scene();
-  const camara = new THREE.PerspectiveCamera(20, 1, 0.1, 20);
+  // Cámara casi ortográfica centrada en la foto: el plano z=0 coincide con ella.
+  const FOV = 8, DIST = (FH / 2) / Math.tan(THREE.MathUtils.degToRad(FOV / 2));
+  const camara = new THREE.PerspectiveCamera(FOV, FW / FH, DIST * 0.5, DIST * 1.6);
+  camara.position.set(FW / 2, -FH / 2, DIST);
+  camara.lookAt(FW / 2, -FH / 2, 0);
 
-  // Luz de estudio suave, como la foto: cálida desde arriba a la izquierda,
-  // relleno frío y un borde que separa la figura del fondo.
-  escena.add(new THREE.HemisphereLight(0xfff4ee, 0x6f6360, 1.25));
-  const clave = new THREE.DirectionalLight(0xfff1e6, 2.1); clave.position.set(-1.4, 2.2, 2.6); escena.add(clave);
-  const relleno = new THREE.DirectionalLight(0xdfe8ff, 0.55); relleno.position.set(1.8, 0.6, 1.5); escena.add(relleno);
-  const borde = new THREE.DirectionalLight(0xffffff, 1.1); borde.position.set(0.6, 1.6, -2.4); escena.add(borde);
+  // Luz (solo para los cables): estudio suave desde arriba a la izquierda, como la foto.
+  escena.add(new THREE.HemisphereLight(0xfff3ec, 0x51463f, 1.4));
+  const clave = new THREE.DirectionalLight(0xffffff, 2.4); clave.position.set(-600, 900, 1400); escena.add(clave);
+  const borde = new THREE.DirectionalLight(0xffffff, 0.9); borde.position.set(900, 300, -600); escena.add(borde);
 
-  // Giro de la cabeza, compartido por todos los materiales del modelo.
-  const uni = {
-    uGiro: { value: new THREE.Matrix3() },
-    uPivote: { value: PIVOTE },
-    uDesde: { value: CUELLO_DESDE },
-    uHasta: { value: CUELLO_HASTA },
-  };
-  const conGiro = (material) => {
-    material.onBeforeCompile = (sh) => {
-      Object.assign(sh.uniforms, uni);
-      sh.vertexShader = sh.vertexShader
-        .replace('#include <common>', `#include <common>
-          uniform mat3 uGiro; uniform vec3 uPivote; uniform float uDesde; uniform float uHasta;
-          float pesoCuello(float y){ float w = smoothstep(uDesde, uHasta, y); return w * w * (3.0 - 2.0 * w); }`)
-        .replace('#include <beginnormal_vertex>', `#include <beginnormal_vertex>
-          objectNormal = normalize(mix(objectNormal, uGiro * objectNormal, pesoCuello(position.y)));`)
-        .replace('#include <begin_vertex>', `#include <begin_vertex>
-          { float w = pesoCuello(position.y);
-            vec3 girado = uGiro * (transformed - uPivote) + uPivote;
-            transformed = mix(transformed, girado, w); }`);
-    };
-    material.needsUpdate = true;
-  };
+  const cargar = (url) => new Promise((ok, mal) => new THREE.TextureLoader().load(url, (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; ok(t); }, undefined, mal));
+  const base = '/features/landing/media/hero/';
+  const [tFrente, tIzq, tDer, tArriba] = await Promise.all(['cristina-cabeza.webp', 'cristina-lado-izq.webp', 'cristina-lado-der.webp', 'cristina-arriba.webp'].map((f) => cargar(base + f + '?v=1')));
+  const plano = (mat, ancho, alto) => new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto), mat);
+  const mat = (tex, color = 0xffffff) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.04, color, side: THREE.DoubleSide, toneMapped: false });
 
-  const gltf = await new GLTFLoader().loadAsync('/features/landing/media/hero/cristina.glb?v=1');
-  const modelo = gltf.scene;
-  modelo.traverse((o) => {
-    if (!o.isMesh) return;
-    o.frustumCulled = false; // los vértices se mueven en el shader
-    const m = o.material;
-    m.metalness = 0; m.roughness = 0.78;
-    if (m.map) m.map.anisotropy = Math.min(8, renderer.capabilities.getMaxAnisotropy());
-    conGiro(m);
-  });
+  // Grupo de la cabeza, con el origen en el pivote del cuello.
+  const cabeza = new THREE.Group();
+  cabeza.position.copy(PIVOTE);
+  escena.add(cabeza);
+  const enCabeza = (o, v) => { o.position.copy(v).sub(PIVOTE); cabeza.add(o); return o; };
+  const W = TV.x1 - TV.x0, H = TV.y1 - TV.y0, D = TV.fondo, cx = (TV.x0 + TV.x1) / 2, cyTV = (TV.y0 + TV.y1) / 2;
 
-  // Pantalla encendida con la cara de ditbo (se redibuja solo cuando cambia).
+  // Interior y tapa trasera (para que no se vea a través al girar).
+  const caja = new THREE.Mesh(new THREE.BoxGeometry(W * 0.86, H * 0.84, D * 0.92), new THREE.MeshBasicMaterial({ color: 0x5d5853, toneMapped: false }));
+  enCabeza(caja, P(cx, cyTV, -D * 0.5));
+  // Laterales: la vista de perfil del mismo televisor (con su forma recortada).
+  const latIzq = enCabeza(plano(mat(tDer, 0xc9c2bb), D, H * 0.96), P(TV.x0 + 6, cyTV + 6, -D / 2)); latIzq.rotation.y = -Math.PI / 2;
+  const latDer = enCabeza(plano(mat(tIzq, 0xbab3ac), D, H * 0.96), P(TV.x1 - 6, cyTV + 6, -D / 2)); latDer.rotation.y = Math.PI / 2;
+  // Techo y suelo.
+  const techo = enCabeza(plano(mat(tArriba, 0xcfc8c1), W * 0.98, D), P(cx, TV.y0 + 4, -D / 2)); techo.rotation.x = -Math.PI / 2;
+  const suelo = enCabeza(plano(new THREE.MeshBasicMaterial({ color: 0x3c3935, side: THREE.DoubleSide, toneMapped: false }), W * 0.9, D * 0.9), P(cx, TV.y1 - 6, -D * 0.48)); suelo.rotation.x = Math.PI / 2;
+  // Frontal: la foto.
+  const matFrente = mat(tFrente);
+  enCabeza(plano(matFrente, W, H), P(cx, cyTV, 0.5));
+
+
+  // Pantalla encendida con la cara de ditbo.
   const lienzoCara = document.createElement('canvas');
   const CW = 640, CH = Math.round(640 * (PANTALLA.y1 - PANTALLA.y0) / (PANTALLA.x1 - PANTALLA.x0));
   lienzoCara.width = CW; lienzoCara.height = CH;
   const ctx = lienzoCara.getContext('2d');
   const texCara = new THREE.CanvasTexture(lienzoCara);
   texCara.colorSpace = THREE.SRGBColorSpace;
-  texCara.anisotropy = 4;
-  const geoCara = new THREE.PlaneGeometry(PANTALLA.x1 - PANTALLA.x0, PANTALLA.y1 - PANTALLA.y0, 8, 8);
-  geoCara.translate((PANTALLA.x0 + PANTALLA.x1) / 2, (PANTALLA.y0 + PANTALLA.y1) / 2, PANTALLA.z);
-  // Cristal un poco abombado, como un tubo.
-  const pos = geoCara.attributes.position;
-  const cx0 = (PANTALLA.x0 + PANTALLA.x1) / 2, cy0 = (PANTALLA.y0 + PANTALLA.y1) / 2;
-  const hw = (PANTALLA.x1 - PANTALLA.x0) / 2, hh = (PANTALLA.y1 - PANTALLA.y0) / 2;
-  for (let i = 0; i < pos.count; i++) {
-    const nx = (pos.getX(i) - cx0) / hw, ny = (pos.getY(i) - cy0) / hh;
-    pos.setZ(i, PANTALLA.z + 0.004 * (1 - Math.min(1, (nx * nx + ny * ny) * 0.5)));
-  }
-  const matCara = new THREE.MeshBasicMaterial({ map: texCara, toneMapped: false });
-  conGiro(matCara);
-  const cara = new THREE.Mesh(geoCara, matCara);
-  cara.frustumCulled = false;
-  modelo.add(cara);
-
-  const raiz = new THREE.Group();
-  raiz.add(modelo);
-  escena.add(raiz);
-
-  const barras = Array.from(hero.querySelectorAll('.tv-bar')); // de arriba abajo
+  const pw = PANTALLA.x1 - PANTALLA.x0, ph = PANTALLA.y1 - PANTALLA.y0;
+  const matCara = new THREE.MeshBasicMaterial({ map: texCara, toneMapped: false, transparent: true, opacity: 1 });
+  enCabeza(plano(matCara, pw, ph), P((PANTALLA.x0 + PANTALLA.x1) / 2, (PANTALLA.y0 + PANTALLA.y1) / 2, 1.5));
+  const barras = Array.from(hero.querySelectorAll('.tv-bar'));
   const ojos = hero.querySelector('#tv-eyes');
+
   // Los ojos son los mismos de la versión de la foto: la «o» se toma del
   // símbolo del logo (#tv-o) y la «i» con las medidas exactas del logo.
   const R = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
@@ -114,6 +89,7 @@ export async function montar({ hero, lienzo, alListo }) {
   if (simbolo) {
     const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="375.2 52.5 620 620" width="512" height="512">'
       + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5af0d8"/><stop offset="1" stop-color="#35c9f0"/></linearGradient></defs>'
+      + '<style>.tv-o-dim{opacity:.26}</style>'
       + simbolo.innerHTML.replace(/url\(#tv-grad\)/g, 'url(#g)') + '</svg>';
     anillo.onload = () => {
       // Copias teñidas del anillo para la aberración cromática.
@@ -196,46 +172,60 @@ export async function montar({ hero, lienzo, alListo }) {
     return true;
   };
 
-  // Encuadre: busto desde el pecho, como la foto.
-  const encuadrar = () => {
+
+  // Cables: 12 tubos (6 por lado). Salen de los conectores del lateral y de
+  // debajo del televisor y acaban repartidos sobre la correa de cada hombro.
+  const conectores = [
+    // lado izquierdo (3), debajo izquierda (3), debajo derecha (3), lado derecho (3)
+    ...[0, 1, 2].map((i) => ({ a: P(TV.x0 - 2, 380 + i * 9, -110 - i * 22), b: P(1006 + i * 8, 672), lado: -1 })),
+    ...[0, 1, 2].map((i) => ({ a: P(1088 + i * 13, TV.y1 - 2, -60 - i * 10), b: P(1034 + i * 9, 668), lado: 0 })),
+    ...[0, 1, 2].map((i) => ({ a: P(1405 + i * 15, TV.y1 - 2, -60 - i * 10), b: P(1466 + i * 9, 684), lado: 0 })),
+    ...[0, 1, 2].map((i) => ({ a: P(TV.x1 + 2, 380 + i * 9, -110 - i * 22), b: P(1496 + i * 9, 688), lado: 1 })),
+  ];
+  const matCable = new THREE.MeshStandardMaterial({ color: 0x0c0c0c, roughness: 0.5, metalness: 0.05 });
+  const tmp = new THREE.Vector3();
+  const cables = conectores.map((c) => {
+    const curva = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), c.b.clone());
+    const malla = new THREE.Mesh(new THREE.TubeGeometry(curva, 28, RAD, 7, false), matCable);
+    escena.add(malla);
+    return { ...c, curva, malla };
+  });
+  const rehacerCables = () => {
+    cabeza.updateMatrixWorld(true);
+    for (const c of cables) {
+      const a = tmp.copy(c.a).sub(PIVOTE).applyMatrix4(cabeza.matrixWorld);
+      c.curva.v0.copy(a);
+      // Los de los lados bajan pegados al lateral; los de abajo caen rectos.
+      c.curva.v1.set(a.x + c.lado * 6, a.y - (c.lado ? 150 : 45), a.z + (c.lado ? 20 : 30));
+      c.curva.v2.set(c.b.x - c.lado * 10, c.b.y + 55, c.b.z + 10);
+      const g = new THREE.TubeGeometry(c.curva, 28, RAD, 7, false);
+      c.malla.geometry.dispose(); c.malla.geometry = g;
+    }
+  };
+
+  const ajustar = () => {
     const w = lienzo.clientWidth || 1, h = lienzo.clientHeight || 1;
     renderer.setSize(w, h, false);
-    camara.aspect = w / h;
-    const movil = w < 560 && h / w > 0.85;
-    // Como la foto original: el televisor arranca a ~21 % de la altura, los
-    // hombros salen justo por el borde de abajo y, en escritorio, el
-    // televisor queda centrado al 68 % del ancho del lienzo (a la derecha).
-    const alto = movil ? 0.74 : 0.67;
-    const centro = movil ? 0.79 : 0.795;
-    const dx = movil ? 0 : -(0.685 - 0.5) * alto * camara.aspect;
-    const dist = (alto / 2) / Math.tan(THREE.MathUtils.degToRad(camara.fov / 2));
-    camara.position.set(dx, centro + 0.02, dist);
-    camara.lookAt(dx, centro, 0);
-    camara.updateProjectionMatrix();
   };
-  encuadrar();
-  window.addEventListener('resize', encuadrar, { passive: true });
+  ajustar();
+  window.addEventListener('resize', ajustar, { passive: true });
 
-  const rot = new THREE.Matrix4(), m3 = new THREE.Matrix3(), eu = new THREE.Euler(0, 0, 0, 'YXZ');
-  let visible = true, bucle = 0;
+  const eu = new THREE.Euler(0, 0, 0, 'YXZ');
+  let visible = true, bucle = 0, ultimoGiro = '';
   const reloj = () => {
     bucle = 0;
     if (!visible || document.hidden) return;
     const v = window.ditboVivo || {};
-    const cx = v.cx || 0, cy = v.cy || 0, ex = v.ex || 0, ey = v.ey || 0, respira = v.respira || 0, t = performance.now() / 1000;
-    // Cabeza: hacia el puntero + micro-movimientos propios.
-    eu.set(cy * GIRO_X + 0.012 * Math.sin(t * 0.37 + 1),
-           cx * GIRO_Y + 0.018 * Math.sin(t * 0.29 + 4),
-           -cx * 0.03 + 0.012 * Math.sin(t * 0.41 + 2));
-    rot.makeRotationFromEuler(eu);
-    uni.uGiro.value.setFromMatrix4(rot);
-    // Cuerpo: balanceo y respiración (muy sutil) + un poco de giro del torso.
-    raiz.rotation.y = (v.br || 0) * 0.01; // cuerpo de frente: solo cabeza y cuello siguen al cursor
-    raiz.rotation.z = THREE.MathUtils.degToRad((v.br || 0) * 0.5);
-    raiz.position.x = (v.bx || 0) * 0.0012;
-    raiz.position.y = -(respira * 0.0035);
-    modelo.scale.set(1 + respira * 0.004, 1, 1 + respira * 0.006);
-    // Pantalla: pestañeo (del DOM que anima hero.js), barras y voz.
+    const t = performance.now() / 1000;
+    eu.set((v.cy || 0) * GIRO_X + 0.008 * Math.sin(t * 0.37 + 1),
+           (v.cx || 0) * GIRO_Y + 0.012 * Math.sin(t * 0.29 + 4),
+           -(v.cx || 0) * 0.025 + 0.008 * Math.sin(t * 0.41 + 2));
+    cabeza.rotation.copy(eu);
+    // El frontal se oscurece un poco al girar (deja de mirar a la luz).
+    const sombra = 1 - Math.min(0.18, Math.abs(eu.y) * 0.7);
+    matFrente.color.setScalar(sombra);
+    const firmaGiro = eu.x.toFixed(4) + eu.y.toFixed(4) + eu.z.toFixed(4);
+    if (firmaGiro !== ultimoGiro) { ultimoGiro = firmaGiro; rehacerCables(); }
     let parpado = 1;
     if (ojos && ojos.classList.contains('is-blink')) {
       const tr = getComputedStyle(ojos).transform;
@@ -243,7 +233,7 @@ export async function montar({ hero, lienzo, alListo }) {
       parpado = m ? Math.max(0.06, m[3]) : 1;
     }
     const niveles = barras.map((b) => (b.style.opacity === '' || Number(b.style.opacity) > 0.5 ? 1 : 0));
-    pintarCara(ex, ey, parpado, niveles, v.vol || 0);
+    pintarCara(v.ex || 0, v.ey || 0, parpado, niveles, v.vol || 0);
     renderer.render(escena, camara);
     bucle = requestAnimationFrame(reloj);
   };
@@ -253,7 +243,7 @@ export async function montar({ hero, lienzo, alListo }) {
   }
   document.addEventListener('visibilitychange', despertar);
 
-  // Primer fotograma ya pintado antes de mostrarlo: sin parpadeo al cambiar.
+  rehacerCables();
   pintarCara(0, 0, 1, barras.map(() => 1), 0);
   renderer.render(escena, camara);
   alListo();

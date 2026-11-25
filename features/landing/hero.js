@@ -110,7 +110,10 @@
     // Estado compartido con la Cristina 3D (cristina3d.js).
     const vivo = window.ditboVivo || (window.ditboVivo = {});
     vivo.cx = cx; vivo.cy = cy; vivo.ex = ex; vivo.ey = ey; vivo.respira = respira; vivo.bx = bx; vivo.br = br;
-    if (fig && !hero.classList.contains('has-3d')) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
+    if (fig && hero.classList.contains('has-3d')) {
+      // Con la cabeza 3D, el cuerpo solo respira y se balancea (la cabeza ya mira).
+      fig.style.transform = `translate3d(${bx.toFixed(2)}px,${by.toFixed(2)}px,0) rotate(${(br * 0.6).toFixed(3)}deg) scale(1,${(1 + respira * 0.004).toFixed(4)})`;
+    } else if (fig) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
     if (lx !== ojoX || ly !== ojoY) { ojoX = lx; ojoY = ly; tv.style.setProperty('--lx', lx); tv.style.setProperty('--ly', ly); }
@@ -380,9 +383,19 @@
   const red3d = navigator.connection || {};
   const sin3d = reduced || red3d.saveData === true || /(^|-)(2g|slow-2g)$/.test(red3d.effectiveType || '') || !soportaGL();
   if (lienzo3d && !sin3d) {
-    const cargar3d = () => import('/features/landing/cristina3d.js?v=6')
-      .then((m) => m.montar({ hero, lienzo: lienzo3d, alListo: () => hero.classList.add('has-3d') }))
-      .catch((err) => console.warn('[portada] 3D no disponible, se queda la foto', err));
+    const cargar3d = () => {
+      // El cuerpo sin televisor se descarga antes: el cambio de foto y el
+      // primer fotograma 3D ocurren a la vez, sin parpadeo.
+      const cuerpo = new Image();
+      cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=1';
+      return Promise.all([import('/features/landing/cristina3d.js?v=9'), cuerpo.decode()])
+        .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
+          const img = hero.querySelector('.ix-body');
+          if (img) img.src = cuerpo.src;
+          hero.classList.add('has-3d');
+        } }))
+        .catch((err) => console.warn('[portada] 3D no disponible, se queda la foto', err));
+    };
     alEntrar(() => ('requestIdleCallback' in window ? requestIdleCallback(cargar3d, { timeout: 1500 }) : setTimeout(cargar3d, 300)));
   }
 })();
