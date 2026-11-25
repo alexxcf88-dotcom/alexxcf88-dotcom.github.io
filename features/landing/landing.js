@@ -1673,6 +1673,7 @@ function mountCal(destino) {
       // guion lo borraría al repintar.
 
       let vapi = null;
+      let ignorarErrorVoz = false; // ver empezarLlamada: reintento sin override de voz
       let publicKeyActual = null; // la key llega por-llamada desde /demo/voz-start
       let enLlamada = false;
       let ocupado = false;
@@ -1962,6 +1963,7 @@ function mountCal(destino) {
           }
         });
         vapi.on('error', (err) => {
+          if (ignorarErrorVoz) { console.warn('[voz] override rechazado, reintentando:', err); return; }
           console.error('[voz] error real del SDK:', err);
           reposo('no se pudo conectar la llamada');
         });
@@ -2049,16 +2051,40 @@ function mountCal(destino) {
           // · el saludo no se corta: el eco del altavoz entrando por el micro
           //   interrumpía a Cristina y al retomar repetía la palabra
           //   («artificial… artificial»).
+          // Override POR-LLAMADA (no toca el asistente publicado en Vapi):
+          // · backgroundSound off (el ruido de oficina saturaba al arrancar).
+          // · Misma voz de Cristina (ElevenLabs, mismos ajustes que en Vapi),
+          //   pero el texto solo se trocea al final de frase. Con el troceo por
+          //   defecto Vapi cortaba en «…inteligencia artificial» y ElevenLabs
+          //   generaba cada trozo aparte: pausa rara y a veces la palabra
+          //   repetida («artificial… artificial»).
+          // Si Vapi rechazara la voz, se reintenta con la configuración de siempre.
+          const base = { backgroundSound: 'off', firstMessageInterruptionsEnabled: false };
           const overrides = {
-            backgroundSound: 'off',
-            firstMessageInterruptionsEnabled: false,
-            // El saludo se trababa siempre al cerrar la frase en «…artificial.»
-            // («artificial… artificial»): se reordena para no terminar ahí.
-            // Sigue identificándose como IA (obligatorio, ver legal/terminos).
-            firstMessage: 'Hola, soy Cristina, la asistente virtual con inteligencia artificial de la clínica. ¿En qué puedo ayudarle?',
-            stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.35, backoffSeconds: 1 },
+            ...base,
+            voice: {
+              provider: '11labs',
+              voiceId: 'dNjJKg63Fr5AXwIdkATa',
+              model: 'eleven_flash_v2_5',
+              stability: 0.5,
+              similarityBoost: 0.8,
+              style: 0.3,
+              useSpeakerBoost: true,
+              optimizeStreamingLatency: 1,
+              cachingEnabled: true,
+              chunkPlan: { enabled: true, minCharacters: 60, punctuationBoundaries: ['.', '?', '!', '。'] },
+            },
           };
-          await v.start(auth.assistantId, overrides);
+          // La librería de Vapi no lanza si rechaza el override: devuelve null
+          // y emite «error». Ese primer error se ignora y se reintenta sin voz.
+          let llamada = null;
+          ignorarErrorVoz = true;
+          try { llamada = await v.start(auth.assistantId, overrides); } catch (errVoz) { llamada = null; }
+          ignorarErrorVoz = false;
+          if (!llamada) {
+            console.warn('[voz] Vapi no aceptó el ajuste de voz; se usa la configuración publicada');
+            await v.start(auth.assistantId, base);
+          }
           // el estado real lo fija el evento call-start
         } catch (err) {
           console.error('[voz] error real al iniciar:', err);
