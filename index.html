@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="features/landing/media/hero/cristina.webp" as="image" fetchpriority="high">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="features/landing/landing.js?v=20261126-viaje" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/landing.js?v=20261126-arrastre" as="script" fetchpriority="low">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -603,6 +603,37 @@
     .ix-3d{filter:sepia(.05) contrast(.97) blur(.3px)}
     .ix-fig::after{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);pointer-events:none;background:url(features/landing/media/hero/grano.webp) 0 0/160px 160px repeat;opacity:.32}
     .ix-fig::before{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);pointer-events:none;background:radial-gradient(120% 90% at 66% 40%,rgba(70,50,40,0) 55%,rgba(60,42,34,.14) 100%)}
+    /* Ventana de la demo: te atiende Cristina (su pantalla con la «i» y la «o»,
+       y tres mensajes que llegan como en una conversación). */
+    .dm-cristina{display:flex;flex-direction:column;gap:18px}
+    .dm-head{display:flex;align-items:center;gap:14px}
+    .dm-tv{position:relative;flex:none;width:86px;aspect-ratio:1.18;border-radius:16px;padding:7px;background:linear-gradient(160deg,#b9b2ab,#7d756f);box-shadow:inset 0 1px 0 rgba(255,255,255,.6),0 10px 24px -10px rgba(0,0,0,.7)}
+    .dm-eyes{display:flex;align-items:center;justify-content:center;gap:12%;width:100%;height:100%;border-radius:11px;background:radial-gradient(90% 80% at 50% 45%,#0d1716,#030505);box-shadow:inset 0 0 12px rgba(0,0,0,.9);filter:drop-shadow(0 0 5px rgba(90,240,216,.65));animation:dmBlink 4.6s infinite}
+    @keyframes dmBlink{0%,93%,100%{transform:scaleY(1)}95%,97%{transform:scaleY(.08)}}
+    .dm-i{width:15%;height:auto}
+    .dm-bar{animation:dmBar 1.6s steps(1) infinite}
+    .dm-bar:nth-child(1){animation-delay:-.2s}.dm-bar:nth-child(2){animation-delay:-.6s}.dm-bar:nth-child(3){animation-delay:-1s}.dm-bar:nth-child(4){animation-delay:-.4s}
+    .dm-bar:nth-child(5),.dm-bar:nth-child(6){animation:none}
+    @keyframes dmBar{0%,100%{opacity:1}50%{opacity:.26}}
+    .dm-o{position:relative;width:34%;aspect-ratio:1}
+    .dm-o svg{display:block;width:100%;height:100%}
+    .dm-o i{position:absolute;left:50%;top:50%;width:19%;aspect-ratio:1;border-radius:50%;background:#fff;box-shadow:0 0 6px #fff;transform:translate(-50%,-50%);animation:dmMira 5s ease-in-out infinite}
+    @keyframes dmMira{0%,20%,100%{transform:translate(-50%,-50%)}35%,55%{transform:translate(-10%,-60%)}70%,85%{transform:translate(-90%,-40%)}}
+    .dm-who{display:grid;gap:2px}
+    .dm-who b{color:#f7fbf8;font-family:Archivo,system-ui,sans-serif;font-size:1.15rem;letter-spacing:-.01em}
+    .dm-who>span{color:rgba(247,251,248,.6);font-size:.82rem}
+    .dm-dot{display:inline-block;width:7px;height:7px;margin-right:4px;border-radius:50%;background:#5af0d8;box-shadow:0 0 0 0 rgba(90,240,216,.6);animation:dmPulse 1.6s ease-out infinite;vertical-align:1px}
+    @keyframes dmPulse{to{box-shadow:0 0 0 7px rgba(90,240,216,0)}}
+    .dm-cristina h2{margin:4px 0 0}
+    .dm-chat{display:grid;gap:9px;justify-items:start}
+    .dm-msg{position:relative;max-width:34ch;margin:0;padding:11px 15px;border-radius:4px 16px 16px 16px;background:rgba(255,255,255,.06);border:1px solid rgba(90,240,216,.16);color:rgba(247,251,248,.86);font-size:.95rem;line-height:1.45;opacity:0;transform:translateY(8px)}
+    .dm-msg b{color:#5af0d8;font-weight:700}
+    .demo-modal.is-open .dm-msg{animation:dmIn .45s cubic-bezier(.2,.8,.2,1) both;animation-delay:calc(.35s + var(--i) * .9s)}
+    @keyframes dmIn{to{opacity:1;transform:none}}
+    .dm-tags{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 0;padding:0;list-style:none}
+    .dm-tags li{padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:rgba(247,251,248,.7);font-size:.78rem}
+    @media (prefers-reduced-motion:reduce){.dm-eyes,.dm-bar,.dm-o i,.dm-dot{animation:none!important}.dm-msg{opacity:1;transform:none;animation:none!important}}
+    @media (max-width:760px){.dm-tv{width:68px}.dm-msg{font-size:.88rem}}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -1282,17 +1313,25 @@
       <button class="demo-modal-close" type="button" data-demo-close aria-label="Cerrar">
         <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg>
       </button>
-      <div class="demo-modal-aside">
-        <img class="demo-modal-marca" src="brand/logo/logo-ditbo.svg" alt="ditbo" width="2851" height="845">
-        <p class="eyebrow"><span></span> Demo</p>
-        <h2 id="demo-modal-title">Tu recepci&oacute;n puede empezar a respirar.</h2>
-        <p class="demo-modal-lead">Vemos tu operativa real y te enseñamos dónde puede entrar d<span class="b-ai">i</span>tb<span class="b-ai">o</span>.</p>
-        <ul class="cta-points">
-          <li><b>01</b><span><strong>Diagnóstico claro</strong>Agenda, llamadas y canales</span></li>
-          <li><b>02</b><span><strong>Demo a medida</strong>Con casos de tu clínica</span></li>
-          <li><b>03</b><span><strong>Sin permanencia</strong>Una propuesta cerrada</span></li>
+      <div class="demo-modal-aside dm-cristina">
+        <div class="dm-head">
+          <div class="dm-tv" aria-hidden="true">
+            <div class="dm-eyes">
+              <svg class="dm-i" viewBox="-20 -20 320 765" focusable="false"><g fill="url(#tv-grad)"><rect class="dm-bar" x="0" y="0" width="280" height="91.3" rx="22"/><rect class="dm-bar" x="0" y="126.7" width="280" height="91.3" rx="22"/><rect class="dm-bar" x="0" y="253.5" width="280" height="91.3" rx="22"/><rect class="dm-bar" x="0" y="380.2" width="280" height="91.3" rx="22"/><rect class="dm-bar" x="0" y="507.0" width="280" height="91.3" rx="22"/><rect class="dm-bar" x="0" y="633.7" width="280" height="91.3" rx="22"/></g></svg>
+              <span class="dm-o"><svg viewBox="0 0 100 100" focusable="false"><use href="#tv-o" width="100" height="100"/></svg><i></i></span>
+            </div>
+          </div>
+          <div class="dm-who"><b>Cristina</b><span><i class="dm-dot"></i> asistente de d<span class="b-ai">i</span>tb<span class="b-ai">o</span> &middot; en l&iacute;nea</span></div>
+        </div>
+        <h2 id="demo-modal-title">Te ense&ntilde;o c&oacute;mo atender&iacute;a tu cl&iacute;nica.</h2>
+        <div class="dm-chat" aria-live="polite">
+          <p class="dm-msg" style="--i:0">Hola. En una llamada corta te ense&ntilde;o c&oacute;mo contestar&iacute;a a <b>tus</b> pacientes.</p>
+          <p class="dm-msg" style="--i:1">Miramos tu agenda real, tus horarios y tus canales: nada de presentaciones gen&eacute;ricas.</p>
+          <p class="dm-msg" style="--i:2">Sin permanencia y con una propuesta cerrada. &iquest;Te reservo un hueco? &rarr;</p>
+        </div>
+        <ul class="dm-tags" aria-label="Lo que incluye">
+          <li>Diagn&oacute;stico de tu operativa</li><li>Demo con casos de tu cl&iacute;nica</li><li>Respuesta en 24&nbsp;h</li>
         </ul>
-        <p class="demo-modal-firma">Una llamada corta, sin compromiso y sin presentaci&oacute;n gen&eacute;rica: miramos vuestros n&uacute;meros.</p>
       </div>
       <form id="demo-form" class="lead-form" data-lead-form novalidate>
         <p class="lead-form-label">Datos de contacto</p>
@@ -1338,7 +1377,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-limpio"></script>
+  <script defer src="features/landing/hero.js?v=20261126-arabella"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

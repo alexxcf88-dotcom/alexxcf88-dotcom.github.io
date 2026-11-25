@@ -2045,14 +2045,12 @@ function mountCal(destino) {
           // el ambiente de oficina porque, al sumarse con el primer golpe de voz a
           // nivel pleno, saturaba (nivel 1.000) y se oía como un trabón al arrancar
           // el saludo de Cristina. Probar en local antes de desplegar.
-          // · voz: Elvira (castellana nativa) en la demo web; la multilingüe
-          //   entonaba raro muchas palabras en español.
+          // · la voz es la de Cristina tal cual está configurada en Vapi.
           // · el saludo no se corta: el eco del altavoz entrando por el micro
           //   interrumpía a Cristina y al retomar repetía la palabra
           //   («artificial… artificial»).
           const overrides = {
             backgroundSound: 'off',
-            voice: { provider: 'azure', voiceId: 'es-ES-ElviraNeural' },
             firstMessageInterruptionsEnabled: false,
             stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.35, backoffSeconds: 1 },
           };
@@ -2466,7 +2464,8 @@ function mountCal(destino) {
   const recorrer = (el, id) => {
     cancelAnimationFrame(viaje);
     const y0 = window.scrollY, dist0 = Math.abs(destinoY(el) - y0);
-    const dur = Math.min(1800, Math.max(550, 380 + dist0 * 0.16));
+    // Lento a propósito: se ve pasar la web entera, como si se arrastrara.
+    const dur = Math.min(3400, Math.max(900, 600 + dist0 * 0.5));
     const t0 = performance.now();
     const paso = (ahora) => {
       const t = Math.min(1, (ahora - t0) / dur);

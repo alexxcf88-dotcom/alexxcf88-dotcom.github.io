@@ -343,9 +343,10 @@
     const saludo = (sayEl.parentElement.getAttribute('aria-label') || sayEl.textContent).trim();
     const elegirVoz = () => {
       const voces = sintetizador.getVoices().filter((v) => /^es(-|_|$)/i.test(v.lang));
-      // Elvira primero: es la misma voz que usa Cristina en la llamada (Azure
-      // es-ES-ElviraNeural); Edge la trae como «Microsoft Elvira Online (Natural)».
-      const puntos = (v) => (/elvira/i.test(v.name) ? 50 : 0)
+      // La voz de Cristina en la llamada es Azure Arabella (multilingüe, acento
+      // castellano). Si el navegador la tiene (Edge), se usa esa; si no, Elvira,
+      // la más parecida.
+      const puntos = (v) => (/arabella/i.test(v.name) ? 80 : 0) + (/elvira/i.test(v.name) ? 40 : 0)
         + (/es-ES/i.test(v.lang) ? 4 : 0)
         + (/natural|neural|online/i.test(v.name) ? 4 : 0)
         + (/ximena|helena|laura|lucia|monica|paulina|dalia|google español$/i.test(v.name) ? 2 : 0)
