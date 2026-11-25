@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="features/landing/media/hero/cristina.webp" as="image" fetchpriority="high">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="features/landing/landing.js?v=20261126-arrastre" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/landing.js?v=20261126-saludo" as="script" fetchpriority="low">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -634,6 +634,11 @@
     .dm-tags li{padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:rgba(247,251,248,.7);font-size:.78rem}
     @media (prefers-reduced-motion:reduce){.dm-eyes,.dm-bar,.dm-o i,.dm-dot{animation:none!important}.dm-msg{opacity:1;transform:none;animation:none!important}}
     @media (max-width:760px){.dm-tv{width:68px}.dm-msg{font-size:.88rem}}
+    /* El botón de voz no cambia de ancho al pasar a «Conectando…» o «Colgar»:
+       si se estrechaba, «Ver precios» se colocaba bajo el ratón y un segundo
+       clic llevaba a Precios. */
+    .ix-chip-voz{min-width:12.4em;justify-content:center}
+    @media (max-width:760px){.ix-chip-voz{min-width:12.6em}}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -1377,7 +1382,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-arabella"></script>
+  <script defer src="features/landing/hero.js?v=20261126-saludo"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

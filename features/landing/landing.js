@@ -1730,7 +1730,7 @@ function mountCal(destino) {
           const A = burbujaAbierta.body.textContent.trim().split(/\s+/), B = texto.trim().split(/\s+/);
           let k = Math.min(6, A.length, B.length);
           while (k > 0 && A.slice(-k).map(limpia).join(' ') !== B.slice(0, k).map(limpia).join(' ')) k--;
-          burbujaAbierta.body.textContent = (k ? [...A.slice(0, -k), ...B] : [...A, ...B]).join(' ');
+          burbujaAbierta.body.textContent = (k ? [...A.slice(0, -k), ...B] : [...A, ...B]).join(' ').replace(/(\p{L}{3,})[\s.,…]+\1(?=[\s.,…?!]|$)/giu, '$1');
           chatEl.scrollTop = chatEl.scrollHeight;
           return;
         }
@@ -2052,6 +2052,10 @@ function mountCal(destino) {
           const overrides = {
             backgroundSound: 'off',
             firstMessageInterruptionsEnabled: false,
+            // El saludo se trababa siempre al cerrar la frase en «…artificial.»
+            // («artificial… artificial»): se reordena para no terminar ahí.
+            // Sigue identificándose como IA (obligatorio, ver legal/terminos).
+            firstMessage: 'Hola, soy Cristina, la asistente virtual con inteligencia artificial de la clínica. ¿En qué puedo ayudarle?',
             stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.35, backoffSeconds: 1 },
           };
           await v.start(auth.assistantId, overrides);
@@ -2479,7 +2483,7 @@ function mountCal(destino) {
   ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => cancelAnimationFrame(viaje), { passive: true }));
   document.addEventListener('click', (evento) => {
     const enlace = evento.target.closest('a[href^="#"]');
-    if (!enlace || enlace.hasAttribute('data-demo-open')) return;
+    if (!enlace || enlace.hasAttribute('data-demo-open') || evento.defaultPrevented) return;
     const id = decodeURIComponent(enlace.getAttribute('href').slice(1));
     const el = id && document.getElementById(id);
     if (!el) return;

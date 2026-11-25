@@ -232,6 +232,8 @@
         if (tuEl && tuTxt) { tuTxt.textContent = cola(textoTu, 150); tuEl.hidden = false; }
       } else {
         textoCristina = ultimoRol === 'asistente' ? unir(textoCristina, d.texto) : d.texto.trim();
+        // Si la voz repite una palabra seguida («artificial… artificial»), se lee una vez.
+        textoCristina = textoCristina.replace(/(\p{L}{3,})[\s.,…]+\1(?=[\s.,…?!]|$)/giu, '$1');
         sayEl.textContent = cola(textoCristina, 150);
         parlotear(1500);
       }
