@@ -591,8 +591,8 @@
        el aspecto limpio de render (tono cálido, contraste y nitidez de la
        foto) y un grano común cubre toda la figura. */
     .ix-3d{filter:sepia(.05) contrast(.97) blur(.3px)}
-    .ix-fig::after{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 7%,#000 80%,transparent 95%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 7%,#000 80%,transparent 95%);mask-composite:intersect;pointer-events:none;background:url(features/landing/media/hero/grano.webp) 0 0/160px 160px repeat;opacity:.32}
-    .ix-fig::before{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 7%,#000 80%,transparent 95%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 7%,#000 80%,transparent 95%);mask-composite:intersect;pointer-events:none;background:radial-gradient(120% 90% at 66% 40%,rgba(70,50,40,0) 55%,rgba(60,42,34,.14) 100%)}
+    .ix-fig::after{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);pointer-events:none;background:url(features/landing/media/hero/grano.webp) 0 0/160px 160px repeat;opacity:.32}
+    .ix-fig::before{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);pointer-events:none;background:radial-gradient(120% 90% at 66% 40%,rgba(70,50,40,0) 55%,rgba(60,42,34,.14) 100%)}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -1328,7 +1328,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-elvira"></script>
+  <script defer src="features/landing/hero.js?v=20261126-limpio"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
