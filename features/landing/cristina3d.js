@@ -27,7 +27,7 @@ const RAD = 4.3;                           // grosor de los cables (px)
 
 export async function montar({ hero, lienzo, alListo }) {
   const renderer = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const escena = new THREE.Scene();
@@ -50,8 +50,8 @@ export async function montar({ hero, lienzo, alListo }) {
   const clave = new THREE.DirectionalLight(0xffffff, 2.4); clave.position.set(-600, 900, 1400); escena.add(clave);
   const borde = new THREE.DirectionalLight(0xffffff, 0.9); borde.position.set(900, 300, -600); escena.add(borde);
 
-  const cargar = (url) => new Promise((ok, mal) => new THREE.TextureLoader().load(url, (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = 4; ok(t); }, undefined, mal));
-  const tFrente = await cargar('/features/landing/media/hero/cristina-cabeza.webp?v=2');
+  const cargar = (url) => new Promise((ok, mal) => new THREE.TextureLoader().load(url, (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); ok(t); }, undefined, mal));
+  const tFrente = await cargar('/features/landing/media/hero/cristina-cabeza@2x.webp?v=1');
   const plano = (mat, ancho, alto) => new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto), mat);
   const mat = (tex, color = 0xffffff) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.04, color, toneMapped: false });
 
@@ -119,7 +119,7 @@ export async function montar({ hero, lienzo, alListo }) {
 
   // Pantalla encendida con la cara de ditbo.
   const lienzoCara = document.createElement('canvas');
-  const CW = 640, CH = Math.round(640 * (PANTALLA.y1 - PANTALLA.y0) / (PANTALLA.x1 - PANTALLA.x0));
+  const CW = 1024, CH = Math.round(1024 * (PANTALLA.y1 - PANTALLA.y0) / (PANTALLA.x1 - PANTALLA.x0));
   lienzoCara.width = CW; lienzoCara.height = CH;
   const ctx = lienzoCara.getContext('2d');
   const texCara = new THREE.CanvasTexture(lienzoCara);
@@ -171,10 +171,10 @@ export async function montar({ hero, lienzo, alListo }) {
       c.restore();
     };
     c.globalCompositeOperation = 'lighter';
-    unaVez(-3, '#ff5a78', 0.22); unaVez(3, '#4696ff', 0.26);
+    unaVez(-5, '#ff5a78', 0.22); unaVez(5, '#4696ff', 0.26);
     c.globalCompositeOperation = 'source-over';
-    c.shadowColor = 'rgba(110,250,225,.9)'; c.shadowBlur = 26; unaVez(0, null, 1);
-    c.shadowColor = 'rgba(53,201,240,.5)'; c.shadowBlur = 60; unaVez(0, null, 0.5);
+    c.shadowColor = 'rgba(110,250,225,.9)'; c.shadowBlur = 42; unaVez(0, null, 1);
+    c.shadowColor = 'rgba(53,201,240,.5)'; c.shadowBlur = 96; unaVez(0, null, 0.5);
     c.shadowBlur = 0;
   };
   const ojosPara = (niveles) => {
