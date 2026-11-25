@@ -2454,11 +2454,39 @@ function mountCal(destino) {
     setTimeout(() => destino.scrollIntoView(), 420);
   }
   window.addEventListener('hashchange', encajar);
+  /* Los enlaces internos no teletransportan: la página baja (o sube) rápido
+     y suave pasando por toda la web. El destino se recalcula en cada
+     fotograma (las secciones con content-visibility cambian de alto al
+     pintarse), y al llegar se encaja exacto. */
+  const relleno = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
+  const destinoY = (el) => Math.max(0, Math.min(el.getBoundingClientRect().top + window.scrollY - relleno(),
+    document.documentElement.scrollHeight - window.innerHeight));
+  const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
+  let viaje = 0;
+  const recorrer = (el, id) => {
+    cancelAnimationFrame(viaje);
+    const y0 = window.scrollY, dist0 = Math.abs(destinoY(el) - y0);
+    const dur = Math.min(1800, Math.max(550, 380 + dist0 * 0.16));
+    const t0 = performance.now();
+    const paso = (ahora) => {
+      const t = Math.min(1, (ahora - t0) / dur);
+      window.scrollTo(0, y0 + (destinoY(el) - y0) * suave(t));
+      if (t < 1) viaje = requestAnimationFrame(paso);
+      else { history.pushState(null, '', '#' + id); setTimeout(() => window.scrollTo(0, destinoY(el)), 120); }
+    };
+    viaje = requestAnimationFrame(paso);
+  };
+  // Si la persona toca la rueda o la pantalla, manda ella: se para el viaje.
+  ['wheel', 'touchstart', 'keydown'].forEach((t) => window.addEventListener(t, () => cancelAnimationFrame(viaje), { passive: true }));
   document.addEventListener('click', (evento) => {
     const enlace = evento.target.closest('a[href^="#"]');
     if (!enlace || enlace.hasAttribute('data-demo-open')) return;
-    const id = enlace.getAttribute('href').slice(1);
-    if (id && document.getElementById(id)) setTimeout(encajar, 0);
+    const id = decodeURIComponent(enlace.getAttribute('href').slice(1));
+    const el = id && document.getElementById(id);
+    if (!el) return;
+    if (reduceMotion) { setTimeout(encajar, 0); return; }
+    evento.preventDefault();
+    recorrer(el, id);
   });
   if (location.hash) setTimeout(encajar, 60);
 })();

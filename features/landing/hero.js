@@ -343,16 +343,28 @@
     const saludo = (sayEl.parentElement.getAttribute('aria-label') || sayEl.textContent).trim();
     const elegirVoz = () => {
       const voces = sintetizador.getVoices().filter((v) => /^es(-|_|$)/i.test(v.lang));
-      const puntos = (v) => (/es-ES/i.test(v.lang) ? 4 : 0)
+      // Elvira primero: es la misma voz que usa Cristina en la llamada (Azure
+      // es-ES-ElviraNeural); Edge la trae como «Microsoft Elvira Online (Natural)».
+      const puntos = (v) => (/elvira/i.test(v.name) ? 50 : 0)
+        + (/es-ES/i.test(v.lang) ? 4 : 0)
         + (/natural|neural|online/i.test(v.name) ? 4 : 0)
-        + (/elvira|arabella|ximena|helena|laura|lucia|monica|paulina|dalia|google español$/i.test(v.name) ? 2 : 0)
+        + (/ximena|helena|laura|lucia|monica|paulina|dalia|google español$/i.test(v.name) ? 2 : 0)
         + (/pablo|jorge|alvaro|raul|diego/i.test(v.name) ? -3 : 0);
       return voces.sort((a, b) => puntos(b) - puntos(a))[0] || null;
     };
     let hablandoVoz = false, yaSono = false;
     const texto = (t) => { if (sonidoTxt) sonidoTxt.textContent = t; };
     const callar = () => { sintetizador.cancel(); };
-    const decir = () => {
+    // Las voces de Edge (Elvira incluida) llegan con retraso: si aún no están,
+    // se espera a que lleguen (máx. 1,2 s) antes de hablar.
+    const conVoces = (fn) => {
+      if (sintetizador.getVoices().some((v) => /^es/i.test(v.lang))) return fn();
+      let hecho = false;
+      const ir = () => { if (!hecho) { hecho = true; fn(); } };
+      sintetizador.addEventListener('voiceschanged', ir, { once: true });
+      setTimeout(ir, 1200);
+    };
+    const decir = () => conVoces(() => {
       if (saludoParado) return; // ya hay una llamada real
       callar();
       const u = new SpeechSynthesisUtterance(saludo);
@@ -377,7 +389,7 @@
       u.onend = fin;
       u.onerror = fin;
       sintetizador.speak(u);
-    };
+    });
     sonido.hidden = false;
     sonido.addEventListener('click', (ev) => {
       ev.stopPropagation();
@@ -390,7 +402,7 @@
       if (!yaSono) decir();
     };
     ['pointerdown', 'keydown'].forEach((t) => window.addEventListener(t, primerGesto, true));
-    if (sintetizador.onvoiceschanged !== undefined) sintetizador.onvoiceschanged = () => {};
+    sintetizador.getVoices(); // pide la lista ya, para que esté al primer toque
     // Al empezar una llamada real, la voz del saludo se calla.
     window.addEventListener('ditbo:voz', (ev) => { const d = ev.detail || {}; if (d.tipo === 'boton' && (d.colgando || d.ocupado)) { callar(); sonido.hidden = true; } else if (d.tipo === 'boton') sonido.hidden = false; });
   }
