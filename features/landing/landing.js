@@ -1725,7 +1725,12 @@ function mountCal(destino) {
       function lineaLlamada(rol, texto) {
         avisar({ tipo: 'linea', rol, texto });
         if (burbujaAbierta && burbujaAbierta.rol === rol) {
-          burbujaAbierta.body.textContent += ' ' + texto;
+          // Sin repetir la palabra en la que se solapan dos trozos.
+          const limpia = (w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+          const A = burbujaAbierta.body.textContent.trim().split(/\s+/), B = texto.trim().split(/\s+/);
+          let k = Math.min(6, A.length, B.length);
+          while (k > 0 && A.slice(-k).map(limpia).join(' ') !== B.slice(0, k).map(limpia).join(' ')) k--;
+          burbujaAbierta.body.textContent = (k ? [...A.slice(0, -k), ...B] : [...A, ...B]).join(' ');
           chatEl.scrollTop = chatEl.scrollHeight;
           return;
         }
@@ -2040,7 +2045,17 @@ function mountCal(destino) {
           // el ambiente de oficina porque, al sumarse con el primer golpe de voz a
           // nivel pleno, saturaba (nivel 1.000) y se oía como un trabón al arrancar
           // el saludo de Cristina. Probar en local antes de desplegar.
-          const overrides = { backgroundSound: 'off' };
+          // · voz: Elvira (castellana nativa) en la demo web; la multilingüe
+          //   entonaba raro muchas palabras en español.
+          // · el saludo no se corta: el eco del altavoz entrando por el micro
+          //   interrumpía a Cristina y al retomar repetía la palabra
+          //   («artificial… artificial»).
+          const overrides = {
+            backgroundSound: 'off',
+            voice: { provider: 'azure', voiceId: 'es-ES-ElviraNeural' },
+            firstMessageInterruptionsEnabled: false,
+            stopSpeakingPlan: { numWords: 2, voiceSeconds: 0.35, backoffSeconds: 1 },
+          };
           await v.start(auth.assistantId, overrides);
           // el estado real lo fija el evento call-start
         } catch (err) {

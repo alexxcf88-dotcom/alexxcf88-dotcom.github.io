@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="features/landing/media/hero/cristina.webp" as="image" fetchpriority="high">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="features/landing/landing.js?v=20261122-pantalla" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/landing.js?v=20261126-llamada" as="script" fetchpriority="low">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -574,6 +574,19 @@
     #inicio.ix .ix-veil,#inicio.ix .ix-fade{display:none!important}
     .hero-blend{position:relative;height:clamp(200px,34svh,380px);margin-bottom:calc(clamp(200px,34svh,380px) * -0.35);background:linear-gradient(180deg,#c3b6b1 0%,#a89c98 12%,#837976 28%,#5a524f 46%,#332e2c 64%,#161413 82%,#050706 100%);pointer-events:none}
     .ix-fig{transform-origin:66% 100%;transform-style:preserve-3d}
+    /* En llamada: Cristina en grande (más contenido) y lo que dices tú debajo. */
+    #inicio.is-call .ix-intro{display:none}
+    #inicio.hero.ix.is-call h1.ix-say{font-size:clamp(1.35rem,2.1vw,2rem);line-height:1.2}
+    .ix-tu{display:flex;gap:10px;align-items:baseline;max-width:640px;margin:16px 0 0;padding:10px 16px;border-radius:14px;background:rgba(255,255,255,.55);border:1px solid rgba(11,18,17,.1);color:#0b1211;font-size:1rem;line-height:1.45}
+    .ix-tu[hidden]{display:none}
+    .ix-tu b{flex:none;color:#0b7d70;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase}
+    /* Paso a la parte oscura en un solo degradado continuo: empieza ya dentro
+       de la portada (sobre la base de la figura) y sigue debajo hasta el negro. */
+    .ix-bajo{position:absolute;left:0;right:0;bottom:0;z-index:1;height:22%;pointer-events:none;
+      background:linear-gradient(180deg,rgba(5,7,6,0) 0%,rgba(5,7,6,.03) 20%,rgba(5,7,6,.1) 42%,rgba(5,7,6,.21) 66%,rgba(5,7,6,.33) 86%,rgba(5,7,6,.4) 100%)}
+    .hero-blend{height:clamp(220px,36svh,400px)!important;margin-bottom:calc(clamp(220px,36svh,400px) * -0.3)!important;
+      background:linear-gradient(180deg,#7a726f 0%,#6b6461 10%,#5a5451 21%,#47423f 33%,#34302e 46%,#232120 59%,#151413 72%,#0b0c0b 85%,#050706 100%)!important}
+    @media (max-width:760px){.ix-bajo{height:56px}.hero-blend{height:clamp(160px,26svh,260px)!important}}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -682,6 +695,7 @@
         <p class="ix-speaker" id="ix-speaker"><span class="ix-speaker-dot" aria-hidden="true"></span><b>Cristina</b> &middot; asistente virtual con IA <span class="ix-speaker-state" id="ix-speaker-state">est&aacute; hablando&hellip;</span></p>
         <button type="button" class="ix-sound" id="ix-sound" hidden><span class="ix-sound-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="ix-sound-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></span><span id="ix-sound-txt">Toca en cualquier parte para o&iacute;r a Cristina</span></button>
         <h1 class="ix-say"><span class="ix-say-text" id="ix-say">Hola, soy Cristina, la asistente virtual de tu cl&iacute;nica dental. &iquest;En qu&eacute; puedo ayudarte?</span><i class="ix-caret" aria-hidden="true"></i></h1>
+        <p class="ix-tu" id="ix-tu" hidden><b>T&uacute;</b><span></span></p>
         <p class="ix-intro" id="ix-intro">Contesto las llamadas y los WhatsApp, miro la agenda y dejo cada caso listo para tu equipo.</p>
         <div class="ix-chips">
           <a class="ix-chip ix-chip-main" href="#contacto" data-demo-open>Pedir demo</a>
@@ -695,6 +709,7 @@
         <li><b>200&ndash;1.200</b><span>minutos de voz al mes, seg&uacute;n plan</span></li>
         <li><b>1.er mes</b><span>gratis, sin permanencia</span></li>
       </ul>
+      <span class="ix-bajo" aria-hidden="true"></span>
       <span class="ix-cue" aria-hidden="true"><i></i></span>
       <span class="ix-sentinel" id="ix-sentinel" aria-hidden="true"></span>
       <span class="ix-sentinel ix-sentinel-top" id="ix-sentinel-top" aria-hidden="true"></span>
@@ -1307,7 +1322,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261125-cuello"></script>
+  <script defer src="features/landing/hero.js?v=20261126-llamada"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

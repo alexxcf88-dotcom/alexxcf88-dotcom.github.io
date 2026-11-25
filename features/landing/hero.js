@@ -195,10 +195,27 @@
   // En llamada, la conversación se lee arriba: Cristina en el texto grande y
   // lo que dice la persona, debajo. Al colgar vuelve el saludo.
   const sayEl = document.getElementById('ix-say');
-  const introEl = document.getElementById('ix-intro');
-  const introOriginal = introEl ? introEl.textContent : '';
+  const tuEl = document.getElementById('ix-tu');
+  const tuTxt = tuEl && tuEl.querySelector('span');
   let ultimoRol = '', textoCristina = '', textoTu = '';
   let saludoParado = false; // la llamada real corta el saludo escrito
+  // Une trozos de transcripción quitando el solape («…inteligencia artificial»
+  // + «artificial. ¿En qué…» → sin repetir la palabra).
+  const limpia = (w) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu, '');
+  const unir = (a, b) => {
+    if (!a) return b.trim();
+    const A = a.trim().split(/\s+/), B = b.trim().split(/\s+/);
+    for (let k = Math.min(6, A.length, B.length); k > 0; k--) {
+      if (A.slice(-k).map(limpia).join(' ') === B.slice(0, k).map(limpia).join(' ')) return [...A.slice(0, -k), ...B].join(' '); // se queda la versión nueva (con su puntuación)
+    }
+    return a.trim() + ' ' + b.trim();
+  };
+  // Lo último dicho, cortado en frase entera si es largo.
+  const cola = (t, max) => {
+    if (t.length <= max) return t;
+    const r = t.slice(-max), i = r.search(/[.?!¿¡]\s/);
+    return (i >= 0 && i < max * 0.6 ? r.slice(i + 1) : '…' + r.slice(r.indexOf(' ') + 1)).trim();
+  };
   window.addEventListener('ditbo:voz', (ev) => {
     const d = ev.detail || {};
     if (d.tipo === 'disponible') mostrarVoz();
@@ -211,18 +228,18 @@
       const rest = sayEl.parentElement.querySelector('.ix-say-rest');
       if (rest) rest.textContent = '';
       if (d.rol === 'paciente') {
-        textoTu = ultimoRol === 'paciente' ? textoTu + ' ' + d.texto : d.texto;
-        if (introEl) introEl.textContent = 'Tú: ' + textoTu.slice(-200);
+        textoTu = ultimoRol === 'paciente' ? unir(textoTu, d.texto) : d.texto.trim();
+        if (tuEl && tuTxt) { tuTxt.textContent = cola(textoTu, 150); tuEl.hidden = false; }
       } else {
-        textoCristina = ultimoRol === 'asistente' ? textoCristina + ' ' + d.texto : d.texto;
-        sayEl.textContent = textoCristina.slice(-160);
+        textoCristina = ultimoRol === 'asistente' ? unir(textoCristina, d.texto) : d.texto.trim();
+        sayEl.textContent = cola(textoCristina, 150);
         parlotear(1500);
       }
       ultimoRol = d.rol;
     }
     if (d.tipo === 'boton' && !d.colgando && !d.ocupado && ultimoRol) {
       ultimoRol = ''; textoCristina = ''; textoTu = '';
-      if (introEl) introEl.textContent = introOriginal;
+      if (tuEl) { tuEl.hidden = true; if (tuTxt) tuTxt.textContent = ''; }
       if (sayEl) sayEl.textContent = sayEl.parentElement.getAttribute('aria-label') || sayEl.textContent;
     }
     if (d.tipo === 'boton' && estado) {
