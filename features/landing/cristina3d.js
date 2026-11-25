@@ -204,6 +204,36 @@ export async function montar({ hero, lienzo, alListo }) {
   };
 
 
+  // Cuello: una pieza de la propia foto (con algo de pared alrededor, que al
+  // moverse no se nota) puesta a la profundidad del cuello. Arriba sigue el
+  // giro de la cabeza del todo y abajo, en el cuello de la camisa, se queda
+  // quieto: se dobla como un cuello de verdad. Se compensa la perspectiva
+  // para que en reposo caiga exactamente sobre la foto.
+  const tCuello = await cargar('/features/landing/media/hero/cristina-cuello.webp?v=1');
+  const NX0 = 1100, NX1 = 1420, NY0 = 470, NY1 = 650, ZC = -170, KZ = (DIST - ZC) / DIST;
+  const geoCuello = new THREE.PlaneGeometry(1, 1, 10, 24);
+  const posC = geoCuello.attributes.position;
+  const reposoC = [], pesoC = [];
+  for (let i = 0; i < posC.count; i++) {
+    const u = posC.getX(i) + 0.5, v = 0.5 - posC.getY(i);
+    const px = NX0 + u * (NX1 - NX0), py = NY0 + v * (NY1 - NY0);
+    reposoC.push(new THREE.Vector3(OJO.x + (px - OJO.x) * KZ, -(OJO.y + (py - OJO.y) * KZ), ZC));
+    const t = Math.min(1, Math.max(0, (py - 520) / (625 - 520)));
+    pesoC.push(1 - t * t * (3 - 2 * t));            // 1 arriba (cabeza) → 0 abajo (camisa)
+  }
+  const cuello = new THREE.Mesh(geoCuello, new THREE.MeshBasicMaterial({ map: tCuello, transparent: true, toneMapped: false, depthWrite: false }));
+  cuello.frustumCulled = false;
+  escena.add(cuello);
+  const vC = new THREE.Vector3();
+  const moverCuello = () => {
+    const q = cabeza.quaternion;
+    for (let i = 0; i < posC.count; i++) {
+      vC.copy(reposoC[i]).sub(PIVOTE).applyQuaternion(q).add(PIVOTE).lerp(reposoC[i], 1 - pesoC[i]);
+      posC.setXYZ(i, vC.x, vC.y, vC.z);
+    }
+    posC.needsUpdate = true;
+  };
+
   // Cables: 12 tubos (6 por lado). Salen de los conectores del lateral y de
   // debajo del televisor y acaban repartidos sobre la correa de cada hombro.
   const conectores = [
@@ -256,7 +286,7 @@ export async function montar({ hero, lienzo, alListo }) {
     const sombra = 1 - Math.min(0.18, Math.abs(eu.y) * 0.7);
     matFrente.color.setScalar(sombra);
     const firmaGiro = eu.x.toFixed(4) + eu.y.toFixed(4) + eu.z.toFixed(4);
-    if (firmaGiro !== ultimoGiro) { ultimoGiro = firmaGiro; rehacerCables(); }
+    if (firmaGiro !== ultimoGiro) { ultimoGiro = firmaGiro; rehacerCables(); moverCuello(); }
     let parpado = 1;
     if (ojos && ojos.classList.contains('is-blink')) {
       const tr = getComputedStyle(ojos).transform;
@@ -275,6 +305,7 @@ export async function montar({ hero, lienzo, alListo }) {
   document.addEventListener('visibilitychange', despertar);
 
   rehacerCables();
+  moverCuello();
   pintarCara(0, 0, 1, barras.map(() => 1), 0);
   renderer.render(escena, camara);
   alListo();
