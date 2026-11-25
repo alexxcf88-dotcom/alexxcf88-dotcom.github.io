@@ -410,7 +410,7 @@
       // primer fotograma 3D ocurren a la vez, sin parpadeo.
       const cuerpo = new Image();
       cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=4';
-      return Promise.all([import('/features/landing/cristina3d.js?v=12'), cuerpo.decode()])
+      return Promise.all([import('/features/landing/cristina3d.js?v=13'), cuerpo.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
           if (img) img.src = cuerpo.src;

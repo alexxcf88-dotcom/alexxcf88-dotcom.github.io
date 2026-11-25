@@ -76,7 +76,7 @@ export async function montar({ hero, lienzo, alListo }) {
     for (let i = 0; i < 2600; i++) { const v = 110 + Math.random() * 60 | 0; c.fillStyle = `rgba(${v},${v - 10},${v - 14},${Math.random() * 0.35})`; c.fillRect(Math.random() * 256, Math.random() * 256, 1 + Math.random() * 2, 1 + Math.random() * 2); }
     for (let i = 0; i < 70; i++) { c.fillStyle = `rgba(40,32,28,${0.2 + Math.random() * 0.3})`; c.fillRect(Math.random() * 256, Math.random() * 256, 1, 1 + Math.random() * 3); } }
   const tRuido = new THREE.CanvasTexture(ruido); tRuido.colorSpace = THREE.SRGBColorSpace; tRuido.wrapS = tRuido.wrapT = THREE.RepeatWrapping; tRuido.repeat.set(0.006, 0.006);
-  const matCarcasa = new THREE.MeshStandardMaterial({ map: tRuido, color: 0xd8cdc6, roughness: 0.62, metalness: 0.15 });
+  const matCarcasa = new THREE.MeshStandardMaterial({ map: tRuido, color: 0xcbbcb3, roughness: 0.78, metalness: 0.08 });
   const prof = D * 0.42;
   const geoMarco = new THREE.ExtrudeGeometry(rect(W - 4, H - 4, 32), { depth: prof, bevelEnabled: true, bevelThickness: 5, bevelSize: 4, bevelSegments: 3, curveSegments: 8 });
   geoMarco.translate(0, 0, -prof - 10); // el bisel (5) queda detrás del frontal de la foto
@@ -243,7 +243,7 @@ export async function montar({ hero, lienzo, alListo }) {
     ...[0, 1, 2].map((i) => ({ a: P(1405 + i * 15, TV.y1 - 2, -60 - i * 10), b: P(1466 + i * 9, 684), lado: 0 })),
     ...[0, 1, 2].map((i) => ({ a: P(TV.x1 + 2, 380 + i * 9, -110 - i * 22), b: P(1496 + i * 9, 688), lado: 1 })),
   ];
-  const matCable = new THREE.MeshStandardMaterial({ color: 0x0c0c0c, roughness: 0.5, metalness: 0.05 });
+  const matCable = new THREE.MeshStandardMaterial({ color: 0x1a1715, roughness: 0.72, metalness: 0.0 });
   const tmp = new THREE.Vector3();
   const cables = conectores.map((c) => {
     const curva = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), c.b.clone());
