@@ -404,10 +404,10 @@
     .ix-body{position:absolute;inset:0;display:block;width:100%;height:100%}
     /* Los bordes de la foto se funden dentro de la propia imagen: aunque el
        bloque gire o se balancee, nunca asoma un canto. */
-    .ix-body{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 10%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 10%);mask-composite:intersect}
+    .ix-body{-webkit-mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 7%,#000 80%,transparent 95%);-webkit-mask-composite:source-in;mask-image:linear-gradient(90deg,transparent 0,#000 30%),linear-gradient(180deg,transparent 0,#000 7%,#000 80%,transparent 95%);mask-composite:intersect}
     #inicio.ix .ix-copy{min-width:0}
     .ix-fig{transform-origin:66% 100%}
-    .ix-photo-in::after{content:"";position:absolute;inset:-5% -1px -1px -1px;background:linear-gradient(90deg,#c3b6b1 0%,rgba(195,182,177,.85) 12%,rgba(195,182,177,0) 40%),linear-gradient(180deg,#c3b6b1,rgba(195,182,177,0) 12%)}
+    .ix-photo-in::after{content:"";position:absolute;inset:-1px;background:linear-gradient(90deg,#c3b6b1 0%,rgba(195,182,177,.85) 12%,rgba(195,182,177,0) 40%);pointer-events:none}
 
     /* La pantalla de la foto y la cara de ditbo */
     .tv{position:absolute;z-index:1;left:61%;top:8%;width:29.3%;height:41%;border-radius:7% / 9%;overflow:hidden;--lx:0;--ly:0;--vol:0}
@@ -568,6 +568,12 @@
     .ix-3d{position:absolute;inset:0;width:100%;height:100%;display:block;opacity:0;pointer-events:none}
     #inicio.has-3d .ix-3d{opacity:1}
     #inicio.has-3d .ix-fig>.tv{opacity:0}
+    /* Paso de la portada a la parte oscura: sin velo negro al hacer scroll; un
+       degradado de fondo del gris de la portada al negro de la web, y la base
+       de la figura se funde en él. El cuerpo se mueve en 3D desde la base. */
+    #inicio.ix .ix-veil,#inicio.ix .ix-fade{display:none!important}
+    .hero-blend{position:relative;height:clamp(200px,34svh,380px);margin-bottom:calc(clamp(200px,34svh,380px) * -0.35);background:linear-gradient(180deg,#c3b6b1 0%,#a89c98 12%,#837976 28%,#5a524f 46%,#332e2c 64%,#161413 82%,#050706 100%);pointer-events:none}
+    .ix-fig{transform-origin:66% 100%;transform-style:preserve-3d}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -693,6 +699,7 @@
       <span class="ix-sentinel" id="ix-sentinel" aria-hidden="true"></span>
       <span class="ix-sentinel ix-sentinel-top" id="ix-sentinel-top" aria-hidden="true"></span>
     </section>
+    <div class="hero-blend" aria-hidden="true"></div>
 
     <section id="proceso" class="discovery-section system-minimal">
       <div class="section-copy system-copy">
@@ -1300,7 +1307,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261125-hibrido3"></script>
+  <script defer src="features/landing/hero.js?v=20261125-cuerpo3d"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
