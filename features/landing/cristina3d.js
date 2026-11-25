@@ -1,16 +1,19 @@
-/* Cristina en la portada: cuerpo real (la foto) + cabeza de televisor en 3D.
-   · El cuerpo, el cuello y el traje son la foto (sin el televisor ni los
-     cables que colgaban sobre la pared): todo su realismo. Respira y se
-     balancea con el resto de la figura (lo hace hero.js sobre #ix-fig).
+/* Cristina en la portada, toda en 3D.
+   · Cuerpo (del cuello para abajo): el busto del modelo 3D de Cristina, con su
+     textura tal cual (material mate, sin brillos). Se descartan su televisor
+     y sus cables; el cuello se dobla con la cabeza. Respira.
    · El televisor es una caja 3D hecha a medida: frontal con la textura de la
      propia foto, laterales y techo con las vistas reales del mismo televisor.
      Gira un poco hacia el puntero desde la base del cuello.
    · Los cables son tubos 3D que salen de los conectores del televisor y
-     acaban en las correas de los hombros (en la foto); se recalculan en cada
-     fotograma, así siempre están conectados.
+     acaban en las correas de los hombros. Se construyen una vez; al girar la
+     cabeza los dobla la tarjeta gráfica (sin recalcular nada en JS).
+   Rendimiento: la cara de la pantalla se compone de piezas ya dibujadas (el
+   brillo se pinta una vez) y nada se reconstruye por fotograma.
    · La pantalla lleva los ojos de ditbo («i» y «o» del logo).
    Coordenadas: 1 unidad = 1 píxel de la foto (1671×941); y hacia arriba. */
 import * as THREE from './vendor/three.module.min.js';
+import { GLTFLoader } from './vendor/GLTFLoader.js';
 
 const FW = 1671, FH = 941;
 const P = (x, y, z = 0) => new THREE.Vector3(x, -y, z);   // píxel de la foto → mundo
@@ -24,7 +27,7 @@ const RAD = 4.3;                           // grosor de los cables (px)
 
 export async function montar({ hero, lienzo, alListo }) {
   const renderer = new THREE.WebGLRenderer({ canvas: lienzo, antialias: true, alpha: true, powerPreference: 'high-performance' });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+  renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 1.5));
   renderer.outputColorSpace = THREE.SRGBColorSpace;
 
   const escena = new THREE.Scene();
@@ -51,6 +54,23 @@ export async function montar({ hero, lienzo, alListo }) {
   const tFrente = await cargar('/features/landing/media/hero/cristina-cabeza.webp?v=2');
   const plano = (mat, ancho, alto) => new THREE.Mesh(new THREE.PlaneGeometry(ancho, alto), mat);
   const mat = (tex, color = 0xffffff) => new THREE.MeshBasicMaterial({ map: tex, transparent: true, alphaTest: 0.04, color, toneMapped: false });
+
+  // Giro de la cabeza compartido con cuello y cables: cada vértice se mueve
+  // hacia su posición girada según un peso (1 pegado a la cabeza, 0 fijo).
+  const uGiro = { value: new THREE.Matrix3() };
+  const doblar = (material, piv, pesoGLSL, extraVS = '', extraFS = '') => {
+    const uPiv = { value: piv };
+    material.onBeforeCompile = (sh) => {
+      sh.uniforms.uGiro = uGiro; sh.uniforms.uPiv = uPiv;
+      sh.vertexShader = sh.vertexShader
+        .replace('#include <common>', '#include <common>\nuniform mat3 uGiro; uniform vec3 uPiv;' + extraVS)
+        .replace('#include <beginnormal_vertex>', '#include <beginnormal_vertex>\n{ float w = ' + pesoGLSL + '; objectNormal = normalize(mix(objectNormal, uGiro * objectNormal, w)); }')
+        .replace('#include <begin_vertex>', '#include <begin_vertex>\n{ float w = ' + pesoGLSL + '; transformed = mix(transformed, uGiro * (transformed - uPiv) + uPiv, w); }');
+      if (extraFS) sh.fragmentShader = sh.fragmentShader.replace('#include <common>', '#include <common>\n' + extraFS.split('@@')[0]).replace('void main() {', 'void main() {\n' + extraFS.split('@@')[1]);
+    };
+    material.needsUpdate = true;
+    return uPiv;
+  };
 
   // Grupo de la cabeza, con el origen en el pivote del cuello.
   const cabeza = new THREE.Group();
@@ -110,129 +130,133 @@ export async function montar({ hero, lienzo, alListo }) {
   const barras = Array.from(hero.querySelectorAll('.tv-bar'));
   const ojos = hero.querySelector('#tv-eyes');
 
-  // Los ojos son los mismos de la versión de la foto: la «o» se toma del
-  // símbolo del logo (#tv-o) y la «i» con las medidas exactas del logo.
-  const R = (x, y, w, h, r) => { ctx.beginPath(); ctx.roundRect(x, y, w, h, r); };
+  // Los ojos son los de la portada en foto: la «o» del símbolo del logo
+  // (#tv-o) y la «i» con sus medidas exactas. Todo lo caro (brillo, bordes de
+  // color) se dibuja UNA vez en lienzos guardados; cada fotograma solo coloca
+  // piezas: fondo + ojos (por combinación de barras) + pupila + cristal.
+  const nuevo = (w, h) => { const c = document.createElement('canvas'); c.width = w; c.height = h; return c; };
+  const iw = CW * 0.16, ih = iw * 765 / 320, ow = CW * 0.35;
+  const total = iw + CW * 0.12 + ow, X0 = (CW - total) / 2, CY = CH / 2;
+  const OX = X0 + iw + CW * 0.12, OY = CY - ow / 2;          // esquina del anillo
+  const fondo = nuevo(CW, CH);
+  { const c = fondo.getContext('2d'); const g = c.createRadialGradient(CW / 2, CH * 0.45, 10, CW / 2, CH / 2, CW * 0.72);
+    g.addColorStop(0, '#0b1414'); g.addColorStop(0.6, '#050a0a'); g.addColorStop(1, '#010202'); c.fillStyle = g; c.fillRect(0, 0, CW, CH); }
+  const vidrio = nuevo(CW, CH);
+  { const c = vidrio.getContext('2d'); c.fillStyle = 'rgba(255,255,255,0.035)'; for (let y = 0; y < CH; y += 3) c.fillRect(0, y, CW, 1);
+    const re = c.createRadialGradient(CW * 0.3, CH * 0.06, 5, CW * 0.3, CH * 0.06, CW * 0.6);
+    re.addColorStop(0, 'rgba(255,255,255,0.07)'); re.addColorStop(1, 'rgba(255,255,255,0)'); c.fillStyle = re; c.fillRect(0, 0, CW, CH); }
+  const pupila = nuevo(96, 96);
+  { const c = pupila.getContext('2d'); const g = c.createRadialGradient(48, 48, 0, 48, 48, 30);
+    g.addColorStop(0, '#fff'); g.addColorStop(0.55, '#fff'); g.addColorStop(0.72, 'rgba(220,255,250,.85)'); g.addColorStop(1, 'rgba(160,250,235,0)');
+    c.shadowColor = 'rgba(255,255,255,.8)'; c.shadowBlur = 16; c.fillStyle = g; c.beginPath(); c.arc(48, 48, 30, 0, Math.PI * 2); c.fill(); }
   const simbolo = document.getElementById('tv-o');
   const anillo = new Image();
-  const tenidos = {};
   let anilloListo = false;
+  const spriteOjos = new Map();
+  const pintarOjosEn = (c, niveles) => {
+    const unaVez = (dx, color, alpha) => {
+      c.save(); c.translate(dx, 0); c.globalAlpha = alpha;
+      const k = iw / 320, bx = X0 + 20 * k, by = CY - ih / 2 + 20 * k;
+      const grad = c.createLinearGradient(bx, by, bx + 280 * k, by + 725 * k);
+      grad.addColorStop(0, color || '#5af0d8'); grad.addColorStop(1, color || '#35c9f0');
+      for (let i = 0; i < 6; i++) {
+        c.globalAlpha = alpha * (niveles[i] ? 1 : 0.26); c.fillStyle = grad;
+        c.beginPath(); c.roundRect(bx, by + i * 126.7 * k, 280 * k, 91.3 * k, 22 * k); c.fill();
+      }
+      c.globalAlpha = alpha;
+      if (anilloListo) {
+        if (color) { const t = nuevo(512, 512), x = t.getContext('2d'); x.drawImage(anillo, 0, 0, 512, 512); x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, 512, 512); c.drawImage(t, OX, OY, ow, ow); }
+        else c.drawImage(anillo, OX, OY, ow, ow);
+      }
+      c.restore();
+    };
+    c.globalCompositeOperation = 'lighter';
+    unaVez(-3, '#ff5a78', 0.22); unaVez(3, '#4696ff', 0.26);
+    c.globalCompositeOperation = 'source-over';
+    c.shadowColor = 'rgba(110,250,225,.9)'; c.shadowBlur = 26; unaVez(0, null, 1);
+    c.shadowColor = 'rgba(53,201,240,.5)'; c.shadowBlur = 60; unaVez(0, null, 0.5);
+    c.shadowBlur = 0;
+  };
+  const ojosPara = (niveles) => {
+    const clave = niveles.join('') + (anilloListo ? 'o' : '');
+    let c = spriteOjos.get(clave);
+    if (!c) { c = nuevo(CW, CH); pintarOjosEn(c.getContext('2d'), niveles); spriteOjos.set(clave, c); }
+    return c;
+  };
   if (simbolo) {
     const svg = '<svg xmlns="http://www.w3.org/2000/svg" viewBox="375.2 52.5 620 620" width="512" height="512">'
       + '<defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5af0d8"/><stop offset="1" stop-color="#35c9f0"/></linearGradient></defs>'
       + '<style>.tv-o-dim{opacity:.26}</style>'
       + simbolo.innerHTML.replace(/url\(#tv-grad\)/g, 'url(#g)') + '</svg>';
-    anillo.onload = () => {
-      // Copias teñidas del anillo para la aberración cromática.
-      for (const [clave, color] of [['rojo', '#ff5a78'], ['azul', '#4696ff']]) {
-        const c = document.createElement('canvas'); c.width = c.height = 512;
-        const x = c.getContext('2d'); x.drawImage(anillo, 0, 0, 512, 512);
-        x.globalCompositeOperation = 'source-in'; x.fillStyle = color; x.fillRect(0, 0, 512, 512);
-        tenidos[clave] = c;
-      }
-      anilloListo = true; firma = '';
-    };
+    anillo.onload = () => { anilloListo = true; spriteOjos.clear(); firma = ''; };
     anillo.src = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
   }
   let firma = '';
   const pintarCara = (lx, ly, parpado, niveles, vol) => {
-    const f = [lx.toFixed(3), ly.toFixed(3), parpado.toFixed(2), niveles, vol.toFixed(2), anilloListo].join('|');
+    const f = [lx.toFixed(2), ly.toFixed(2), parpado.toFixed(2), niveles.join(''), vol.toFixed(1), anilloListo].join('|');
     if (f === firma) return false;
     firma = f;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
-    ctx.globalCompositeOperation = 'source-over';
-    ctx.globalAlpha = 1; ctx.shadowBlur = 0;
-    // Tubo apagado: negro con viñeta.
-    const g = ctx.createRadialGradient(CW / 2, CH * 0.45, 10, CW / 2, CH / 2, CW * 0.72);
-    g.addColorStop(0, '#0b1414'); g.addColorStop(0.6, '#050a0a'); g.addColorStop(1, '#010202');
-    ctx.fillStyle = g; ctx.fillRect(0, 0, CW, CH);
-
-    // Misma composición que la portada en foto: «i» 16 %, hueco 12 %, «o» 35 %.
-    const iw = CW * 0.16, ih = iw * 765 / 320, ow = CW * 0.35 * (1 + vol * 0.12);
-    const total = iw + CW * 0.12 + CW * 0.35;
-    const x0 = (CW - total) / 2 + lx * CW * 0.06, cy = CH / 2 + ly * CH * 0.06;
-    const pintarOjos = (dx, color, alpha) => {
-      ctx.save();
-      ctx.translate(dx, 0);
-      ctx.translate(0, cy); ctx.scale(1, parpado); ctx.translate(0, -cy);
-      ctx.globalAlpha = alpha;
-      // «i»: 6 barras del logo (280×91,3, separación 126,7, radio 22 en 320×765).
-      const k = iw / 320, bx = x0 + 20 * k, by = cy - ih / 2 + 20 * k;
-      const grad = ctx.createLinearGradient(bx, by, bx + 280 * k, by + 725 * k);
-      grad.addColorStop(0, color || '#5af0d8'); grad.addColorStop(1, color || '#35c9f0');
-      for (let i = 0; i < 6; i++) {
-        ctx.globalAlpha = alpha * (niveles[i] ? 1 : 0.26);
-        ctx.fillStyle = grad; R(bx, by + i * 126.7 * k, 280 * k, 91.3 * k, 22 * k); ctx.fill();
-      }
-      ctx.globalAlpha = alpha;
-      // «o»: el anillo del logo y su punto blanco de pupila.
-      const ox = x0 + iw + CW * 0.12 + (CW * 0.35 - ow) / 2, oy = cy - ow / 2;
-      if (anilloListo) {
-        const img = color ? (color === '#ff5a78' ? tenidos.rojo : tenidos.azul) : anillo;
-        if (img) ctx.drawImage(img, ox, oy, ow, ow);
-      }
-      if (!color) {
-        const pr = ow * 0.186 / 2, px = ox + ow / 2 + lx * pr * 2 * 0.58, py = oy + ow / 2 + ly * pr * 2 * 0.58;
-        const pg = ctx.createRadialGradient(px, py, 0, px, py, pr * 1.25);
-        pg.addColorStop(0, '#fff'); pg.addColorStop(0.6, '#fff'); pg.addColorStop(0.75, 'rgba(220,255,250,.85)'); pg.addColorStop(1, 'rgba(160,250,235,0)');
-        ctx.shadowColor = 'rgba(255,255,255,.8)'; ctx.shadowBlur = 18;
-        ctx.fillStyle = pg; ctx.beginPath(); ctx.arc(px, py, pr * 1.25, 0, Math.PI * 2); ctx.fill();
-        ctx.shadowBlur = 0;
-      }
-      ctx.restore();
-    };
-    // Aberración cromática suave (rojo a la izquierda, azul a la derecha), como en la foto.
-    ctx.globalCompositeOperation = 'lighter';
-    pintarOjos(-3, '#ff5a78', 0.22);
-    pintarOjos(3, '#4696ff', 0.26);
-    ctx.globalCompositeOperation = 'source-over';
-    // Ojos con su resplandor.
-    ctx.shadowColor = `rgba(110,250,225,${0.85 + vol * 0.15})`; ctx.shadowBlur = 26;
-    pintarOjos(0, null, 1);
-    ctx.shadowColor = 'rgba(53,201,240,.5)'; ctx.shadowBlur = 60;
-    ctx.globalAlpha = 0.5; pintarOjos(0, null, 0.5);
-    ctx.shadowBlur = 0; ctx.globalAlpha = 1;
-
-    // Líneas de barrido y reflejo del cristal.
-    ctx.fillStyle = 'rgba(255,255,255,0.035)';
-    for (let y = 0; y < CH; y += 3) ctx.fillRect(0, y, CW, 1);
-    const re = ctx.createRadialGradient(CW * 0.3, CH * 0.06, 5, CW * 0.3, CH * 0.06, CW * 0.6);
-    re.addColorStop(0, 'rgba(255,255,255,0.07)'); re.addColorStop(1, 'rgba(255,255,255,0)');
-    ctx.fillStyle = re; ctx.fillRect(0, 0, CW, CH);
+    ctx.drawImage(fondo, 0, 0);
+    const dx = lx * CW * 0.06, dy = ly * CH * 0.06, esc = 1 + vol * 0.06;
+    ctx.save();
+    ctx.translate(CW / 2 + dx, CY + dy); ctx.scale(esc, parpado * esc); ctx.translate(-CW / 2, -CY);
+    ctx.drawImage(ojosPara(niveles), 0, 0);
+    const pr = ow * 0.186 / 2, px = OX + ow / 2 + lx * pr * 2 * 0.58, py = OY + ow / 2 + ly * pr * 2 * 0.58, ps = pr * 2.5 / 60;
+    ctx.drawImage(pupila, px - 48 * ps, py - 48 * ps, 96 * ps, 96 * ps);
+    ctx.restore();
+    ctx.drawImage(vidrio, 0, 0);
     texCara.needsUpdate = true;
     return true;
   };
 
-
-  // Cuello: una pieza de la propia foto (con algo de pared alrededor, que al
-  // moverse no se nota) puesta a la profundidad del cuello. Arriba sigue el
-  // giro de la cabeza del todo y abajo, en el cuello de la camisa, se queda
-  // quieto: se dobla como un cuello de verdad. Se compensa la perspectiva
-  // para que en reposo caiga exactamente sobre la foto.
-  const tCuello = await cargar('/features/landing/media/hero/cristina-cuello.webp?v=1');
-  const NX0 = 1100, NX1 = 1420, NY0 = 470, NY1 = 650, ZC = -170, KZ = (DIST - ZC) / DIST;
-  const geoCuello = new THREE.PlaneGeometry(1, 1, 10, 24);
-  const posC = geoCuello.attributes.position;
-  const reposoC = [], pesoC = [];
-  for (let i = 0; i < posC.count; i++) {
-    const u = posC.getX(i) + 0.5, v = 0.5 - posC.getY(i);
-    const px = NX0 + u * (NX1 - NX0), py = NY0 + v * (NY1 - NY0);
-    reposoC.push(new THREE.Vector3(OJO.x + (px - OJO.x) * KZ, -(OJO.y + (py - OJO.y) * KZ), ZC));
-    const t = Math.min(1, Math.max(0, (py - 520) / (625 - 520)));
-    pesoC.push(1 - t * t * (3 - 2 * t));            // 1 arriba (cabeza) → 0 abajo (camisa)
-  }
-  const cuello = new THREE.Mesh(geoCuello, new THREE.MeshBasicMaterial({ map: tCuello, transparent: true, toneMapped: false, depthWrite: false }));
-  cuello.frustumCulled = false;
-  escena.add(cuello);
-  const vC = new THREE.Vector3();
-  const moverCuello = () => {
-    const q = cabeza.quaternion;
-    for (let i = 0; i < posC.count; i++) {
-      vC.copy(reposoC[i]).sub(PIVOTE).applyQuaternion(q).add(PIVOTE).lerp(reposoC[i], 1 - pesoC[i]);
-      posC.setXYZ(i, vC.x, vC.y, vC.z);
-    }
-    posC.needsUpdate = true;
-  };
+  // Cuerpo: el busto del modelo 3D. Se lleva a coordenadas de la foto
+  // (escala por el ancho del televisor; el cuello del modelo queda bajo el
+  // televisor y su centro en el pivote) y se guarda la y original del modelo
+  // para decidir qué se dobla y qué se descarta.
+  const S = 2500, Y_TV = 0.672, Z_CUELLO = -0.04;  // escala del busto: misma complexión que la foto
+  const BASE_Y = -1000;                        // origen del grupo: por debajo del encuadre (respira desde abajo)
+  const cuerpo = new THREE.Group();
+  cuerpo.position.set(0, BASE_Y, 0);
+  escena.add(cuerpo);
+  const gltf = await new GLTFLoader().loadAsync('/features/landing/media/hero/cristina-cuerpo.glb?v=1');
+  const aMundo = new THREE.Matrix4().makeTranslation(1259, -543 - BASE_Y, -170)
+    .multiply(new THREE.Matrix4().makeScale(S, S, S))
+    .multiply(new THREE.Matrix4().makeTranslation(0, -Y_TV, -Z_CUELLO));
+  let pivCuerpo = null;
+  gltf.scene.updateMatrixWorld(true);
+  gltf.scene.traverse((o) => {
+    if (!o.isMesh) return;
+    const g = o.geometry.clone();
+    g.applyMatrix4(o.matrixWorld);
+    const pos = g.attributes.position, n = pos.count;
+    const mxy = new Float32Array(n * 2);
+    for (let i = 0; i < n; i++) { mxy[i * 2] = pos.getX(i); mxy[i * 2 + 1] = pos.getY(i); }
+    g.setAttribute('aMod', new THREE.BufferAttribute(mxy, 2));
+    g.applyMatrix4(aMundo);
+    const m = new THREE.MeshBasicMaterial({ map: o.material.map || null, color: 0xffffff });
+    pivCuerpo = doblar(m, PIVOTE.clone().sub(cuerpo.position),
+      'smoothstep(0.600, 0.672, aMod.y)',
+      '\nattribute vec2 aMod; varying vec2 vMod;',
+      'varying vec2 vMod;@@ if (vMod.y > 0.676 || (abs(vMod.x) > 0.07 && vMod.y > 0.668 - (abs(vMod.x) - 0.07) * 0.36)) discard;');
+    m.onBeforeCompile = ((orig) => (sh) => {
+      orig(sh);
+      sh.vertexShader = sh.vertexShader.replace('#include <begin_vertex>', '#include <begin_vertex>\nvMod = aMod;');
+      // Los cables que traía el modelo sobre los hombros se pintan del color
+      // del traje (con un leve sombreado del propio mapa): se leen como hombro.
+      sh.fragmentShader = sh.fragmentShader.replace('#include <map_fragment>', `#include <map_fragment>
+        { float ax = abs(vMod.x);
+          float zona = smoothstep(0.078, 0.092, ax) * (1.0 - smoothstep(0.205, 0.225, ax)) * smoothstep(0.46, 0.49, vMod.y);
+          float l = dot(diffuseColor.rgb, vec3(0.299, 0.587, 0.114));
+          vec3 traje = vec3(0.085, 0.078, 0.074) * (0.75 + 0.5 * clamp(l * 2.0, 0.0, 1.0));
+          diffuseColor.rgb = mix(diffuseColor.rgb, traje, zona);
+          // Más contraste, como la foto (la textura del modelo sale lavada).
+          diffuseColor.rgb = pow(diffuseColor.rgb, vec3(1.35)) * 1.08; }`);
+    })(m.onBeforeCompile);
+    const malla = new THREE.Mesh(g, m);
+    malla.frustumCulled = false;
+    cuerpo.add(malla);
+  });
 
   // Cables: 12 tubos (6 por lado). Salen de los conectores del lateral y de
   // debajo del televisor y acaban repartidos sobre la correa de cada hombro.
@@ -244,25 +268,16 @@ export async function montar({ hero, lienzo, alListo }) {
     ...[0, 1, 2].map((i) => ({ a: P(TV.x1 + 2, 380 + i * 9, -110 - i * 22), b: P(1496 + i * 9, 688), lado: 1 })),
   ];
   const matCable = new THREE.MeshStandardMaterial({ color: 0x1a1715, roughness: 0.72, metalness: 0.0 });
-  const tmp = new THREE.Vector3();
-  const cables = conectores.map((c) => {
-    const curva = new THREE.CubicBezierCurve3(new THREE.Vector3(), new THREE.Vector3(), new THREE.Vector3(), c.b.clone());
+  doblar(matCable, PIVOTE.clone(), 'pow(1.0 - uv.x, 1.6)');
+  for (const c of conectores) {
+    const a = c.a.clone(), b = c.b.clone().setZ(110);   // sobre la superficie de los hombros del busto 3D
+    const curva = new THREE.CubicBezierCurve3(a,
+      new THREE.Vector3(a.x + c.lado * 6, a.y - (c.lado ? 150 : 45), a.z + (c.lado ? 20 : 30)),
+      new THREE.Vector3(b.x - c.lado * 10, b.y + 55, b.z + 10), b);
     const malla = new THREE.Mesh(new THREE.TubeGeometry(curva, 28, RAD, 7, false), matCable);
+    malla.frustumCulled = false;
     escena.add(malla);
-    return { ...c, curva, malla };
-  });
-  const rehacerCables = () => {
-    cabeza.updateMatrixWorld(true);
-    for (const c of cables) {
-      const a = tmp.copy(c.a).sub(PIVOTE).applyMatrix4(cabeza.matrixWorld);
-      c.curva.v0.copy(a);
-      // Los de los lados bajan pegados al lateral; los de abajo caen rectos.
-      c.curva.v1.set(a.x + c.lado * 6, a.y - (c.lado ? 150 : 45), a.z + (c.lado ? 20 : 30));
-      c.curva.v2.set(c.b.x - c.lado * 10, c.b.y + 55, c.b.z + 10);
-      const g = new THREE.TubeGeometry(c.curva, 28, RAD, 7, false);
-      c.malla.geometry.dispose(); c.malla.geometry = g;
-    }
-  };
+  }
 
   const ajustar = () => {
     const w = lienzo.clientWidth || 1, h = lienzo.clientHeight || 1;
@@ -272,7 +287,7 @@ export async function montar({ hero, lienzo, alListo }) {
   window.addEventListener('resize', ajustar, { passive: true });
 
   const eu = new THREE.Euler(0, 0, 0, 'YXZ');
-  let visible = true, bucle = 0, ultimoGiro = '';
+  let visible = true, bucle = 0;
   const reloj = () => {
     bucle = 0;
     if (!visible || document.hidden) return;
@@ -285,8 +300,13 @@ export async function montar({ hero, lienzo, alListo }) {
     // El frontal se oscurece un poco al girar (deja de mirar a la luz).
     const sombra = 1 - Math.min(0.18, Math.abs(eu.y) * 0.7);
     matFrente.color.setScalar(sombra);
-    const firmaGiro = eu.x.toFixed(4) + eu.y.toFixed(4) + eu.z.toFixed(4);
-    if (firmaGiro !== ultimoGiro) { ultimoGiro = firmaGiro; rehacerCables(); moverCuello(); }
+    cabeza.updateMatrix();
+    uGiro.value.setFromMatrix4(cabeza.matrix);
+    // Respira: el busto crece un poco desde abajo y la cabeza sube con él.
+    const r = v.respira || 0, k = 1 + r * 0.006;
+    cuerpo.scale.set(1 + r * 0.003, k, 1 + r * 0.004);
+    cuerpo.rotation.z = THREE.MathUtils.degToRad((v.br || 0) * 0.25);
+    cabeza.position.y = PIVOTE.y + (PIVOTE.y - BASE_Y) * (k - 1);
     let parpado = 1;
     if (ojos && ojos.classList.contains('is-blink')) {
       const tr = getComputedStyle(ojos).transform;
@@ -304,8 +324,6 @@ export async function montar({ hero, lienzo, alListo }) {
   }
   document.addEventListener('visibilitychange', despertar);
 
-  rehacerCables();
-  moverCuello();
   pintarCara(0, 0, 1, barras.map(() => 1), 0);
   renderer.render(escena, camara);
   alListo();

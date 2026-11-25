@@ -111,13 +111,9 @@
     const vivo = window.ditboVivo || (window.ditboVivo = {});
     vivo.cx = cx; vivo.cy = cy; vivo.ex = ex; vivo.ey = ey; vivo.respira = respira; vivo.bx = bx; vivo.br = br;
     if (fig && hero.classList.contains('has-3d')) {
-      // Con la cabeza 3D, el cuerpo se mueve en 3D desde la base (pies
-      // quietos): el torso gira un poco hacia donde mira y se inclina, respira
-      // (pecho y hombros) y se balancea de pie. Nada de desplazarse entero.
-      const giroY = cx * 0.8 + bx * 0.06;            // casi de frente: solo un leve acompañamiento
-      const giroX = -cy * 0.5 + respira * 0.45;
-      const giroZ = br * 0.7;
-      fig.style.transform = `perspective(1600px) rotateY(${giroY.toFixed(3)}deg) rotateX(${giroX.toFixed(3)}deg) rotateZ(${giroZ.toFixed(3)}deg) scale(${(1.04 + respira * 0.005).toFixed(4)},${(1.04 + respira * 0.012).toFixed(4)})`;
+      // Con Cristina en 3D, todo el movimiento (respirar, cabeza, cuello) lo
+      // hace la escena: la figura no se transforma (más fluido).
+      if (fig.style.transform) fig.style.transform = '';
     } else if (fig) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
@@ -425,7 +421,7 @@
       // primer fotograma 3D ocurren a la vez, sin parpadeo.
       const cuerpo = new Image();
       cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=5';
-      return Promise.all([import('/features/landing/cristina3d.js?v=13'), cuerpo.decode()])
+      return Promise.all([import('/features/landing/cristina3d.js?v=18'), cuerpo.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
           if (img) img.src = cuerpo.src;

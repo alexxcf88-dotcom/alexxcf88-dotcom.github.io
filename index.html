@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
   <link rel="preload" href="features/landing/media/hero/cristina.webp" as="image" fetchpriority="high">
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
-  <link rel="preload" href="features/landing/landing.js?v=20261126-troceo" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/landing.js?v=20261126-voz2" as="script" fetchpriority="low">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
   <meta name="theme-color" content="#050706">
@@ -600,7 +600,6 @@
     /* Un mismo acabado de foto para cuerpo y televisor 3D: el lienzo pierde
        el aspecto limpio de render (tono cálido, contraste y nitidez de la
        foto) y un grano común cubre toda la figura. */
-    .ix-3d{filter:sepia(.05) contrast(.97) blur(.3px)}
     .ix-fig::after{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);pointer-events:none;background:url(features/landing/media/hero/grano.webp) 0 0/160px 160px repeat;opacity:.32}
     .ix-fig::before{content:"";position:absolute;inset:0;z-index:3;-webkit-mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);mask-image:radial-gradient(ellipse 36% 62% at 75% 58%,#000 55%,transparent 100%);pointer-events:none;background:radial-gradient(120% 90% at 66% 40%,rgba(70,50,40,0) 55%,rgba(60,42,34,.14) 100%)}
     /* Ventana de la demo: te atiende Cristina (su pantalla con la «i» y la «o»,
@@ -639,6 +638,10 @@
        clic llevaba a Precios. */
     .ix-chip-voz{min-width:12.4em;justify-content:center}
     @media (max-width:760px){.ix-chip-voz{min-width:12.6em}}
+    /* Cristina toda en 3D: la foto del cuerpo se oculta (se queda solo como
+       imagen de carga) y el lienzo se funde por abajo con la base. */
+    #inicio.has-3d .ix-body{opacity:0;transition:opacity .9s ease}
+    .ix-3d{-webkit-mask-image:linear-gradient(180deg,#000 82%,transparent 96%);mask-image:linear-gradient(180deg,#000 82%,transparent 96%)}
   </style>
 </head>
 <body data-nav-mode="hero">
@@ -1382,7 +1385,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-saludo"></script>
+  <script defer src="features/landing/hero.js?v=20261126-cuerpo3d2"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>

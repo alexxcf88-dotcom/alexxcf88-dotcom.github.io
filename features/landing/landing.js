@@ -2065,13 +2065,16 @@ function mountCal(destino) {
             voice: {
               provider: '11labs',
               voiceId: 'dNjJKg63Fr5AXwIdkATa',
-              model: 'eleven_flash_v2_5',
-              stability: 0.5,
+              // Misma voz (voiceId), en el modelo más estable de ElevenLabs y
+              // sin «style» (lo que más trabones provoca). Sin caché: Vapi
+              // guardaba el audio del saludo ya trabado y lo repetía siempre.
+              model: 'eleven_turbo_v2_5',
+              stability: 0.65,
               similarityBoost: 0.8,
-              style: 0.3,
+              style: 0,
               useSpeakerBoost: true,
-              optimizeStreamingLatency: 1,
-              cachingEnabled: true,
+              optimizeStreamingLatency: 0,
+              cachingEnabled: false,
               chunkPlan: { enabled: true, minCharacters: 60, punctuationBoundaries: ['.', '?', '!', '。'] },
             },
           };
