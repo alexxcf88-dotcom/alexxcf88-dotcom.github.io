@@ -193,8 +193,14 @@
     ? cap(window.__splineLista, Math.max(0, 4800 - performance.now()))
     : Promise.resolve());
 
+  /* Cristina en 3D (hero.js) también se espera, para que al entrar ya esté
+     montada y no se vea el paso de la foto al 3D. Mismo tope que el robot. */
+  const cristinaLista = () => (window.__cristina3d
+    ? cap(window.__cristina3d, Math.max(0, 4800 - performance.now()))
+    : Promise.resolve());
+
   Promise.all([introDone, criticalStyles])
-    .then(() => Promise.all([runLanding(), visualReady, robotListo()]))
+    .then(() => Promise.all([runLanding(), visualReady, robotListo(), cristinaLista()]))
     .then(() => timeout(reduced ? 60 : 380)) // el logo completo, con su punto, se sostiene un instante
     .then(leave);
 
