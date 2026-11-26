@@ -11,7 +11,7 @@
 (function initSmartPreloader() {
   const root = document.documentElement;
   const loader = document.getElementById('smart-preloader');
-  const LANDING_JS = '/features/landing/landing.js?v=20261126-menu';
+  const LANDING_JS = '/features/landing/landing.js?v=20261126-pixel';
 
   const timeout = (ms) => new Promise((resolve) => window.setTimeout(resolve, ms));
   const cap = (pr, ms) => Promise.race([pr, timeout(ms)]);

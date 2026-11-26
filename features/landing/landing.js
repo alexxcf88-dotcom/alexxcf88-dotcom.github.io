@@ -1034,6 +1034,8 @@ function mountCal(destino) {
       }
       form.reset();
       setStatus('Solicitud enviada. Te escribimos pronto.', 'ok');
+      // Conversión para Meta (solo si la persona aceptó el píxel).
+      if (window.ditboPixel) window.ditboPixel('Lead', { content_name: 'Pedir demo' });
       // Paso 2: el lead YA esta guardado en la BD. El calendario es un extra,
       // no un requisito: si abandonan aqui, el contacto no se pierde. Vale
       // igual para el modal y para el formulario de #contacto: el panel es
@@ -1937,6 +1939,7 @@ function mountCal(destino) {
         vapi = new Vapi(publicKey);
 
         vapi.on('call-start', () => {
+          if (window.ditboPixel) window.ditboPixel('DemoVoz', { content_name: 'Llamada a Cristina' });
           console.log('[voz] call-start: llamada conectada');
           aplicarPreferenciaYa(); // el micro bueno ANTES del primer turno
           diagnosticarAudio();
