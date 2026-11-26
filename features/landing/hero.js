@@ -111,9 +111,9 @@
     const vivo = window.ditboVivo || (window.ditboVivo = {});
     vivo.cx = cx; vivo.cy = cy; vivo.ex = ex; vivo.ey = ey; vivo.respira = respira; vivo.bx = bx; vivo.br = br;
     if (fig && hero.classList.contains('has-3d')) {
-      // Cabeza y cuello giran en la escena 3D; el cuerpo (foto) solo respira:
-      // crece un poco desde la base, sin girar ni desplazarse.
-      fig.style.transform = `scale(${(1.004 + respira * 0.004).toFixed(4)},${(1.004 + respira * 0.009).toFixed(4)})`;
+      // En 3D todo el movimiento (respirar, balancearse, girar) lo hace la
+      // escena (cristina3d.js); la figura HTML se queda quieta.
+      if (fig.style.transform) fig.style.transform = '';
     } else if (fig) fig.style.transform = `perspective(1800px) translate3d(${(bx + cx * 10).toFixed(2)}px,${(by + cy * 4).toFixed(2)}px,0) rotateY(${ry.toFixed(3)}deg) rotateX(${rx.toFixed(3)}deg) rotate(${br.toFixed(3)}deg) scale(1,${(1 + respira * 0.005).toFixed(4)})`;
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
@@ -329,33 +329,103 @@
   };
   if (!reduced) window.addEventListener('scroll', () => { if (!velo) velo = requestAnimationFrame(pintarVelo); }, { passive: true });
 
-  /* 8 · La voz de Cristina. Los navegadores no dejan sonar nada hasta que
-     la persona toca la página, así que el saludo suena con el primer toque o
-     tecla (en cualquier sitio), y el aviso lo deja claro desde el principio.
-     Usa la mejor voz española del sistema (en Edge, las neuronales de
-     Microsoft). Se puede silenciar y volver a oír. */
+  /* 8 · La voz de Cristina. Es un audio grabado con la MISMA voz de la
+     llamada (ElevenLabs, voz de Cristina en Vapi): no depende de las voces
+     del navegador. Si el navegador deja reproducir sonido al abrir, suena
+     solo; si no (lo normal), suena con el primer toque o tecla en cualquier
+     sitio, y el aviso lo deja claro desde el principio. La «i» sube y baja con
+     el volumen real de la voz. Se puede silenciar y volver a oír.
+     Si el audio no está disponible, se usa la mejor voz española del sistema. */
   const sonido = document.getElementById('ix-sound');
   const sonidoTxt = document.getElementById('ix-sound-txt');
   const sintetizador = window.speechSynthesis;
-  if (sonido && sintetizador && 'SpeechSynthesisUtterance' in window && sayEl) {
+  const hayTTS = !!(sintetizador && 'SpeechSynthesisUtterance' in window);
+  if (sonido && sayEl) {
     const saludo = (sayEl.parentElement.getAttribute('aria-label') || sayEl.textContent).trim();
+    const MP3 = '/features/landing/media/hero/cristina-saludo.mp3?v=1';
+    let modo = 'mp3';
+    let hablandoVoz = false, yaSono = false;
+    const texto = (t) => { if (sonidoTxt) sonidoTxt.textContent = t; };
+    const vivo = () => window.ditboVivo || (window.ditboVivo = {});
+    const empieza = (ms) => {
+      hablandoVoz = true; yaSono = true;
+      sonido.classList.add('is-on');
+      texto('Cristina está hablando · pulsa para silenciar');
+      if (estado) estado.textContent = 'está hablando…';
+      if (ms) parlotear(ms);
+    };
+    const acaba = () => {
+      hablandoVoz = false;
+      sonido.classList.remove('is-on');
+      texto('Volver a oír a Cristina');
+      if (estado && !saludoParado) estado.textContent = 'esperando tu respuesta';
+      clearInterval(hablando); hablando = 0; nivel(4);
+      vivo().vol = 0; tv.style.setProperty('--vol', '0');
+    };
+
+    // ── Audio grabado ──
+    const audio = new Audio();
+    audio.preload = 'auto';
+    const cargarAudio = () => { if (!audio.getAttribute('src')) audio.src = MP3; };
+    alEntrar(cargarAudio);   // tras la intro: no compite con lo que pinta la portada
+    audio.addEventListener('error', () => {
+      modo = hayTTS ? 'tts' : null;
+      if (!modo) sonido.hidden = true;
+      if (hablandoVoz) acaba();
+    });
+    audio.addEventListener('ended', acaba);
+    audio.addEventListener('pause', () => { if (hablandoVoz) acaba(); });
+    // Volumen real de la voz → ojos y barras (solo tras un gesto: un
+    // AudioContext creado sin él nace parado y la voz no sonaría).
+    let ctxAudio = null, analizador = null, muestras = null, medida = 0;
+    const conectar = () => {
+      if (ctxAudio || reduced) return;
+      try {
+        const AC = window.AudioContext || window.webkitAudioContext;
+        ctxAudio = new AC();
+        const fuente = ctxAudio.createMediaElementSource(audio);
+        analizador = ctxAudio.createAnalyser();
+        analizador.fftSize = 512;
+        muestras = new Uint8Array(analizador.fftSize);
+        fuente.connect(analizador); analizador.connect(ctxAudio.destination);
+      } catch (e) { ctxAudio = null; analizador = null; }
+    };
+    const medir = () => {
+      medida = 0;
+      if (!hablandoVoz || !analizador) return;
+      analizador.getByteTimeDomainData(muestras);
+      let s = 0;
+      for (let i = 0; i < muestras.length; i++) { const x = (muestras[i] - 128) / 128; s += x * x; }
+      const v = Math.min(1, Math.sqrt(s / muestras.length) * 4.5);
+      vivo().vol = v;
+      tv.style.setProperty('--vol', v.toFixed(3));
+      if (!hablando) nivel(Math.max(1, Math.round(1 + v * 5)));
+      medida = requestAnimationFrame(medir);
+    };
+    const sonarMp3 = (conGesto) => {
+      cargarAudio();
+      if (conGesto) conectar();
+      if (ctxAudio && ctxAudio.state === 'suspended') ctxAudio.resume();
+      audio.currentTime = 0;
+      const p = audio.play();
+      const ok = () => {
+        empieza(analizador ? 0 : (audio.duration || saludo.length * 0.07) * 1000);
+        if (analizador && !medida) medida = requestAnimationFrame(medir);
+      };
+      if (p && p.then) return p.then(ok, (err) => { if (err && err.name !== 'NotAllowedError' && hayTTS) { modo = 'tts'; if (conGesto) decirTTS(); } });
+      ok();
+      return Promise.resolve();
+    };
+
+    // ── Voz del sistema (solo si falta el audio) ──
     const elegirVoz = () => {
       const voces = sintetizador.getVoices().filter((v) => /^es(-|_|$)/i.test(v.lang));
-      // La voz de Cristina en la llamada es Azure Arabella (multilingüe, acento
-      // castellano). Si el navegador la tiene (Edge), se usa esa; si no, Elvira,
-      // la más parecida.
-      const puntos = (v) => (/arabella/i.test(v.name) ? 80 : 0) + (/elvira/i.test(v.name) ? 40 : 0)
-        + (/es-ES/i.test(v.lang) ? 4 : 0)
+      const puntos = (v) => (/es-ES/i.test(v.lang) ? 4 : 0)
         + (/natural|neural|online/i.test(v.name) ? 4 : 0)
-        + (/ximena|helena|laura|lucia|monica|paulina|dalia|google español$/i.test(v.name) ? 2 : 0)
+        + (/elvira|ximena|helena|laura|lucia|monica|paulina|dalia|google español$/i.test(v.name) ? 2 : 0)
         + (/pablo|jorge|alvaro|raul|diego/i.test(v.name) ? -3 : 0);
       return voces.sort((a, b) => puntos(b) - puntos(a))[0] || null;
     };
-    let hablandoVoz = false, yaSono = false;
-    const texto = (t) => { if (sonidoTxt) sonidoTxt.textContent = t; };
-    const callar = () => { sintetizador.cancel(); };
-    // Las voces de Edge (Elvira incluida) llegan con retraso: si aún no están,
-    // se espera a que lleguen (máx. 1,2 s) antes de hablar.
     const conVoces = (fn) => {
       if (sintetizador.getVoices().some((v) => /^es/i.test(v.lang))) return fn();
       let hecho = false;
@@ -363,45 +433,48 @@
       sintetizador.addEventListener('voiceschanged', ir, { once: true });
       setTimeout(ir, 1200);
     };
-    const decir = () => conVoces(() => {
-      if (saludoParado) return; // ya hay una llamada real
-      callar();
+    const decirTTS = () => conVoces(() => {
+      if (saludoParado) return;
+      sintetizador.cancel();
       const u = new SpeechSynthesisUtterance(saludo);
       const voz = elegirVoz();
       if (voz) u.voice = voz;
       u.lang = (voz && voz.lang) || 'es-ES';
-      u.rate = 1;
-      u.onstart = () => {
-        hablandoVoz = true; yaSono = true;
-        sonido.classList.add('is-on');
-        texto('Cristina está hablando · pulsa para silenciar');
-        if (estado) estado.textContent = 'está hablando…';
-        parlotear(saludo.length * 70);
-      };
-      const fin = () => {
-        hablandoVoz = false;
-        sonido.classList.remove('is-on');
-        texto('Volver a oír a Cristina');
-        if (estado && !saludoParado) estado.textContent = 'esperando tu respuesta';
-        clearInterval(hablando); hablando = 0; nivel(4);
-      };
-      u.onend = fin;
-      u.onerror = fin;
+      u.onstart = () => empieza(saludo.length * 70);
+      u.onend = acaba;
+      u.onerror = acaba;
       sintetizador.speak(u);
     });
+
+    const callar = () => {
+      if (!audio.paused) audio.pause();
+      if (hayTTS) sintetizador.cancel();
+    };
+    const decir = (conGesto) => {
+      if (saludoParado) return; // ya hay una llamada real
+      callar();
+      if (modo === 'mp3') sonarMp3(conGesto);
+      else if (modo === 'tts') decirTTS();
+    };
     sonido.hidden = false;
     sonido.addEventListener('click', (ev) => {
       ev.stopPropagation();
-      if (hablandoVoz) callar(); else decir();
+      if (hablandoVoz) callar(); else decir(true);
     });
     // Primer toque o tecla en cualquier parte: suena el saludo (una vez).
+    const quitarGesto = () => ['pointerdown', 'keydown'].forEach((t) => window.removeEventListener(t, primerGesto, true));
     const primerGesto = (ev) => {
       if (sonido.contains(ev.target)) return;
-      ['pointerdown', 'keydown'].forEach((t) => window.removeEventListener(t, primerGesto, true));
-      if (!yaSono) decir();
+      quitarGesto();
+      if (!yaSono) decir(true);
     };
     ['pointerdown', 'keydown'].forEach((t) => window.addEventListener(t, primerGesto, true));
-    sintetizador.getVoices(); // pide la lista ya, para que esté al primer toque
+    // Al entrar, se intenta sin gesto (si el navegador lo permite, suena ya).
+    alEntrar(() => setTimeout(() => {
+      if (yaSono || saludoParado || modo !== 'mp3' || reduced) return;
+      sonarMp3(false).then(() => { if (yaSono) quitarGesto(); });
+    }, 700));
+    if (hayTTS) sintetizador.getVoices(); // pide la lista ya, por si hace falta
     // Al empezar una llamada real, la voz del saludo se calla.
     window.addEventListener('ditbo:voz', (ev) => { const d = ev.detail || {}; if (d.tipo === 'boton' && (d.colgando || d.ocupado)) { callar(); sonido.hidden = true; } else if (d.tipo === 'boton') sonido.hidden = false; });
   }
@@ -417,14 +490,14 @@
   const sin3d = reduced || red3d.saveData === true || /(^|-)(2g|slow-2g)$/.test(red3d.effectiveType || '') || !soportaGL();
   if (lienzo3d && !sin3d) {
     const cargar3d = () => {
-      // El cuerpo sin televisor se descarga antes: el cambio de foto y el
-      // primer fotograma 3D ocurren a la vez, sin parpadeo.
-      const cuerpo = new Image();
-      cuerpo.src = '/features/landing/media/hero/cristina-cuerpo.webp?v=5';
-      return Promise.all([import('/features/landing/cristina3d.js?v=20'), cuerpo.decode()])
+      // La pared sin figura se descarga antes: el cambio de foto y el primer
+      // fotograma 3D (cuerpo y televisor) ocurren a la vez, sin parpadeo.
+      const pared = new Image();
+      pared.src = '/features/landing/media/hero/cristina-pared.webp?v=1';
+      return Promise.all([import('/features/landing/cristina3d.js?v=21'), pared.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
-          if (img) img.src = cuerpo.src;
+          if (img) img.src = pared.src;
           hero.classList.add('has-3d');
         } }))
         .catch((err) => console.warn('[portada] 3D no disponible, se queda la foto', err));

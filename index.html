@@ -7,7 +7,7 @@
   <link rel="preload" href="fonts/archivo-normal-latin.woff2" as="font" type="font/woff2" crossorigin>
   <link rel="preload" href="features/landing/landing.js?v=20261126-voz2" as="script" fetchpriority="low">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
-  <meta name="description" content="Recepcionista virtual con IA para clínicas dentales: atiende llamadas, responde por WhatsApp, gestiona la agenda y deriva a recepción cuando hace falta.">
+  <meta name="description" content="ditbo es la recepcionista con IA para clínicas dentales: atiende llamadas 24/7, gestiona la agenda y WhatsApp y pasa a tu equipo lo que lo necesita. 1.er mes gratis.">
   <meta name="theme-color" content="#050706">
   <link rel="canonical" href="https://ditbo.es/">
   <meta name="robots" content="index, follow, max-image-preview:large">
@@ -29,6 +29,8 @@
   <meta name="twitter:image:alt" content="ditbo, recepción automatizada para clínicas dentales">
   <link rel="icon" href="/favicon.ico" sizes="any">
   <link rel="icon" type="image/png" sizes="48x48" href="/assets/brand/favicon-48.png">
+  <link rel="icon" type="image/png" sizes="96x96" href="/assets/brand/favicon-96.png">
+  <link rel="icon" type="image/png" sizes="144x144" href="/assets/brand/favicon-144.png">
   <link rel="icon" type="image/png" sizes="192x192" href="/assets/brand/icon-192.png">
   <link rel="icon" type="image/svg+xml" href="/brand/icono/icono-ditbo.svg">
   <link rel="apple-touch-icon" sizes="180x180" href="/assets/brand/apple-touch-icon.png">
@@ -117,7 +119,12 @@
           "name": "Galicia"
         }
       ],
-      "description": "Recepción automatizada para clínicas dentales: atiende llamadas con IA, centraliza WhatsApp, Instagram, Facebook, email y SMS en una sola bandeja, gestiona la agenda, envía recordatorios, mantiene lista de espera, reactiva pacientes dormidos y lo muestra en un panel con métricas, derivando a recepción los casos que lo requieren."
+      "description": "Recepción automatizada para clínicas dentales: atiende llamadas con IA, centraliza WhatsApp, Instagram, Facebook, email y SMS en una sola bandeja, gestiona la agenda, envía recordatorios, mantiene lista de espera, reactiva pacientes dormidos y lo muestra en un panel con métricas, derivando a recepción los casos que lo requieren.",
+      "offers": [
+        { "@type": "Offer", "name": "BÁSICO", "url": "https://ditbo.es/#precio", "priceCurrency": "EUR", "price": "89", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "89", "priceCurrency": "EUR", "unitText": "mes" } },
+        { "@type": "Offer", "name": "PRO", "url": "https://ditbo.es/#precio", "priceCurrency": "EUR", "price": "159", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "159", "priceCurrency": "EUR", "unitText": "mes" } },
+        { "@type": "Offer", "name": "ULTRA", "url": "https://ditbo.es/#precio", "priceCurrency": "EUR", "price": "299", "priceSpecification": { "@type": "UnitPriceSpecification", "price": "299", "priceCurrency": "EUR", "unitText": "mes" } }
+      ]
     },
     {
       "@type": "FAQPage",
@@ -556,6 +563,8 @@
     .ix-speaker{margin-bottom:10px}
     .ix-sound{display:inline-flex;align-items:center;gap:8px;margin:0 0 18px;padding:6px 14px 6px 8px;border:1px dashed rgba(11,18,17,.3);border-radius:999px;background:transparent;color:#0b1211;font:inherit;font-size:.78rem;font-weight:600;cursor:pointer}
     .ix-sound[hidden]{display:none}
+    /* Avisos de la interfaz fuera del fragmento de Google (data-nosnippet solo vale en div/span). */
+    .ix-nosnip{display:contents}
     .ix-sound:hover{border-color:#0b7d70;color:#0b7d70}
     .ix-sound:focus-visible{outline:2px solid #0b7d70;outline-offset:3px}
     .ix-sound-ic{display:grid;place-items:center;width:22px;height:22px;border-radius:50%;background:#0b1211;color:#f7fbf8}
@@ -714,7 +723,7 @@
           </div>
         </div>
       </div>
-      <div class="ix-call" id="voz-demo">
+      <div class="ix-call" id="voz-demo" data-nosnippet>
         <div class="voice-transcript" aria-label="Transcripci&oacute;n en vivo de una llamada atendida por el agente de voz">
           <div class="voice-live-strip">
             <span><i></i> Llamadas en vivo</span>
@@ -744,10 +753,10 @@
       </div>
       <div class="ix-copy">
         <p class="ix-eyebrow">ditbo<sup>&reg;</sup> <span aria-hidden="true">&middot;</span> Recepci&oacute;n automatizada para cl&iacute;nicas dentales <span aria-hidden="true">&middot;</span> <a class="ix-promo" href="#precio">Primer mes gratis</a></p>
-        <p class="ix-speaker" id="ix-speaker"><span class="ix-speaker-dot" aria-hidden="true"></span><b>Cristina</b> &middot; asistente virtual con IA <span class="ix-speaker-state" id="ix-speaker-state">est&aacute; hablando&hellip;</span></p>
-        <button type="button" class="ix-sound" id="ix-sound" hidden><span class="ix-sound-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="ix-sound-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></span><span id="ix-sound-txt">Toca en cualquier parte para o&iacute;r a Cristina</span></button>
+        <div class="ix-nosnip" data-nosnippet><p class="ix-speaker" id="ix-speaker"><span class="ix-speaker-dot" aria-hidden="true"></span><b>Cristina</b> &middot; asistente virtual con IA <span class="ix-speaker-state" id="ix-speaker-state">est&aacute; hablando&hellip;</span></p>
+        <button type="button" class="ix-sound" id="ix-sound" hidden><span class="ix-sound-ic" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9v6h4l5 4V5L8 9H4z"/><path class="ix-sound-wave" d="M16.5 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg></span><span id="ix-sound-txt">Toca en cualquier parte para o&iacute;r a Cristina</span></button></div>
         <h1 class="ix-say"><span class="ix-say-text" id="ix-say">Hola, soy Cristina, la asistente virtual de tu cl&iacute;nica dental. &iquest;En qu&eacute; puedo ayudarte?</span><i class="ix-caret" aria-hidden="true"></i></h1>
-        <p class="ix-tu" id="ix-tu" hidden><b>T&uacute;</b><span></span></p>
+        <p class="ix-tu" id="ix-tu" hidden><b>T&uacute;</b><span data-nosnippet></span></p>
         <p class="ix-intro" id="ix-intro">Contesto las llamadas y los WhatsApp, miro la agenda y dejo cada caso listo para tu equipo.</p>
         <div class="ix-chips">
           <a class="ix-chip ix-chip-main" href="#contacto" data-demo-open>Pedir demo</a>
@@ -1382,7 +1391,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-foto3"></script>
+  <script defer src="features/landing/hero.js?v=20261126-3d5"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
