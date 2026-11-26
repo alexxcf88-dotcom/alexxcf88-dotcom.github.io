@@ -1335,7 +1335,23 @@ function mountCal(destino) {
   const menu = nav.querySelector('.nav-links');
   const cta = nav.querySelector('.nav-cta');
 
+  // Con el menú abierto la página no se desliza (también en iOS, que ignora
+  // overflow:hidden): el body se fija en su sitio y al cerrar vuelve igual.
+  let scrollGuardado = 0, bloqueada = false;
+  const bloquear = (si) => {
+    if (si === bloqueada) return;
+    bloqueada = si;
+    const b = document.body;
+    if (si) {
+      scrollGuardado = window.scrollY;
+      Object.assign(b.style, { position: 'fixed', top: `-${scrollGuardado}px`, left: '0', right: '0', width: '100%' });
+    } else {
+      Object.assign(b.style, { position: '', top: '', left: '', right: '', width: '' });
+      window.scrollTo(0, scrollGuardado);
+    }
+  };
   const setOpen = (open) => {
+    if (open !== nav.classList.contains('menu-open')) bloquear(open);
     nav.classList.toggle('menu-open', open);
     document.documentElement.classList.toggle('mobile-menu-open', open);
     document.querySelector('main')?.toggleAttribute('inert', open);
@@ -2475,23 +2491,33 @@ function mountCal(destino) {
    corto o largo. Tras navegar se repite el encaje cuando el layout ya es
    real: scrollIntoView respeta scroll-margin-top y scroll-padding-top. */
 (function initAnclasExactas() {
+  /* Dónde queda cada sección: si cabe en la pantalla (bajo la barra del
+     menú), centrada en vertical; si es más alta, su principio justo debajo
+     de la barra. Siempre dentro de los límites de la página. */
+  const relleno = () => {
+    const nav = document.querySelector('.site-nav');
+    const r = nav && nav.getBoundingClientRect();
+    return Math.max(parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0, r && r.bottom > 0 ? r.bottom + 8 : 0);
+  };
+  const destinoY = (el) => {
+    const r = el.getBoundingClientRect(), arriba = relleno(), libre = window.innerHeight - arriba;
+    const y = r.top + window.scrollY - arriba - (r.height < libre ? (libre - r.height) / 2 : 0);
+    return Math.max(0, Math.min(y, document.documentElement.scrollHeight - window.innerHeight));
+  };
   function encajar() {
     const id = decodeURIComponent(location.hash.slice(1));
     if (!id) return;
     const destino = document.getElementById(id);
     if (!destino) return;
-    requestAnimationFrame(() => destino.scrollIntoView());
-    setTimeout(() => destino.scrollIntoView(), 120);
-    setTimeout(() => destino.scrollIntoView(), 420);
+    requestAnimationFrame(() => window.scrollTo(0, destinoY(destino)));
+    setTimeout(() => window.scrollTo(0, destinoY(destino)), 120);
+    setTimeout(() => window.scrollTo(0, destinoY(destino)), 420);
   }
   window.addEventListener('hashchange', encajar);
   /* Los enlaces internos no teletransportan: la página baja (o sube) rápido
      y suave pasando por toda la web. El destino se recalcula en cada
      fotograma (las secciones con content-visibility cambian de alto al
      pintarse), y al llegar se encaja exacto. */
-  const relleno = () => parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop) || 0;
-  const destinoY = (el) => Math.max(0, Math.min(el.getBoundingClientRect().top + window.scrollY - relleno(),
-    document.documentElement.scrollHeight - window.innerHeight));
   const suave = (t) => (t < 0.5 ? 4 * t * t * t : 1 - Math.pow(-2 * t + 2, 3) / 2);
   let viaje = 0;
   const recorrer = (el, id) => {
@@ -2504,7 +2530,7 @@ function mountCal(destino) {
       const t = Math.min(1, (ahora - t0) / dur);
       window.scrollTo(0, y0 + (destinoY(el) - y0) * suave(t));
       if (t < 1) viaje = requestAnimationFrame(paso);
-      else { history.pushState(null, '', '#' + id); setTimeout(() => window.scrollTo(0, destinoY(el)), 120); }
+      else { history.pushState(null, '', '#' + id); setTimeout(() => window.scrollTo(0, destinoY(el)), 120); setTimeout(() => window.scrollTo(0, destinoY(el)), 480); }
     };
     viaje = requestAnimationFrame(paso);
   };

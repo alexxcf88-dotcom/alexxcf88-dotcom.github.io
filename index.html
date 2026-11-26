@@ -12,7 +12,7 @@
   <link rel="preload" href="/features/landing/media/hero/cristina-cuerpo3d@2x.webp?v=2" as="image">
   <link rel="preload" href="/features/landing/media/hero/cristina-pared.webp?v=1" as="image">
   <link rel="preload" href="/features/landing/media/hero/cristina-prof.png?v=1" as="image">
-  <link rel="preload" href="features/landing/landing.js?v=20261126-voz2" as="script" fetchpriority="low">
+  <link rel="preload" href="features/landing/landing.js?v=20261126-menu" as="script" fetchpriority="low">
   <title>Recepcionista con IA para clínicas dentales | ditbo</title>
   <meta name="description" content="ditbo es la recepcionista con IA para clínicas dentales: atiende llamadas 24/7, gestiona la agenda y WhatsApp y pasa a tu equipo lo que lo necesita. 1.er mes gratis.">
   <meta name="theme-color" content="#050706">
@@ -477,11 +477,15 @@
     #inicio.ix .ix-cue i{background:var(--ink)}
 
     /* Navegación sobre la portada clara: el mismo logo, invertido a tinta */
-    body[data-nav-mode="hero"] .site-nav .brand-wordmark{filter:invert(1) hue-rotate(180deg) saturate(1.4)}
+    body[data-nav-mode="hero"] .site-nav:not(.menu-open) .brand-wordmark{filter:invert(1) hue-rotate(180deg) saturate(1.4)}
     .site-nav .brand-wordmark{transition:filter .45s ease}
-    body[data-nav-mode="hero"] .site-nav .nav-links a{color:rgba(11,18,17,.66)}
-    body[data-nav-mode="hero"] .site-nav .nav-links a:hover{color:#0b1211}
-    body[data-nav-mode="hero"] .site-nav .nav-cta{color:#0b1211}
+    body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-links a{color:rgba(11,18,17,.66)}
+    body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-links a:hover{color:#0b1211}
+    body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-cta{color:#0b1211}
+    /* Menú abierto (panel oscuro): logo, enlaces y botón en claro, también sobre la portada */
+    .site-nav.menu-open .nav-links a{color:rgba(247,251,248,.88)}
+    .site-nav.menu-open .nav-links a:hover,.site-nav.menu-open .nav-links a:focus-visible{color:#5af0d8}
+    .site-nav.menu-open .nav-cta{color:#f7fbf8}
     body[data-nav-mode="hero"] .site-nav::before{background:linear-gradient(90deg,rgba(11,18,17,0),rgba(11,18,17,.14) 20%,rgba(11,18,17,.14) 80%,rgba(11,18,17,0))}
     body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-toggle{border-color:rgba(11,18,17,.2)}
     body[data-nav-mode="hero"] .site-nav:not(.menu-open) .nav-toggle-bar{background:#0b1211}
@@ -516,7 +520,8 @@
     @media (max-width:760px){
       #inicio.hero.ix{display:flex;flex-direction:column;height:auto;min-height:100svh;padding-bottom:40px}
       .ix-photo{order:1;position:relative;inset:auto;flex:none;width:100%;aspect-ratio:1.15;margin-top:68px}
-      .ix-photo-in{top:0;bottom:auto;right:2%;height:100%}
+      /* Cristina centrada: el centro del televisor (x 75,3 % de la foto) cae en el centro de la pantalla */
+      .ix-photo-in{top:0;bottom:auto;right:auto;left:50%;height:100%;transform:translateX(-75.3%)}
       .ix-photo-in::after{background:linear-gradient(180deg,rgba(195,182,177,0) 72%,#c3b6b1 100%)}
       #inicio.ix .ix-copy{order:2;position:relative;left:auto;right:auto;top:auto;bottom:auto;transform:none;width:auto;margin:-8px 20px 0}
       #inicio.ix .ix-eyebrow{font-size:.6rem;margin-bottom:14px}
@@ -1410,8 +1415,8 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-3d8"></script>
-  <script defer src="features/landing/preloader.js?v=20261126-3d"></script>
+  <script defer src="features/landing/hero.js?v=20261126-3d9"></script>
+  <script defer src="features/landing/preloader.js?v=20261126-menu"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
 </html>
