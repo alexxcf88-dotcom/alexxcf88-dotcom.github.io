@@ -84,10 +84,8 @@
   // Mientras se hace scroll, el cuerpo se queda quieto (la portada se está
   // oscureciendo y así el scroll va más fino); retoma al parar.
   window.addEventListener('scroll', () => { scrollHasta = performance.now() + 180; }, { passive: true });
-  const vivir = (ahora) => {
-    bucle = 0;
-    if (!enPortada || document.hidden) return; // se reanuda al volver
-    if (ahora < scrollHasta) { ultimo = ahora; bucle = requestAnimationFrame(vivir); return; }
+  const paso = (ahora) => {
+    if (ahora < scrollHasta) { ultimo = ahora; return; }
     const dt = Math.min(0.05, ultimo ? (ahora - ultimo) / 1000 : 0.016);
     ultimo = ahora;
     const t = ahora / 1000;
@@ -118,7 +116,14 @@
     // Las pupilas solo se tocan si se han movido de verdad.
     const lx = ex.toFixed(3), ly = ey.toFixed(3);
     if (lx !== ojoX || ly !== ojoY) { ojoX = lx; ojoY = ly; tv.style.setProperty('--lx', lx); tv.style.setProperty('--ly', ly); }
-    bucle = requestAnimationFrame(vivir);
+  };
+  // Un fallo puntual no deja a Cristina congelada: se avisa y se sigue.
+  let fallosVivir = 0;
+  const vivir = (ahora) => {
+    bucle = 0;
+    if (!enPortada || document.hidden) return;
+    try { if (paso(ahora) === false) return; } catch (e) { if (fallosVivir++ < 3) console.error('[portada] movimiento', e); window.ditboVivoError = String(e && e.message || e); }
+    if (!bucle) bucle = requestAnimationFrame(vivir);
   };
   const despertar = () => { if (!bucle && !reduced) { ultimo = 0; bucle = requestAnimationFrame(vivir); } };
   if ('IntersectionObserver' in window) new IntersectionObserver(([e]) => { if (e.isIntersecting) despertar(); }).observe(hero);
@@ -479,6 +484,30 @@
     window.addEventListener('ditbo:voz', (ev) => { const d = ev.detail || {}; if (d.tipo === 'boton' && (d.colgando || d.ocupado)) { callar(); sonido.hidden = true; } else if (d.tipo === 'boton') sonido.hidden = false; });
   }
 
+  /* Diagnóstico: ditbo.es/?diag muestra por qué Cristina se mueve o no. */
+  if (/[?&]diag\b/.test(location.search)) {
+    const caja = document.createElement('pre');
+    caja.style.cssText = 'position:fixed;left:8px;bottom:8px;z-index:99999;margin:0;padding:10px 12px;max-width:min(92vw,560px);white-space:pre-wrap;font:12px/1.45 ui-monospace,monospace;color:#d8fff7;background:rgba(0,0,0,.82);border-radius:10px;pointer-events:none';
+    document.body.appendChild(caja);
+    const errores = [];
+    window.addEventListener('error', (e) => errores.push(String(e.message).slice(0, 140)));
+    let gpu = '?';
+    try { const c = document.createElement('canvas'); const g = c.getContext('webgl2') || c.getContext('webgl'); const x = g && g.getExtension('WEBGL_debug_renderer_info'); gpu = g ? (x ? g.getParameter(x.UNMASKED_RENDERER_WEBGL) : 'WebGL sí') : 'SIN WebGL'; } catch (e) { gpu = 'error WebGL'; }
+    const red = navigator.connection || {};
+    let f0 = 0, t0 = performance.now();
+    setInterval(() => {
+      const v = window.ditboVivo || {}, f = window.ditbo3d || 0, fps = Math.round((f - f0) * 1000 / (performance.now() - t0)); f0 = f; t0 = performance.now();
+      caja.textContent = ['diagnóstico portada',
+        'movimiento reducido (Windows/Mac): ' + (reduced ? 'SÍ → se muestra la foto fija' : 'no'),
+        'ahorro de datos: ' + (red.saveData ? 'sí' : 'no') + ' · red: ' + (red.effectiveType || '?'),
+        'GPU: ' + gpu,
+        '3D cargado: ' + (hero.classList.contains('has-3d') ? 'sí' : 'no') + ' · fotogramas/s: ' + fps,
+        'mirada cx/cy: ' + (v.cx || 0).toFixed(2) + ' / ' + (v.cy || 0).toFixed(2) + ' · respira: ' + (v.respira || 0).toFixed(2),
+        'en portada: ' + (enPortada ? 'sí' : 'no'),
+        'errores: ' + ([window.ditbo3dError, window.ditboVivoError].filter(Boolean).concat(errores).join(' | ') || 'ninguno')].join('\n');
+    }, 500);
+  }
+
   /* 9 · Cristina en 3D. Se carga cuando la web ya ha entrado y el navegador
      está libre; hasta entonces (y sin WebGL, con ahorro de datos o con
      movimiento reducido) se queda la foto. Al estar lista, la foto se funde. */
@@ -494,7 +523,7 @@
       // fotograma 3D (cuerpo y televisor) ocurren a la vez, sin parpadeo.
       const pared = new Image();
       pared.src = '/features/landing/media/hero/cristina-pared.webp?v=1';
-      return Promise.all([import('/features/landing/cristina3d.js?v=22'), pared.decode()])
+      return Promise.all([import('/features/landing/cristina3d.js?v=24'), pared.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
           if (img) img.src = pared.src;
@@ -502,7 +531,9 @@
         } }))
         .catch((err) => console.warn('[portada] 3D no disponible, se queda la foto', err));
     };
-    alEntrar(() => ('requestIdleCallback' in window ? requestIdleCallback(cargar3d, { timeout: 1500 }) : setTimeout(cargar3d, 300)));
+    // Se carga YA, durante la pantalla de carga (preloader.js la espera hasta
+    // un tope): al entrar, Cristina ya está en 3D y no se ve el cambio.
+    window.__cristina3d = cargar3d();
   }
 })();
 

@@ -479,7 +479,8 @@ export async function montar({ hero, lienzo, alListo }) {
   const eu = new THREE.Euler(0, 0, 0, 'YXZ');
   const m4 = new THREE.Matrix4();
   let visible = true, bucle = 0, tx = 0, ty = 0, ult = 0;
-  const reloj = (ahora) => {
+  let fallo = 0;
+  const fotograma = (ahora) => {
     bucle = 0;
     if (!visible || document.hidden) return;
     const v = window.ditboVivo || {};
@@ -529,6 +530,13 @@ export async function montar({ hero, lienzo, alListo }) {
     matPiloto.color.set(enLlamada ? 0xff3b3b : 0x2f74ff);
     if (haloPiloto) haloPiloto.color.set(enLlamada ? 0xff6a50 : 0xffffff);
     renderer.render(escena, camara);
+    window.ditbo3d = (window.ditbo3d || 0) + 1;
+  };
+  // Un fallo en un fotograma no para la animación: se avisa y se sigue.
+  const reloj = (ahora) => {
+    bucle = 0;
+    if (!visible || document.hidden) return;
+    try { fotograma(ahora); } catch (e) { if (fallo++ < 3) console.error('[portada] fotograma 3D', e); window.ditbo3dError = String(e && e.message || e); }
     bucle = requestAnimationFrame(reloj);
   };
   const despertar = () => { if (!bucle && visible && !document.hidden) { ult = 0; bucle = requestAnimationFrame(reloj); } };
