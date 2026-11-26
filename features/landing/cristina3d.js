@@ -65,7 +65,7 @@ export async function montar({ hero, lienzo, alListo }) {
   const cargar = (url) => new Promise((ok, mal) => new THREE.TextureLoader().load(url, (t) => { t.colorSpace = THREE.SRGBColorSpace; t.anisotropy = renderer.capabilities.getMaxAnisotropy(); ok(t); }, undefined, mal));
   const cargarImg = (url) => new Promise((ok, mal) => { const i = new Image(); i.onload = () => ok(i); i.onerror = mal; i.src = url; });
   const [tCuerpo, imgProf] = await Promise.all([
-    cargar('/features/landing/media/hero/cristina-cuerpo3d.webp?v=1'),
+    cargar('/features/landing/media/hero/cristina-cuerpo3d@2x.webp?v=2'),
     cargarImg('/features/landing/media/hero/cristina-prof.png?v=1'),
   ]);
 
@@ -117,12 +117,14 @@ export async function montar({ hero, lienzo, alListo }) {
     }
     geo.setAttribute('aPy', new THREE.BufferAttribute(aPy, 1));
     geo.computeBoundingSphere();
+    geo.computeVertexNormals();   // forma del cuerpo en reposo, para la luz
     const mat = new THREE.MeshBasicMaterial({ map: tCuerpo, transparent: true, depthWrite: false, toneMapped: false });
     mat.onBeforeCompile = (sh) => {
       Object.assign(sh.uniforms, { uCabeza, uTorso, uRespira, uSube, uLuz, uPiv: { value: PIVOTE }, uCad: { value: CADERA } });
       sh.vertexShader = sh.vertexShader
         .replace('#include <common>', `#include <common>
-          attribute float aPy; uniform mat3 uCabeza, uTorso; uniform vec3 uPiv, uCad; uniform float uRespira, uSube; varying float vPy;`)
+          attribute float aPy; uniform mat3 uCabeza, uTorso; uniform vec3 uPiv, uCad; uniform float uRespira, uSube; varying float vPy;
+          varying vec3 vN0, vN1; varying vec2 vFoto;`)
         .replace('#include <begin_vertex>', `#include <begin_vertex>
           {
             vPy = aPy;
@@ -140,11 +142,30 @@ export async function montar({ hero, lienzo, alListo }) {
             float wt = 1.0 - smoothstep(700.0, 1180.0, aPy);
             p = mix(p, uTorso * (p - uCad) + uCad, wt);
             transformed = p;
+            // Normal en reposo y girada: la luz cambia con el giro.
+            vec3 n0 = normalize(normal);
+            vec3 n1 = normalize(mix(n0, uCabeza * n0, wc));
+            n1 = normalize(mix(n1, uTorso * n1, wt));
+            vN0 = n0; vN1 = n1;
+            vFoto = vec2(${CUERPO.x0.toFixed(1)} + uv.x * ${(CUERPO.x1 - CUERPO.x0).toFixed(1)}, aPy);
           }`);
       // Al girar, el lado que se aleja de la luz se oscurece un poco.
       sh.fragmentShader = sh.fragmentShader
-        .replace('#include <common>', '#include <common>\nuniform float uLuz;')
-        .replace('#include <map_fragment>', '#include <map_fragment>\n diffuseColor.rgb *= uLuz;');
+        .replace('#include <common>', `#include <common>
+          uniform float uLuz; varying vec3 vN0, vN1; varying vec2 vFoto;
+          // Sombra suave de cada mazo de cables sobre la correa del hombro.
+          float sombraCable(vec2 c) { vec2 d = (vFoto - c) / vec2(30.0, 20.0); return 1.0 - 0.34 * exp(-dot(d, d)); }`)
+        .replace('#include <map_fragment>', `#include <map_fragment>
+          {
+            // La foto ya trae su luz: solo se suma la diferencia al girar
+            // (el lado que mira a la luz se aclara, el otro se apaga).
+            vec3 L = normalize(vec3(-0.45, 0.55, 0.72));
+            float rel = dot(normalize(vN1), L) - dot(normalize(vN0), L);
+            float luz = clamp(1.0 + rel * 1.1, 0.75, 1.3);
+            float sombra = sombraCable(vec2(1022.0, 688.0)) * sombraCable(vec2(1052.0, 684.0))
+                         * sombraCable(vec2(1482.0, 700.0)) * sombraCable(vec2(1512.0, 704.0));
+            diffuseColor.rgb *= uLuz * luz * sombra;
+          }`);
     };
     const malla = new THREE.Mesh(geo, mat);
     malla.frustumCulled = false;

@@ -619,9 +619,21 @@
     .dm-eyes{display:flex;align-items:center;justify-content:center;gap:12%;width:100%;height:100%;border-radius:11px;background:radial-gradient(90% 80% at 50% 45%,#0d1716,#030505);box-shadow:inset 0 0 12px rgba(0,0,0,.9);filter:drop-shadow(0 0 5px rgba(90,240,216,.65));animation:dmBlink 4.6s infinite}
     @keyframes dmBlink{0%,93%,100%{transform:scaleY(1)}95%,97%{transform:scaleY(.08)}}
     .dm-i{width:15%;height:auto}
-    .dm-bar{animation:dmBar 1.6s steps(1) infinite}
-    .dm-bar:nth-child(1){animation-delay:-.2s}.dm-bar:nth-child(2){animation-delay:-.6s}.dm-bar:nth-child(3){animation-delay:-1s}.dm-bar:nth-child(4){animation-delay:-.4s}
-    .dm-bar:nth-child(5),.dm-bar:nth-child(6){animation:none}
+    /* La «i» de la demo es un medidor de audio: las barras se encienden siempre
+       seguidas desde abajo hasta el nivel de cada instante (sin huecos). */
+    .dm-bar{opacity:.26;animation:1.9s steps(1,end) infinite}
+    .dm-bar:nth-child(1){animation-name:dmVu6}
+    @keyframes dmVu6{0.00%{opacity:0.26}6.25%{opacity:0.26}12.50%{opacity:0.26}18.75%{opacity:1}25.00%{opacity:0.26}31.25%{opacity:0.26}37.50%{opacity:0.26}43.75%{opacity:0.26}50.00%{opacity:1}56.25%{opacity:0.26}62.50%{opacity:0.26}68.75%{opacity:0.26}75.00%{opacity:0.26}81.25%{opacity:0.26}87.50%{opacity:1}93.75%{opacity:0.26}100%{opacity:0.26}}
+    .dm-bar:nth-child(2){animation-name:dmVu5}
+    @keyframes dmVu5{0.00%{opacity:0.26}6.25%{opacity:1}12.50%{opacity:0.26}18.75%{opacity:1}25.00%{opacity:0.26}31.25%{opacity:0.26}37.50%{opacity:1}43.75%{opacity:0.26}50.00%{opacity:1}56.25%{opacity:0.26}62.50%{opacity:0.26}68.75%{opacity:1}75.00%{opacity:0.26}81.25%{opacity:0.26}87.50%{opacity:1}93.75%{opacity:1}100%{opacity:0.26}}
+    .dm-bar:nth-child(3){animation-name:dmVu4}
+    @keyframes dmVu4{0.00%{opacity:0.26}6.25%{opacity:1}12.50%{opacity:1}18.75%{opacity:1}25.00%{opacity:0.26}31.25%{opacity:1}37.50%{opacity:1}43.75%{opacity:0.26}50.00%{opacity:1}56.25%{opacity:1}62.50%{opacity:0.26}68.75%{opacity:1}75.00%{opacity:0.26}81.25%{opacity:1}87.50%{opacity:1}93.75%{opacity:1}100%{opacity:0.26}}
+    .dm-bar:nth-child(4){animation-name:dmVu3}
+    @keyframes dmVu3{0.00%{opacity:1}6.25%{opacity:1}12.50%{opacity:1}18.75%{opacity:1}25.00%{opacity:0.26}31.25%{opacity:1}37.50%{opacity:1}43.75%{opacity:1}50.00%{opacity:1}56.25%{opacity:1}62.50%{opacity:0.26}68.75%{opacity:1}75.00%{opacity:1}81.25%{opacity:1}87.50%{opacity:1}93.75%{opacity:1}100%{opacity:1}}
+    .dm-bar:nth-child(5){animation-name:dmVu2}
+    @keyframes dmVu2{0.00%{opacity:1}6.25%{opacity:1}12.50%{opacity:1}18.75%{opacity:1}25.00%{opacity:1}31.25%{opacity:1}37.50%{opacity:1}43.75%{opacity:1}50.00%{opacity:1}56.25%{opacity:1}62.50%{opacity:1}68.75%{opacity:1}75.00%{opacity:1}81.25%{opacity:1}87.50%{opacity:1}93.75%{opacity:1}100%{opacity:1}}
+    .dm-bar:nth-child(6){animation-name:dmVu1}
+    @keyframes dmVu1{0.00%{opacity:1}6.25%{opacity:1}12.50%{opacity:1}18.75%{opacity:1}25.00%{opacity:1}31.25%{opacity:1}37.50%{opacity:1}43.75%{opacity:1}50.00%{opacity:1}56.25%{opacity:1}62.50%{opacity:1}68.75%{opacity:1}75.00%{opacity:1}81.25%{opacity:1}87.50%{opacity:1}93.75%{opacity:1}100%{opacity:1}}
     @keyframes dmBar{0%,100%{opacity:1}50%{opacity:.26}}
     .dm-o{position:relative;width:34%;aspect-ratio:1}
     .dm-o svg{display:block;width:100%;height:100%}
@@ -640,7 +652,7 @@
     @keyframes dmIn{to{opacity:1;transform:none}}
     .dm-tags{display:flex;flex-wrap:wrap;gap:8px;margin:2px 0 0;padding:0;list-style:none}
     .dm-tags li{padding:6px 12px;border-radius:999px;border:1px solid rgba(255,255,255,.12);color:rgba(247,251,248,.7);font-size:.78rem}
-    @media (prefers-reduced-motion:reduce){.dm-eyes,.dm-bar,.dm-o i,.dm-dot{animation:none!important}.dm-msg{opacity:1;transform:none;animation:none!important}}
+    @media (prefers-reduced-motion:reduce){.dm-eyes,.dm-bar,.dm-o i,.dm-dot{animation:none!important}.dm-bar:nth-child(n+3){opacity:1}.dm-msg{opacity:1;transform:none;animation:none!important}}
     @media (max-width:760px){.dm-tv{width:68px}.dm-msg{font-size:.88rem}}
     /* El botón de voz no cambia de ancho al pasar a «Conectando…» o «Colgar»:
        si se estrechaba, «Ver precios» se colocaba bajo el ratón y un segundo
@@ -1391,7 +1403,7 @@
     </div>
   </div>
 
-  <script defer src="features/landing/hero.js?v=20261126-3d5"></script>
+  <script defer src="features/landing/hero.js?v=20261126-3d6"></script>
   <script defer src="features/landing/preloader.js?v=20261122-pantalla"></script>
 <script data-goatcounter="https://aitomat.goatcounter.com/count" async src="//gc.zgo.at/count.js"></script>
 </body>
