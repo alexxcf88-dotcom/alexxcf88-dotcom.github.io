@@ -494,7 +494,7 @@
       // fotograma 3D (cuerpo y televisor) ocurren a la vez, sin parpadeo.
       const pared = new Image();
       pared.src = '/features/landing/media/hero/cristina-pared.webp?v=1';
-      return Promise.all([import('/features/landing/cristina3d.js?v=21'), pared.decode()])
+      return Promise.all([import('/features/landing/cristina3d.js?v=22'), pared.decode()])
         .then(([m]) => m.montar({ hero, lienzo: lienzo3d, alListo: () => {
           const img = hero.querySelector('.ix-body');
           if (img) img.src = pared.src;
